@@ -4,8 +4,8 @@ import sys
 sys.version
 # Install GitPython and PyVis if not already installed
 import subprocess
-subprocess.check_call([sys.executable, "-m", "pip", "install", "gitpython"])
-subprocess.check_call([sys.executable, "-m", "pip", "install", "pyvis"])
+subprocess.check_call([sys.executable, "-m", "pip", "install", "gitpython", "--quiet"])
+subprocess.check_call([sys.executable, "-m", "pip", "install", "pyvis", "--quiet"])
 
 import os
 
@@ -13,6 +13,7 @@ import os
 cwd = os.getcwd()
 
 # Declare a var for the path where we're going to download a repository:
+CODE_FOLDER = "/zeeguu-api/"
 CODE_ROOT_FOLDER = cwd + "/zeeguu-api/"
 from git import Repo
 
