@@ -1,0 +1,101 @@
+[ {
+  "key" : "general",
+  "concerns" : [ {
+    "name" : "TODOs",
+    "filesCount" : 19,
+    "linesOfCode" : 4482,
+    "numberOfRegexLineMatches" : 29,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 18,
+      "description" : [ ]
+    }, {
+      "name" : "  *.sql",
+      "value" : 1,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 4352,
+      "description" : [ ]
+    }, {
+      "name" : "  *.sql",
+      "value" : 130,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "Unclassified",
+    "filesCount" : 631,
+    "linesOfCode" : 53831,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 487,
+      "description" : [ ]
+    }, {
+      "name" : "  *.ipynb",
+      "value" : 2,
+      "description" : [ ]
+    }, {
+      "name" : "  *.sql",
+      "value" : 135,
+      "description" : [ ]
+    }, {
+      "name" : "  *.cfg",
+      "value" : 5,
+      "description" : [ ]
+    }, {
+      "name" : "  *.toml",
+      "value" : 1,
+      "description" : [ ]
+    }, {
+      "name" : "  *.in",
+      "value" : 1,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 42777,
+      "description" : [ ]
+    }, {
+      "name" : "  *.ipynb",
+      "value" : 8654,
+      "description" : [ ]
+    }, {
+      "name" : "  *.sql",
+      "value" : 2297,
+      "description" : [ ]
+    }, {
+      "name" : "  *.cfg",
+      "value" : 64,
+      "description" : [ ]
+    }, {
+      "name" : "  *.toml",
+      "value" : 38,
+      "description" : [ ]
+    }, {
+      "name" : "  *.in",
+      "value" : 1,
+      "description" : [ ]
+    } ]
+  } ],
+  "concernsGroup" : null,
+  "linesOfCodePerConcern" : [ {
+    "name" : "TODOs",
+    "value" : 4482,
+    "description" : [ ]
+  }, {
+    "name" : "Unclassified",
+    "value" : 53831,
+    "description" : [ ]
+  } ],
+  "fileCountPerConcern" : [ {
+    "name" : "TODOs",
+    "value" : 19,
+    "description" : [ ]
+  }, {
+    "name" : "Unclassified",
+    "value" : 631,
+    "description" : [ ]
+  } ]
+} ]

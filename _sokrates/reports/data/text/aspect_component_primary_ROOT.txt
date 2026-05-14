@@ -1,0 +1,12 @@
+Path	Lines of Code
+MANIFEST.in	1
+default.api.cfg	12
+default.fmd.cfg	17
+default_api.cfg	13
+default_docker.cfg	11
+default_docker_v8.cfg	11
+env_var_defs_default.py	10
+install_stanza_models.py	30
+pyproject.toml	38
+setup.py	46
+start.py	14

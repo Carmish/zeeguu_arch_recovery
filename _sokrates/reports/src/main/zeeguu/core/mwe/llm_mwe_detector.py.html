@@ -1,0 +1,578 @@
+<html>
+<head>
+    <title>zeeguu/core/mwe/llm_mwe_detector.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/mwe/llm_mwe_detector.py (<b>282</b> lines of code) (<a href="llm_mwe_detector.py">raw</a>):</h3>
+<div id="editor">&quot;&quot;&quot;
+LLM-based MWE detector using Claude.
+
+Prioritizes PRECISION over recall:
+- Only detects MWEs when semantically necessary for understanding
+- Avoids over-grouping (e.g., won't group adverbs like &quot;herunder&quot; with &quot;kan se&quot;)
+- Better for particle verbs, phrasal verbs, and true idiomatic expressions
+
+Usage:
+    from zeeguu.core.mwe.llm_mwe_detector import LLMMWEStrategy
+
+    strategy = LLMMWEStrategy(&quot;da&quot;)
+    mwe_groups = strategy.detect(tokens)
+&quot;&quot;&quot;
+
+import json
+import os
+import hashlib
+import logging
+import re
+from typing import List, Dict, Optional
+from threading import Lock
+
+logger = logging.getLogger(__name__)
+
+# Language names for prompts
+LANG_NAMES = {
+    &quot;de&quot;: &quot;German&quot;, &quot;da&quot;: &quot;Danish&quot;, &quot;nl&quot;: &quot;Dutch&quot;, &quot;sv&quot;: &quot;Swedish&quot;, &quot;no&quot;: &quot;Norwegian&quot;,
+    &quot;el&quot;: &quot;Greek&quot;, &quot;it&quot;: &quot;Italian&quot;, &quot;es&quot;: &quot;Spanish&quot;, &quot;fr&quot;: &quot;French&quot;, &quot;ro&quot;: &quot;Romanian&quot;,
+    &quot;pt&quot;: &quot;Portuguese&quot;, &quot;pl&quot;: &quot;Polish&quot;, &quot;ru&quot;: &quot;Russian&quot;, &quot;tr&quot;: &quot;Turkish&quot;, &quot;en&quot;: &quot;English&quot;,
+}
+
+# =============================================================================
+# MWE Cache - In-memory cache for batch MWE results
+# =============================================================================
+
+_mwe_cache: Dict[str, List] = {}
+_mwe_cache_lock = Lock()
+_MWE_CACHE_MAX_SIZE = 500
+
+
+def _get_cache_key(language_code: str, sentences: List[List[Dict]]) -&gt; str:
+    &quot;&quot;&quot;Generate cache key from language and sentence texts.&quot;&quot;&quot;
+    parts = [language_code]
+    for tokens in sentences:
+        sentence_text = &quot; &quot;.join(t.get(&quot;text&quot;, &quot;&quot;) for t in tokens)
+        parts.append(sentence_text)
+    return hashlib.md5(&quot;|||&quot;.join(parts).encode()).hexdigest()
+
+
+def _get_cached_mwe(cache_key: str) -&gt; Optional[List]:
+    &quot;&quot;&quot;Get cached MWE results if available.&quot;&quot;&quot;
+    with _mwe_cache_lock:
+        return _mwe_cache.get(cache_key)
+
+
+def _set_cached_mwe(cache_key: str, results: List) -&gt; None:
+    &quot;&quot;&quot;Cache MWE results with simple LRU eviction.&quot;&quot;&quot;
+    with _mwe_cache_lock:
+        if len(_mwe_cache) &gt;= _MWE_CACHE_MAX_SIZE:
+            # Remove first 10% of entries
+            keys_to_remove = list(_mwe_cache.keys())[:_MWE_CACHE_MAX_SIZE // 10]
+            for k in keys_to_remove:
+                del _mwe_cache[k]
+        _mwe_cache[cache_key] = results
+
+
+def clear_mwe_cache() -&gt; int:
+    &quot;&quot;&quot;Clear the MWE cache. Returns number of entries cleared.&quot;&quot;&quot;
+    with _mwe_cache_lock:
+        count = len(_mwe_cache)
+        _mwe_cache.clear()
+        logger.info(f&quot;Cleared {count} entries from MWE cache&quot;)
+        return count
+
+
+class LLMMWEStrategy:
+    &quot;&quot;&quot;
+    LLM-based MWE detection using Claude.
+
+    Focuses on precision: only groups words that MUST be translated together
+    to preserve meaning. Avoids false positives from syntactic patterns.
+
+    Types detected:
+    - particle_verb: Separable verbs (German &quot;rufe...an&quot;, Danish &quot;kom...op&quot;)
+    - phrasal_verb: Multi-word verbs (English &quot;give up&quot;, Spanish &quot;llevar a cabo&quot;)
+    - idiom: Fixed expressions with non-compositional meaning
+    &quot;&quot;&quot;
+
+    # Prompt template for MWE detection
+    PROMPT_TEMPLATE = &quot;&quot;&quot;Identify multi-word expressions (MWEs) in this {language} sentence.
+
+DETECT these MWE types:
+1. SEPARABLE PARTICLE VERBS: The particle changes the verb's core meaning
+   - German: rufe...an (anrufen = to phone), steht...auf (aufstehen = get up)
+   - Danish: kom...op (come up with), giver...op (give up)
+   - Dutch: bel...op (call up), staat...op (gets up)
+
+2. IDIOMS: Non-literal fixed phrases
+   - &quot;kick the bucket&quot; = die
+
+DO NOT detect:
+- Simple verb + location/manner adverb (se herunder = see below, g&aring; hurtigt = walk quickly)
+- Auxiliary + verb (kan se = can see, will go)
+- Words that translate independently without meaning change
+
+Sentence: &quot;{sentence}&quot;
+
+Tokens:
+{token_list}
+
+Return JSON array with this EXACT format:
+[{{&quot;head_idx&quot;: &lt;verb_index&gt;, &quot;dependent_indices&quot;: [&lt;particle_indices&gt;], &quot;type&quot;: &quot;particle_verb&quot;}}]
+
+If no MWEs: []
+
+Examples:
+- &quot;Ich rufe dich an&quot; &rarr; [{{&quot;head_idx&quot;: 1, &quot;dependent_indices&quot;: [3], &quot;type&quot;: &quot;particle_verb&quot;}}]
+- &quot;Ich gehe schnell&quot; &rarr; []
+
+JSON:&quot;&quot;&quot;
+
+    def __init__(self, language_code: str):
+        self.language_code = language_code
+        self.language_name = LANG_NAMES.get(language_code, language_code)
+        self._client = None
+
+    @property
+    def client(self):
+        &quot;&quot;&quot;Lazy initialization of Anthropic client.&quot;&quot;&quot;
+        if self._client is None:
+            try:
+                import anthropic
+                api_key = os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)
+                if not api_key:
+                    logger.warning(&quot;ANTHROPIC_API_KEY not set, LLM MWE detection disabled&quot;)
+                    return None
+                self._client = anthropic.Anthropic(api_key=api_key)
+            except ImportError:
+                logger.warning(&quot;anthropic package not installed, LLM MWE detection disabled&quot;)
+                return None
+        return self._client
+
+    def detect(self, tokens: List[Dict]) -&gt; List[Dict]:
+        &quot;&quot;&quot;
+        Detect MWEs using Claude LLM.
+
+        Args:
+            tokens: List of token dicts with text, pos, dep, head, lemma fields
+
+        Returns:
+            List of MWE group dicts:
+            [
+                {
+                    &quot;head_idx&quot;: 1,           # Index of main word
+                    &quot;dependent_indices&quot;: [5], # Indices of related words
+                    &quot;type&quot;: &quot;particle_verb&quot;   # MWE type
+                }
+            ]
+        &quot;&quot;&quot;
+        if not self.client:
+            return []
+
+        # Skip very short sentences (unlikely to have MWEs)
+        if len(tokens) &lt; 3:
+            return []
+
+        # Build sentence and token list for prompt
+        sentence = self._build_sentence(tokens)
+        token_list = self._build_token_list(tokens)
+
+        # Build prompt
+        prompt = self.PROMPT_TEMPLATE.format(
+            language=self.language_name,
+            sentence=sentence,
+            token_list=token_list
+        )
+
+        try:
+            response = self.client.messages.create(
+                model=&quot;claude-sonnet-4-20250514&quot;,
+                max_tokens=500,
+                messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}]
+            )
+
+            response_text = response.content[0].text.strip()
+            mwe_groups = self._parse_response(response_text, len(tokens))
+
+            if mwe_groups:
+                logger.debug(f&quot;LLM detected MWEs in '{sentence}': {mwe_groups}&quot;)
+
+            return mwe_groups
+
+        except Exception as e:
+            logger.warning(f&quot;LLM MWE detection failed: {e}&quot;)
+            return []
+
+    def _build_sentence(self, tokens: List[Dict]) -&gt; str:
+        &quot;&quot;&quot;Reconstruct sentence from tokens.&quot;&quot;&quot;
+        words = []
+        for token in tokens:
+            text = token.get(&quot;text&quot;, &quot;&quot;)
+            if token.get(&quot;has_space&quot;, True) and words:
+                words.append(&quot; &quot;)
+            words.append(text)
+        return &quot;&quot;.join(words).strip()
+
+    def _build_token_list(self, tokens: List[Dict]) -&gt; str:
+        &quot;&quot;&quot;Build formatted token list for prompt.&quot;&quot;&quot;
+        lines = []
+        for i, token in enumerate(tokens):
+            text = token.get(&quot;text&quot;, &quot;&quot;)
+            pos = token.get(&quot;pos&quot;, &quot;&quot;)
+            lines.append(f&quot;  {i}: \&quot;{text}\&quot; ({pos})&quot;)
+        return &quot;\n&quot;.join(lines)
+
+    def _parse_response(self, response_text: str, num_tokens: int) -&gt; List[Dict]:
+        &quot;&quot;&quot;Parse LLM response into MWE groups.&quot;&quot;&quot;
+        # Handle markdown code blocks
+        if &quot;```json&quot; in response_text:
+            response_text = response_text.split(&quot;```json&quot;)[1].split(&quot;```&quot;)[0]
+        elif &quot;```&quot; in response_text:
+            response_text = response_text.split(&quot;```&quot;)[1].split(&quot;```&quot;)[0]
+
+        response_text = response_text.strip()
+
+        # First try parsing as-is
+        try:
+            data = json.loads(response_text)
+            if isinstance(data, list):
+                return self._validate_groups(data, num_tokens)
+        except json.JSONDecodeError:
+            pass
+
+        # Look for JSON array pattern in the text
+        array_pattern = r'\[(?:\s*\{[^}]*\}\s*,?\s*)*\]|\[\s*\]'
+        matches = list(re.finditer(array_pattern, response_text))
+
+        if matches:
+            # Take the last match (usually the actual response)
+            json_str = matches[-1].group()
+            try:
+                data = json.loads(json_str)
+                return self._validate_groups(data, num_tokens)
+            except json.JSONDecodeError:
+                pass
+
+        # If all else fails, check if response ends with []
+        if response_text.rstrip().endswith(&quot;[]&quot;):
+            return []
+
+        logger.warning(f&quot;Could not parse LLM response: {response_text[:200]}...&quot;)
+        return []
+
+    def _validate_groups(self, data: List, num_tokens: int) -&gt; List[Dict]:
+        &quot;&quot;&quot;Validate and filter MWE groups.&quot;&quot;&quot;
+        if not isinstance(data, list):
+            return []
+
+        valid_groups = []
+        for group in data:
+            if not isinstance(group, dict):
+                continue
+
+            head_idx = group.get(&quot;head_idx&quot;)
+            dependent_indices = group.get(&quot;dependent_indices&quot;, [])
+            mwe_type = group.get(&quot;type&quot;, &quot;unknown&quot;)
+
+            # Validate indices
+            if not isinstance(head_idx, int) or not (0 &lt;= head_idx &lt; num_tokens):
+                continue
+
+            if not isinstance(dependent_indices, list):
+                continue
+
+            valid_deps = [
+                idx for idx in dependent_indices
+                if isinstance(idx, int) and 0 &lt;= idx &lt; num_tokens and idx != head_idx
+            ]
+
+            if valid_deps:
+                valid_groups.append({
+                    &quot;head_idx&quot;: head_idx,
+                    &quot;dependent_indices&quot;: valid_deps,
+                    &quot;type&quot;: mwe_type
+                })
+
+        return valid_groups
+
+
+class HybridMWEStrategy:
+    &quot;&quot;&quot;
+    Hybrid strategy: Uses Stanza for recall, LLM for precision filtering.
+
+    1. Run Stanza to detect candidate MWEs (high recall)
+    2. Use LLM to validate/filter candidates (high precision)
+
+    This provides the best of both worlds:
+    - Fast initial detection from Stanza
+    - Semantic validation from LLM to remove false positives
+
+    IMPORTANT: This strategy is designed for single-sentence use only.
+    For batch processing (multiple sentences), use BatchHybridMWEStrategy.
+    &quot;&quot;&quot;
+
+    def __init__(self, language_code: str):
+        from .stanza_mwe_detector import get_strategy_for_language
+
+        self.language_code = language_code
+        self.stanza_strategy = get_strategy_for_language(language_code)
+        self.llm_strategy = LLMMWEStrategy(language_code)
+
+    def detect(self, tokens: List[Dict]) -&gt; List[Dict]:
+        &quot;&quot;&quot;
+        Detect MWEs using hybrid approach.
+
+        Falls back to Stanza-only if LLM is unavailable.
+        &quot;&quot;&quot;
+        # Get Stanza candidates
+        stanza_groups = self.stanza_strategy.detect(tokens)
+
+        # If no candidates, nothing to validate
+        if not stanza_groups:
+            return []
+
+        # If LLM unavailable, use Stanza results
+        if not self.llm_strategy.client:
+            return stanza_groups
+
+        # Use LLM to validate candidates
+        llm_groups = self.llm_strategy.detect(tokens)
+
+        # If LLM returns empty, trust its precision (no MWEs)
+        if not llm_groups:
+            logger.debug(f&quot;LLM rejected all Stanza candidates for: {self._tokens_to_sentence(tokens)}&quot;)
+            return []
+
+        # Return LLM results (higher precision)
+        return llm_groups
+
+    def _tokens_to_sentence(self, tokens: List[Dict]) -&gt; str:
+        &quot;&quot;&quot;Build sentence string from tokens.&quot;&quot;&quot;
+        return &quot; &quot;.join(t.get(&quot;text&quot;, &quot;&quot;) for t in tokens)
+
+
+class BatchHybridMWEStrategy:
+    &quot;&quot;&quot;
+    Batch hybrid strategy: Processes ALL sentences in ONE LLM call.
+
+    Flow:
+    1. Run Stanza on each sentence to find candidates
+    2. Collect all sentences with candidates
+    3. Send them ALL to LLM in a single batch call
+    4. Parse batch response and apply results
+
+    This is much more efficient than per-sentence LLM calls.
+    &quot;&quot;&quot;
+
+    BATCH_PROMPT_TEMPLATE = &quot;&quot;&quot;Find multi-word expressions (MWEs) in these {language} sentences.
+
+MWE types to detect:
+1. SEPARABLE PARTICLE VERBS - particle changes verb meaning:
+   - German: &quot;rufe...an&quot; (anrufen=call), &quot;steht...auf&quot; (aufstehen=get up)
+   - Dutch: &quot;bel...op&quot;, &quot;staat...op&quot;
+   - Danish: &quot;ringer...op&quot;, &quot;st&aring;r...op&quot;
+
+2. PERFECT TENSE - auxiliary + past participle:
+   - &quot;har v&aelig;ret&quot; (has been), &quot;hat gemacht&quot; (has done)
+   - &quot;er g&aring;et&quot; (has gone), &quot;ist gegangen&quot;
+
+3. PASSIVE VOICE - auxiliary + past participle:
+   - &quot;bliver vaccineret&quot; (is vaccinated), &quot;wird gemacht&quot; (is done)
+
+DO NOT detect:
+- Modal + infinitive (kan se, will go) - these translate word-by-word fine
+- Random word pairs that aren't grammatically linked
+
+{sentences_section}
+
+Return JSON mapping sentence number to MWEs found:
+{{
+  &quot;0&quot;: [{{&quot;head_idx&quot;: 4, &quot;dependent_indices&quot;: [2], &quot;type&quot;: &quot;grammatical&quot;}}],
+  &quot;1&quot;: [],
+  &quot;2&quot;: [{{&quot;head_idx&quot;: 1, &quot;dependent_indices&quot;: [5], &quot;type&quot;: &quot;particle_verb&quot;}}]
+}}
+
+Use [] for sentences with no MWEs.
+
+JSON:&quot;&quot;&quot;
+
+    def __init__(self, language_code: str):
+        from .stanza_mwe_detector import get_strategy_for_language
+
+        self.language_code = language_code
+        self.language_name = LANG_NAMES.get(language_code, language_code)
+        self.stanza_strategy = get_strategy_for_language(language_code)
+        self._client = None
+
+    @property
+    def client(self):
+        &quot;&quot;&quot;Lazy initialization of Anthropic client.&quot;&quot;&quot;
+        if self._client is None:
+            try:
+                import anthropic
+                api_key = os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)
+                if not api_key:
+                    return None
+                self._client = anthropic.Anthropic(api_key=api_key)
+            except ImportError:
+                return None
+        return self._client
+
+    def detect_batch(self, all_sentences: List[List[Dict]]) -&gt; List[List[Dict]]:
+        &quot;&quot;&quot;
+        Detect MWEs in multiple sentences with a single LLM call.
+
+        Unlike hybrid validation, this does FULL LLM detection from scratch,
+        ignoring Stanza's (often incorrect) candidates.
+
+        Args:
+            all_sentences: List of sentences, each sentence is a list of token dicts
+
+        Returns:
+            List of MWE groups for each sentence (same order as input)
+        &quot;&quot;&quot;
+        if not all_sentences:
+            return []
+
+        # Check cache first
+        cache_key = _get_cache_key(self.language_code, all_sentences)
+        cached = _get_cached_mwe(cache_key)
+        if cached is not None:
+            logger.debug(f&quot;MWE cache hit for {len(all_sentences)} sentences&quot;)
+            return cached
+
+        # If LLM unavailable, fall back to Stanza (but DON'T cache - Stanza results are often wrong)
+        if not self.client:
+            logger.warning(&quot;LLM unavailable, falling back to Stanza (not caching)&quot;)
+            return [self.stanza_strategy.detect(tokens) for tokens in all_sentences]
+
+        # Build batch prompt with ALL sentences
+        sentences_section = self._build_all_sentences_section(all_sentences)
+        prompt = self.BATCH_PROMPT_TEMPLATE.format(
+            language=self.language_name,
+            sentences_section=sentences_section
+        )
+
+        # Single LLM call for all sentences
+        try:
+            response = self.client.messages.create(
+                model=&quot;claude-sonnet-4-20250514&quot;,
+                max_tokens=2000,
+                messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}]
+            )
+
+            response_text = response.content[0].text.strip()
+            batch_results = self._parse_batch_response_full(response_text, all_sentences)
+
+            # Build final results array
+            results = [batch_results.get(str(idx), []) for idx in range(len(all_sentences))]
+
+            logger.info(f&quot;Batch MWE detection: {len(all_sentences)} sentences in 1 LLM call&quot;)
+            _set_cached_mwe(cache_key, results)
+            return results
+
+        except Exception as e:
+            logger.warning(f&quot;Batch LLM MWE detection failed: {e}, falling back to Stanza&quot;)
+            return [self.stanza_strategy.detect(tokens) for tokens in all_sentences]
+
+    def _build_all_sentences_section(self, all_sentences: List[List[Dict]]) -&gt; str:
+        &quot;&quot;&quot;Build sentences section showing ALL sentences for LLM detection.&quot;&quot;&quot;
+        lines = []
+        for idx, tokens in enumerate(all_sentences):
+            sentence_text = &quot; &quot;.join(t.get(&quot;text&quot;, &quot;&quot;) for t in tokens)
+            lines.append(f&quot;Sentence {idx}: \&quot;{sentence_text}\&quot;&quot;)
+            lines.append(f&quot;  Tokens: {self._build_token_list_compact(tokens)}&quot;)
+            lines.append(&quot;&quot;)
+        return &quot;\n&quot;.join(lines)
+
+    def _parse_batch_response_full(self, response_text: str, all_sentences: List[List[Dict]]) -&gt; Dict:
+        &quot;&quot;&quot;Parse batch LLM response for full detection.&quot;&quot;&quot;
+        # Handle markdown code blocks
+        if &quot;```json&quot; in response_text:
+            response_text = response_text.split(&quot;```json&quot;)[1].split(&quot;```&quot;)[0]
+        elif &quot;```&quot; in response_text:
+            response_text = response_text.split(&quot;```&quot;)[1].split(&quot;```&quot;)[0]
+
+        response_text = response_text.strip()
+
+        # Find JSON object
+        start = response_text.find(&quot;{&quot;)
+        end = response_text.rfind(&quot;}&quot;) + 1
+        if start &gt;= 0 and end &gt; start:
+            response_text = response_text[start:end]
+
+        try:
+            data = json.loads(response_text)
+            if isinstance(data, dict):
+                validated = {}
+                for idx, tokens in enumerate(all_sentences):
+                    key = str(idx)
+                    if key in data:
+                        groups = data[key]
+                        if isinstance(groups, list):
+                            validated[key] = self._validate_groups(groups, len(tokens))
+                        else:
+                            validated[key] = []
+                    else:
+                        validated[key] = []
+                return validated
+        except json.JSONDecodeError as e:
+            logger.warning(f&quot;Could not parse batch LLM response: {e}&quot;)
+
+        return {}
+
+    def _build_token_list_compact(self, tokens) -&gt; str:
+        &quot;&quot;&quot;Build compact token list.&quot;&quot;&quot;
+        return &quot;, &quot;.join(f&quot;{i}:{t.get('text', '')}&quot; for i, t in enumerate(tokens))
+
+    def _validate_groups(self, data: List, num_tokens: int) -&gt; List[Dict]:
+        &quot;&quot;&quot;Validate and filter MWE groups.&quot;&quot;&quot;
+        if not isinstance(data, list):
+            return []
+
+        valid_groups = []
+        for group in data:
+            if not isinstance(group, dict):
+                continue
+
+            head_idx = group.get(&quot;head_idx&quot;)
+            dependent_indices = group.get(&quot;dependent_indices&quot;, [])
+            mwe_type = group.get(&quot;type&quot;, &quot;unknown&quot;)
+
+            if not isinstance(head_idx, int) or not (0 &lt;= head_idx &lt; num_tokens):
+                continue
+
+            if not isinstance(dependent_indices, list):
+                continue
+
+            valid_deps = [
+                idx for idx in dependent_indices
+                if isinstance(idx, int) and 0 &lt;= idx &lt; num_tokens and idx != head_idx
+            ]
+
+            if valid_deps:
+                valid_groups.append({
+                    &quot;head_idx&quot;: head_idx,
+                    &quot;dependent_indices&quot;: valid_deps,
+                    &quot;type&quot;: mwe_type
+                })
+
+        return valid_groups
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

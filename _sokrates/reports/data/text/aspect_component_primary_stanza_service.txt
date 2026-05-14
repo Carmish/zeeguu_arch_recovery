@@ -1,0 +1,4 @@
+Path	Lines of Code
+stanza_service/app.py	312
+stanza_service/gunicorn.conf.py	16
+stanza_service/install_models.py	34

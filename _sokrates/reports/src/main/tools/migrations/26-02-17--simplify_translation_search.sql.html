@@ -1,0 +1,44 @@
+<html>
+<head>
+    <title>tools/migrations/26-02-17--simplify_translation_search.sql</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/migrations/26-02-17--simplify_translation_search.sql (<b>11</b> lines of code) (<a href="26-02-17--simplify_translation_search.sql">raw</a>):</h3>
+<div id="editor">-- Drop old translation_search table (had meaning_id, now we just store search_word)
+DROP TABLE IF EXISTS translation_search;
+
+-- New simplified translation search history table
+-- Stores the search word and learned language (active during search)
+-- Filtered by current learned language when displayed
+CREATE TABLE translation_search (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    search_word VARCHAR(255) NOT NULL,
+    learned_language_id INT NOT NULL,
+    search_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES user(id),
+    FOREIGN KEY (learned_language_id) REFERENCES language(id),
+
+    INDEX idx_user_lang_time (user_id, learned_language_id, search_time DESC)
+);
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/sql");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

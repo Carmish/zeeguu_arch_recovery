@@ -1,0 +1,2516 @@
+<head>
+    <style> body {
+        margin: 0;
+    } </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/3d-force-graph"></script>
+</head>
+
+<body>
+<div id="3d-graph"></div>
+
+<script>
+    const gData = {
+  "nodes" : [ {
+    "id" : "[zeeguu/core/model/user_language.py]",
+    "size" : 6
+  }, {
+    "id" : "[zeeguu/core/badges/__init__.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/migrations/26-04-07--add_language_id_to_exercise_and_browsing_sessions.sql]",
+    "size" : 1
+  }, {
+    "id" : "[tools/migrations/26-02-20--insert_default_badges.sql]",
+    "size" : 2
+  }, {
+    "id" : "[tools/migrations/26-04-15--update_user_name_email_collation.sql]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/user_feature_toggles.py]",
+    "size" : 5
+  }, {
+    "id" : "[zeeguu/api/endpoints/exercises.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/reading_sessions.py]",
+    "size" : 1
+  }, {
+    "id" : "[.github/workflows/test.yml]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "size" : 5
+  }, {
+    "id" : "[zeeguu/api/test/fixtures.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "size" : 5
+  }, {
+    "id" : "kalny.zalan7@gmail.com",
+    "size" : 22
+  }, {
+    "id" : "[Dockerfile]",
+    "size" : 1
+  }, {
+    "id" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "size" : 7
+  }, {
+    "id" : "[zeeguu/api/endpoints/translation.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/friend_request.py]",
+    "size" : 7
+  }, {
+    "id" : "[zeeguu/core/model/user_metric.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/user_browsing_session.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/exercise_sessions.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/badges.py]",
+    "size" : 5
+  }, {
+    "id" : "[zeeguu/core/badges/listeners.py]",
+    "size" : 7
+  }, {
+    "id" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "size" : 2
+  }, {
+    "id" : "gabortodor@gmail.com",
+    "size" : 69
+  }, {
+    "id" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "size" : 6
+  }, {
+    "id" : "[zeeguu/api/endpoints/helpers/activity_sessions.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/test/test_exercise_session.py]",
+    "size" : 1
+  }, {
+    "id" : "mircea.lungu@gmail.com",
+    "size" : 68
+  }, {
+    "id" : "[zeeguu/api/test/test_badges.py]",
+    "size" : 6
+  }, {
+    "id" : "[tools/migrations/26-02-19--add_badges.sql]",
+    "size" : 2
+  }, {
+    "id" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "size" : 7
+  }, {
+    "id" : "[zeeguu/core/model/badge_category.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/api/endpoints/article_upload.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/test/test_app.py]",
+    "size" : 1
+  }, {
+    "id" : "nickras2001@gmail.com",
+    "size" : 24
+  }, {
+    "id" : "[zeeguu/api/app.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/article.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/friends/friend_streak.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/endpoints/listening_sessions.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/friend.py]",
+    "size" : 6
+  }, {
+    "id" : "[zeeguu/core/model/user.py]",
+    "size" : 7
+  }, {
+    "id" : "[zeeguu/core/model/user_badge_progress.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/api/endpoints/article.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/endpoints/user_watching_session.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/test/test_friends.py]",
+    "size" : 6
+  }, {
+    "id" : "[zeeguu/core/util/time.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/badges/badge_progress.py]",
+    "size" : 5
+  }, {
+    "id" : "[tools/migrations/26-04-14--add_article_upload.sql]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/test/test_friends.py]",
+    "size" : 7
+  }, {
+    "id" : "63254940+gabortodor@users.noreply.github.com",
+    "size" : 47
+  }, {
+    "id" : "[zeeguu/api/endpoints/__init__.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/events/__init__.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/user_word.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/api/endpoints/user.py]",
+    "size" : 7
+  }, {
+    "id" : "[zeeguu/api/endpoints/user_articles.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/activity_type.py]",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/core/llm_services/simplification_service.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/endpoints/accounts.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/leaderboards/__init__.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/migrations/26-04-11--add_user_timezone.sql]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/friends.py]",
+    "size" : 7
+  }, {
+    "id" : "[zeeguu/core/friends/listeners.py]",
+    "size" : 5
+  }, {
+    "id" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "size" : 6
+  }, {
+    "id" : "[zeeguu/api/test/test_account_creation.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/migrations/26-02-24-c--add_username.sql]",
+    "size" : 3
+  }, {
+    "id" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "size" : 5
+  }, {
+    "id" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "size" : 4
+  }, {
+    "id" : "[tools/migrations/26-02-26--add_max_streak_to_user_language.sql]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/badge.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/api/test/test_username.py]",
+    "size" : 6
+  }, {
+    "id" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "size" : 5
+  }, {
+    "id" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/user_avatar.py]",
+    "size" : 6
+  }, {
+    "id" : "[zeeguu/api/endpoints/bookmarks_and_words.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/exercise_outcome.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/llm_services/anthropic_service.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/user_badge.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/test/rules/user_rule.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/api/test/test_browsing_session.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/friendship.py]",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/api/endpoints/activity_tracking.py]",
+    "size" : 3
+  }, {
+    "id" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "size" : 19
+  }, {
+    "id" : "[zeeguu/api/endpoints/browsing_sessions.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/daily_audio_lesson.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/user_languages.py]",
+    "size" : 1
+  }, {
+    "id" : "72095082+klnyzzz33@users.noreply.github.com",
+    "size" : 25
+  }, {
+    "id" : "[zeeguu/core/model/audio_lesson_dialogue.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/article_upload.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/friends/__init__.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/test/test_user.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/__init__.py]",
+    "size" : 5
+  }, {
+    "id" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "size" : 5
+  }, {
+    "id" : "[tools/migrations/26-03-13--add_user_avatar.sql]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/user_exercise_session.py]",
+    "size" : 1
+  } ],
+  "links" : [ {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 12
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 11
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/core/model/friend.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/model/friend.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 11
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/article_upload.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/api/endpoints/article_upload.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 11
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 10
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 10
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 10
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 10
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 10
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 10
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/model/article_upload.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/core/model/article_upload.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 9
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 8
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 8
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 8
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 8
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/test/test_friends.py]",
+    "count" : 8
+  }, {
+    "source" : "[zeeguu/api/test/test_friends.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 8
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 8
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 8
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 8
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 8
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/test/test_friends.py]",
+    "count" : 8
+  }, {
+    "source" : "[zeeguu/core/test/test_friends.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 8
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/friend.py]",
+    "count" : 8
+  }, {
+    "source" : "[zeeguu/core/model/friend.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 8
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 7
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 7
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 7
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 7
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 7
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 7
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 7
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 7
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 7
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 7
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/friend.py]",
+    "count" : 7
+  }, {
+    "source" : "[zeeguu/core/model/friend.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 7
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 6
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 6
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 6
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "count" : 6
+  }, {
+    "source" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 6
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 6
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 6
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 6
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/test/test_badges.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/api/test/test_badges.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 6
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 6
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/friendship.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/core/model/friendship.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 6
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/user_feature_toggles.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/core/user_feature_toggles.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 6
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/activity_type.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/core/model/activity_type.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 6
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 5
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 5
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/api/test/test_badges.py]",
+    "count" : 5
+  }, {
+    "source" : "[zeeguu/api/test/test_badges.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 5
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/api/test/test_username.py]",
+    "count" : 5
+  }, {
+    "source" : "[zeeguu/api/test/test_username.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 5
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/badges/badge_progress.py]",
+    "count" : 5
+  }, {
+    "source" : "[zeeguu/core/badges/badge_progress.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 5
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 5
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 5
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 5
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 5
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 5
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 5
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 5
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 5
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 4
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 4
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 4
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 4
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 4
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 4
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 4
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 4
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 4
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 4
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/__init__.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/__init__.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 4
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 4
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 4
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 4
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 4
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/api/test/test_friends.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/test/test_friends.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 4
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 4
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/badges/badge_progress.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/badges/badge_progress.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 4
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 4
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 4
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/badge.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/model/badge.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 4
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/badge.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/model/badge.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 4
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 4
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 4
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/core/test/test_friends.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/test/test_friends.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 4
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/core/model/friend.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/model/friend.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 4
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/friend.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/model/friend.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 4
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/model/article.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/model/article.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 4
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/user_articles.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/user_articles.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 4
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/app.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/app.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/api/test/test_badges.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/test/test_badges.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/api/test/test_badges.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/test/test_badges.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/api/test/test_friends.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/test/test_friends.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/api/test/test_friends.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/test/test_friends.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[zeeguu/api/test/test_friends.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/test/test_friends.py]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/core/badges/badge_progress.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/badges/badge_progress.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/friends/friend_streak.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/friends/friend_streak.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/badge_category.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/badge_category.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/friendship.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/friendship.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/core/model/user_avatar.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/user_avatar.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/user_badge_progress.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/user_badge_progress.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/user_word.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/user_word.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/core/test/test_friends.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/test/test_friends.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/core/test/test_friends.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/test/test_friends.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/friend.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/friend.py]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/core/test/test_app.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/test/test_app.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/activity_type.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/activity_type.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 3
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/article.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/article.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[tools/migrations/26-04-14--add_article_upload.sql]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-04-14--add_article_upload.sql]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[.github/workflows/test.yml]",
+    "count" : 2
+  }, {
+    "source" : "[.github/workflows/test.yml]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[Dockerfile]",
+    "count" : 2
+  }, {
+    "source" : "[Dockerfile]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-24-c--add_username.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-c--add_username.sql]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[tools/migrations/26-02-24-c--add_username.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-c--add_username.sql]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[tools/migrations/26-02-24-c--add_username.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-c--add_username.sql]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[tools/migrations/26-02-26--add_max_streak_to_user_language.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-26--add_max_streak_to_user_language.sql]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[tools/migrations/26-03-13--add_user_avatar.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-03-13--add_user_avatar.sql]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[tools/migrations/26-04-15--update_user_name_email_collation.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-04-15--update_user_name_email_collation.sql]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[tools/migrations/26-04-15--update_user_name_email_collation.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-04-15--update_user_name_email_collation.sql]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[tools/migrations/26-04-15--update_user_name_email_collation.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-04-15--update_user_name_email_collation.sql]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/app.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/app.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/api/app.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/app.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/__init__.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/__init__.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/api/endpoints/accounts.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/accounts.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/api/endpoints/accounts.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/accounts.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/accounts.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/accounts.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/activity_tracking.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/activity_tracking.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/api/endpoints/activity_tracking.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/activity_tracking.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/activity_tracking.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/activity_tracking.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/exercises.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/exercises.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/helpers/activity_sessions.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/helpers/activity_sessions.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/helpers/activity_sessions.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/helpers/activity_sessions.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/translation.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/translation.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/api/endpoints/translation.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/translation.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/translation.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/translation.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/user_languages.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/user_languages.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/test/fixtures.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/test/fixtures.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/test/test_account_creation.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/test/test_account_creation.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/test/test_badges.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/test/test_badges.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[zeeguu/api/test/test_badges.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/test/test_badges.py]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/test/test_friends.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/test/test_friends.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/api/test/test_friends.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/test/test_friends.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/test/test_username.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/test/test_username.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/test/test_username.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/test/test_username.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/api/test/test_username.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/test/test_username.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[zeeguu/api/test/test_username.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/test/test_username.py]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/api/test/test_username.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/test/test_username.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/badges/__init__.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/badges/__init__.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/core/badges/badge_progress.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/badges/badge_progress.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/badges/badge_progress.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/badges/badge_progress.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/events/__init__.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/events/__init__.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/events/__init__.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/events/__init__.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/events/__init__.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/events/__init__.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/friends/__init__.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/friends/__init__.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/friends/__init__.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/friends/__init__.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/friends/__init__.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/friends/__init__.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/friends/friend_streak.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/friends/friend_streak.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/leaderboards/__init__.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/leaderboards/__init__.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/model/badge.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/badge.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/badge_category.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/badge_category.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/model/badge_category.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/badge_category.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/model/daily_audio_lesson.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/daily_audio_lesson.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/model/exercise_outcome.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/exercise_outcome.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/model/friendship.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/friendship.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/core/model/friendship.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/friendship.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/user_avatar.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_avatar.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/user_avatar.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_avatar.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/user_avatar.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_avatar.py]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/core/model/user_avatar.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_avatar.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/model/user_avatar.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_avatar.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/user_badge.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_badge.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/user_badge.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_badge.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/model/user_badge.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_badge.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/user_badge_progress.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_badge_progress.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/model/user_badge_progress.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_badge_progress.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/user_word.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_word.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/model/user_word.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_word.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/test/rules/user_rule.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/test/rules/user_rule.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/core/test/rules/user_rule.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/test/rules/user_rule.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/core/test/rules/user_rule.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/test/rules/user_rule.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/test/test_friends.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/test/test_friends.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/test/test_friends.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/test/test_friends.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/test/test_user.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/test/test_user.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/test/test_user.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/test/test_user.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "[zeeguu/core/test/test_user.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/test/test_user.py]",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/user_feature_toggles.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/user_feature_toggles.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/core/user_feature_toggles.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/user_feature_toggles.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[zeeguu/core/user_feature_toggles.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/user_feature_toggles.py]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "[zeeguu/core/user_feature_toggles.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/user_feature_toggles.py]",
+    "target" : "nickras2001@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/activity_type.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/activity_type.py]",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/activity_type.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/activity_type.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/article.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/article.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[tools/migrations/26-04-07--add_language_id_to_exercise_and_browsing_sessions.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-04-07--add_language_id_to_exercise_and_browsing_sessions.sql]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[tools/migrations/26-04-11--add_user_timezone.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-04-11--add_user_timezone.sql]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[tools/migrations/26-04-14--add_article_upload.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-04-14--add_article_upload.sql]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/article_upload.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/article_upload.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/bookmarks_and_words.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/bookmarks_and_words.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/browsing_sessions.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/browsing_sessions.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/exercise_sessions.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/exercise_sessions.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/listening_sessions.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/listening_sessions.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/reading_sessions.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/reading_sessions.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/endpoints/user_watching_session.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/user_watching_session.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/test/test_browsing_session.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/test/test_browsing_session.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/api/test/test_exercise_session.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/test/test_exercise_session.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/llm_services/anthropic_service.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/llm_services/anthropic_service.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "[zeeguu/core/llm_services/simplification_service.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_service.py]",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/llm_services/simplification_service.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_service.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/article.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/article.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/article_upload.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/article_upload.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/audio_lesson_dialogue.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/audio_lesson_dialogue.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/user_browsing_session.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_browsing_session.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/user_exercise_session.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_exercise_session.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/util/time.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/util/time.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[zeeguu/core/model/user_metric.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_metric.py]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[zeeguu/core/model/user_metric.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_metric.py]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-19--add_badges.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-19--add_badges.sql]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[tools/migrations/26-02-19--add_badges.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-19--add_badges.sql]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "[tools/migrations/26-02-20--insert_default_badges.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-20--insert_default_badges.sql]",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "[tools/migrations/26-02-20--insert_default_badges.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-20--insert_default_badges.sql]",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  } ]
+}
+
+    const maxNodeSize = gData.nodes.map(n => n.size).reduce((a, b) => Math.max(a, b));
+    const maxCount = gData.links.map(l => l.count).reduce((a, b) => Math.max(a, b));
+
+    gData.links = gData.links.map(l => { return {source: l.target, target: l.source, count: l.count} });
+
+    const Graph = ForceGraph3D()
+    (document.getElementById('3d-graph'))
+        .graphData(gData)
+        .nodeRelSize(4)
+        .nodeVal(n => Math.max(20 * n.size / maxNodeSize, 0.001))
+        .nodeLabel(n => n.id + " (" + n.size + ")")
+        .nodeColor(n => n.id.startsWith("[") ? "skyblue" : "")
+        .linkDirectionalParticles(6)
+        .linkDirectionalParticleSpeed(d => d.count / maxCount * 0.01)
+        .linkOpacity(0.1)
+        .linkWidth(d => 3 * d.count / maxCount + 0.1);
+
+</script>
+</body>

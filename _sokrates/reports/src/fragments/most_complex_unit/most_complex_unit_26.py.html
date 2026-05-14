@@ -1,0 +1,136 @@
+<html>
+<head>
+    <title>def main()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def main()</h3>
+<p style="margin-top: 4px">in <i>tools/fix_simplified_articles_html.py [0:0]</i></p>
+<ul>
+    <li><b>80</b> lines of code</li>
+    <li><b>26</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def main():
+    &quot;&quot;&quot;
+    Find and fix all simplified articles with incorrect HTML content.
+    &quot;&quot;&quot;
+    log(&quot;Starting to fix simplified articles HTML content...&quot;)
+
+    # Query for all simplified articles (those with parent_article_id)
+    simplified_articles = Article.query.filter(
+        Article.parent_article_id.isnot(None)
+    ).all()
+
+    log(f&quot;Found {len(simplified_articles)} simplified articles to check&quot;)
+
+    fixed_count = 0
+    error_count = 0
+    skipped_count = 0
+    skipped_bookmarks_count = 0
+
+    for article in simplified_articles:
+        try:
+            parent = Article.find_by_id(article.parent_article_id)
+            if not parent:
+                log(f&quot;WARNING: Article {article.id} has no parent&quot;)
+                error_count += 1
+                continue
+
+            # Check if the HTML content matches the parent's HTML (indicating the bug)
+            html_matches = article.htmlContent == parent.htmlContent
+
+            # Also check if plain text content is different (indicating it's truly simplified)
+            simplified_content = article.get_content()
+            parent_content = parent.get_content()
+            content_is_different = simplified_content != parent_content
+            
+            # Check if article has any bookmarks - if so, skip to avoid breaking them
+            from zeeguu.core.model.bookmark import Bookmark
+            bookmark_count = Bookmark.query.filter_by(text_id=article.source.id).count()
+            has_bookmarks = bookmark_count &gt; 0
+
+            if html_matches and content_is_different and not has_bookmarks:
+                # HTML is wrong (copied from parent) but content is different (properly simplified)
+                # AND no bookmarks exist - safe to fix
+                
+                # Calculate days ago
+                from datetime import datetime, timezone
+                days_ago = &quot;unknown&quot;
+                if article.published_time:
+                    now = datetime.now(timezone.utc)
+                    pub_time = article.published_time
+                    if pub_time.tzinfo is None:
+                        pub_time = pub_time.replace(tzinfo=timezone.utc)
+                    days_ago = (now - pub_time).days
+                
+                log(f&quot;Article {article.id}, Parent {article.parent_article_id}, {days_ago} days ago&quot;)
+
+                if fix_simplified_article_html(article):
+                    fixed_count += 1
+                    db.session.add(article)
+                else:
+                    error_count += 1
+            elif html_matches and content_is_different and has_bookmarks:
+                # Article needs fixing but has bookmarks - too risky
+                
+                # Calculate days ago
+                from datetime import datetime, timezone
+                days_ago = &quot;unknown&quot;
+                if article.published_time:
+                    now = datetime.now(timezone.utc)
+                    pub_time = article.published_time
+                    if pub_time.tzinfo is None:
+                        pub_time = pub_time.replace(tzinfo=timezone.utc)
+                    days_ago = (now - pub_time).days
+                
+                log(f&quot;SKIPPED (bookmarks): Article {article.id}, Parent {article.parent_article_id}, {days_ago} days ago&quot;)
+                skipped_bookmarks_count += 1
+
+            elif html_matches and not content_is_different:
+                # Both HTML and content match parent - this is completely broken
+                log(
+                    f&quot;ERROR: Article {article.id} has both HTML and content matching parent - needs re-simplification&quot;
+                )
+                error_count += 1
+            else:
+                skipped_count += 1
+                log(
+                    f&quot;Skipped article {article.id} - HTML already different from parent&quot;
+                )
+
+            # Commit in batches of 10
+            if fixed_count &gt; 0 and fixed_count % 10 == 0:
+                db.session.commit()
+                log(f&quot;Committed batch - fixed {fixed_count} articles so far&quot;)
+
+        except Exception as e:
+            log(f&quot;ERROR processing article {article.id}: {e}&quot;)
+            error_count += 1
+            continue
+
+    # Final commit
+    if fixed_count &gt; 0:
+        db.session.commit()
+
+    log(f&quot;\n=== SUMMARY ===&quot;)
+    log(f&quot;Total simplified articles: {len(simplified_articles)}&quot;)
+    log(f&quot;Fixed: {fixed_count}&quot;)
+    log(f&quot;Skipped (different HTML): {skipped_count}&quot;)
+    log(f&quot;Skipped (has bookmarks): {skipped_bookmarks_count}&quot;)
+    log(f&quot;Errors: {error_count}&quot;)
+    log(f&quot;===============\n&quot;)
+
+    if fixed_count &gt; 0:
+        log(f&quot;SUCCESS: Fixed HTML content for {fixed_count} simplified articles!&quot;)
+    else:
+        log(&quot;No articles needed fixing.&quot;)
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

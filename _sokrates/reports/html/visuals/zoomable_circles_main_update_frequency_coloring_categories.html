@@ -1,0 +1,3418 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+    .node {
+        cursor: pointer;
+    }
+
+    .node:hover {
+        stroke: #000;
+        stroke-width: 1.5px;
+    }
+
+    .node--leaf {
+        fill: white;
+    }
+
+    .label {
+        font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+        text-anchor: middle;
+        text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+    }
+
+    .label,
+    .node--root,
+    .node--leaf {
+        pointer-events: none;
+    }
+
+</style>
+<svg width="960" height="960"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+    var svg = d3.select("svg"),
+        margin = 20,
+        diameter = +svg.attr("width"),
+        g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+    var color = d3.scaleLinear()
+        .domain([-1, 5])
+        .range(["hsl(152,80%,100%)", "hsl(228,30%,40%)"])
+        .interpolate(d3.interpolateHcl);
+
+    var pack = d3.pack()
+        .size([diameter - margin, diameter - margin])
+        .padding(2);
+
+
+    var root = {
+        "name": "cluster",
+        "children": [ {
+  "name" : "1-5 (426)",
+  "color" : "",
+  "size" : 0,
+  "children" : [ {
+    "name" : "stanza_service/install_models.py",
+    "color" : "#6192c3",
+    "size" : 34,
+    "children" : [ ]
+  }, {
+    "name" : "stanza_service/gunicorn.conf.py",
+    "color" : "#6192c3",
+    "size" : 16,
+    "children" : [ ]
+  }, {
+    "name" : "stanza_service/app.py",
+    "color" : "#6192c3",
+    "size" : 312,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/user_activity_hooks/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/account_management/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/bookmark_operations/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/word_filter/proper_noun_filter.py",
+    "color" : "#6192c3",
+    "size" : 13,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/word_filter/__init__.py",
+    "color" : "#6192c3",
+    "size" : 6,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/word_filter/profanity_filter.py",
+    "color" : "#6192c3",
+    "size" : 15,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/word_scheduling/basicSR/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/behavioral_modeling/__init__.py",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/util/reading_time_estimator.py",
+    "color" : "#6192c3",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/util/encoding.py",
+    "color" : "#6192c3",
+    "size" : 16,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/util/list.py",
+    "color" : "#6192c3",
+    "size" : 8,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/util/timer_logging_decorator.py",
+    "color" : "#6192c3",
+    "size" : 12,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/util/compute_fk_word_count.py",
+    "color" : "#6192c3",
+    "size" : 18,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/util/time_conversion.py",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/elastic/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/word_stats/__init__.py",
+    "color" : "#6192c3",
+    "size" : 7,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/audio_lessons/suggestion_validator.py",
+    "color" : "#6192c3",
+    "size" : 36,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/audio_lessons/word_selector.py",
+    "color" : "#6192c3",
+    "size" : 179,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/audio_lessons/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/audio_lessons/azure_voice_synthesizer.py",
+    "color" : "#6192c3",
+    "size" : 51,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/content_quality/advertorial_detection.py",
+    "color" : "#6192c3",
+    "size" : 51,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/content_quality/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/content_quality/disturbing_content_detection.py",
+    "color" : "#6192c3",
+    "size" : 140,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/content_retriever/parse_with_newspaper.py",
+    "color" : "#6192c3",
+    "size" : 22,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/content_retriever/crawler_exceptions.py",
+    "color" : "#6192c3",
+    "size" : 15,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/utils/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/utils/caching.py",
+    "color" : "#6192c3",
+    "size" : 16,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/language/strategies/word_rank_difficulty_estimator.py",
+    "color" : "#6192c3",
+    "size" : 78,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/language/strategies/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/language/strategies/default_difficulty_estimator.py",
+    "color" : "#6192c3",
+    "size" : 20,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/language/strategies/frequency_difficulty_estimator.py",
+    "color" : "#6192c3",
+    "size" : 71,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/language/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/language/difficulty_estimator_factory.py",
+    "color" : "#6192c3",
+    "size" : 23,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/language/ml_cefr_classifier.py",
+    "color" : "#6192c3",
+    "size" : 130,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/language/fk_to_cefr.py",
+    "color" : "#6192c3",
+    "size" : 13,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/language/difficulty_estimator_strategy.py",
+    "color" : "#6192c3",
+    "size" : 16,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/language/services/lingo_rank_service.py",
+    "color" : "#6192c3",
+    "size" : 7,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/tokenization/stanza_client.py",
+    "color" : "#6192c3",
+    "size" : 146,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/tokenization/nltk_tokenizer.py",
+    "color" : "#6192c3",
+    "size" : 132,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/tokenization/zeeguu_tokenizer.py",
+    "color" : "#6192c3",
+    "size" : 38,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/exercises/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/user_statistics/student_overview.py",
+    "color" : "#6192c3",
+    "size" : 35,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/user_statistics/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_word_interaction_history.py",
+    "color" : "#6192c3",
+    "size" : 24,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_article_broken_report.py",
+    "color" : "#6192c3",
+    "size" : 81,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/db.py",
+    "color" : "#6192c3",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/article_cefr_assessment.py",
+    "color" : "#6192c3",
+    "size" : 97,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_cohort_map.py",
+    "color" : "#6192c3",
+    "size" : 12,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/article_summary_context.py",
+    "color" : "#6192c3",
+    "size" : 60,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/bookmark_user_preference.py",
+    "color" : "#6192c3",
+    "size" : 15,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/friendship.py",
+    "color" : "#6192c3",
+    "size" : 163,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/difficulty_lingo_rank.py",
+    "color" : "#6192c3",
+    "size" : 21,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/notification.py",
+    "color" : "#6192c3",
+    "size" : 30,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/article_url_keyword_map.py",
+    "color" : "#6192c3",
+    "size" : 11,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/article_classification.py",
+    "color" : "#6192c3",
+    "size" : 59,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_notification.py",
+    "color" : "#6192c3",
+    "size" : 45,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/example_sentence.py",
+    "color" : "#6192c3",
+    "size" : 125,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/monthly_activity_stats_cache.py",
+    "color" : "#6192c3",
+    "size" : 44,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/grammar_correction_log.py",
+    "color" : "#6192c3",
+    "size" : 100,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/monthly_active_users_cache.py",
+    "color" : "#6192c3",
+    "size" : 35,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/feedback_component.py",
+    "color" : "#6192c3",
+    "size" : 44,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/daily_audio_lesson_segment.py",
+    "color" : "#6192c3",
+    "size" : 51,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_badge_progress.py",
+    "color" : "#6192c3",
+    "size" : 70,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/audio_lesson_dialogue.py",
+    "color" : "#6192c3",
+    "size" : 86,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/meaning_report.py",
+    "color" : "#6192c3",
+    "size" : 40,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/example_sentence_context.py",
+    "color" : "#6192c3",
+    "size" : 57,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/badge_category.py",
+    "color" : "#6192c3",
+    "size" : 29,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/context_identifier.py",
+    "color" : "#6192c3",
+    "size" : 107,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/daily_audio_lesson_wrapper.py",
+    "color" : "#6192c3",
+    "size" : 26,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_mwe_override.py",
+    "color" : "#6192c3",
+    "size" : 58,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/ai_generator.py",
+    "color" : "#6192c3",
+    "size" : 37,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_badge.py",
+    "color" : "#6192c3",
+    "size" : 56,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/exercise_source.py",
+    "color" : "#6192c3",
+    "size" : 27,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/exercise_report.py",
+    "color" : "#6192c3",
+    "size" : 67,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/domain_name.py",
+    "color" : "#6192c3",
+    "size" : 59,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/validation_log.py",
+    "color" : "#6192c3",
+    "size" : 91,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/translation_search.py",
+    "color" : "#6192c3",
+    "size" : 46,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_listening_session.py",
+    "color" : "#6192c3",
+    "size" : 93,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/article_upload.py",
+    "color" : "#6192c3",
+    "size" : 98,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/leaderboards/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/content_cleaning/unicode_normalization.py",
+    "color" : "#6192c3",
+    "size" : 5,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/content_cleaning/__init__.py",
+    "color" : "#6192c3",
+    "size" : 13,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/nlp_pipeline/alignment_errant.py",
+    "color" : "#6192c3",
+    "size" : 115,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/nlp_pipeline/edit_errant.py",
+    "color" : "#6192c3",
+    "size" : 36,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/nlp_pipeline/reduce_context.py",
+    "color" : "#6192c3",
+    "size" : 67,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/friends/friend_streak.py",
+    "color" : "#6192c3",
+    "size" : 48,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/friends/listeners.py",
+    "color" : "#6192c3",
+    "size" : 10,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/friends/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/mwe/llm_mwe_detector.py",
+    "color" : "#6192c3",
+    "size" : 282,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/mwe/stanza_mwe_detector.py",
+    "color" : "#6192c3",
+    "size" : 318,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/mwe/__init__.py",
+    "color" : "#6192c3",
+    "size" : 10,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/mwe/enricher.py",
+    "color" : "#6192c3",
+    "size" : 74,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/events/__init__.py",
+    "color" : "#6192c3",
+    "size" : 9,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/translation_services/__init__.py",
+    "color" : "#6192c3",
+    "size" : 7,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/translation_services/azure_alignment.py",
+    "color" : "#6192c3",
+    "size" : 113,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/translation_services/translator.py",
+    "color" : "#6192c3",
+    "size" : 471,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/reading_analysis/macro_reading_session.py",
+    "color" : "#6192c3",
+    "size" : 47,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/ml_models/__init__.py",
+    "color" : "#6192c3",
+    "size" : 5,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/ml_models/utils.py",
+    "color" : "#6192c3",
+    "size" : 15,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/ml_models/paywall_detector.py",
+    "color" : "#6192c3",
+    "size" : 9,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/emailer/email_confirmation.py",
+    "color" : "#6192c3",
+    "size" : 12,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/emailer/password_reset.py",
+    "color" : "#6192c3",
+    "size" : 12,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/emailer/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/badges/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/feed_handler/__init__.py",
+    "color" : "#6192c3",
+    "size" : 10,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/__init__.py",
+    "color" : "#6192c3",
+    "size" : 7,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/llm_service.py",
+    "color" : "#6192c3",
+    "size" : 93,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/translation_validator.py",
+    "color" : "#6192c3",
+    "size" : 185,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/grammar_correction_service.py",
+    "color" : "#6192c3",
+    "size" : 133,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/anthropic_service.py",
+    "color" : "#6192c3",
+    "size" : 68,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/prompts/grammar_correction.py",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/prompts/meaning_frequency_classifier.py",
+    "color" : "#6192c3",
+    "size" : 18,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/prompts/__init__.py",
+    "color" : "#6192c3",
+    "size" : 13,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/prompts/example_generation.py",
+    "color" : "#6192c3",
+    "size" : 37,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/prompts/translation_validator.py",
+    "color" : "#6192c3",
+    "size" : 25,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/prompts/learning_card_generator.py",
+    "color" : "#6192c3",
+    "size" : 44,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/deepseek_service.py",
+    "color" : "#6192c3",
+    "size" : 80,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/mwe_translation_service.py",
+    "color" : "#6192c3",
+    "size" : 87,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/validation_service.py",
+    "color" : "#6192c3",
+    "size" : 196,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/sql/queries/query_loader.py",
+    "color" : "#6192c3",
+    "size" : 8,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/sql/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/sql/learner/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/sql/teacher/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/sql/teacher/teachers_for_cohort.py",
+    "color" : "#6192c3",
+    "size" : 7,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/config/loader.py",
+    "color" : "#6192c3",
+    "size" : 48,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/operations/crawler/article_crawler.py",
+    "color" : "#6192c3",
+    "size" : 23,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/operations/crawler/feed_retrieval.py",
+    "color" : "#6192c3",
+    "size" : 72,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/operations/crawler/video_crawler.py",
+    "color" : "#6192c3",
+    "size" : 11,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/operations/crawler/crawl_report.py",
+    "color" : "#6192c3",
+    "size" : 218,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/operations/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/operations/monitoring/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/operations/report_generator/data_extractor.py",
+    "color" : "#6192c3",
+    "size" : 178,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/operations/report_generator/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/operations/report_generator/generate_report.py",
+    "color" : "#6192c3",
+    "size" : 600,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/operations/report_generator/explore_report_notebook.ipynb",
+    "color" : "#6192c3",
+    "size" : 4327,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/cross_domain_app.py",
+    "color" : "#6192c3",
+    "size" : 7,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/crawl_stats.py",
+    "color" : "#6192c3",
+    "size" : 255,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/cefr_assessment.py",
+    "color" : "#6192c3",
+    "size" : 119,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/teacher_dashboard/_common_api_parameters.py",
+    "color" : "#6192c3",
+    "size" : 33,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/teacher_dashboard/__init__.py",
+    "color" : "#6192c3",
+    "size" : 8,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/teacher_dashboard/helpers.py",
+    "color" : "#6192c3",
+    "size" : 63,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/teacher_dashboard/_only_teachers_decorator.py",
+    "color" : "#6192c3",
+    "size" : 10,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/user_video.py",
+    "color" : "#6192c3",
+    "size" : 44,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/session_history.py",
+    "color" : "#6192c3",
+    "size" : 238,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/leaderboards.py",
+    "color" : "#6192c3",
+    "size" : 116,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/article_simplification.py",
+    "color" : "#6192c3",
+    "size" : 64,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/user_statistics.py",
+    "color" : "#6192c3",
+    "size" : 18,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/system_languages.py",
+    "color" : "#6192c3",
+    "size" : 32,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/article_cefr_recompute.py",
+    "color" : "#6192c3",
+    "size" : 115,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/helpers/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/article_upload.py",
+    "color" : "#6192c3",
+    "size" : 185,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/utils/parse_json_boolean.py",
+    "color" : "#6192c3",
+    "size" : 8,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/utils/feedparser_extensions.py",
+    "color" : "#6192c3",
+    "size" : 28,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/utils/background.py",
+    "color" : "#6192c3",
+    "size" : 14,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/utils/rate_limiter.py",
+    "color" : "#6192c3",
+    "size" : 38,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/utils/session_helpers.py",
+    "color" : "#6192c3",
+    "size" : 11,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/utils/caching_decorator.py",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/utils/security_checks.py",
+    "color" : "#6192c3",
+    "size" : 69,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/utils/abort_handling.py",
+    "color" : "#6192c3",
+    "size" : 12,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/utils/json_result.py",
+    "color" : "#6192c3",
+    "size" : 15,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/custom_fmd_graphs.py",
+    "color" : "#6192c3",
+    "size" : 9,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/cl/__init__.py",
+    "color" : "#6192c3",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "tools/one_time/fix_html_entities_in_articles.py",
+    "color" : "#6192c3",
+    "size" : 36,
+    "children" : [ ]
+  }, {
+    "name" : "tools/one_time/reindex_articles_with_quotes.py",
+    "color" : "#6192c3",
+    "size" : 53,
+    "children" : [ ]
+  }, {
+    "name" : "tools/one_time/fix_tokenization_cache_html_entities.py",
+    "color" : "#6192c3",
+    "size" : 31,
+    "children" : [ ]
+  }, {
+    "name" : "tools/one_time/reindex_articles_with_html_entities.py",
+    "color" : "#6192c3",
+    "size" : 53,
+    "children" : [ ]
+  }, {
+    "name" : "tools/one_time/fix_postillon_topics.py",
+    "color" : "#6192c3",
+    "size" : 26,
+    "children" : [ ]
+  }, {
+    "name" : "tools/one_time/reindex_single_article.py",
+    "color" : "#6192c3",
+    "size" : 35,
+    "children" : [ ]
+  }, {
+    "name" : "tools/download_feed.py",
+    "color" : "#6192c3",
+    "size" : 9,
+    "children" : [ ]
+  }, {
+    "name" : "tools/delete_daily_lesson.py",
+    "color" : "#6192c3",
+    "size" : 50,
+    "children" : [ ]
+  }, {
+    "name" : "tools/recompute_fk_difficulties.py",
+    "color" : "#6192c3",
+    "size" : 30,
+    "children" : [ ]
+  }, {
+    "name" : "tools/add_videos_and_captions_from_file.py",
+    "color" : "#6192c3",
+    "size" : 15,
+    "children" : [ ]
+  }, {
+    "name" : "tools/tokenizer_script.py",
+    "color" : "#6192c3",
+    "size" : 52,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-02-28--04-delete-unused-columns-article.sql",
+    "color" : "#6192c3",
+    "size" : 72,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-07-31--recalculate_multiword_phrase_ranks.py",
+    "color" : "#6192c3",
+    "size" : 56,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-05-21--add_uuid_to_session.sql",
+    "color" : "#6192c3",
+    "size" : 6,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-12-05--add_is_admin_to_user.sql",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-12-11--add_reading_session_id_to_bookmark.sql",
+    "color" : "#6192c3",
+    "size" : 7,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-08-13--optimize_viewport_data_format.py",
+    "color" : "#6192c3",
+    "size" : 78,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-08-02--add_last_seen_to_users.sql",
+    "color" : "#6192c3",
+    "size" : 18,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-10-03-a--add_content_simhash_to_article.sql",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-11-04--add_bookmark_context_userword_index.sql",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-12-a--add_meaning_report.sql",
+    "color" : "#6192c3",
+    "size" : 13,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-05-06--update_cohort_language_to_null_for_testing.sql",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-22-a--add_translation_explanation.sql",
+    "color" : "#6192c3",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-04-03-c--add_audio_lesson_dialogue.sql",
+    "color" : "#6192c3",
+    "size" : 22,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-07-08--add_meaning_frequency_and_phrase_type.sql",
+    "color" : "#6192c3",
+    "size" : 31,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-05-23--removed_learning_cycle_column.sql",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-04-16--remove-vtt-from-video.sql",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-01--add_is_mwe_to_bookmark.sql",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-05-21--rename_user_word_to_phrase.sql",
+    "color" : "#6192c3",
+    "size" : 7,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-07-09-a--populate_language_id_for_existing_lessons.sql",
+    "color" : "#6192c3",
+    "size" : 29,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-11-22--add_cascade_delete_cohort_article_map.sql",
+    "color" : "#6192c3",
+    "size" : 8,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-10-22--recalculate_single_word_phrase_ranks.py",
+    "color" : "#6192c3",
+    "size" : 66,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-07-24--add_receive_email_column.sql",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-13--add_exercise_report.sql",
+    "color" : "#6192c3",
+    "size" : 15,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-12-02--add_user_notification_table.sql",
+    "color" : "#6192c3",
+    "size" : 12,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-08-09--consolidate_duplicate_meanings.py",
+    "color" : "#6192c3",
+    "size" : 118,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-11-22-b--drop_user_cohort_id_column.sql",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-04-10--01--add_learning_cycle_column.sql",
+    "color" : "#6192c3",
+    "size" : 6,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-08-20--fix_ai_generator_foreign_key.sql",
+    "color" : "#6192c3",
+    "size" : 8,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-01-a--add_mwe_partner_token_i_to_bookmark.sql",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-07-09--add_language_to_daily_audio_lesson.sql",
+    "color" : "#6192c3",
+    "size" : 9,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-02-06--adding-cascade-deletes.sql",
+    "color" : "#6192c3",
+    "size" : 12,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-06--add_email_verified.sql",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-17--simplify_translation_search.sql",
+    "color" : "#6192c3",
+    "size" : 11,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-03-26-drop_unique_constraint_from_img_url_id.sql",
+    "color" : "#6192c3",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-07-26--remove_all_search_subscriptions_and_searches.sql",
+    "color" : "#6192c3",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-12-11--backfill_reading_session_id_on_bookmarks.py",
+    "color" : "#6192c3",
+    "size" : 67,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-08-09--comprehensive_userword_consolidation.py",
+    "color" : "#6192c3",
+    "size" : 203,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-20--add_platform_to_session_tables.sql",
+    "color" : "#6192c3",
+    "size" : 5,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-16--security_fixes.sql",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-03-add_img_url_to_article.sql",
+    "color" : "#6192c3",
+    "size" : 13,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-15--add_learned_time_index.sql",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-03-31--add_topic_suggestion_to_audio_lessons.sql",
+    "color" : "#6192c3",
+    "size" : 6,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-08-28--add_article_summary_context.sql",
+    "color" : "#6192c3",
+    "size" : 11,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-08-28-a--add_translation_source_to_bookmark.sql",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-08-12--add_is_user_added_to_user_word.sql",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-04-14--add_article_upload.sql",
+    "color" : "#6192c3",
+    "size" : 22,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-04-22-4-new_topic_subscription.sql",
+    "color" : "#6192c3",
+    "size" : 10,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-02-28--01-new-content-tables copy.sql",
+    "color" : "#6192c3",
+    "size" : 198,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-07-31--add_generated_example_context.sql",
+    "color" : "#6192c3",
+    "size" : 41,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-20--add_exercise_validation.sql",
+    "color" : "#6192c3",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-12-11--add_reading_source_to_session.sql",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-01-16--fix-portuguese-language.sql",
+    "color" : "#6192c3",
+    "size" : 6,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-04-15--update_user_name_email_collation.sql",
+    "color" : "#6192c3",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-16-b--set_existing_users_verified.sql",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-05-20--migrate_to_word_meaning.sql",
+    "color" : "#6192c3",
+    "size" : 38,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-03-is_dev_in_users_table.sql",
+    "color" : "#6192c3",
+    "size" : 22,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-03--add_tokenized_content_to_cache.sql",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-07-16--remove_article_duplicates.sql",
+    "color" : "#6192c3",
+    "size" : 103,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-12-09--add_grammar_correction_log.sql",
+    "color" : "#6192c3",
+    "size" : 19,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-11-12-rename_new_topics.sql",
+    "color" : "#6192c3",
+    "size" : 58,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-07-30--remove_articles_with_no_publish_time.sql",
+    "color" : "#6192c3",
+    "size" : 39,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-08-30--user_cohort_map.sql",
+    "color" : "#6192c3",
+    "size" : 23,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-12-17--add_article_type.sql",
+    "color" : "#6192c3",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-09-24--add_feeback_tables.sql",
+    "color" : "#6192c3",
+    "size" : 48,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-12--add_meaning_level_note.sql",
+    "color" : "#6192c3",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-12-05-a--add_browsing_session_id_to_bookmark.sql",
+    "color" : "#6192c3",
+    "size" : 5,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-03-13--fix_exercise_report_reason_enum.sql",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-02-rss_to_feed.sql",
+    "color" : "#6192c3",
+    "size" : 8,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-11-11--add-bookmark-position-constraints-strict.sql",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-02-05--add_teacher_language_to_audio_lesson_meaning.sql",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-04-23--02--update_learning_cycle_for_existing_users.sql",
+    "color" : "#6192c3",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-24-a--add_username.sql",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-10-22--recalculate_all_multiword_phrase_ranks.py",
+    "color" : "#6192c3",
+    "size" : 67,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-02-06--add_audio_lesson_generation_progress.sql",
+    "color" : "#6192c3",
+    "size" : 14,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-12-05--add_user_browsing_session.sql",
+    "color" : "#6192c3",
+    "size" : 11,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-10-15--add_cefr_assessment_system.sql",
+    "color" : "#6192c3",
+    "size" : 44,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-05-24--adding_the_user_word_table.sql",
+    "color" : "#6192c3",
+    "size" : 130,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-04-22-2-create_topic_keyword.sql",
+    "color" : "#6192c3",
+    "size" : 21,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-05-29--add_user_preference_to_bookmark.sql",
+    "color" : "#6192c3",
+    "size" : 12,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-10-23--delete_bookmark_learned.sql",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-03-13--add_user_avatar.sql",
+    "color" : "#6192c3",
+    "size" : 9,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-09-24--adding-language-to-search.sql",
+    "color" : "#6192c3",
+    "size" : 26,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-04-07--add_language_id_to_exercise_and_browsing_sessions.sql",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-22-b--add_literal_meaning.sql",
+    "color" : "#6192c3",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-22--add_validation_log.sql",
+    "color" : "#6192c3",
+    "size" : 14,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-10--add_monthly_active_users_cache.sql",
+    "color" : "#6192c3",
+    "size" : 7,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-12-02--add_notification_table.sql",
+    "color" : "#6192c3",
+    "size" : 11,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-12-24--add_user_listening_session.sql",
+    "color" : "#6192c3",
+    "size" : 14,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-04-05--drop_suggestion_from_audio_lesson_meaning.sql",
+    "color" : "#6192c3",
+    "size" : 13,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-11-12-delete_old_topics.sql",
+    "color" : "#6192c3",
+    "size" : 5,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-10-06--add_user_article_broken_report.sql",
+    "color" : "#6192c3",
+    "size" : 17,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-04-24--03--update_learning_cycle_preference_for_all_users.sql",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-11-22--add_user_created_at.sql",
+    "color" : "#6192c3",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-07--add_phrase_content_lower_index.sql",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-24-c--add_username.sql",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-07-01--add_article_broken_code_map.sql",
+    "color" : "#6192c3",
+    "size" : 6,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-04-03--update-context-type.sql",
+    "color" : "#6192c3",
+    "size" : 6,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-04-03-b--rename_topic_suggestion_to_suggestion.sql",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-07-25--add_user_article_completion_tracking.sql",
+    "color" : "#6192c3",
+    "size" : 5,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-19-a--add_badges.sql",
+    "color" : "#6192c3",
+    "size" : 39,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-05--add_user_mwe_override.sql",
+    "color" : "#6192c3",
+    "size" : 12,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-11-04-a--add_cached_tokenization.sql",
+    "color" : "#6192c3",
+    "size" : 7,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-07-01--add_audio_lesson_tables.sql",
+    "color" : "#6192c3",
+    "size" : 65,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-05-21--remove_word_form.sql",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-10-07--add_article_classification.sql",
+    "color" : "#6192c3",
+    "size" : 12,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-06--add_cached_tokenized_to_bookmark_context.sql",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-04-22-5-article_topic_user_feedback.sql",
+    "color" : "#6192c3",
+    "size" : 14,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-02-28--02-add-orphan-context-type.sql",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-08-20-b--fix_remaining_ai_models_foreign_keys.sql",
+    "color" : "#6192c3",
+    "size" : 8,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-07-12--add_simplified_content_fields.sql",
+    "color" : "#6192c3",
+    "size" : 6,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-27--add_daily_streak.sql",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-26--add_max_streak_to_user_language.sql",
+    "color" : "#6192c3",
+    "size" : 7,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-10-a--add_monthly_activity_stats_cache.sql",
+    "color" : "#6192c3",
+    "size" : 10,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-04-11--add_user_timezone.sql",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-10-03--add_performance_indexes.sql",
+    "color" : "#6192c3",
+    "size" : 40,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-02-28--03-update-user-activity-data.sql",
+    "color" : "#6192c3",
+    "size" : 18,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-04-22-1-new_topic_table.sql",
+    "color" : "#6192c3",
+    "size" : 26,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-19-b--insert_default_badges.sql",
+    "color" : "#6192c3",
+    "size" : 45,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-04-03--add_suggestion_type.sql",
+    "color" : "#6192c3",
+    "size" : 6,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-09-08--add_hidden_column_to_user_article.sql",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-08-13--cleanup_malformed_scroll_data.py",
+    "color" : "#6192c3",
+    "size" : 39,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-08-15--fix_politikens_titles.sql",
+    "color" : "#6192c3",
+    "size" : 21,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-27--add_user_word_interaction_history.sql",
+    "color" : "#6192c3",
+    "size" : 9,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-09--add_streak_to_user_language.sql",
+    "color" : "#6192c3",
+    "size" : 8,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-04-22-3-new_topic_filter.sql",
+    "color" : "#6192c3",
+    "size" : 10,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-11-31--add_level_column.sql",
+    "color" : "#6192c3",
+    "size" : 6,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-10-22--fix_codeline_collation.sql",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/24-11-04--updating-url-keyword-mapping.sql",
+    "color" : "#6192c3",
+    "size" : 312,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-01-12--add_platform_tracking.sql",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "tools/diagnose_recommendations.py",
+    "color" : "#6192c3",
+    "size" : 180,
+    "children" : [ ]
+  }, {
+    "name" : "tools/delete_bookmarks_word_not_in_context.py",
+    "color" : "#6192c3",
+    "size" : 135,
+    "children" : [ ]
+  }, {
+    "name" : "tools/fix_feed.py",
+    "color" : "#6192c3",
+    "size" : 209,
+    "children" : [ ]
+  }, {
+    "name" : "tools/_test_validation.py",
+    "color" : "#6192c3",
+    "size" : 57,
+    "children" : [ ]
+  }, {
+    "name" : "tools/analyze_classroom_recommendations.py",
+    "color" : "#6192c3",
+    "size" : 230,
+    "children" : [ ]
+  }, {
+    "name" : "tools/delete_portuguese_audio_lessons.py",
+    "color" : "#6192c3",
+    "size" : 61,
+    "children" : [ ]
+  }, {
+    "name" : "tools/update_elastic_ids.py",
+    "color" : "#6192c3",
+    "size" : 67,
+    "children" : [ ]
+  }, {
+    "name" : "tools/remove_wrong_videos.py",
+    "color" : "#6192c3",
+    "size" : 32,
+    "children" : [ ]
+  }, {
+    "name" : "tools/feed_health_check.py",
+    "color" : "#6192c3",
+    "size" : 38,
+    "children" : [ ]
+  }, {
+    "name" : "tools/crawler/crawl.py",
+    "color" : "#6192c3",
+    "size" : 126,
+    "children" : [ ]
+  }, {
+    "name" : "tools/crawler/crawl_summary/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/crawler/crawl_summary/crawl_report.py",
+    "color" : "#6192c3",
+    "size" : 202,
+    "children" : [ ]
+  }, {
+    "name" : "tools/crawler/article_crawler.py",
+    "color" : "#6192c3",
+    "size" : 23,
+    "children" : [ ]
+  }, {
+    "name" : "tools/crawler/crawl_roundrobin.py",
+    "color" : "#6192c3",
+    "size" : 209,
+    "children" : [ ]
+  }, {
+    "name" : "tools/crawler/feed_retrieval.py",
+    "color" : "#6192c3",
+    "size" : 72,
+    "children" : [ ]
+  }, {
+    "name" : "tools/crawler/video_crawler.py",
+    "color" : "#6192c3",
+    "size" : 11,
+    "children" : [ ]
+  }, {
+    "name" : "tools/extract_validation_for_topics.py",
+    "color" : "#6192c3",
+    "size" : 63,
+    "children" : [ ]
+  }, {
+    "name" : "tools/delete_broken_videos_from_ES.py",
+    "color" : "#6192c3",
+    "size" : 15,
+    "children" : [ ]
+  }, {
+    "name" : "tools/update_meaning_frequencies.py",
+    "color" : "#6192c3",
+    "size" : 122,
+    "children" : [ ]
+  }, {
+    "name" : "tools/cleanup_todays_examples.py",
+    "color" : "#6192c3",
+    "size" : 41,
+    "children" : [ ]
+  }, {
+    "name" : "tools/generate_audio_lesson.py",
+    "color" : "#6192c3",
+    "size" : 22,
+    "children" : [ ]
+  }, {
+    "name" : "tools/delete_user_deleted_articles.py",
+    "color" : "#6192c3",
+    "size" : 58,
+    "children" : [ ]
+  }, {
+    "name" : "tools/delete_duplicate_articles.py",
+    "color" : "#6192c3",
+    "size" : 147,
+    "children" : [ ]
+  }, {
+    "name" : "tools/cleanup_empty_exercise_sessions.py",
+    "color" : "#6192c3",
+    "size" : 40,
+    "children" : [ ]
+  }, {
+    "name" : "tools/regenerate_test_fixture.py",
+    "color" : "#6192c3",
+    "size" : 62,
+    "children" : [ ]
+  }, {
+    "name" : "tools/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/fix_long_summaries.py",
+    "color" : "#6192c3",
+    "size" : 150,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrate_daily_streak.py",
+    "color" : "#6192c3",
+    "size" : 80,
+    "children" : [ ]
+  }, {
+    "name" : "tools/mysql_to_elastic_for_articles.py",
+    "color" : "#6192c3",
+    "size" : 134,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/remove_text_duplicates.py",
+    "color" : "#6192c3",
+    "size" : 37,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/add_word_rank.py",
+    "color" : "#6192c3",
+    "size" : 36,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/tag_topics_in_danish.py",
+    "color" : "#6192c3",
+    "size" : 35,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/bookmark_info.py",
+    "color" : "#6192c3",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/fix_text_duplications.py",
+    "color" : "#6192c3",
+    "size" : 30,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/es_v8_migration/migrate_old_topics_to_new_topics.py",
+    "color" : "#6192c3",
+    "size" : 43,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/es_v8_migration/set_url_keywords_article.py",
+    "color" : "#6192c3",
+    "size" : 42,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/es_v8_migration/set_topic_mapping_to_keywords.py",
+    "color" : "#6192c3",
+    "size" : 23,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/es_v8_migration/url_topics.py",
+    "color" : "#6192c3",
+    "size" : 54,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/es_v8_migration/set_new_topics_from_url_keyword.py",
+    "color" : "#6192c3",
+    "size" : 54,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/assert_db_anonymized.py",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/article_recommendations.py",
+    "color" : "#6192c3",
+    "size" : 22,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/consolidate_accounts.py",
+    "color" : "#6192c3",
+    "size" : 39,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/remove_unreferenced_articles.py",
+    "color" : "#6192c3",
+    "size" : 89,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/recompute_fk_difficulties_for_polish.py",
+    "color" : "#6192c3",
+    "size" : 15,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/update_particular_tag.py",
+    "color" : "#6192c3",
+    "size" : 35,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/learner_stats.py",
+    "color" : "#6192c3",
+    "size" : 51,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/tag_existing_articles.py",
+    "color" : "#6192c3",
+    "size" : 25,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/forget_user.py",
+    "color" : "#6192c3",
+    "size" : 20,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/add_all_cohorts_to_teacher.py",
+    "color" : "#6192c3",
+    "size" : 8,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/flatten_unicode_characters.py",
+    "color" : "#6192c3",
+    "size" : 31,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/add_article_id_to_text.py",
+    "color" : "#6192c3",
+    "size" : 25,
+    "children" : [ ]
+  }, {
+    "name" : "tools/feeds_for_language.py",
+    "color" : "#6192c3",
+    "size" : 21,
+    "children" : [ ]
+  }, {
+    "name" : "tools/fix_simplified_articles_html.py",
+    "color" : "#6192c3",
+    "size" : 115,
+    "children" : [ ]
+  }, {
+    "name" : "tools/cleanup_tokenization_cache.py",
+    "color" : "#6192c3",
+    "size" : 18,
+    "children" : [ ]
+  }, {
+    "name" : "tools/simplify_article.py",
+    "color" : "#6192c3",
+    "size" : 251,
+    "children" : [ ]
+  }, {
+    "name" : "tools/untag_simplified_and_user_articles.py",
+    "color" : "#6192c3",
+    "size" : 82,
+    "children" : [ ]
+  }, {
+    "name" : "tools/audio-engleza/generate_lesson.py",
+    "color" : "#6192c3",
+    "size" : 138,
+    "children" : [ ]
+  }, {
+    "name" : "tools/audio-engleza/deploy_lessons.py",
+    "color" : "#6192c3",
+    "size" : 110,
+    "children" : [ ]
+  }, {
+    "name" : "tools/audio-engleza/generate_script.py",
+    "color" : "#6192c3",
+    "size" : 64,
+    "children" : [ ]
+  }, {
+    "name" : "tools/audio-engleza/generate_audio.py",
+    "color" : "#6192c3",
+    "size" : 123,
+    "children" : [ ]
+  }, {
+    "name" : "tools/fix_audio_lesson_teacher_language.py",
+    "color" : "#6192c3",
+    "size" : 120,
+    "children" : [ ]
+  }, {
+    "name" : "tools/upgrade_to_teacher.py",
+    "color" : "#6192c3",
+    "size" : 19,
+    "children" : [ ]
+  }, {
+    "name" : "tools/notify_search_subscribers.py",
+    "color" : "#6192c3",
+    "size" : 61,
+    "children" : [ ]
+  }, {
+    "name" : "tools/backfill_cefr_assessments.py",
+    "color" : "#6192c3",
+    "size" : 144,
+    "children" : [ ]
+  }, {
+    "name" : "tools/tag_advertorials.py",
+    "color" : "#6192c3",
+    "size" : 179,
+    "children" : [ ]
+  }, {
+    "name" : "tools/ml/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/ml/cefr_trainers/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/ml/cefr_trainers/train_cefr_classifiers_with_frequency.py",
+    "color" : "#6192c3",
+    "size" : 206,
+    "children" : [ ]
+  }, {
+    "name" : "tools/ml/cefr_trainers/train_cefr_classifiers.py",
+    "color" : "#6192c3",
+    "size" : 176,
+    "children" : [ ]
+  }, {
+    "name" : "tools/prefetch_example_sentences_for_users.py",
+    "color" : "#6192c3",
+    "size" : 330,
+    "children" : [ ]
+  }, {
+    "name" : "tools/user_word_integrity/_daily_user_word_integrity_check.py",
+    "color" : "#6192c3",
+    "size" : 70,
+    "children" : [ ]
+  }, {
+    "name" : "tools/user_word_integrity/_delete_unvalidatable_bookmarks.py",
+    "color" : "#6192c3",
+    "size" : 149,
+    "children" : [ ]
+  }, {
+    "name" : "tools/user_word_integrity/_fix_multiword_bookmark_positions.py",
+    "color" : "#6192c3",
+    "size" : 154,
+    "children" : [ ]
+  }, {
+    "name" : "tools/user_word_integrity/_check_and_fix_user_word_integrity.py",
+    "color" : "#6192c3",
+    "size" : 167,
+    "children" : [ ]
+  }, {
+    "name" : "tools/user_word_integrity/_cleanup_orphaned_user_words.py",
+    "color" : "#6192c3",
+    "size" : 132,
+    "children" : [ ]
+  }, {
+    "name" : "tools/user_word_integrity/_test_integrity_validation.py",
+    "color" : "#6192c3",
+    "size" : 38,
+    "children" : [ ]
+  }, {
+    "name" : "tools/precompute_upcoming_meaning_lessons.py",
+    "color" : "#6192c3",
+    "size" : 319,
+    "children" : [ ]
+  }, {
+    "name" : "tools/add_ml_assessment_to_recent_articles.py",
+    "color" : "#6192c3",
+    "size" : 143,
+    "children" : [ ]
+  }, {
+    "name" : "tools/manual_test_user_report.py",
+    "color" : "#6192c3",
+    "size" : 127,
+    "children" : [ ]
+  }, {
+    "name" : "tools/cleanup_broken_summaries.py",
+    "color" : "#6192c3",
+    "size" : 139,
+    "children" : [ ]
+  }, {
+    "name" : "tools/fix_underscore_examples.py",
+    "color" : "#6192c3",
+    "size" : 169,
+    "children" : [ ]
+  }, {
+    "name" : "tools/fix_compound_examples.py",
+    "color" : "#6192c3",
+    "size" : 246,
+    "children" : [ ]
+  }, {
+    "name" : "tools/reclassify_unclassified_phrases.py",
+    "color" : "#6192c3",
+    "size" : 206,
+    "children" : [ ]
+  }, {
+    "name" : "tools/cleanup_empty_broken_articles.py",
+    "color" : "#6192c3",
+    "size" : 142,
+    "children" : [ ]
+  }, {
+    "name" : "tools/fix_user_over_limit.py",
+    "color" : "#6192c3",
+    "size" : 60,
+    "children" : [ ]
+  }, {
+    "name" : "tools/update_es_available_cefr_levels.py",
+    "color" : "#6192c3",
+    "size" : 100,
+    "children" : [ ]
+  }, {
+    "name" : "tools/cleanup_greek_audio_lessons.py",
+    "color" : "#6192c3",
+    "size" : 195,
+    "children" : [ ]
+  }, {
+    "name" : "tools/validate_and_clean_examples.py",
+    "color" : "#6192c3",
+    "size" : 203,
+    "children" : [ ]
+  }, {
+    "name" : "tools/cleanup_summary_formatting.py",
+    "color" : "#6192c3",
+    "size" : 61,
+    "children" : [ ]
+  }, {
+    "name" : "tools/delete_article_by_url.py",
+    "color" : "#6192c3",
+    "size" : 75,
+    "children" : [ ]
+  }, {
+    "name" : "tools/validate_scheduled_meanings.py",
+    "color" : "#6192c3",
+    "size" : 187,
+    "children" : [ ]
+  }, {
+    "name" : "tools/report_generator/__init__.py",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "tools/report_generator/explore_report_notebook.ipynb",
+    "color" : "#6192c3",
+    "size" : 4327,
+    "children" : [ ]
+  }, {
+    "name" : "tools/stiri-simple/generate_news_page.py",
+    "color" : "#6192c3",
+    "size" : 242,
+    "children" : [ ]
+  }, {
+    "name" : "tools/stiri-simple/deploy_to_news.py",
+    "color" : "#6192c3",
+    "size" : 49,
+    "children" : [ ]
+  }, {
+    "name" : "tools/recalculate_video_topics.py",
+    "color" : "#6192c3",
+    "size" : 10,
+    "children" : [ ]
+  }, {
+    "name" : "tools/update_elastic_with_source_ids.py",
+    "color" : "#6192c3",
+    "size" : 43,
+    "children" : [ ]
+  }, {
+    "name" : "tools/recalculate_all_word_ranks.py",
+    "color" : "#6192c3",
+    "size" : 129,
+    "children" : [ ]
+  }, {
+    "name" : "tools/rename_feed.py",
+    "color" : "#6192c3",
+    "size" : 20,
+    "children" : [ ]
+  }, {
+    "name" : "tools/sql/teacher-for-cohort.sql",
+    "color" : "#6192c3",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "tools/sql/recent_exercise_outcomes.sql",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "tools/sql/most_recent_active_teachers.sql",
+    "color" : "#6192c3",
+    "size" : 8,
+    "children" : [ ]
+  }, {
+    "name" : "tools/sql/history_of_bookmark.sql",
+    "color" : "#6192c3",
+    "size" : 8,
+    "children" : [ ]
+  }, {
+    "name" : "tools/sql/_show_foreign_keys.sql",
+    "color" : "#6192c3",
+    "size" : 11,
+    "children" : [ ]
+  }, {
+    "name" : "tools/sql/users_with_level.sql",
+    "color" : "#6192c3",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "tools/sql/exercise_corectness.sql",
+    "color" : "#6192c3",
+    "size" : 11,
+    "children" : [ ]
+  }, {
+    "name" : "tools/sql/most_active_users_in_the_last_year.sql",
+    "color" : "#6192c3",
+    "size" : 11,
+    "children" : [ ]
+  }, {
+    "name" : "tools/sql/user_exercise_history.sql",
+    "color" : "#6192c3",
+    "size" : 26,
+    "children" : [ ]
+  }, {
+    "name" : "tools/sql/popular_exercise_outcomes.sql",
+    "color" : "#6192c3",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "tools/sql/users_last_active_in_cohort.sql",
+    "color" : "#6192c3",
+    "size" : 7,
+    "children" : [ ]
+  }, {
+    "name" : "default.api.cfg",
+    "color" : "#6192c3",
+    "size" : 12,
+    "children" : [ ]
+  }, {
+    "name" : "default.fmd.cfg",
+    "color" : "#6192c3",
+    "size" : 17,
+    "children" : [ ]
+  }, {
+    "name" : "pyproject.toml",
+    "color" : "#6192c3",
+    "size" : 38,
+    "children" : [ ]
+  }, {
+    "name" : "MANIFEST.in",
+    "color" : "#6192c3",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "install_stanza_models.py",
+    "color" : "#6192c3",
+    "size" : 30,
+    "children" : [ ]
+  }, {
+    "name" : "default_docker_v8.cfg",
+    "color" : "#6192c3",
+    "size" : 11,
+    "children" : [ ]
+  }, {
+    "name" : "default_docker.cfg",
+    "color" : "#6192c3",
+    "size" : 11,
+    "children" : [ ]
+  } ]
+}, {
+  "name" : "6-20 (176)",
+  "color" : "",
+  "size" : 0,
+  "children" : [ {
+    "name" : "zeeguu/core/user_activity_hooks/article_interaction_hooks.py",
+    "color" : "#b0d8e9",
+    "size" : 69,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/account_management/user_account_deletion.py",
+    "color" : "#b0d8e9",
+    "size" : 152,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/bookmark_operations/update_bookmark.py",
+    "color" : "#b0d8e9",
+    "size" : 219,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/word_scheduling/__init__.py",
+    "color" : "#b0d8e9",
+    "size" : 5,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/behavioral_modeling/scroll_last_reading_percentage.py",
+    "color" : "#b0d8e9",
+    "size" : 28,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/util/time.py",
+    "color" : "#b0d8e9",
+    "size" : 31,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/util/__init__.py",
+    "color" : "#b0d8e9",
+    "size" : 7,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/util/hash.py",
+    "color" : "#b0d8e9",
+    "size" : 29,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/util/text.py",
+    "color" : "#b0d8e9",
+    "size" : 49,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/elastic/settings.py",
+    "color" : "#b0d8e9",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/elastic/basic_ops.py",
+    "color" : "#b0d8e9",
+    "size" : 31,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/audio_lessons/voice_synthesizer.py",
+    "color" : "#b0d8e9",
+    "size" : 202,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/audio_lessons/script_generator.py",
+    "color" : "#b0d8e9",
+    "size" : 75,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/audio_lessons/lesson_builder.py",
+    "color" : "#b0d8e9",
+    "size" : 336,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/audio_lessons/voice_config.py",
+    "color" : "#b0d8e9",
+    "size" : 103,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/constants.py",
+    "color" : "#b0d8e9",
+    "size" : 78,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/content_recommender/__init__.py",
+    "color" : "#b0d8e9",
+    "size" : 8,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/content_retriever/__init__.py",
+    "color" : "#b0d8e9",
+    "size" : 10,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/content_retriever/video_dowloader.py",
+    "color" : "#b0d8e9",
+    "size" : 30,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/language/strategies/flesch_kincaid_difficulty_estimator.py",
+    "color" : "#b0d8e9",
+    "size" : 118,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/tokenization/token.py",
+    "color" : "#b0d8e9",
+    "size" : 86,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/tokenization/word_position_finder.py",
+    "color" : "#b0d8e9",
+    "size" : 147,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/tokenization/__init__.py",
+    "color" : "#b0d8e9",
+    "size" : 27,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/tokenization/stanza_tokenizer.py",
+    "color" : "#b0d8e9",
+    "size" : 141,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/semantic_vector_api/retrieve_embeddings.py",
+    "color" : "#b0d8e9",
+    "size" : 38,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/semantic_vector_api/__init__.py",
+    "color" : "#b0d8e9",
+    "size" : 6,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/exercises/similar_words.py",
+    "color" : "#b0d8e9",
+    "size" : 23,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/user_feature_toggles.py",
+    "color" : "#b0d8e9",
+    "size" : 74,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/user_statistics/exercise_corectness.py",
+    "color" : "#b0d8e9",
+    "size" : 68,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/user_statistics/exercise_sessions.py",
+    "color" : "#b0d8e9",
+    "size" : 28,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/user_statistics/reading_sessions.py",
+    "color" : "#b0d8e9",
+    "size" : 57,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/user_statistics/activity.py",
+    "color" : "#b0d8e9",
+    "size" : 49,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/starred_article.py",
+    "color" : "#b0d8e9",
+    "size" : 74,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/article_topic_user_feedback.py",
+    "color" : "#b0d8e9",
+    "size" : 74,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/url_keyword.py",
+    "color" : "#b0d8e9",
+    "size" : 129,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/teacher.py",
+    "color" : "#b0d8e9",
+    "size" : 24,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/teacher_cohort_map.py",
+    "color" : "#b0d8e9",
+    "size" : 39,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/cohort.py",
+    "color" : "#b0d8e9",
+    "size" : 76,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/personal_copy.py",
+    "color" : "#b0d8e9",
+    "size" : 56,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/article_fragment_context.py",
+    "color" : "#b0d8e9",
+    "size" : 54,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/article_difficulty_feedback.py",
+    "color" : "#b0d8e9",
+    "size" : 57,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/article_tokenization_cache.py",
+    "color" : "#b0d8e9",
+    "size" : 65,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_browsing_session.py",
+    "color" : "#b0d8e9",
+    "size" : 93,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/article_topic_map.py",
+    "color" : "#b0d8e9",
+    "size" : 52,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/exercise_outcome.py",
+    "color" : "#b0d8e9",
+    "size" : 66,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_video.py",
+    "color" : "#b0d8e9",
+    "size" : 143,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/yt_channel.py",
+    "color" : "#b0d8e9",
+    "size" : 89,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/sorted_exercise_log.py",
+    "color" : "#b0d8e9",
+    "size" : 45,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/cohort_article_map.py",
+    "color" : "#b0d8e9",
+    "size" : 60,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/video_tag.py",
+    "color" : "#b0d8e9",
+    "size" : 29,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/source_type.py",
+    "color" : "#b0d8e9",
+    "size" : 32,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/session.py",
+    "color" : "#b0d8e9",
+    "size" : 44,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/meaning_frequency_classifier.py",
+    "color" : "#b0d8e9",
+    "size" : 149,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/audio_lesson_meaning.py",
+    "color" : "#b0d8e9",
+    "size" : 52,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/search_filter.py",
+    "color" : "#b0d8e9",
+    "size" : 54,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/phrase.py",
+    "color" : "#b0d8e9",
+    "size" : 151,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/badge.py",
+    "color" : "#b0d8e9",
+    "size" : 20,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/article_title_context.py",
+    "color" : "#b0d8e9",
+    "size" : 60,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/friend_request.py",
+    "color" : "#b0d8e9",
+    "size" : 118,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/search_subscription.py",
+    "color" : "#b0d8e9",
+    "size" : 65,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/meaning.py",
+    "color" : "#b0d8e9",
+    "size" : 193,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/url.py",
+    "color" : "#b0d8e9",
+    "size" : 119,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/caption.py",
+    "color" : "#b0d8e9",
+    "size" : 39,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/exercise.py",
+    "color" : "#b0d8e9",
+    "size" : 63,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/article_fragment.py",
+    "color" : "#b0d8e9",
+    "size" : 68,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/article_broken_code_map.py",
+    "color" : "#b0d8e9",
+    "size" : 46,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/daily_audio_lesson.py",
+    "color" : "#b0d8e9",
+    "size" : 127,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/video_topic_map.py",
+    "color" : "#b0d8e9",
+    "size" : 24,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/topic.py",
+    "color" : "#b0d8e9",
+    "size" : 89,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/search.py",
+    "color" : "#b0d8e9",
+    "size" : 57,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/source_text.py",
+    "color" : "#b0d8e9",
+    "size" : 61,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/context_type.py",
+    "color" : "#b0d8e9",
+    "size" : 72,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/new_text.py",
+    "color" : "#b0d8e9",
+    "size" : 59,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_avatar.py",
+    "color" : "#b0d8e9",
+    "size" : 43,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/video_caption_context.py",
+    "color" : "#b0d8e9",
+    "size" : 60,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/topic_subscription.py",
+    "color" : "#b0d8e9",
+    "size" : 44,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/video_tag_map.py",
+    "color" : "#b0d8e9",
+    "size" : 28,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/video_title_context.py",
+    "color" : "#b0d8e9",
+    "size" : 57,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/topic_filter.py",
+    "color" : "#b0d8e9",
+    "size" : 45,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/source.py",
+    "color" : "#b0d8e9",
+    "size" : 68,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/audio_lesson_generation_progress.py",
+    "color" : "#b0d8e9",
+    "size" : 117,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_watching_session.py",
+    "color" : "#b0d8e9",
+    "size" : 127,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/unique_code.py",
+    "color" : "#b0d8e9",
+    "size" : 31,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/bookmark_context.py",
+    "color" : "#b0d8e9",
+    "size" : 145,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_feedback.py",
+    "color" : "#b0d8e9",
+    "size" : 52,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/leaderboards/leaderboards.py",
+    "color" : "#b0d8e9",
+    "size" : 201,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/content_cleaning/content_cleaner.py",
+    "color" : "#b0d8e9",
+    "size" : 140,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/crowd_translations/__init__.py",
+    "color" : "#b0d8e9",
+    "size" : 16,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/nlp_pipeline/spacy_wrapper.py",
+    "color" : "#b0d8e9",
+    "size" : 60,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/nlp_pipeline/confusion_generator.py",
+    "color" : "#b0d8e9",
+    "size" : 141,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/nlp_pipeline/__init__.py",
+    "color" : "#b0d8e9",
+    "size" : 19,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/nlp_pipeline/automatic_gec_tagging.py",
+    "color" : "#b0d8e9",
+    "size" : 367,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/bookmark_quality/fit_for_study.py",
+    "color" : "#b0d8e9",
+    "size" : 19,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/bookmark_quality/__init__.py",
+    "color" : "#b0d8e9",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/bookmark_quality/positive_qualities.py",
+    "color" : "#b0d8e9",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/semantic_search/__init__.py",
+    "color" : "#b0d8e9",
+    "size" : 7,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/emailer/user_activity.py",
+    "color" : "#b0d8e9",
+    "size" : 70,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/badges/listeners.py",
+    "color" : "#b0d8e9",
+    "size" : 66,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/badges/badge_progress.py",
+    "color" : "#b0d8e9",
+    "size" : 65,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/feed_handler/rssfeed.py",
+    "color" : "#b0d8e9",
+    "size" : 55,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/feed_handler/newspaperfeed.py",
+    "color" : "#b0d8e9",
+    "size" : 112,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/feed_handler/feed_handler.py",
+    "color" : "#b0d8e9",
+    "size" : 17,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/youtube_api/youtube_api.py",
+    "color" : "#b0d8e9",
+    "size" : 276,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/simplification_and_classification.py",
+    "color" : "#b0d8e9",
+    "size" : 654,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/simplification_service.py",
+    "color" : "#b0d8e9",
+    "size" : 528,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/llm_services/prompts/article_simplification.py",
+    "color" : "#b0d8e9",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/sql/queries/words_to_study.sql",
+    "color" : "#b0d8e9",
+    "size" : 27,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/sql/query_building.py",
+    "color" : "#b0d8e9",
+    "size" : 12,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/sql/learner/exercises_history.py",
+    "color" : "#b0d8e9",
+    "size" : 46,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/sql/learner/words.py",
+    "color" : "#b0d8e9",
+    "size" : 33,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/config/__init__.py",
+    "color" : "#b0d8e9",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/operations/crawler/crawl.py",
+    "color" : "#b0d8e9",
+    "size" : 262,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/user_stats.py",
+    "color" : "#b0d8e9",
+    "size" : 1081,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/user_preferences.py",
+    "color" : "#b0d8e9",
+    "size" : 84,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/user_notifications.py",
+    "color" : "#b0d8e9",
+    "size" : 72,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/exercise_sessions.py",
+    "color" : "#b0d8e9",
+    "size" : 65,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/sessions.py",
+    "color" : "#b0d8e9",
+    "size" : 91,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/own_texts.py",
+    "color" : "#b0d8e9",
+    "size" : 116,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/browsing_sessions.py",
+    "color" : "#b0d8e9",
+    "size" : 55,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/listening_sessions.py",
+    "color" : "#b0d8e9",
+    "size" : 52,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/reading_sessions.py",
+    "color" : "#b0d8e9",
+    "size" : 54,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/daily_streak.py",
+    "color" : "#b0d8e9",
+    "size" : 65,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/teacher_dashboard/cohorts.py",
+    "color" : "#b0d8e9",
+    "size" : 181,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/teacher_dashboard/student_readings.py",
+    "color" : "#b0d8e9",
+    "size" : 12,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/teacher_dashboard/student_overviews.py",
+    "color" : "#b0d8e9",
+    "size" : 12,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/teacher_dashboard/article_management.py",
+    "color" : "#b0d8e9",
+    "size" : 147,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/teacher_dashboard/_permissions.py",
+    "color" : "#b0d8e9",
+    "size" : 32,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/teacher_dashboard/student_exercises.py",
+    "color" : "#b0d8e9",
+    "size" : 21,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/teacher_dashboard/student.py",
+    "color" : "#b0d8e9",
+    "size" : 59,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/teacher_dashboard/student_words.py",
+    "color" : "#b0d8e9",
+    "size" : 18,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/teacher_dashboard/general.py",
+    "color" : "#b0d8e9",
+    "size" : 51,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/user_article.py",
+    "color" : "#b0d8e9",
+    "size" : 176,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/generated_examples.py",
+    "color" : "#b0d8e9",
+    "size" : 569,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/nlp.py",
+    "color" : "#b0d8e9",
+    "size" : 98,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/topics.py",
+    "color" : "#b0d8e9",
+    "size" : 115,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/audio_lessons.py",
+    "color" : "#b0d8e9",
+    "size" : 189,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/user_languages.py",
+    "color" : "#b0d8e9",
+    "size" : 91,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/student.py",
+    "color" : "#b0d8e9",
+    "size" : 40,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/activity_tracking.py",
+    "color" : "#b0d8e9",
+    "size" : 84,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/helpers/activity_sessions.py",
+    "color" : "#b0d8e9",
+    "size" : 30,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/user_watching_session.py",
+    "color" : "#b0d8e9",
+    "size" : 32,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/utils/__init__.py",
+    "color" : "#b0d8e9",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/logging/__init__.py",
+    "color" : "#b0d8e9",
+    "size" : 22,
+    "children" : [ ]
+  }, {
+    "name" : "tools/set_new_topics_article.py",
+    "color" : "#b0d8e9",
+    "size" : 38,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-24-friendship_system.sql",
+    "color" : "#b0d8e9",
+    "size" : 19,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-02-28--add_video-tables.sql",
+    "color" : "#b0d8e9",
+    "size" : 127,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/26-02-24-b--add_username.py",
+    "color" : "#b0d8e9",
+    "size" : 88,
+    "children" : [ ]
+  }, {
+    "name" : "tools/migrations/25-01-06--add_index_pointers.sql",
+    "color" : "#b0d8e9",
+    "size" : 40,
+    "children" : [ ]
+  }, {
+    "name" : "tools/run_knn_similarity_search.py",
+    "color" : "#b0d8e9",
+    "size" : 94,
+    "children" : [ ]
+  }, {
+    "name" : "tools/add_feed.py",
+    "color" : "#b0d8e9",
+    "size" : 78,
+    "children" : [ ]
+  }, {
+    "name" : "tools/tokenizer_playground.py",
+    "color" : "#b0d8e9",
+    "size" : 55,
+    "children" : [ ]
+  }, {
+    "name" : "tools/feed_info.py",
+    "color" : "#b0d8e9",
+    "size" : 16,
+    "children" : [ ]
+  }, {
+    "name" : "tools/transform_text_into_context.py",
+    "color" : "#b0d8e9",
+    "size" : 118,
+    "children" : [ ]
+  }, {
+    "name" : "tools/reduce_number_of_studied_bookmarks.py",
+    "color" : "#b0d8e9",
+    "size" : 65,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/add_standard_topics.py",
+    "color" : "#b0d8e9",
+    "size" : 113,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/update_feed.py",
+    "color" : "#b0d8e9",
+    "size" : 16,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/mysql_to_elastic.py",
+    "color" : "#b0d8e9",
+    "size" : 50,
+    "children" : [ ]
+  }, {
+    "name" : "tools/old/cleanup_non_content_bits.py",
+    "color" : "#b0d8e9",
+    "size" : 32,
+    "children" : [ ]
+  }, {
+    "name" : "tools/mark_broken_articles.py",
+    "color" : "#b0d8e9",
+    "size" : 205,
+    "children" : [ ]
+  }, {
+    "name" : "tools/add_images_to_articles.py",
+    "color" : "#b0d8e9",
+    "size" : 43,
+    "children" : [ ]
+  }, {
+    "name" : "tools/extract_articles_with_new_topics.py",
+    "color" : "#b0d8e9",
+    "size" : 24,
+    "children" : [ ]
+  }, {
+    "name" : "tools/get_lang_stats.py",
+    "color" : "#b0d8e9",
+    "size" : 122,
+    "children" : [ ]
+  }, {
+    "name" : "tools/update_es_based_on_url_keyword.py",
+    "color" : "#b0d8e9",
+    "size" : 145,
+    "children" : [ ]
+  }, {
+    "name" : "tools/remove_unreferenced_articles.py",
+    "color" : "#b0d8e9",
+    "size" : 82,
+    "children" : [ ]
+  }, {
+    "name" : "tools/add_captions_from_file.py",
+    "color" : "#b0d8e9",
+    "size" : 42,
+    "children" : [ ]
+  }, {
+    "name" : "tools/create_article_fragments_and_sources.py",
+    "color" : "#b0d8e9",
+    "size" : 56,
+    "children" : [ ]
+  }, {
+    "name" : "tools/remove_sub_bookmarks_from_text.py",
+    "color" : "#b0d8e9",
+    "size" : 89,
+    "children" : [ ]
+  }, {
+    "name" : "tools/delete_dev_users.py",
+    "color" : "#b0d8e9",
+    "size" : 19,
+    "children" : [ ]
+  }, {
+    "name" : "tools/activity_monitor.py",
+    "color" : "#b0d8e9",
+    "size" : 35,
+    "children" : [ ]
+  }, {
+    "name" : "tools/users_recently_active.py",
+    "color" : "#b0d8e9",
+    "size" : 41,
+    "children" : [ ]
+  }, {
+    "name" : "tools/anonymize_users.py",
+    "color" : "#b0d8e9",
+    "size" : 77,
+    "children" : [ ]
+  }, {
+    "name" : "tools/evaluate_infer_topics.py",
+    "color" : "#b0d8e9",
+    "size" : 96,
+    "children" : [ ]
+  }, {
+    "name" : "tools/update_article_content.py",
+    "color" : "#b0d8e9",
+    "size" : 78,
+    "children" : [ ]
+  }, {
+    "name" : "tools/update_bookmark_pointers.py",
+    "color" : "#b0d8e9",
+    "size" : 185,
+    "children" : [ ]
+  }, {
+    "name" : "env_var_defs_default.py",
+    "color" : "#b0d8e9",
+    "size" : 10,
+    "children" : [ ]
+  }, {
+    "name" : "start.py",
+    "color" : "#b0d8e9",
+    "size" : 14,
+    "children" : [ ]
+  } ]
+}, {
+  "name" : "21-50 (35)",
+  "color" : "",
+  "size" : 0,
+  "children" : [ {
+    "name" : "zeeguu/core/account_management/user_account_creation.py",
+    "color" : "#e6f5df",
+    "size" : 169,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py",
+    "color" : "#e6f5df",
+    "size" : 80,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/elastic/indexing.py",
+    "color" : "#e6f5df",
+    "size" : 200,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/audio_lessons/daily_lesson_generator.py",
+    "color" : "#e6f5df",
+    "size" : 711,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/content_quality/quality_filter.py",
+    "color" : "#e6f5df",
+    "size" : 115,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/content_retriever/parse_with_readability_server.py",
+    "color" : "#e6f5df",
+    "size" : 74,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_language.py",
+    "color" : "#e6f5df",
+    "size" : 125,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/feed.py",
+    "color" : "#e6f5df",
+    "size" : 205,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_preference.py",
+    "color" : "#e6f5df",
+    "size" : 132,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_activitiy_data.py",
+    "color" : "#e6f5df",
+    "size" : 367,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_reading_session.py",
+    "color" : "#e6f5df",
+    "size" : 156,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_word.py",
+    "color" : "#e6f5df",
+    "size" : 321,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/text.py",
+    "color" : "#e6f5df",
+    "size" : 158,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/language.py",
+    "color" : "#e6f5df",
+    "size" : 201,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_exercise_session.py",
+    "color" : "#e6f5df",
+    "size" : 76,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/video.py",
+    "color" : "#e6f5df",
+    "size" : 246,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/bookmark_quality/negative_qualities.py",
+    "color" : "#e6f5df",
+    "size" : 80,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/semantic_search/elastic_semantic_search.py",
+    "color" : "#e6f5df",
+    "size" : 124,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/emailer/zeeguu_mailer.py",
+    "color" : "#e6f5df",
+    "size" : 131,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/user_articles.py",
+    "color" : "#e6f5df",
+    "size" : 169,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/friends.py",
+    "color" : "#e6f5df",
+    "size" : 245,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/accounts.py",
+    "color" : "#e6f5df",
+    "size" : 292,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/feature_toggles.py",
+    "color" : "#e6f5df",
+    "size" : 17,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/__init__.py",
+    "color" : "#e6f5df",
+    "size" : 48,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/badges.py",
+    "color" : "#e6f5df",
+    "size" : 87,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/search.py",
+    "color" : "#e6f5df",
+    "size" : 185,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/speech.py",
+    "color" : "#e6f5df",
+    "size" : 109,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/exercises.py",
+    "color" : "#e6f5df",
+    "size" : 266,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/article.py",
+    "color" : "#e6f5df",
+    "size" : 447,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/utils/route_wrappers.py",
+    "color" : "#e6f5df",
+    "size" : 101,
+    "children" : [ ]
+  }, {
+    "name" : "tools/_playground.py",
+    "color" : "#e6f5df",
+    "size" : 37,
+    "children" : [ ]
+  }, {
+    "name" : "tools/report_generator/data_extractor.py",
+    "color" : "#e6f5df",
+    "size" : 175,
+    "children" : [ ]
+  }, {
+    "name" : "tools/report_generator/generate_report.py",
+    "color" : "#e6f5df",
+    "size" : 576,
+    "children" : [ ]
+  }, {
+    "name" : "setup.py",
+    "color" : "#e6f5df",
+    "size" : 46,
+    "children" : [ ]
+  }, {
+    "name" : "default_api.cfg",
+    "color" : "#e6f5df",
+    "size" : 13,
+    "children" : [ ]
+  } ]
+}, {
+  "name" : "51-100 (11)",
+  "color" : "",
+  "size" : 0,
+  "children" : [ {
+    "name" : "zeeguu/core/word_scheduling/basicSR/basicSR.py",
+    "color" : "#f7844e",
+    "size" : 272,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/elastic/elastic_query_builder.py",
+    "color" : "#f7844e",
+    "size" : 359,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/content_recommender/elastic_recommender.py",
+    "color" : "#f7844e",
+    "size" : 364,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/content_retriever/article_downloader.py",
+    "color" : "#f7844e",
+    "size" : 585,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/user_article.py",
+    "color" : "#f7844e",
+    "size" : 444,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/__init__.py",
+    "color" : "#f7844e",
+    "size" : 87,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/bookmark.py",
+    "color" : "#f7844e",
+    "size" : 443,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/user.py",
+    "color" : "#f7844e",
+    "size" : 279,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/translation.py",
+    "color" : "#f7844e",
+    "size" : 460,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/endpoints/bookmarks_and_words.py",
+    "color" : "#f7844e",
+    "size" : 578,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/api/app.py",
+    "color" : "#f7844e",
+    "size" : 200,
+    "children" : [ ]
+  } ]
+}, {
+  "name" : "101+ (2)",
+  "color" : "",
+  "size" : 0,
+  "children" : [ {
+    "name" : "zeeguu/core/model/user.py",
+    "color" : "#b21227",
+    "size" : 1006,
+    "children" : [ ]
+  }, {
+    "name" : "zeeguu/core/model/article.py",
+    "color" : "#b21227",
+    "size" : 1133,
+    "children" : [ ]
+  } ]
+} ]
+    }
+
+    root = d3.hierarchy(root)
+        .sum(function (d) {
+            return d.size;
+        })
+        .sort(function (a, b) {
+            return b.value - a.value;
+        });
+
+    var focus = root,
+        nodes = pack(root).descendants(),
+        view;
+
+    var circle = g.selectAll("circle")
+        .data(nodes)
+        .enter().append("circle")
+        .attr("class", function (d) {
+            return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root";
+        })
+        .style("fill", function (d) {
+            return d.children ? color(d.depth) : (d.data.color ? d.data.color : null);
+        })
+        .on("click", function (d) {
+            if (focus !== d) zoom(d), d3.event.stopPropagation();
+        });
+
+    var text = g.selectAll("text")
+        .data(nodes)
+        .enter().append("text")
+        .attr("class", "label")
+        .style("fill-opacity", function (d) {
+            return d.parent === root ? 1 : 0;
+        })
+        .style("display", function (d) {
+            return d.parent === root ? "inline" : "none";
+        })
+        .text(function (d) {
+            return d.data.name.length > 33 ? (d.data.name.substr(0, 14) + "..." + d.data.name.substr(d.data.name.length - 14))  : d.data.name;
+        });
+
+    var node = g.selectAll("circle,text");
+
+    svg
+        .style("background", color(-1))
+        .on("click", function () {
+            zoom(root);
+        });
+
+    zoomTo([root.x, root.y, root.r * 2 + margin]);
+
+    function zoom(d) {
+        var focus0 = focus;
+        focus = d;
+
+        var transition = d3.transition()
+            .duration(d3.event.altKey ? 7500 : 750)
+            .tween("zoom", function (d) {
+                var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
+                return function (t) {
+                    zoomTo(i(t));
+                };
+            });
+
+        transition.selectAll("text")
+            .filter(function (d) {
+                return d.parent === focus || this.style.display === "inline";
+            })
+            .style("fill-opacity", function (d) {
+                return d.parent === focus ? 1 : 0;
+            })
+            .on("start", function (d) {
+                if (d.parent === focus) this.style.display = "inline";
+            })
+            .on("end", function (d) {
+                if (d.parent !== focus) this.style.display = "none";
+            });
+    }
+
+    function zoomTo(v) {
+        var k = diameter / v[2];
+        view = v;
+        node.attr("transform", function (d) {
+            return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")";
+        });
+        circle.attr("r", function (d) {
+            return d.r * k;
+        });
+    }
+
+</script>

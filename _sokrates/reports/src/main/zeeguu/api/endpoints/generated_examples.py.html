@@ -1,0 +1,913 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/generated_examples.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/generated_examples.py (<b>569</b> lines of code) (<a href="generated_examples.py">raw</a>):</h3>
+<div id="editor">import json
+import traceback
+
+import flask
+import sentry_sdk
+from flask import request, Response
+
+from zeeguu.api.utils.json_result import json_result
+from zeeguu.api.utils.route_wrappers import cross_domain, requires_session
+from zeeguu.core.llm_services import get_llm_service
+from zeeguu.core.llm_services.llm_service import prepare_learning_card
+from zeeguu.core.model import UserWord, User, Bookmark, Language, Meaning, MeaningReport
+from zeeguu.core.model.ai_generator import AIGenerator
+from zeeguu.core.model.bookmark_user_preference import UserWordExPreference
+from zeeguu.core.model.context_identifier import ContextIdentifier
+from zeeguu.core.model.context_type import ContextType
+from zeeguu.core.model.example_sentence import ExampleSentence
+from zeeguu.core.tokenization.word_position_finder import (
+    find_first_occurrence,
+    validate_single_occurrence,
+)
+from zeeguu.core.word_scheduling.basicSR.four_levels_per_word import FourLevelsPerWord
+from zeeguu.logging import log
+from . import api, db_session
+
+# Constants
+MAX_EXAMPLES_ALTERNATIVE = 5  # Max examples for alternative_sentences endpoint
+MAX_EXAMPLES_GENERATE = 3     # Max examples for generate_examples endpoint
+DEFAULT_CEFR_LEVEL = &quot;B1&quot;
+
+
+def _build_bookmark_dict_for_example(user, user_word, example_sentence_obj):
+    &quot;&quot;&quot;
+    Find or create a Bookmark for an ExampleSentence and return its full
+    serialized dict (with context_tokenized). Returns None if the target
+    word can't be located in the example.
+
+    Used by /alternative_sentences so the frontend has the full bookmark
+    data up-front and doesn't need to wait for /set_preferred_example on
+    every swipe.
+    &quot;&quot;&quot;
+    target_word = user_word.meaning.origin.content
+    selected_sentence = example_sentence_obj.sentence
+
+    result = find_first_occurrence(
+        target_word, selected_sentence, user_word.meaning.origin.language
+    )
+    if not result[&quot;found&quot;]:
+        log(
+            f&quot;Skipping example {example_sentence_obj.id} for prefetch: &quot;
+            f&quot;{result['error_message']}&quot;
+        )
+        return None
+
+    pos = result[&quot;position_data&quot;]
+
+    context_identifier = ContextIdentifier(
+        context_type=ContextType.EXAMPLE_SENTENCE,
+        example_sentence_id=example_sentence_obj.id,
+    )
+
+    bookmark = Bookmark.find_or_create(
+        db_session,
+        user,
+        user_word.meaning.origin.content,
+        user_word.meaning.origin.language.code,
+        user_word.meaning.translation.content,
+        user_word.meaning.translation.language.code,
+        selected_sentence,
+        None,  # article_id
+        None,  # source_id
+        sentence_i=pos[&quot;sentence_i&quot;],
+        token_i=pos[&quot;token_i&quot;],
+        total_tokens=pos[&quot;total_tokens&quot;],
+        c_sentence_i=pos[&quot;c_sentence_i&quot;],
+        c_token_i=pos[&quot;c_token_i&quot;],
+        context_identifier=context_identifier,
+    )
+
+    bookmark_dict = bookmark.as_dictionary(
+        with_context=True, with_context_tokenized=True
+    )
+    bookmark_dict[&quot;from_lang&quot;] = user_word.meaning.origin.language.code
+    bookmark_dict[&quot;to_lang&quot;] = user_word.meaning.translation.language.code
+    return bookmark_dict
+
+
+@api.route(&quot;/alternative_sentences/&lt;user_word_id&gt;&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def alternative_sentences(user_word_id):
+    &quot;&quot;&quot;
+    Returns alternative example sentences for a user_word.
+
+    Tries to serve pre-generated examples from the database.
+    Falls back to real-time LLM generation if no pre-generated examples exist.
+
+    :param user_word_id: ID of the UserWord to get examples for
+    :return: JSON array with example sentences
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    user_word = UserWord.query.get(user_word_id)
+
+    if not user_word or user_word.user_id != user.id:
+        return json_result({&quot;error&quot;: &quot;UserWord not found or unauthorized&quot;}, status=404)
+
+    origin_word = user_word.meaning.origin.content
+    translation = user_word.meaning.translation.content
+    origin_lang = user_word.meaning.origin.language.code
+    translation_lang = user_word.meaning.translation.language.code
+
+    # Get the current context so we can exclude it from alternatives
+    current_context = &quot;&quot;
+    if user_word.preferred_bookmark and user_word.preferred_bookmark.context:
+        current_context = user_word.preferred_bookmark.get_context().strip().lower()
+
+    # Determine CEFR level
+    cefr_level = request.args.get(&quot;cefr_level&quot;, DEFAULT_CEFR_LEVEL)
+
+    # First, try to get pre-generated examples from database
+    # Try exact CEFR level match first
+    db_examples = (
+        ExampleSentence.query.filter(
+            ExampleSentence.meaning_id == user_word.meaning_id,
+            ExampleSentence.cefr_level == cefr_level,
+        )
+        .limit(MAX_EXAMPLES_ALTERNATIVE)
+        .all()
+    )
+
+    # If no exact match, try any CEFR level for this meaning
+    if not db_examples:
+        db_examples = (
+            ExampleSentence.query.filter(
+                ExampleSentence.meaning_id == user_word.meaning_id
+            )
+            .limit(MAX_EXAMPLES_ALTERNATIVE)
+            .all()
+        )
+
+    if db_examples:
+        # Format database examples
+        examples = []
+        ai_generator_id = None
+        llm_model = &quot;database&quot;
+        prompt_version = &quot;pregenerated&quot;
+
+        for db_example in db_examples:
+            # Skip examples that duplicate the current exercise context
+            if db_example.sentence.strip().lower() == current_context:
+                continue
+
+            example_dict = {
+                &quot;id&quot;: db_example.id,  # Include the sentence ID
+                &quot;sentence&quot;: db_example.sentence,
+                &quot;translation&quot;: db_example.translation,
+                &quot;cefr_level&quot;: db_example.cefr_level,
+                &quot;llm_model&quot;: (
+                    db_example.ai_generator.model_name
+                    if db_example.ai_generator
+                    else &quot;unknown&quot;
+                ),
+                &quot;prompt_version&quot;: (
+                    db_example.ai_generator.prompt_version
+                    if db_example.ai_generator
+                    else &quot;unknown&quot;
+                ),
+            }
+
+            # Pre-create bookmark so frontend can render instantly on swipe
+            bookmark_dict = _build_bookmark_dict_for_example(
+                user, user_word, db_example
+            )
+            if bookmark_dict:
+                example_dict[&quot;bookmark&quot;] = bookmark_dict
+
+            examples.append(example_dict)
+
+            # Use the first example's ai_generator_id for consistency
+            if not ai_generator_id and db_example.ai_generator:
+                ai_generator_id = db_example.ai_generator.id
+                llm_model = db_example.ai_generator.model_name
+                prompt_version = db_example.ai_generator.prompt_version
+
+        return json_result(
+            {
+                &quot;user_word_id&quot;: user_word_id,
+                &quot;word&quot;: origin_word,
+                &quot;translation&quot;: translation,
+                &quot;examples&quot;: examples,
+                &quot;ai_generator_id&quot;: ai_generator_id,
+                &quot;llm_model&quot;: llm_model,
+                &quot;prompt_version&quot;: prompt_version,
+                &quot;source&quot;: &quot;database&quot;,
+            }
+        )
+
+    # Fallback to real-time generation if no pre-generated examples
+    log(
+        f&quot;No pre-generated examples found for user_word {user_word_id}, falling back to real-time generation&quot;
+    )
+
+    try:
+        # Get the LLM service
+        llm_service = get_llm_service()
+
+        # Generate examples
+        examples = llm_service.generate_examples(
+            word=origin_word,
+            translation=translation,
+            source_lang=origin_lang,
+            target_lang=translation_lang,
+            cefr_level=cefr_level,
+            prompt_version=&quot;v3&quot;,
+        )
+
+        # Extract model and version from first example (they're all the same)
+        llm_model = examples[0][&quot;llm_model&quot;] if examples else &quot;unknown&quot;
+        prompt_version = examples[0][&quot;prompt_version&quot;] if examples else &quot;v1&quot;
+
+        # Find or create AIGenerator record
+        ai_generator = AIGenerator.find_or_create(
+            db_session,
+            llm_model,
+            prompt_version,
+            description=&quot;Real-time example generation for language learning&quot;,
+        )
+
+        # Save the generated examples to database for future use
+        saved_examples = []
+        for example in examples:
+            example_sentence = ExampleSentence.create_ai_generated(
+                db_session,
+                sentence=example[&quot;sentence&quot;],
+                language=user_word.meaning.origin.language,
+                meaning=user_word.meaning,
+                ai_generator=ai_generator,
+                translation=example.get(&quot;translation&quot;),
+                cefr_level=example.get(&quot;cefr_level&quot;, cefr_level),
+                commit=False,
+            )
+            saved_examples.append(example_sentence)
+
+        # Commit all the new examples
+        db_session.commit()
+        log(
+            f&quot;Saved {len(examples)} real-time generated examples to database for user_word {user_word_id}&quot;
+        )
+
+        # commit() expires all ORM attributes by default, so the downstream
+        # bookmark-building loop would lazy-reload user_word.meaning.*. If the
+        # row was deleted mid-request (parallel tab, session closed) that lazy
+        # reload raises ObjectDeletedError deep in the loop and surfaces as a
+        # 500. Refresh here so we fail fast with a clean 404 in that case.
+        try:
+            db_session.refresh(user_word)
+        except Exception:
+            return json_result(
+                {&quot;error&quot;: &quot;UserWord not found or unauthorized&quot;}, status=404
+            )
+
+        # Add IDs and pre-created bookmarks, skipping duplicates of current context
+        filtered_examples = []
+        for i, example in enumerate(examples):
+            if example[&quot;sentence&quot;].strip().lower() == current_context:
+                continue
+            example[&quot;id&quot;] = saved_examples[i].id
+            bookmark_dict = _build_bookmark_dict_for_example(
+                user, user_word, saved_examples[i]
+            )
+            if bookmark_dict:
+                example[&quot;bookmark&quot;] = bookmark_dict
+            filtered_examples.append(example)
+
+        return json_result(
+            {
+                &quot;user_word_id&quot;: user_word_id,
+                &quot;word&quot;: origin_word,
+                &quot;translation&quot;: translation,
+                &quot;examples&quot;: filtered_examples,
+                &quot;ai_generator_id&quot;: ai_generator.id,
+                &quot;llm_model&quot;: llm_model,
+                &quot;prompt_version&quot;: prompt_version,
+                &quot;source&quot;: &quot;realtime_saved&quot;,
+            }
+        )
+
+    except Exception as e:
+        log(f&quot;Error generating examples for user_word {user_word_id}: {e}&quot;)
+        sentry_sdk.capture_exception(
+            e,
+            tags={
+                &quot;endpoint&quot;: &quot;alternative_sentences&quot;,
+                &quot;user_word_id&quot;: str(user_word_id),
+            },
+        )
+
+        resp = json_result(
+            {
+                &quot;error&quot;: &quot;Failed to generate examples. Please try again later.&quot;,
+                &quot;user_word_id&quot;: user_word_id,
+                &quot;word&quot;: origin_word,
+                &quot;translation&quot;: translation,
+                &quot;examples&quot;: [],
+            }
+        )
+        resp.status_code = 500
+        return resp
+
+
+@api.route(&quot;/set_preferred_example/&lt;user_word_id&gt;&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def set_preferred_example(user_word_id):
+    &quot;&quot;&quot;
+    Endpoint: POST /set_preferred_example/&lt;user_word_id&gt;
+
+    Set the user's preferred example/context for a word by creating a bookmark
+    from the selected ExampleSentence.
+
+    Request body (JSON):
+    {
+        &quot;sentence_id&quot;: 123  // ID of the ExampleSentence to set as preferred
+    }
+
+    Success Response (200):
+    {
+        &quot;bookmark_id&quot;: 456,
+        &quot;user_word_id&quot;: 789,
+        &quot;message&quot;: &quot;Generated example saved successfully&quot;,
+        &quot;updated_bookmark&quot;: { ... },  // Full bookmark data
+        &quot;bookmark_context_id&quot;: 101
+    }
+
+    Error Response (400):
+    {
+        &quot;error&quot;: &quot;Unable to save this example&quot;,
+        &quot;detail&quot;: &quot;The selected example sentence does not contain the word you're learning. Please choose a different example or report this issue.&quot;,
+        &quot;technical_detail&quot;: &quot;Word 'example' not found in sentence&quot;,
+        &quot;user_word_id&quot;: 789
+    }
+
+    Error Response (404):
+    {
+        &quot;error&quot;: &quot;UserWord not found or unauthorized&quot;
+    }
+    OR
+    {
+        &quot;error&quot;: &quot;Sentence with ID 123 not found for this word&quot;
+    }
+
+    :param user_word_id: ID of the UserWord
+    :return: JSON response with bookmark data or error message
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    user_word = UserWord.query.get(user_word_id)
+
+    if not user_word or user_word.user_id != user.id:
+        return json_result({&quot;error&quot;: &quot;UserWord not found or unauthorized&quot;}, status=404)
+
+    # Get the sentence_id from request
+    data = request.get_json()
+    if not data or &quot;sentence_id&quot; not in data:
+        return json_result({&quot;error&quot;: &quot;sentence_id is required&quot;}, status=400)
+
+    sentence_id = data[&quot;sentence_id&quot;]
+
+    # Find the ExampleSentence - must belong to this user's meaning
+    example_sentence_obj = ExampleSentence.query.filter(
+        ExampleSentence.id == sentence_id,
+        ExampleSentence.meaning_id == user_word.meaning_id,
+    ).first()
+
+    if not example_sentence_obj:
+        return json_result(
+            {&quot;error&quot;: f&quot;Sentence with ID {sentence_id} not found for this word&quot;},
+            status=404,
+        )
+
+    selected_sentence = example_sentence_obj.sentence
+
+    # Find word position using shared utility (fuzzy matching for generated examples)
+    target_word = user_word.meaning.origin.content
+    result = find_first_occurrence(
+        target_word, selected_sentence, user_word.meaning.origin.language
+    )
+
+    if not result[&quot;found&quot;]:
+        log(
+            f&quot;ERROR: Could not find word '{target_word}' in example sentence '{selected_sentence}'&quot;
+        )
+        log(f&quot;Error: {result['error_message']}&quot;)
+        return json_result(
+            {
+                &quot;error&quot;: &quot;Unable to save this example&quot;,
+                &quot;detail&quot;: &quot;The selected example sentence does not contain the word you're learning. Please choose a different example or report this issue.&quot;,
+                &quot;technical_detail&quot;: result[&quot;error_message&quot;],
+                &quot;user_word_id&quot;: user_word_id,
+            },
+            status=400,  # Bad Request as it's a data issue, not server error
+        )
+
+    # Extract position data
+    position_data = result[&quot;position_data&quot;]
+    sentence_i = position_data[&quot;sentence_i&quot;]
+    token_i = position_data[&quot;token_i&quot;]
+    c_sentence_i = position_data[&quot;c_sentence_i&quot;]
+    c_token_i = position_data[&quot;c_token_i&quot;]
+    total_tokens_found = position_data[&quot;total_tokens&quot;]
+
+    log(
+        f&quot;Successfully found '{target_word}' at position sent_i={sentence_i}, token_i={token_i}, total_tokens={total_tokens_found}&quot;
+    )
+
+    # Create the context identifier with the example sentence ID
+    context_identifier = ContextIdentifier(
+        context_type=ContextType.EXAMPLE_SENTENCE,
+        example_sentence_id=example_sentence_obj.id,
+    )
+
+    # Create a new bookmark with the generated example
+    bookmark = Bookmark.find_or_create(
+        db_session,
+        user,
+        user_word.meaning.origin.content,
+        user_word.meaning.origin.language.code,
+        user_word.meaning.translation.content,
+        user_word.meaning.translation.language.code,
+        selected_sentence,
+        None,  # article_id
+        None,  # source_id
+        sentence_i=sentence_i,
+        token_i=token_i,
+        total_tokens=total_tokens_found,  # Use calculated token count
+        c_sentence_i=c_sentence_i,
+        c_token_i=c_token_i,
+        context_identifier=context_identifier,
+    )
+
+    # Update the user_word's preferred_bookmark
+    user_word.preferred_bookmark = bookmark
+    db_session.add(user_word)
+    db_session.commit()
+
+    # Refresh the user_word from database to get updated preferred_bookmark
+    db_session.refresh(user_word)
+
+    return json_result(
+        {
+            &quot;bookmark_id&quot;: bookmark.id,
+            &quot;user_word_id&quot;: user_word_id,
+            &quot;message&quot;: &quot;Generated example saved successfully&quot;,
+            &quot;updated_bookmark&quot;: bookmark.as_dictionary(
+                with_context=True, with_context_tokenized=True
+            ),
+            &quot;bookmark_context_id&quot;: bookmark.context.id,
+        }
+    )
+
+
+@api.route(&quot;/generate_examples/&lt;word&gt;/&lt;from_lang&gt;/&lt;to_lang&gt;&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def generate_examples_for_word(word, from_lang, to_lang):
+    &quot;&quot;&quot;
+    Generate example sentences for any word without requiring it to be saved first.
+    Useful for the Translate tab and &quot;Add Custom Word&quot; modal.
+
+    If a translation is provided, this will:
+    1. Find or create the Meaning (word+translation pair)
+    2. Check for existing pre-generated examples in DB
+    3. If none exist, generate new examples and save them for future use
+
+    :param word: The word to generate examples for
+    :param from_lang: Source language code (e.g., 'da')
+    :param to_lang: Target language code (e.g., 'en')
+    :query translation: Optional translation/meaning to generate examples for specific sense
+    :query cefr_level: User's CEFR level for appropriate difficulty (default: B1)
+    :return: JSON array with example sentences
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+
+    # Get language objects
+    origin_lang = Language.find(from_lang)
+    translation_lang = Language.find(to_lang)
+
+    if not origin_lang or not translation_lang:
+        return json_result({&quot;error&quot;: &quot;Invalid language codes&quot;}, status=400)
+
+    cefr_level = request.args.get(&quot;cefr_level&quot;, DEFAULT_CEFR_LEVEL)
+    translation = request.args.get(&quot;translation&quot;, &quot;&quot;)
+
+    try:
+        # If we have a translation, try to find/create meaning and check for existing examples
+        if translation:
+            meaning = Meaning.find_or_create(
+                db_session,
+                word,
+                from_lang,
+                translation,
+                to_lang,
+            )
+            db_session.commit()
+
+            # Check for existing examples in DB for this meaning at user's CEFR level
+            db_examples = (
+                ExampleSentence.query.filter(
+                    ExampleSentence.meaning_id == meaning.id,
+                    ExampleSentence.cefr_level == cefr_level,
+                )
+                .limit(MAX_EXAMPLES_GENERATE)
+                .all()
+            )
+
+            if db_examples:
+                log(f&quot;Found {len(db_examples)} existing examples for meaning {meaning.id}&quot;)
+                examples = []
+                for db_example in db_examples:
+                    examples.append({
+                        &quot;id&quot;: db_example.id,
+                        &quot;sentence&quot;: db_example.sentence,
+                        &quot;translation&quot;: db_example.translation,
+                        &quot;cefr_level&quot;: db_example.cefr_level,
+                    })
+                return json_result({
+                    &quot;examples&quot;: examples,
+                    &quot;word&quot;: word,
+                    &quot;meaning_id&quot;: meaning.id,
+                    &quot;source&quot;: &quot;database&quot;,
+                })
+
+            # No existing examples - generate new ones (don't cache on browse)
+            log(f&quot;No cached examples for meaning {meaning.id}, generating fresh&quot;)
+
+        # Get LLM service and generate examples
+        # NOTE: We don't cache here - caching happens only when user saves to learning
+        # This avoids filling DB with unvalidated AI content for words users just browse
+        llm_service = get_llm_service()
+        examples = llm_service.generate_examples(
+            word=word,
+            translation=translation,
+            source_lang=origin_lang,
+            target_lang=translation_lang,
+            cefr_level=cefr_level,
+            prompt_version=&quot;v3&quot;,
+            count=MAX_EXAMPLES_GENERATE,
+        )
+
+        return json_result({
+            &quot;examples&quot;: examples,
+            &quot;word&quot;: word,
+            &quot;meaning_id&quot;: meaning.id if translation else None,
+            &quot;source&quot;: &quot;generated&quot;,
+        })
+
+    except Exception as e:
+        log(f&quot;Error generating examples for word '{word}': {e}&quot;)
+        traceback.print_exc()
+
+        error_response = json.dumps(
+            {&quot;error&quot;: &quot;Failed to generate examples&quot;, &quot;examples&quot;: []}
+        )
+        return Response(error_response, status=500, mimetype=&quot;application/json&quot;)
+
+
+@api.route(&quot;/add_word_to_learning&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def add_word_to_learning():
+    &quot;&quot;&quot;
+    Add a word to learning with LLM-optimized word form, translation, and example.
+
+    The LLM will:
+    - Normalize the word to dictionary form (e.g., &quot;oph&aelig;v&quot; -&gt; &quot;oph&aelig;ve&quot;)
+    - Clean up the translation (e.g., &quot;cancel&quot; -&gt; &quot;to cancel&quot;)
+    - Select or generate the best example sentence
+
+    Request body (JSON):
+    {
+        &quot;word&quot;: &quot;oph&aelig;v&quot;,
+        &quot;translation&quot;: &quot;cancel&quot;,
+        &quot;from_lang&quot;: &quot;da&quot;,
+        &quot;to_lang&quot;: &quot;en&quot;,
+        &quot;examples&quot;: [&quot;Jeg vil gerne oph&aelig;ve min reservation.&quot;, ...]
+    }
+
+    Success Response (200):
+    {
+        &quot;success&quot;: true,
+        &quot;bookmark_id&quot;: 123,
+        &quot;learning_card&quot;: {
+            &quot;word&quot;: &quot;oph&aelig;ve&quot;,
+            &quot;translation&quot;: &quot;to cancel&quot;,
+            &quot;example&quot;: &quot;Jeg vil gerne oph&aelig;ve min reservation.&quot;,
+            &quot;example_translation&quot;: &quot;I would like to cancel my reservation.&quot;
+        }
+    }
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    data = request.get_json()
+
+    if not data:
+        return json_result({&quot;error&quot;: &quot;JSON body required&quot;}, status=400)
+
+    word = data.get(&quot;word&quot;, &quot;&quot;).strip()
+    translation = data.get(&quot;translation&quot;, &quot;&quot;).strip()
+    from_lang = data.get(&quot;from_lang&quot;, &quot;&quot;)
+    to_lang = data.get(&quot;to_lang&quot;, &quot;&quot;)
+    examples = data.get(&quot;examples&quot;, [])
+
+    if not word or not translation or not from_lang or not to_lang:
+        return json_result({&quot;error&quot;: &quot;word, translation, from_lang, to_lang required&quot;}, status=400)
+
+    # Get user's CEFR level
+    cefr_level = data.get(&quot;cefr_level&quot;, DEFAULT_CEFR_LEVEL)
+
+    # Get language objects
+    origin_lang = Language.find(from_lang)
+    target_lang = Language.find(to_lang)
+
+    if not origin_lang or not target_lang:
+        return json_result({&quot;error&quot;: &quot;Invalid language codes&quot;}, status=400)
+
+    try:
+        # Call LLM to prepare the optimal learning card
+        learning_card = prepare_learning_card(
+            searched_word=word,
+            translation=translation,
+            source_lang=origin_lang.name,
+            target_lang=target_lang.name,
+            cefr_level=cefr_level,
+            examples=examples
+        )
+
+        final_word = learning_card[&quot;word&quot;]
+        final_translation = learning_card[&quot;translation&quot;]
+        final_example = learning_card[&quot;example&quot;]
+
+        # Create or find the meaning
+        meaning = Meaning.find_or_create(
+            db_session, final_word, from_lang, final_translation, to_lang
+        )
+
+        # Create UserWord with is_user_added flag
+        user_word = UserWord.find_or_create(
+            db_session, user, meaning, is_user_added=True
+        )
+
+        user_word.user_preference = UserWordExPreference.USE_IN_EXERCISES
+        user_word.update_fit_for_study(db_session)
+
+        # Validate word position in example
+        validation_result = validate_single_occurrence(final_word, final_example, origin_lang)
+
+        if not validation_result[&quot;valid&quot;]:
+            log(f&quot;Word validation failed for '{final_word}' in example: {validation_result['error_message']}&quot;)
+            # Use fallback position data
+            sentence_i = 0
+            token_i = 0
+            c_sentence_i = 0
+            c_token_i = 0
+            total_tokens = len(final_example.split())
+        else:
+            position_data = validation_result[&quot;position_data&quot;]
+            sentence_i = position_data[&quot;sentence_i&quot;]
+            token_i = position_data[&quot;token_i&quot;]
+            c_sentence_i = position_data[&quot;c_sentence_i&quot;]
+            c_token_i = position_data[&quot;c_token_i&quot;]
+            total_tokens = position_data[&quot;total_tokens&quot;]
+
+        # Create context identifier for user-added word
+        context_identifier = ContextIdentifier(
+            context_type=ContextType.USER_EDITED_TEXT
+        )
+
+        # Create bookmark
+        bookmark = Bookmark.find_or_create(
+            db_session,
+            user,
+            final_word,
+            from_lang,
+            final_translation,
+            to_lang,
+            final_example,
+            None,  # article_id
+            None,  # source_id
+            sentence_i=sentence_i,
+            token_i=token_i,
+            total_tokens=total_tokens,
+            c_sentence_i=c_sentence_i,
+            c_token_i=c_token_i,
+            context_identifier=context_identifier,
+        )
+
+        # Set as preferred bookmark and schedule for learning
+        user_word.preferred_bookmark = bookmark
+        # Note: find_or_create has side effect of creating schedule and setting level=1
+        FourLevelsPerWord.find_or_create(db_session, user_word)
+
+        db_session.add(user_word)
+        db_session.commit()
+
+        return json_result({
+            &quot;success&quot;: True,
+            &quot;bookmark_id&quot;: bookmark.id,
+            &quot;user_word_id&quot;: user_word.id,
+            &quot;learning_card&quot;: learning_card
+        })
+
+    except Exception as e:
+        db_session.rollback()
+        log(f&quot;Error adding word to learning: {e}&quot;)
+        traceback.print_exc()
+
+        return json_result({
+            &quot;error&quot;: &quot;Failed to prepare learning card. Please try again.&quot;,
+            &quot;detail&quot;: str(e)
+        }, status=500)
+
+
+@api.route(&quot;/preview_learning_card&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def preview_learning_card():
+    &quot;&quot;&quot;
+    Preview a learning card without saving it.
+
+    Returns cached explanation/level_note from Meaning if available,
+    otherwise generates via LLM and caches for future use.
+
+    Request body (JSON):
+    {
+        &quot;word&quot;: &quot;oph&aelig;v&quot;,
+        &quot;translation&quot;: &quot;cancel&quot;,
+        &quot;from_lang&quot;: &quot;da&quot;,
+        &quot;to_lang&quot;: &quot;en&quot;,
+        &quot;examples&quot;: [&quot;Jeg vil gerne oph&aelig;ve min reservation.&quot;, ...]
+    }
+
+    Response (200):
+    {
+        &quot;word&quot;: &quot;oph&aelig;ve&quot;,
+        &quot;translation&quot;: &quot;to cancel&quot;,
+        &quot;example&quot;: &quot;Jeg vil gerne oph&aelig;ve min reservation.&quot;,
+        &quot;example_translation&quot;: &quot;I would like to cancel my reservation.&quot;,
+        &quot;explanation&quot;: &quot;Common verb for canceling...&quot;,
+        &quot;level_note&quot;: &quot;appropriate for B1...&quot;,
+        &quot;recommendation&quot;: &quot;recommended&quot;
+    }
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    data = request.get_json()
+
+    if not data:
+        return json_result({&quot;error&quot;: &quot;JSON body required&quot;}, status=400)
+
+    word = data.get(&quot;word&quot;, &quot;&quot;).strip()
+    translation = data.get(&quot;translation&quot;, &quot;&quot;).strip()
+    from_lang = data.get(&quot;from_lang&quot;, &quot;&quot;)
+    to_lang = data.get(&quot;to_lang&quot;, &quot;&quot;)
+    examples = data.get(&quot;examples&quot;, [])
+
+    if not word or not translation or not from_lang or not to_lang:
+        return json_result({&quot;error&quot;: &quot;word, translation, from_lang, to_lang required&quot;}, status=400)
+
+    cefr_level = data.get(&quot;cefr_level&quot;, DEFAULT_CEFR_LEVEL)
+
+    origin_lang = Language.find(from_lang)
+    target_lang = Language.find(to_lang)
+
+    if not origin_lang or not target_lang:
+        return json_result({&quot;error&quot;: &quot;Invalid language codes&quot;}, status=400)
+
+    # Check if we have cached explanation/cefr_level in Meaning
+    meaning = Meaning.find_or_create(
+        db_session, word, from_lang, translation, to_lang
+    )
+
+    if meaning.translation_explanation and meaning.word_cefr_level:
+        # Return cached data - no LLM call needed
+        return json_result({
+            &quot;word&quot;: word,
+            &quot;translation&quot;: translation,
+            &quot;explanation&quot;: meaning.translation_explanation,
+            &quot;word_cefr_level&quot;: meaning.word_cefr_level,
+            &quot;example&quot;: examples[0] if examples else &quot;&quot;,
+            &quot;example_translation&quot;: &quot;&quot;,
+            &quot;recommendation&quot;: &quot;recommended&quot;,
+            &quot;cached&quot;: True
+        })
+
+    try:
+        # Generate via LLM
+        learning_card = prepare_learning_card(
+            searched_word=word,
+            translation=translation,
+            source_lang=origin_lang.name,
+            target_lang=target_lang.name,
+            cefr_level=cefr_level,
+            examples=examples
+        )
+
+        # Cache in Meaning for future use
+        if learning_card.get(&quot;explanation&quot;):
+            meaning.translation_explanation = learning_card[&quot;explanation&quot;]
+
+        # Parse CEFR level from level_note (e.g., &quot;appropriate for B1 - ...&quot; &rarr; &quot;B1&quot;)
+        level_note = learning_card.get(&quot;level_note&quot;, &quot;&quot;)
+        import re
+        cefr_match = re.search(r'\b(A1|A2|B1|B2|C1|C2)\b', level_note)
+        if cefr_match:
+            meaning.word_cefr_level = cefr_match.group(1)
+            learning_card[&quot;word_cefr_level&quot;] = cefr_match.group(1)
+
+        db_session.add(meaning)
+        db_session.commit()
+
+        return json_result(learning_card)
+
+    except Exception as e:
+        log(f&quot;Error previewing learning card: {e}&quot;)
+        return json_result({
+            &quot;error&quot;: &quot;Failed to generate preview&quot;,
+            &quot;detail&quot;: str(e)
+        }, status=500)
+
+
+@api.route(&quot;/report_meaning&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def report_meaning():
+    &quot;&quot;&quot;
+    Report a problem with AI-generated content for a meaning.
+
+    Request body (JSON):
+    {
+        &quot;word&quot;: &quot;bekr&aelig;fte&quot;,
+        &quot;translation&quot;: &quot;confirm&quot;,
+        &quot;from_lang&quot;: &quot;da&quot;,
+        &quot;to_lang&quot;: &quot;en&quot;,
+        &quot;reason&quot;: &quot;bad_examples&quot;,  // bad_examples, wrong_meaning, wrong_level, other
+        &quot;comment&quot;: &quot;Optional details&quot;  // optional
+    }
+
+    Response (200):
+    {
+        &quot;success&quot;: true,
+        &quot;message&quot;: &quot;Report submitted&quot;
+    }
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    data = request.get_json()
+
+    if not data:
+        return json_result({&quot;error&quot;: &quot;JSON body required&quot;}, status=400)
+
+    word = data.get(&quot;word&quot;, &quot;&quot;).strip()
+    translation = data.get(&quot;translation&quot;, &quot;&quot;).strip()
+    from_lang = data.get(&quot;from_lang&quot;, &quot;&quot;)
+    to_lang = data.get(&quot;to_lang&quot;, &quot;&quot;)
+    reason = data.get(&quot;reason&quot;, &quot;&quot;)
+    comment = (data.get(&quot;comment&quot;) or &quot;&quot;).strip() or None
+
+    if not word or not translation or not from_lang or not to_lang:
+        return json_result({&quot;error&quot;: &quot;word, translation, from_lang, to_lang required&quot;}, status=400)
+
+    valid_reasons = [&quot;bad_examples&quot;, &quot;wrong_meaning&quot;, &quot;wrong_level&quot;, &quot;other&quot;]
+    if reason not in valid_reasons:
+        return json_result({&quot;error&quot;: f&quot;reason must be one of: {valid_reasons}&quot;}, status=400)
+
+    # Find or create the meaning (so we can track the report)
+    meaning = Meaning.find_or_create(db_session, word, from_lang, translation, to_lang)
+    db_session.commit()
+
+    try:
+        report = MeaningReport.create(db_session, meaning, user, reason, comment)
+        log(f&quot;User {user.id} reported meaning {meaning.id} for: {reason}&quot;)
+
+        return json_result({
+            &quot;success&quot;: True,
+            &quot;message&quot;: &quot;Report submitted. Thank you for helping improve Zeeguu!&quot;,
+            &quot;report_id&quot;: report.id
+        })
+
+    except Exception as e:
+        log(f&quot;Error creating meaning report: {e}&quot;)
+        return json_result({&quot;error&quot;: &quot;Failed to submit report&quot;}, status=500)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

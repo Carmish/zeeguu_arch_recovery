@@ -1,0 +1,402 @@
+<html>
+<head>
+    <title>tools/simplify_article.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/simplify_article.py (<b>251</b> lines of code) (<a href="simplify_article.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python3
+&quot;&quot;&quot;
+Command-line tool for creating simplified versions of articles.
+
+Usage:
+    python -m tools.simplify_article &lt;article_id&gt; [cefr_level]
+    python -m tools.simplify_article --today
+    python -m tools.simplify_article --yesterday
+    python -m tools.simplify_article --list &lt;article_id&gt;
+
+Examples:
+    python -m tools.simplify_article 123         # AI assesses level &amp; creates all needed versions
+    python -m tools.simplify_article 123 A1      # Create specific A1 version
+    python -m tools.simplify_article --today     # Find today's articles and create all versions
+    python -m tools.simplify_article --yesterday # Find yesterday's articles and create all versions
+    python -m tools.simplify_article --list 123  # List all versions
+
+Note: By default, AI assesses the original article's CEFR level and creates
+      all simplified versions for levels simpler than the original.
+      B2 article &rarr; A1, A2, B1 | C1 article &rarr; A1, A2, B1, B2 | A1 article &rarr; none
+&quot;&quot;&quot;
+
+import sys
+import argparse
+from datetime import date
+from zeeguu.api.app import create_app
+from zeeguu.core.model import Article, db
+from zeeguu.core.llm_services.simplification_and_classification import (
+    create_simplified_article_adaptive,
+    simplify_and_classify,
+)
+
+
+app = create_app()
+app.app_context().push()
+
+
+def print_article_info(article):
+    &quot;&quot;&quot;Print formatted article information.&quot;&quot;&quot;
+    print(f&quot;\nArticle ID: {article.id}&quot;)
+    print(f&quot;Title: {article.title}&quot;)
+    print(f&quot;Language: {article.language.code}&quot;)
+    print(f&quot;Word Count: {article.get_word_count()}&quot;)
+    print(f&quot;Difficulty: {article.get_fk_difficulty()}&quot;)
+
+    if article.url:
+        print(f&quot;URL: {article.url.as_string()}&quot;)
+
+    # Show summary for debugging
+    if article.summary:
+        print(f&quot;Summary: {article.summary[:200]}...&quot;)
+    else:
+        print(&quot;Summary: [None]&quot;)
+
+    if article.parent_article_id:
+        print(f&quot;CEFR Level: {article.cefr_level}&quot;)
+        if (
+            article.parent_article
+            and hasattr(article.parent_article, &quot;cefr_level&quot;)
+            and article.parent_article.cefr_level
+        ):
+            print(
+                f&quot;Original CEFR Level (AI-assessed): {article.parent_article.cefr_level}&quot;
+            )
+        print(f&quot;Parent Article ID: {article.parent_article_id}&quot;)
+        if article.simplification_ai_model:
+            print(f&quot;AI Model: {article.simplification_ai_model.model_name}&quot;)
+    else:
+        print(&quot;Type: Original Article&quot;)
+        if hasattr(article, &quot;cefr_level&quot;) and article.cefr_level:
+            print(f&quot;CEFR Level (AI-assessed): {article.cefr_level}&quot;)
+        elif hasattr(article, &quot;cefr_level&quot;) and article.cefr_level:
+            print(f&quot;CEFR Level (formula): {article.cefr_level}&quot;)
+        if article.simplified_versions:
+            print(f&quot;Simplified Versions: {len(article.simplified_versions)}&quot;)
+            for simplified in article.simplified_versions:
+                level_info = f&quot;{simplified.cefr_level}&quot;
+                if hasattr(article, &quot;cefr_level&quot;) and article.cefr_level:
+                    level_info += f&quot; (from {article.cefr_level})&quot;
+                elif hasattr(article, &quot;cefr_level&quot;) and article.cefr_level:
+                    level_info += f&quot; (from {article.cefr_level})&quot;
+                print(f&quot;  - {level_info} (ID: {simplified.id})&quot;)
+
+
+def list_article_versions(article_id):
+    &quot;&quot;&quot;List all versions of an article.&quot;&quot;&quot;
+    print(f&quot;Listing all versions for article {article_id}...&quot;)
+
+    article = Article.find_by_id(article_id)
+    if not article:
+        print(f&quot;❌ Article {article_id} not found&quot;)
+        return False
+
+    # If this is a simplified version, get the parent
+    if article.parent_article_id:
+        original_article = Article.find_by_id(article.parent_article_id)
+        print(&quot;🔍 This is a simplified version. Showing parent article:&quot;)
+        print_article_info(original_article)
+    else:
+        original_article = article
+        print(&quot;📄 Original Article:&quot;)
+        print_article_info(original_article)
+
+    # Show all simplified versions
+    if original_article.simplified_versions:
+        print(
+            f&quot;\n📝 Simplified Versions ({len(original_article.simplified_versions)}):&quot;
+        )
+        for simplified in original_article.simplified_versions:
+            print(f&quot;\n{simplified.cefr_level} Version:&quot;)
+            print_article_info(simplified)
+    else:
+        print(&quot;\n📝 No simplified versions found&quot;)
+
+    return True
+
+
+def simplify_single_article(article_id, cefr_level):
+    &quot;&quot;&quot;Create a single simplified version of an article.&quot;&quot;&quot;
+    print(f&quot;Creating {cefr_level} simplified version for article {article_id}...&quot;)
+
+    # Validate CEFR level
+    valid_levels = [&quot;A1&quot;, &quot;A2&quot;, &quot;B1&quot;, &quot;B2&quot;, &quot;C1&quot;, &quot;C2&quot;]
+    if cefr_level not in valid_levels:
+        print(f&quot;❌ Invalid CEFR level: {cefr_level}&quot;)
+        print(f&quot;Valid levels: {', '.join(valid_levels)}&quot;)
+        return False
+
+    # Find the original article
+    article = Article.find_by_id(article_id)
+    if not article:
+        print(f&quot;❌ Article {article_id} not found&quot;)
+        return False
+
+    # Don't simplify already simplified articles
+    if article.parent_article_id:
+        print(f&quot;❌ Article {article_id} is already a simplified version&quot;)
+        print(&quot;Use the parent article ID instead&quot;)
+        return False
+
+    print(f&quot;\n📄 Original Article:&quot;)
+    print_article_info(article)
+
+    # Check if this level already exists
+    for existing in article.simplified_versions:
+        if existing.cefr_level == cefr_level:
+            print(f&quot;\n⚠️  {cefr_level} version already exists (ID: {existing.id})&quot;)
+            return True
+
+    try:
+        print(f&quot;\n🤖 Generating {cefr_level} simplified version using AI...&quot;)
+        simplified_article = create_simplified_article_adaptive(
+            db.session, article, cefr_level
+        )
+
+        print(f&quot;\n✅ Successfully created {cefr_level} simplified version!&quot;)
+        # Refresh the article to ensure we have the latest state
+        db.session.refresh(simplified_article)
+        print_article_info(simplified_article)
+        return True
+
+    except Exception as e:
+        print(f&quot;\n❌ Simplification failed: {str(e)}&quot;)
+        return False
+
+
+def simplify_all_levels(article_id):
+    &quot;&quot;&quot;Create simplified versions for all levels based on LLM assessment of original article.&quot;&quot;&quot;
+    print(f&quot;Creating adaptive simplified versions for article {article_id}...&quot;)
+
+    # Find the original article
+    article = Article.find_by_id(article_id)
+    if not article:
+        print(f&quot;❌ Article {article_id} not found&quot;)
+        return False
+
+    # Don't simplify already simplified articles
+    if article.parent_article_id:
+        print(f&quot;❌ Article {article_id} is already a simplified version&quot;)
+        print(&quot;Use the parent article ID instead&quot;)
+        return False
+
+    print(f&quot;\n📄 Original Article:&quot;)
+    print_article_info(article)
+
+    try:
+        print(
+            f&quot;\n🤖 Using AI to assess original level and create all appropriate simplified versions...&quot;
+        )
+        simplified_articles, classifications = simplify_and_classify(db.session, article)
+
+        if not simplified_articles:
+            print(f&quot;\n⚠️  No simplified versions created for article {article.id}&quot;)
+            print(
+                f&quot;💡 Check the logs above for the specific reason (SKIP: or ERROR: messages)&quot;
+            )
+            print(f&quot;📊 Article info:&quot;)
+            print(f&quot;   - Word count: {article.get_word_count()}&quot;)
+            print(f&quot;   - Language: {article.language.code}&quot;)
+            print(f&quot;   - Has parent: {bool(article.parent_article_id)}&quot;)
+            print(
+                f&quot;   - Existing simplified versions: {len(article.simplified_versions)}&quot;
+            )
+            if article.simplified_versions:
+                levels = [v.cefr_level for v in article.simplified_versions]
+                print(f&quot;     Levels: {levels}&quot;)
+            return True
+
+        print(
+            f&quot;\n✅ Successfully created {len(simplified_articles)} simplified versions!&quot;
+        )
+
+        # Show the assessed original level
+        if article.cefr_level:
+            print(f&quot;\n📊 AI Assessment: Original article is {article.cefr_level} level&quot;)
+
+        # Show each created version
+        for simplified in simplified_articles:
+            print(f&quot;\n{simplified.cefr_level} Version:&quot;)
+            # Refresh the article to ensure we have the latest state
+            db.session.refresh(simplified)
+            print_article_info(simplified)
+
+        return True
+
+    except Exception as e:
+        print(f&quot;\n❌ Adaptive simplification failed: {str(e)}&quot;)
+        if &quot;incomplete due to paywall&quot; in str(e):
+            print(&quot;💡 This article appears to be truncated by a paywall.&quot;)
+        return False
+
+
+def simplify_articles_by_date(target_date, date_name):
+    &quot;&quot;&quot;Find all articles from a specific date and create simplified versions for them.&quot;&quot;&quot;
+    from datetime import datetime, timedelta
+    
+    print(f&quot;🔍 Finding articles from {date_name} ({target_date})...&quot;)
+    
+    # Create datetime objects for start and end of the target date
+    start_of_date = datetime.combine(target_date, datetime.min.time())
+    end_of_date = start_of_date + timedelta(days=1)
+    
+    # Find articles published on the target date
+    articles = Article.query.filter(
+        Article.published_time &gt;= start_of_date,
+        Article.published_time &lt; end_of_date,
+        Article.parent_article_id == None,  # Only original articles
+        Article.broken == 0  # Not broken
+    ).all()
+    
+    if not articles:
+        print(f&quot;📭 No articles found from {date_name} ({target_date})&quot;)
+        return True
+    
+    print(f&quot;📰 Found {len(articles)} articles from {date_name}&quot;)
+    
+    total_success = 0
+    total_failed = 0
+    
+    for i, article in enumerate(articles, 1):
+        print(f&quot;\n📄 Processing article {i}/{len(articles)} (ID: {article.id})&quot;)
+        print(f&quot;Title: {article.title}&quot;)
+        
+        # Check if it already has simplified versions
+        if article.simplified_versions:
+            print(f&quot;⚠️  Article {article.id} already has {len(article.simplified_versions)} simplified versions&quot;)
+            continue
+        
+        try:
+            simplified_articles, classifications = simplify_and_classify(db.session, article)
+            if simplified_articles:
+                print(f&quot;✅ Created {len(simplified_articles)} simplified versions for article {article.id}&quot;)
+                total_success += 1
+            else:
+                print(f&quot;⚠️  No simplified versions created for article {article.id}&quot;)
+        except Exception as e:
+            print(f&quot;❌ Failed to simplify article {article.id}: {str(e)}&quot;)
+            total_failed += 1
+    
+    print(f&quot;\n📊 Summary:&quot;)
+    print(f&quot;  ✅ Successfully simplified: {total_success} articles&quot;)
+    print(f&quot;  ❌ Failed to simplify: {total_failed} articles&quot;)
+    print(f&quot;  ⚠️  Skipped (already had versions): {len(articles) - total_success - total_failed} articles&quot;)
+    
+    return total_failed == 0
+
+
+def simplify_today_articles():
+    &quot;&quot;&quot;Find all articles from today and create simplified versions for them.&quot;&quot;&quot;
+    from datetime import timedelta
+    
+    today = date.today()
+    return simplify_articles_by_date(today, &quot;today&quot;)
+
+
+def simplify_yesterday_articles():
+    &quot;&quot;&quot;Find all articles from yesterday and create simplified versions for them.&quot;&quot;&quot;
+    from datetime import timedelta
+    
+    yesterday = date.today() - timedelta(days=1)
+    return simplify_articles_by_date(yesterday, &quot;yesterday&quot;)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description=&quot;Create simplified versions of articles&quot;,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=&quot;&quot;&quot;
+Examples:
+  python -m tools.simplify_article 123         # AI creates all needed versions
+  python -m tools.simplify_article 123 A1      # Create specific A1 version
+  python -m tools.simplify_article --today     # Find today's articles and create all versions
+  python -m tools.simplify_article --yesterday # Find yesterday's articles and create all versions
+  python -m tools.simplify_article --list 123  # List all versions
+
+Note: By default, AI assesses the original CEFR level and creates all 
+      simplified versions for levels simpler than the original.
+        &quot;&quot;&quot;,
+    )
+
+    parser.add_argument(&quot;article_id&quot;, nargs=&quot;?&quot;, type=int, help=&quot;ID of the article to simplify&quot;)
+    parser.add_argument(
+        &quot;cefr_level&quot;, nargs=&quot;?&quot;, help=&quot;CEFR level (A1, A2, B1, B2, C1, C2)&quot;
+    )
+    parser.add_argument(
+        &quot;--today&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Find articles from today and create all simplified versions&quot;,
+    )
+    parser.add_argument(
+        &quot;--yesterday&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Find articles from yesterday and create all simplified versions&quot;,
+    )
+    parser.add_argument(
+        &quot;--list&quot;, action=&quot;store_true&quot;, help=&quot;List all versions of the article&quot;
+    )
+
+    args = parser.parse_args()
+
+    # Handle today command
+    if args.today:
+        success = simplify_today_articles()
+        sys.exit(0 if success else 1)
+
+    # Handle yesterday command
+    if args.yesterday:
+        success = simplify_yesterday_articles()
+        sys.exit(0 if success else 1)
+
+    # Handle list command
+    if args.list:
+        if not args.article_id:
+            print(&quot;❌ Please specify an article ID with --list&quot;)
+            parser.print_help()
+            sys.exit(1)
+        success = list_article_versions(args.article_id)
+        sys.exit(0 if success else 1)
+
+    # Handle simplification commands
+    if not args.article_id:
+        print(&quot;❌ Please specify an article ID or use --today/--yesterday&quot;)
+        parser.print_help()
+        sys.exit(1)
+
+    if args.cefr_level:
+        success = simplify_single_article(args.article_id, args.cefr_level.upper())
+    else:
+        # Default behavior: create all versions (was --all)
+        success = simplify_all_levels(args.article_id)
+
+    sys.exit(0 if success else 1)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

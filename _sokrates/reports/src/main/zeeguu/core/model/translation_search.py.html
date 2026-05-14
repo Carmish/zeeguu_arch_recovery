@@ -1,0 +1,100 @@
+<html>
+<head>
+    <title>zeeguu/core/model/translation_search.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/translation_search.py (<b>46</b> lines of code) (<a href="translation_search.py">raw</a>):</h3>
+<div id="editor">from datetime import datetime
+from sqlalchemy import desc
+
+from zeeguu.core.model.db import db
+from zeeguu.core.model.language import Language
+from zeeguu.core.model.user import User
+
+
+class TranslationSearch(db.Model):
+    &quot;&quot;&quot;
+    Tracks translation searches made in the Translation Tab.
+    Stores the search word and learned language (active during search).
+    &quot;&quot;&quot;
+
+    __tablename__ = &quot;translation_search&quot;
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
+    user = db.relationship(User)
+
+    search_word = db.Column(db.String(255), nullable=False)
+
+    learned_language_id = db.Column(
+        db.Integer, db.ForeignKey(Language.id), nullable=False
+    )
+    learned_language = db.relationship(Language)
+
+    search_time = db.Column(db.DateTime, nullable=False, default=datetime.now)
+
+    def __init__(self, user: User, search_word: str, learned_language: Language):
+        self.user = user
+        self.search_word = search_word
+        self.learned_language = learned_language
+        self.search_time = datetime.now()
+
+    def __repr__(self):
+        return f&quot;TranslationSearch({self.search_word}, {self.learned_language.code})&quot;
+
+    @classmethod
+    def log_search(cls, session, user: User, search_word: str, learned_language: Language):
+        &quot;&quot;&quot;
+        Log a translation search to history.
+
+        Note: Does not commit - caller is responsible for committing.
+        &quot;&quot;&quot;
+        search = cls(user=user, search_word=search_word, learned_language=learned_language)
+        session.add(search)
+        return search
+
+    @classmethod
+    def get_history(cls, user: User, learned_language: Language, limit: int = 50):
+        &quot;&quot;&quot;
+        Get recent translation searches for a user in a specific language.
+        Returns most recent searches first.
+        &quot;&quot;&quot;
+        return (
+            cls.query.filter(
+                cls.user_id == user.id,
+                cls.learned_language_id == learned_language.id
+            )
+            .order_by(desc(cls.search_time))
+            .limit(limit)
+            .all()
+        )
+
+    def as_dict(self):
+        &quot;&quot;&quot;Return dictionary representation for API response.&quot;&quot;&quot;
+        return {
+            &quot;id&quot;: self.id,
+            &quot;search_word&quot;: self.search_word,
+            &quot;language&quot;: self.learned_language.code,
+            &quot;search_time&quot;: self.search_time.isoformat(),
+        }
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

@@ -1,0 +1,131 @@
+<html>
+<head>
+    <title>def requires_session()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def requires_session()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/api/utils/route_wrappers.py [0:0]</i></p>
+<ul>
+    <li><b>72</b> lines of code</li>
+    <li><b>9</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def requires_session(view):
+    &quot;&quot;&quot;
+    Decorator checks that user is in a session AND has verified email.
+
+    Every API endpoint annotated with @requires_session expects:
+    1. A valid session object passed as a GET parameter or cookie
+    2. The user's email to be verified (returns 403 if not)
+
+    Use @allows_unverified after @requires_session for endpoints that
+    should work without email verification (e.g., confirm_email, resend_code).
+
+    Example: API_URL/learned_language?session=123141516
+    &quot;&quot;&quot;
+
+    @functools.wraps(view)
+    def wrapped_view(*args, **kwargs):
+        import sys
+        import threading
+        import time as time_module
+        from zeeguu.api.utils.abort_handling import make_error
+
+        request_start = time_module.time()
+        thread_id = threading.current_thread().ident
+        # print(f&quot;--&gt; /{view.__name__} [thread={thread_id}] [time={time_module.time()}]&quot;)
+        sys.stdout.flush()
+
+        try:
+            # Check query param first, then fall back to cookie
+            session_uuid = flask.request.args.get(
+                &quot;session&quot;
+            ) or flask.request.cookies.get(&quot;chocolatechip&quot;)
+            if not session_uuid:
+                raise KeyError(&quot;No session found&quot;)
+
+            user_id, session_expiry_time = SESSION_CACHE.get(
+                session_uuid,
+                (
+                    None,
+                    None,
+                ),
+            )
+            if session_expiry_time is None or datetime.now() &gt; session_expiry_time:
+                from zeeguu.api.utils.session_helpers import (
+                    is_session_too_old,
+                    force_user_to_relog,
+                )
+
+                session_object = Session.find(session_uuid)
+                if session_object is None:
+                    print(&quot;-- Session inexistent&quot;)
+                    flask.abort(401)
+                if is_session_too_old(session_object):
+                    print(&quot;-- Session is too old&quot;)
+                    force_user_to_relog(session_object)
+                    flask.abort(401)
+                user_id = session_object.user_id
+                SESSION_CACHE[session_uuid] = (
+                    user_id,
+                    datetime.now() + timedelta(0, SESSION_CACHE_TIMEOUT),
+                )
+
+            flask.g.user_id = user_id
+            flask.g.session_uuid = session_uuid
+
+            # Update user's last_seen timestamp (once per day maximum)
+            from zeeguu.core.model import User
+            from zeeguu.core.model.db import db
+
+            user = User.find_by_id(user_id)
+
+            if user:
+                user.update_last_seen_if_needed(db.session)
+                db.session.commit()
+
+                # Check email verification (unless endpoint is marked as allowing unverified)
+                # Skip for: anonymous users, users created before the feature was deployed
+                requires_verification = (
+                    not getattr(view, '_allows_unverified', False)
+                    and not user.is_anonymous()
+                    and user.created_at
+                    and user.created_at &gt;= EMAIL_VERIFICATION_REQUIRED_AFTER
+                    and not user.email_verified
+                )
+                if requires_verification:
+                    log(f&quot;ACCESS DENIED: user_id={user.id} email not verified for {view.__name__}&quot;)
+                    return make_error(403, &quot;Please verify your email address first&quot;)
+
+        except BadRequestKeyError as e:
+            # This surely happens for missing session key
+            # I'm not sure in which way the request could be bad
+            # but in any case, we should simply abort if this happens
+            print(&quot;-- Missing session key, or some other Bad Request Error&quot;)
+            flask.abort(401)
+
+        except Exception as e:
+            import traceback
+            from sentry_sdk import capture_exception
+
+            capture_exception(e)
+            traceback.print_exc()
+            print(&quot;-- Some other exception. Aborting&quot;)
+            flask.abort(401)
+
+        # elapsed = time_module.time() - request_start
+        # print(f&quot;&lt;-- /{view.__name__} [thread={thread_id}] [elapsed={elapsed:.3f}s]&quot;)
+        sys.stdout.flush()
+        return view(*args, **kwargs)
+
+    return wrapped_view
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

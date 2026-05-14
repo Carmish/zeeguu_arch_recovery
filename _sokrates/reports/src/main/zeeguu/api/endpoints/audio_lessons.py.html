@@ -1,0 +1,387 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/audio_lessons.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/audio_lessons.py (<b>189</b> lines of code) (<a href="audio_lessons.py">raw</a>):</h3>
+<div id="editor">import flask
+
+from zeeguu.api.utils.background import run_in_background
+from zeeguu.api.utils.json_result import json_result
+from zeeguu.api.utils.route_wrappers import cross_domain, requires_session
+from zeeguu.core.audio_lessons.daily_lesson_generator import DailyLessonGenerator
+from zeeguu.core.audio_lessons.script_generator import VALID_LESSON_TYPES, THREE_WORDS_LESSON
+from zeeguu.core.audio_lessons.suggestion_validator import validate_suggestion
+from zeeguu.core.model import db, User, UserWord, AudioLessonGenerationProgress
+from zeeguu.logging import log
+from . import api
+
+
+def _generate_lesson_in_background(user_id, preparation):
+    &quot;&quot;&quot;
+    Run lesson generation in a background thread (called via run_in_background).
+
+    The `preparation` dict contains everything needed to generate the lesson,
+    passed as IDs rather than ORM objects since this runs in a separate DB session.
+    Example:
+        {
+            &quot;selected_word_ids&quot;: [42, 73, 91],
+            &quot;unscheduled_word_ids&quot;: [91],
+            &quot;origin_language&quot;: &quot;nl&quot;,
+            &quot;translation_language&quot;: &quot;en&quot;,
+            &quot;cefr_level&quot;: &quot;B1&quot;,
+            &quot;progress_id&quot;: 5,
+        }
+    &quot;&quot;&quot;
+    progress = None
+    try:
+        # Re-fetch ORM objects by ID since we're in a new DB session
+        user = User.find_by_id(user_id)
+        progress = AudioLessonGenerationProgress.query.get(preparation[&quot;progress_id&quot;])
+
+        # Either could be None if deleted between request and background execution
+        # (e.g., user deleted their account, or DB was cleaned up)
+        if not user or not progress:
+            log(f&quot;[background_generate] User or progress record not found for user {user_id}&quot;)
+            return
+
+        selected_words = UserWord.query.filter(
+            UserWord.id.in_(preparation[&quot;selected_word_ids&quot;])
+        ).all()
+        # .in_() doesn't preserve order, so re-sort to match the original selection
+        word_order = {wid: i for i, wid in enumerate(preparation[&quot;selected_word_ids&quot;])}
+        selected_words.sort(key=lambda w: word_order.get(w.id, 0))
+
+        unscheduled_words = UserWord.query.filter(
+            UserWord.id.in_(preparation[&quot;unscheduled_word_ids&quot;])
+        ).all() if preparation[&quot;unscheduled_word_ids&quot;] else []
+
+        generator = DailyLessonGenerator()
+        generator.generate_daily_lesson(
+            user=user,
+            selected_words=selected_words,
+            unscheduled_words=unscheduled_words,
+            origin_language=preparation[&quot;origin_language&quot;],
+            translation_language=preparation[&quot;translation_language&quot;],
+            cefr_level=preparation[&quot;cefr_level&quot;],
+            progress=progress,
+            raw_suggestion=preparation.get(&quot;raw_suggestion&quot;),
+            canonical_suggestion=preparation.get(&quot;canonical_suggestion&quot;),
+            lesson_type=preparation.get(&quot;lesson_type&quot;),
+            is_general=preparation.get(&quot;is_general&quot;, False),
+        )
+    except Exception as e:
+        log(f&quot;[background_generate] Error for user {user_id}: {e}&quot;)
+        try:
+            if not progress:
+                progress = AudioLessonGenerationProgress.query.get(preparation[&quot;progress_id&quot;])
+            if progress:
+                progress.mark_error(str(e))
+                db.session.commit()
+        except Exception:
+            pass
+
+
+@api.route(&quot;/generate_daily_lesson&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def generate_daily_lesson():
+    &quot;&quot;&quot;
+    Generate a daily audio lesson for the current user.
+    Validates synchronously, then starts generation in a background thread.
+    Returns 202 immediately; use the progress endpoint to track generation.
+
+    Form data:
+    - timezone_offset (optional): Client's timezone offset in minutes from UTC
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    generator = DailyLessonGenerator()
+
+    # Get timezone offset from form data (default to 0 for UTC)
+    timezone_offset = flask.request.form.get(&quot;timezone_offset&quot;, 0, type=int)
+    suggestion = flask.request.form.get(&quot;suggestion&quot;, &quot;&quot;).strip()[:80].strip() or None
+    lesson_type = flask.request.form.get(&quot;lesson_type&quot;, &quot;&quot;).strip() or THREE_WORDS_LESSON
+    if lesson_type not in VALID_LESSON_TYPES:
+        return json_result({&quot;error&quot;: f&quot;Invalid lesson_type: {lesson_type}&quot;}), 400
+
+    # Validate and canonicalize the suggestion
+    canonical_suggestion = None
+    is_general_topic = False
+    if suggestion and lesson_type in (&quot;topic&quot;, &quot;situation&quot;):
+        # Reuse canonical form if this user has typed the same thing before
+        from zeeguu.core.model import DailyAudioLesson
+        cached_canonical = DailyAudioLesson.find_canonical_for_raw_suggestion(user, suggestion)
+        if cached_canonical:
+            canonical_suggestion = cached_canonical
+        else:
+            is_valid, validation_result = validate_suggestion(suggestion, lesson_type, user.native_language.name)
+            if not is_valid:
+                return json_result({&quot;error&quot;: f&quot;Can't generate a lesson for this: {validation_result['reason']}&quot;}), 400
+            canonical_suggestion = validation_result[&quot;canonical&quot;]
+            is_general_topic = validation_result[&quot;is_general&quot;]
+
+    result = generator.prepare_lesson_generation(user, timezone_offset, canonical_suggestion, lesson_type)
+
+    # Existing lesson found &mdash; return it directly
+    if result.get(&quot;lesson_id&quot;):
+        return json_result(result), 200
+
+    # Validation error &mdash; return it
+    if result.get(&quot;error&quot;):
+        status_code = result.pop(&quot;status_code&quot;, 400)
+        return json_result(result), status_code
+
+    # Validation passed (has selected_word_ids) &mdash; kick off generation in background
+    if &quot;selected_word_ids&quot; not in result:
+        return json_result({&quot;error&quot;: &quot;Unexpected preparation result&quot;}), 500
+
+    result[&quot;raw_suggestion&quot;] = suggestion
+    result[&quot;is_general&quot;] = is_general_topic
+    run_in_background(_generate_lesson_in_background, user.id, result)
+
+    return json_result({&quot;status&quot;: &quot;generating&quot;, &quot;message&quot;: &quot;Lesson generation started&quot;}), 202
+
+
+@api.route(&quot;/get_daily_lesson&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_daily_lesson():
+    &quot;&quot;&quot;
+    Get an existing daily audio lesson for the current user.
+    Returns the most recent lesson or a specific lesson by ID.
+
+    Query parameters:
+    - lesson_id (optional): specific lesson ID to retrieve
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    generator = DailyLessonGenerator()
+    lesson_id = flask.request.args.get(&quot;lesson_id&quot;)
+
+    result = generator.get_daily_lesson_for_user(user, lesson_id)
+
+    # Check if there's a specific status code to return
+    status_code = result.pop(&quot;status_code&quot;, 200)
+
+    return json_result(result), status_code
+
+
+@api.route(&quot;/get_todays_lesson&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_todays_lesson():
+    &quot;&quot;&quot;
+    Get today's daily audio lesson for the current user.
+    Returns the lesson created today if it exists.
+
+    Query parameters:
+    - timezone_offset (optional): Client's timezone offset in minutes from UTC
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    generator = DailyLessonGenerator()
+
+    # Get timezone offset from query parameter (default to 0 for UTC)
+    timezone_offset = flask.request.args.get(&quot;timezone_offset&quot;, 0, type=int)
+
+    result = generator.get_todays_lesson_for_user(user, timezone_offset)
+
+    # Check if there's a specific status code to return
+    status_code = result.pop(&quot;status_code&quot;, 200)
+
+    return json_result(result), status_code
+
+
+@api.route(&quot;/delete_todays_lesson&quot;, methods=[&quot;DELETE&quot;])
+@cross_domain
+@requires_session
+def delete_todays_lesson():
+    &quot;&quot;&quot;
+    Delete today's daily audio lesson for the current user.
+    Removes both the database record and the audio file.
+
+    Query parameters:
+    - timezone_offset (optional): Client's timezone offset in minutes from UTC
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    generator = DailyLessonGenerator()
+
+    # Get timezone offset from query parameter (default to 0 for UTC)
+    timezone_offset = flask.request.args.get(&quot;timezone_offset&quot;, 0, type=int)
+
+    result = generator.delete_todays_lesson_for_user(user, timezone_offset)
+
+    # Check if there's a specific status code to return
+    status_code = result.pop(&quot;status_code&quot;, 200)
+
+    return json_result(result), status_code
+
+
+@api.route(&quot;/past_daily_lessons&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_past_daily_lessons():
+    &quot;&quot;&quot;
+    Get past daily audio lessons for the current user with pagination.
+
+    Query parameters:
+    - limit (optional): Maximum number of lessons to return (default 20, max 100)
+    - offset (optional): Number of lessons to skip for pagination (default 0)
+    - timezone_offset (optional): Client's timezone offset in minutes from UTC
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    generator = DailyLessonGenerator()
+
+    # Get pagination parameters
+    try:
+        limit = min(int(flask.request.args.get(&quot;limit&quot;, 20)), 100)  # Max 100
+        offset = int(flask.request.args.get(&quot;offset&quot;, 0))
+        timezone_offset = int(flask.request.args.get(&quot;timezone_offset&quot;, 0))
+    except ValueError:
+        return json_result({&quot;error&quot;: &quot;Invalid parameters&quot;}), 400
+
+    result = generator.get_past_daily_lessons_for_user(
+        user, limit, offset, timezone_offset
+    )
+
+    # Check if there's a specific status code to return
+    status_code = result.pop(&quot;status_code&quot;, 200)
+
+    return json_result(result), status_code
+
+
+@api.route(&quot;/check_daily_lesson_feasibility&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def check_daily_lesson_feasibility():
+    &quot;&quot;&quot;
+    Check if it's feasible to generate a daily audio lesson for the current user.
+    This checks prerequisites without actually generating a lesson.
+
+    Returns:
+    {
+        &quot;feasible&quot;: true/false,
+        &quot;available_words&quot;: 5,
+        &quot;required_words&quot;: 2,
+        &quot;learned_language&quot;: &quot;de&quot;,
+        &quot;message&quot;: &quot;Ready to generate lesson&quot; | &quot;Not enough words available&quot;
+    }
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+
+    # Import the word selector to check available words
+    from zeeguu.core.audio_lessons.word_selector import select_words_for_audio_lesson
+    
+    # Check how many words are available for lesson generation
+    selected_words, _ = select_words_for_audio_lesson(
+        user, 3, return_unscheduled_info=True
+    )
+    
+    available_words = len(selected_words)
+    required_words = 2
+    feasible = available_words &gt;= required_words
+    
+    if feasible:
+        message = f&quot;Ready to generate lesson with {available_words} words available&quot;
+    else:
+        message = f&quot;Not enough words available. Need at least {required_words} words, but only {available_words} available&quot;
+    
+    return json_result({
+        &quot;feasible&quot;: feasible,
+        &quot;available_words&quot;: available_words,
+        &quot;required_words&quot;: required_words,
+        &quot;learned_language&quot;: user.learned_language.code if user.learned_language else None,
+        &quot;message&quot;: message
+    })
+
+
+@api.route(&quot;/update_lesson_state/&lt;int:lesson_id&gt;&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def update_lesson_state(lesson_id):
+    &quot;&quot;&quot;
+    Update the state of a daily audio lesson.
+
+    JSON payload:
+    {
+        &quot;action&quot;: &quot;play|pause|resume|complete&quot;,
+        &quot;position_seconds&quot;: 123  // required for pause action
+    }
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    generator = DailyLessonGenerator()
+
+    # Get JSON data from request
+    try:
+        state_data = flask.request.get_json()
+        if not state_data or &quot;action&quot; not in state_data:
+            return (
+                json_result(
+                    {&quot;error&quot;: &quot;Missing required 'action' field in JSON payload&quot;}
+                ),
+                400,
+            )
+    except Exception:
+        return json_result({&quot;error&quot;: &quot;Invalid JSON payload&quot;}), 400
+
+    result = generator.update_lesson_state_for_user(user, lesson_id, state_data)
+
+    # Check if there's a specific status code to return
+    status_code = result.pop(&quot;status_code&quot;, 200)
+
+    return json_result(result), status_code
+
+
+@api.route(&quot;/audio_lesson_generation_progress&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_audio_lesson_generation_progress():
+    &quot;&quot;&quot;
+    Get the current progress of audio lesson generation for the current user.
+    Used for displaying real-time progress in the UI during lesson generation.
+
+    Returns:
+    {
+        &quot;status&quot;: &quot;pending|generating_script|synthesizing_audio|combining_audio|done|error&quot;,
+        &quot;current_step&quot;: 5,
+        &quot;total_steps&quot;: 20,
+        &quot;current_word&quot;: 2,
+        &quot;total_words&quot;: 3,
+        &quot;message&quot;: &quot;Word 2/3: Synthesizing teacher (5/20)&quot;,
+        &quot;started_at&quot;: &quot;2024-01-15T10:30:00&quot;
+    }
+
+    Returns null if no generation is in progress.
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+
+    progress = AudioLessonGenerationProgress.find_active_for_user(user)
+
+    if not progress:
+        return json_result({&quot;progress&quot;: None})
+
+    # Detect stuck generations (e.g., server restarted mid-generation)
+    from datetime import datetime, timedelta
+    if progress.updated_at and datetime.utcnow() - progress.updated_at &gt; timedelta(minutes=2):
+        progress.mark_error(&quot;Generation appears to have stopped. Please try again.&quot;)
+        db.session.commit()
+
+    return json_result({&quot;progress&quot;: progress.to_dict()})
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

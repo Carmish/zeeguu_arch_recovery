@@ -1,0 +1,230 @@
+<html>
+<head>
+    <title>zeeguu/core/model/friend_request.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/friend_request.py (<b>118</b> lines of code) (<a href="friend_request.py">raw</a>):</h3>
+<div id="editor">from sqlalchemy import Column, Integer, DateTime, ForeignKey, func, or_
+from sqlalchemy.orm import relationship
+
+from zeeguu.core.model.user_avatar import UserAvatar
+from zeeguu.core.model.db import db
+from zeeguu.core.model.user import User
+from zeeguu.core.model.friendship import Friendship
+from sqlalchemy.exc import NoResultFound
+
+class FriendRequest(db.Model):
+    __tablename__ = &quot;friend_request&quot;
+    __table_args__ = {&quot;mysql_collate&quot;: &quot;utf8_bin&quot;}
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    sender_id = Column(Integer, ForeignKey(&quot;user.id&quot;), nullable=False)
+    receiver_id = Column(Integer, ForeignKey(&quot;user.id&quot;), nullable=False)
+
+    created_at = Column(DateTime, default=func.now())
+
+    # relationships
+    # Relationships &mdash; explicit foreign_keys and primaryjoin
+    sender = relationship(
+        User,
+        foreign_keys=[sender_id],
+        primaryjoin=&quot;FriendRequest.sender_id == User.id&quot;
+    )
+    receiver = relationship(
+        User,
+        foreign_keys=[receiver_id],
+        primaryjoin=&quot;FriendRequest.receiver_id == User.id&quot;
+    )
+    
+    def __init__(
+            self,
+            sender_id,
+            receiver_id
+    ):
+        self.sender_id = sender_id
+        self.receiver_id = receiver_id
+
+    def __repr__(self):
+        return &quot;id: &quot;+ str(self.id) + &quot;sender: &quot;+ str(self.sender_id) + &quot;receiver: &quot; + str( self.receiver_id)
+
+    @classmethod
+    def send_friend_request(cls, sender_id: int, receiver_id: int):
+        &quot;&quot;&quot;
+        Send a friend request from sender to receiver.
+
+        Args:
+            sender_id (int): ID of the user sending the request
+            receiver_id (int): ID of the user receiving the request
+
+        Returns:
+            FriendRequest: The created friend request object
+        &quot;&quot;&quot;
+
+        # Prevent sending request to self
+        if sender_id == receiver_id:
+            raise ValueError(&quot;Cannot send a friend request to yourself.&quot;)
+
+        # Check if users exist
+        sender = db.session.query(User).filter_by(id=sender_id).first()
+        receiver = db.session.query(User).filter_by(id=receiver_id).first()
+        if not sender or not receiver:
+            raise ValueError(&quot;Sender or receiver does not exist.&quot;)
+
+        # Check for existing friend request
+        existing_request = db.session.query(cls).filter(
+            ((cls.sender_id == sender_id) &amp; (cls.receiver_id == receiver_id)) |
+            ((cls.sender_id == receiver_id) &amp; (cls.receiver_id == sender_id))
+        ).first()
+
+        if existing_request:
+            raise ValueError(&quot;A friend request already exists between these users.&quot;)
+
+        # Create new friend request
+        new_request = FriendRequest(
+            sender_id=sender_id,
+            receiver_id=receiver_id
+        )
+
+        db.session.add(new_request)
+        db.session.commit()
+        db.session.refresh(new_request)  # To get the ID and timestamps
+
+        return new_request
+
+    @classmethod
+    def get_number_of_received_friend_requests_for_user(cls, user_id: int):
+            &quot;&quot;&quot;
+            Get the number of friend requests received by a user.
+
+            Args:
+                user_id (int): ID of the user
+
+            Returns:
+                The number of friend requests received by a user.
+            &quot;&quot;&quot;
+
+            return cls.query.filter_by(receiver_id=user_id).count()
+
+
+    @classmethod
+    def get_received_friend_requests_for_user(cls, user_id: int):
+        &quot;&quot;&quot;
+        Get friend requests received by a user.
+
+        Args:
+            user_id (int): ID of the user
+
+        Returns:
+            List[Tuple[FriendRequest, UserAvatar]]:
+                A list of tuples, each containing:
+                    - FriendRequest: the friend request object
+                    - UserAvatar: the avatar of the sender (or None if not set)
+        &quot;&quot;&quot;
+        requests = (
+            db.session.query(cls, UserAvatar)
+            .filter(cls.receiver_id == user_id)
+            .outerjoin(UserAvatar, UserAvatar.user_id == cls.sender_id)
+            .order_by(cls.created_at.desc())
+            .all()
+        )
+        return requests
+    
+    @classmethod
+    def get_sent_friend_requests_for_user(cls, user_id: int):
+        &quot;&quot;&quot;
+        Get friend requests sent by a user.
+
+        Args:
+            user_id (int): ID of the user
+
+        Returns:
+            List[FriendRequest]: List of pending friend request objects
+        &quot;&quot;&quot;
+        requests = (
+            db.session.query(cls)
+            .filter(cls.sender_id == user_id)
+            .order_by(cls.created_at.desc())
+            .all()
+        )
+        return requests
+
+    @classmethod
+    def get_all_friend_requests_for_user(cls, user_id: int):
+        &quot;&quot;&quot;
+        Get friend requests received and sent by a user.
+
+        Args:
+            user_id (int): ID of the user
+
+        Returns:
+            List[FriendRequest]
+        &quot;&quot;&quot;
+        requests = (
+            db.session.query(cls)
+            .filter(or_(cls.receiver_id == user_id, cls.sender_id == user_id))
+            .all()
+        )
+        return requests
+
+    @classmethod
+    def get_request_map(cls, user_id: int) -&gt; dict:
+        &quot;&quot;&quot;Return a dict mapping each other user's id to their FriendRequest with user_id.&quot;&quot;&quot;
+        requests = (
+            db.session.query(cls)
+            .filter((cls.sender_id == user_id) | (cls.receiver_id == user_id))
+            .all()
+        )
+        return {
+            (r.receiver_id if r.sender_id == user_id else r.sender_id): r
+            for r in requests
+        }
+
+    @classmethod
+    def delete_friend_request(cls, sender_id: int, receiver_id: int)-&gt;bool:
+        &quot;&quot;&quot;Delete a friend request between sender and receiver.&quot;&quot;&quot;
+        try:
+            friend_request = db.session.query(cls).filter_by(
+                sender_id=sender_id,
+                receiver_id=receiver_id
+            ).one()
+            db.session.delete(friend_request)
+            db.session.commit()
+            return True
+        except NoResultFound:
+            return False
+
+    @classmethod
+    def accept_friend_request(cls, sender_id: int, receiver_id: int):
+        # Find the pending request and delete it
+        is_deleted = cls.delete_friend_request(sender_id, receiver_id)
+        if not is_deleted:
+            return None  # If the request was not found or could not be deleted, we cannot accept it
+
+        # Create the friendship record in the database
+        friendship = Friendship.add(sender_id, receiver_id)
+        return friendship
+    
+    @classmethod
+    def reject_friend_request(cls, sender_id: int, receiver_id: int):
+        # We just delete the friend request from the database
+        return cls.delete_friend_request(sender_id, receiver_id)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

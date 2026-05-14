@@ -1,0 +1,31 @@
+Summary: 29 instances, 28 unique
+
+Text	Count
+# TODO: Add admin/teacher check here if needed	1
+# TODO Implement this when username is implemented	1
+# TODO: To delete this... i don't think it's ever used	1
+extra_value: str = None,  # TODO: to delete this, i don't think it's ever used.	1
+# TODO: must remove theurl, and title - they are not used in the calling method.	1
+# TODO: At some point update the Embedding API to not talk only about articles	1
+# TODO Only run this if username is not provided, but rather auto-generated. Implement it when username is implemented	2
+# TODO: Remove this temporary workaround (this is because source_id is unique in video table)	1
+# TODO: Rename to EXERCISE_FEEDBACK	1
+# TODO: Tiago remember to also delete the only places that calls this	1
+# TODO: must test this thing	1
+# TODO: Implement this when username is implemented	1
+-- TODO: Could it be that it got added by SQLAlchemy? Otherwise make sure to add it here below.	1
+# TODO: use also the cohort_id somehow	1
+# TODO: This will be temporary.	1
+# TODO: delete after the new onboarding of Iga is done	1
+# TODO: Tiago - move article title to here	1
+-- TODO: This script does not include adding the user_word to the basic_sr_schedule.	1
+TODO: must think better about this...	1
+# TODO: Tiago, Delete after Text is deleted	1
+# TODO: tokenized_summary and tokenized_title are now redundant since tokenized_content	1
+# ML: TODO:	1
+# TODO: ideally update in parallel with running the decorated method?	1
+# TODO: There's no reason for this duplicating the behavior above.	1
+# TODO: Performance	1
+username, # TODO: this should be name (and add username too)	1
+# TODO: Load actual CEFR word lists for each language	1
+# TODO: join with Article on language_id	1

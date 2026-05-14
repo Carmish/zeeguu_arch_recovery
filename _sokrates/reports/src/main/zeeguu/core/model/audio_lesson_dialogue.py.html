@@ -1,0 +1,147 @@
+<html>
+<head>
+    <title>zeeguu/core/model/audio_lesson_dialogue.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/audio_lesson_dialogue.py (<b>86</b> lines of code) (<a href="audio_lesson_dialogue.py">raw</a>):</h3>
+<div id="editor">from sqlalchemy import Column, Integer, String, Text, JSON, Enum, ForeignKey
+from sqlalchemy.orm import relationship
+
+from zeeguu.core.model.db import db
+from zeeguu.core.model.language import Language
+
+
+class AudioLessonDialogue(db.Model):
+    &quot;&quot;&quot;
+    Audio lesson based on a single flowing dialogue about a topic or situation.
+    The dialogue is about topic immersion &mdash; not centered on specific vocabulary words.
+    User words may be sprinkled in as hints but are not tracked here.
+
+    MP3 files are stored on disk: {ZEEGUU_DATA_FOLDER}/audio/lessons/dialogue-{id}-{lang_code}.mp3
+    &quot;&quot;&quot;
+
+    __tablename__ = &quot;audio_lesson_dialogue&quot;
+    __table_args__ = {&quot;mysql_collate&quot;: &quot;utf8mb4_unicode_ci&quot;}
+
+    id = Column(Integer, primary_key=True)
+
+    script = Column(Text, nullable=False)
+    canonical_suggestion = Column(String(100), nullable=False)
+    lesson_type = Column(String(20), nullable=False)  # &quot;topic&quot; or &quot;situation&quot;
+    title = Column(String(200), nullable=True)  # specific description, e.g. &quot;ordering pizza at a trattoria&quot;
+
+    language_id = Column(Integer, ForeignKey(Language.id), nullable=False)
+    language = relationship(Language, foreign_keys=[language_id])
+
+    teacher_language_id = Column(Integer, ForeignKey(Language.id), nullable=True)
+    teacher_language = relationship(Language, foreign_keys=[teacher_language_id])
+
+    difficulty_level = Column(
+        Enum(&quot;A1&quot;, &quot;A2&quot;, &quot;B1&quot;, &quot;B2&quot;, &quot;C1&quot;, &quot;C2&quot;, name=&quot;cefr_level&quot;)
+    )
+    duration_seconds = Column(Integer)
+    is_general = Column(db.Boolean, default=False)
+    created_by = Column(String(255), nullable=False)
+
+    def __init__(
+        self,
+        script,
+        created_by,
+        canonical_suggestion,
+        lesson_type,
+        language,
+        difficulty_level=None,
+        duration_seconds=None,
+        teacher_language=None,
+        is_general=False,
+        title=None,
+    ):
+        self.script = script
+        self.created_by = created_by
+        self.canonical_suggestion = canonical_suggestion
+        self.lesson_type = lesson_type
+        self.title = title
+        self.language_id = language.id
+        self.difficulty_level = difficulty_level
+        self.duration_seconds = duration_seconds
+        self.is_general = is_general
+        if teacher_language:
+            self.teacher_language_id = teacher_language.id
+
+    def __repr__(self):
+        return f&quot;&lt;AudioLessonDialogue {self.id} '{self.canonical_suggestion}' ({self.lesson_type})&gt;&quot;
+
+    @property
+    def audio_file_path(self):
+        lang_code = self.teacher_language.code if self.teacher_language else &quot;en&quot;
+        return f&quot;/audio/lessons/dialogue-{self.id}-{lang_code}.mp3&quot;
+
+    @classmethod
+    def past_titles_for(cls, canonical_suggestion, lesson_type, language, teacher_language, difficulty_level):
+        &quot;&quot;&quot;Get all existing titles for this topic combination.&quot;&quot;&quot;
+        results = cls.query.filter_by(
+            canonical_suggestion=canonical_suggestion,
+            lesson_type=lesson_type,
+            language_id=language.id,
+            teacher_language_id=teacher_language.id,
+            difficulty_level=difficulty_level,
+        ).filter(cls.title.isnot(None)).with_entities(cls.title).limit(10).all()
+        return [r.title for r in results]
+
+    @classmethod
+    def find_unheard(cls, canonical_suggestion, lesson_type, language, teacher_language, difficulty_level, user, only_general=False):
+        &quot;&quot;&quot;
+        Find an existing dialogue the user hasn't heard yet.
+        Returns None if all matching dialogues have been heard (or none exist).
+
+        When only_general is True, niche dialogues are excluded &mdash; they were
+        generated from another user's specific raw input and would not match
+        what the current requester actually asked for.
+        &quot;&quot;&quot;
+        from zeeguu.core.model.daily_audio_lesson_segment import DailyAudioLessonSegment
+        from zeeguu.core.model.daily_audio_lesson import DailyAudioLesson
+
+        # IDs of dialogues this user has already been served
+        heard_ids = (
+            db.session.query(DailyAudioLessonSegment.audio_lesson_dialogue_id)
+            .join(DailyAudioLesson, DailyAudioLessonSegment.daily_audio_lesson_id == DailyAudioLesson.id)
+            .filter(
+                DailyAudioLesson.user_id == user.id,
+                DailyAudioLessonSegment.audio_lesson_dialogue_id.isnot(None),
+            )
+        )
+
+        query = cls.query.filter_by(
+            canonical_suggestion=canonical_suggestion,
+            lesson_type=lesson_type,
+            language_id=language.id,
+            teacher_language_id=teacher_language.id,
+            difficulty_level=difficulty_level,
+        ).filter(
+            cls.id.notin_(heard_ids)
+        )
+
+        if only_general:
+            query = query.filter(cls.is_general.is_(True))
+
+        return query.first()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

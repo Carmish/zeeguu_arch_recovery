@@ -1,0 +1,87 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/listening_sessions.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/listening_sessions.py (<b>52</b> lines of code) (<a href="listening_sessions.py">raw</a>):</h3>
+<div id="editor">import flask
+from flask import request
+
+from . import api, db_session
+from zeeguu.api.utils import requires_session, json_result
+from zeeguu.api.utils.route_wrappers import cross_domain
+from .helpers.activity_sessions import update_activity_session
+from ...core.model import UserListeningSession
+
+
+@api.route(
+    &quot;/listening_session_start&quot;,
+    methods=[&quot;POST&quot;],
+)
+@cross_domain
+@requires_session
+def listening_session_start():
+    daily_audio_lesson_id = int(request.form.get(&quot;lesson_id&quot;, &quot;&quot;))
+    platform = request.form.get(&quot;platform&quot;, None)
+    if platform is not None:
+        platform = int(platform)
+    session = UserListeningSession._create_new_session(
+        db_session, flask.g.user_id, daily_audio_lesson_id, platform=platform
+    )
+    return json_result(dict(id=session.id))
+
+
+@api.route(
+    &quot;/listening_session_update&quot;,
+    methods=[&quot;POST&quot;],
+)
+@cross_domain
+@requires_session
+def listening_session_update():
+    session = update_activity_session(UserListeningSession, request, db_session)
+    return json_result(dict(id=session.id, duration=session.duration))
+
+
+@api.route(
+    &quot;/listening_session_end&quot;,
+    methods=[&quot;POST&quot;],
+)
+@cross_domain
+@requires_session
+def listening_session_end():
+    session = update_activity_session(UserListeningSession, request, db_session)
+    session.is_active = False
+    db_session.add(session)
+    db_session.commit()
+    return &quot;OK&quot;
+
+
+@api.route(
+    &quot;/listening_session_info/&lt;id&gt;&quot;,
+    methods=[&quot;GET&quot;],
+)
+@cross_domain
+@requires_session
+def listening_session_info(id):
+    listening_session = UserListeningSession.find_by_id(id)
+    return json_result(listening_session.to_json())
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

@@ -1,0 +1,109 @@
+<html>
+<head>
+    <title>def article_info()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def article_info()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/model/article.py [0:0]</i></p>
+<ul>
+    <li><b>55</b> lines of code</li>
+    <li><b>22</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+    def article_info(self, with_content=False):
+        &quot;&quot;&quot;
+
+            This is the data that is sent over the API
+            to the Reader. Whatever the reader needs
+            must be here.
+
+        :return:
+        &quot;&quot;&quot;
+
+        # Use stored summary if available, otherwise fallback to content truncation
+        if self.summary and len(self.summary.strip()) &gt; 10:
+            summary = self.summary
+        else:
+            summary = self.get_content()[:MAX_CHAR_COUNT_IN_SUMMARY]
+        fk_difficulty = self.get_fk_difficulty()
+
+        # Use effective_cefr_level from assessment table (SINGLE SOURCE OF TRUTH)
+        # Fallback to legacy article.cefr_level only if assessment doesn't exist
+        if self.cefr_assessment and self.cefr_assessment.effective_cefr_level:
+            cefr_level = self.cefr_assessment.effective_cefr_level
+        else:
+            # Legacy fallback
+            cefr_level = self.cefr_level
+
+        result_dict = dict(
+            id=self.id,
+            source_id=self.source_id,
+            title=self.title,
+            summary=summary,
+            language=self.language.code,
+            topics=self.topics_as_string(),
+            topics_list=self.topics_as_tuple(),
+            video=False,
+            metrics=dict(
+                difficulty=fk_difficulty / 100,
+                word_count=self.get_word_count(),
+                cefr_level=cefr_level,
+            ),
+        )
+
+        # Add simplified article metadata if this is a simplified version
+        if self.parent_article_id:
+            result_dict[&quot;parent_article_id&quot;] = self.parent_article_id
+            # Include parent article's CEFR level
+            if self.parent_article and self.parent_article.cefr_level:
+                result_dict[&quot;parent_cefr_level&quot;] = self.parent_article.cefr_level
+            # Include parent URL for reference
+            if self.parent_article and self.parent_article.url:
+                result_dict[&quot;parent_url&quot;] = self.parent_article.url.as_string()
+
+        if self.authors:
+            result_dict[&quot;authors&quot;] = self.authors
+        elif self.uploader:
+            result_dict[&quot;authors&quot;] = self.uploader.name
+        else:
+            result_dict[&quot;authors&quot;] = &quot;&quot;
+
+        if self.url:
+            result_dict[&quot;url&quot;] = self.url.as_string()
+        if self.img_url:
+            result_dict[&quot;img_url&quot;] = self.img_url.as_string()
+
+        if self.published_time:
+            result_dict[&quot;published&quot;] = datetime_to_json(self.published_time)
+
+        if self.feed:
+            # Is this supposed to be a tuple?
+            result_dict[&quot;feed_id&quot;] = (self.feed.id,)
+            result_dict[&quot;feed_icon_name&quot;] = self.feed.icon_name
+
+            # TO DO: remove feed_image_url from RSSFeed --- this is here for compatibility
+            # until the codebase is moved to zorg.
+            if self.feed.image_url:
+                result_dict[&quot;feed_image_url&quot;] = self.feed.image_url.as_string()
+
+        if with_content:
+            tokenized_content = self.get_tokenized_content()
+            result_dict.update(tokenized_content)
+
+        result_dict[&quot;has_uploader&quot;] = True if self.uploader_id else False
+
+        # Add uploader name for classroom articles (so students can see who shared the text)
+        if self.uploader:
+            result_dict[&quot;uploader_name&quot;] = self.uploader.name
+
+        return result_dict
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

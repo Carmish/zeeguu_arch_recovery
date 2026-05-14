@@ -1,0 +1,128 @@
+<html>
+<head>
+    <title>def get_translations_streaming()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def get_translations_streaming()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/translation_services/translator.py [0:0]</i></p>
+<ul>
+    <li><b>85</b> lines of code</li>
+    <li><b>22</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def get_translations_streaming(word, context, from_lang, to_lang, is_separated_mwe=False, full_sentence_context=None):
+    &quot;&quot;&quot;
+    Generator that yields translations as they arrive (for SSE streaming).
+
+    Yields translation dicts one at a time, allowing frontend to display progressively.
+    &quot;&quot;&quot;
+    from python_translators.translation_query import TranslationQuery
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    seen_translations = set()
+
+    def yield_if_new(t):
+        &quot;&quot;&quot;Yield translation if not a duplicate.&quot;&quot;&quot;
+        if t is None:
+            return None
+        text = t.get(&quot;translation&quot;, &quot;&quot;).lower().strip()
+        if text and text not in seen_translations:
+            seen_translations.add(text)
+            return t
+        return None
+
+    # For contiguous MWEs (words with spaces)
+    if &quot; &quot; in word and not is_separated_mwe:
+        # First yield the phrase translation (fast and reliable)
+        t_mwe = translate_mwe_phrase(word, from_lang, to_lang)
+        if t_mwe:
+            result = yield_if_new(t_mwe)
+            if result:
+                yield result
+
+        # Then try other services in parallel - they might give different results
+        # Also include LLM for contextual alternatives
+        funcs = [
+            lambda: azure_alignment_contextual_translate({
+                &quot;source_language&quot;: from_lang,
+                &quot;target_language&quot;: to_lang,
+                &quot;word&quot;: word,
+                &quot;query&quot;: TranslationQuery(word, &quot;&quot;, &quot;&quot;, 1),
+                &quot;context&quot;: context,
+            }),
+            lambda: microsoft_contextual_translate({
+                &quot;source_language&quot;: from_lang,
+                &quot;target_language&quot;: to_lang,
+                &quot;word&quot;: word,
+                &quot;query&quot;: TranslationQuery(word, &quot;&quot;, &quot;&quot;, 1),
+                &quot;context&quot;: context,
+            }),
+            lambda: google_contextual_translate({
+                &quot;source_language&quot;: from_lang,
+                &quot;target_language&quot;: to_lang,
+                &quot;word&quot;: word,
+                &quot;query&quot;: TranslationQuery(word, &quot;&quot;, &quot;&quot;, 1),
+                &quot;context&quot;: context,
+            }),
+            lambda: translate_with_llm(word, context, from_lang, to_lang),
+        ]
+
+        with ThreadPoolExecutor(max_workers=len(funcs)) as executor:
+            futures = {executor.submit(f): i for i, f in enumerate(funcs)}
+            for future in as_completed(futures):
+                try:
+                    result = future.result()
+                    t = yield_if_new(result)
+                    if t:
+                        yield t
+                except Exception:
+                    pass
+        return
+
+    # For separated MWEs
+    if is_separated_mwe and full_sentence_context:
+        funcs = [
+            lambda: translate_separated_mwe(word, full_sentence_context, from_lang, to_lang),
+            lambda: translate_with_llm(word, full_sentence_context, from_lang, to_lang),
+        ]
+    else:
+        # Single words: use all contextual services
+        try:
+            query = TranslationQuery.for_word_occurrence(word, context, 1, 7)
+        except (AttributeError, Exception):
+            query = TranslationQuery(word, &quot;&quot;, &quot;&quot;, 1)
+
+        data = {
+            &quot;source_language&quot;: from_lang,
+            &quot;target_language&quot;: to_lang,
+            &quot;word&quot;: word,
+            &quot;query&quot;: query,
+            &quot;context&quot;: context,
+        }
+        funcs = [
+            lambda d=data: azure_alignment_contextual_translate(d),
+            lambda d=data: microsoft_contextual_translate(d),
+            lambda d=data: google_contextual_translate(d),
+        ]
+
+    # Run in parallel and yield as they complete
+    with ThreadPoolExecutor(max_workers=len(funcs)) as executor:
+        futures = {executor.submit(f): i for i, f in enumerate(funcs)}
+        for future in as_completed(futures):
+            try:
+                result = future.result()
+                t = yield_if_new(result)
+                if t:
+                    yield t
+            except Exception:
+                pass
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

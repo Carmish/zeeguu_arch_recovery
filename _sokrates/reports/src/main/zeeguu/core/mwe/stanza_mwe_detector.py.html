@@ -1,0 +1,681 @@
+<html>
+<head>
+    <title>zeeguu/core/mwe/stanza_mwe_detector.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/mwe/stanza_mwe_detector.py (<b>318</b> lines of code) (<a href="stanza_mwe_detector.py">raw</a>):</h3>
+<div id="editor">&quot;&quot;&quot;
+Language-specific MWE detection strategies.
+
+Based on comprehensive evaluation (see zeeguu-docs/abr/008-mwe-evaluation-report.md):
+
+Tier 1 (Stanza works perfectly, 90-100%):
+    Germanic: de, nl, sv, da, no, en
+    Greek: el
+    Romanian: ro
+
+Tier 2 (Stanza + fallback, 80-90%):
+    Romance: pt, it, es, fr
+
+Tier 3 (Limited detection, 50-88%):
+    Slavic: pl, ru
+    Turkic: tr
+
+Detection relies on Stanza dependency relations:
+    - compound:prt &rarr; Germanic particle verbs (steht...auf)
+    - compound &rarr; Romance phrasal verbs (llev&oacute; a cabo)
+    - aux &rarr; Future/perfect/modal (wird kommen, has eaten)
+    - advmod + POS=PART &rarr; Negation (geht nicht)
+&quot;&quot;&quot;
+
+from typing import List, Dict, Any
+from abc import ABC, abstractmethod
+
+
+class MWEStrategy(ABC):
+    &quot;&quot;&quot;Base class for MWE detection strategies.&quot;&quot;&quot;
+
+    @abstractmethod
+    def detect(self, tokens: List[Dict]) -&gt; List[Dict]:
+        &quot;&quot;&quot;
+        Detect MWE groups in a sentence.
+
+        Args:
+            tokens: List of token dicts with pos, dep, head, lemma fields
+
+        Returns:
+            List of MWE group dicts:
+            [
+                {
+                    &quot;head_idx&quot;: 1,           # Index of main word
+                    &quot;dependent_indices&quot;: [5], # Indices of related words
+                    &quot;type&quot;: &quot;particle_verb&quot;   # MWE type
+                }
+            ]
+        &quot;&quot;&quot;
+        pass
+
+
+class StanzaMWEStrategy(MWEStrategy):
+    &quot;&quot;&quot;
+    Uses Stanza dependency relations for MWE detection.
+
+    Works well for Germanic, Greek, and Romance languages.
+
+    Note: Stanza head field is 1-based index (0 = ROOT).
+    Our token indices are 0-based, so we subtract 1.
+    &quot;&quot;&quot;
+
+    # Primary relations that indicate MWE (additional patterns like negation
+    # are handled via custom logic in detect() method)
+    MWE_RELATIONS = {
+        &quot;compound:prt&quot;: &quot;particle_verb&quot;,  # German/Dutch/Swedish particle verbs
+        &quot;compound&quot;: &quot;phrasal_verb&quot;,        # Spanish/Romance phrasal verbs
+        &quot;aux&quot;: &quot;grammatical&quot;,              # Future, perfect, modal
+    }
+
+    def detect(self, tokens: List[Dict]) -&gt; List[Dict]:
+        &quot;&quot;&quot;Detect MWEs using Stanza dependency relations.&quot;&quot;&quot;
+        mwe_groups = []
+        processed_indices = set()
+
+        for i, token in enumerate(tokens):
+            if i in processed_indices:
+                continue
+
+            dep = token.get(&quot;dep&quot;, &quot;&quot;)
+            pos = token.get(&quot;pos&quot;, &quot;&quot;)
+            head = token.get(&quot;head&quot;)  # 1-based index, 0 = ROOT
+
+            # Check for MWE relations
+            mwe_type = None
+            head_idx = None
+
+            # Check compound:prt, compound, aux
+            if dep in self.MWE_RELATIONS:
+                mwe_type = self.MWE_RELATIONS[dep]
+                head_idx = self._convert_head_to_index(head)
+
+            # Check negation: PART + advmod
+            elif pos == &quot;PART&quot; and dep == &quot;advmod&quot;:
+                mwe_type = &quot;negation&quot;
+                head_idx = self._convert_head_to_index(head)
+
+            if mwe_type and head_idx is not None and head_idx != i:
+                # Validate head_idx is within bounds
+                if not (0 &lt;= head_idx &lt; len(tokens)):
+                    continue
+
+                # Check if we already have a group for this head
+                existing_group = self._find_group_by_head(mwe_groups, head_idx)
+
+                if existing_group:
+                    # Add to existing group
+                    if i not in existing_group[&quot;dependent_indices&quot;]:
+                        existing_group[&quot;dependent_indices&quot;].append(i)
+                else:
+                    # Create new group
+                    mwe_groups.append({
+                        &quot;head_idx&quot;: head_idx,
+                        &quot;dependent_indices&quot;: [i],
+                        &quot;type&quot;: mwe_type
+                    })
+
+                processed_indices.add(i)
+
+        return mwe_groups
+
+    def _convert_head_to_index(self, head) -&gt; int:
+        &quot;&quot;&quot;
+        Convert Stanza head (1-based, 0=ROOT) to 0-based token index.
+
+        Args:
+            head: Stanza head value (1-based index, 0 means ROOT)
+
+        Returns:
+            0-based token index, or None if head is ROOT or invalid
+        &quot;&quot;&quot;
+        if head is None or head == 0:
+            return None  # ROOT has no parent
+        # Stanza uses 1-based indexing, convert to 0-based
+        return head - 1
+
+    def _find_group_by_head(self, groups: List[Dict], head_idx: int) -&gt; Dict:
+        &quot;&quot;&quot;Find an existing group with the given head index.&quot;&quot;&quot;
+        for group in groups:
+            if group[&quot;head_idx&quot;] == head_idx:
+                return group
+        return None
+
+
+class GermanicStrategy(StanzaMWEStrategy):
+    &quot;&quot;&quot;
+    Strategy for Germanic languages: de, nl, sv, da, no, en
+
+    Primary detection: compound:prt (particle verbs)
+    Secondary: aux (future, perfect, modal), negation, infinitive markers
+    &quot;&quot;&quot;
+
+    # Germanic negation words (advmod with ADV POS)
+    NEGATION_WORDS = {
+        &quot;nicht&quot;, &quot;nie&quot;, &quot;niemals&quot;, &quot;kein&quot;, &quot;keine&quot;, &quot;keinen&quot;,  # German
+        &quot;not&quot;, &quot;never&quot;, &quot;n't&quot;,                                   # English
+        &quot;niet&quot;, &quot;nooit&quot;, &quot;geen&quot;,                                 # Dutch
+        &quot;inte&quot;, &quot;aldrig&quot;, &quot;ingen&quot;,                               # Swedish
+        &quot;ikke&quot;, &quot;aldrig&quot;, &quot;ingen&quot;,                               # Danish/Norwegian
+    }
+
+    # Infinitive marker particles (PART + mark)
+    # These introduce infinitive clauses: &quot;at g&aring;&quot; (to go), &quot;zu gehen&quot;, &quot;te gaan&quot;
+    INFINITIVE_MARKERS = {
+        &quot;at&quot;,   # Danish/Norwegian
+        &quot;zu&quot;,   # German
+        &quot;te&quot;,   # Dutch
+        &quot;att&quot;,  # Swedish
+        &quot;to&quot;,   # English
+    }
+
+    def detect(self, tokens: List[Dict]) -&gt; List[Dict]:
+        &quot;&quot;&quot;Detect MWEs including Germanic negation and infinitive markers.&quot;&quot;&quot;
+        mwe_groups = []
+        processed_indices = set()
+
+        for i, token in enumerate(tokens):
+            if i in processed_indices:
+                continue
+
+            dep = token.get(&quot;dep&quot;) or &quot;&quot;
+            pos = token.get(&quot;pos&quot;) or &quot;&quot;
+            head = token.get(&quot;head&quot;)
+            text = (token.get(&quot;text&quot;) or &quot;&quot;).lower()
+            lemma = (token.get(&quot;lemma&quot;) or &quot;&quot;).lower()
+
+            mwe_type = None
+            head_idx = None
+
+            # Check compound:prt, compound, aux
+            if dep in self.MWE_RELATIONS:
+                mwe_type = self.MWE_RELATIONS[dep]
+                head_idx = self._convert_head_to_index(head)
+
+            # Check negation: PART + advmod (Greek style)
+            elif pos == &quot;PART&quot; and dep == &quot;advmod&quot;:
+                mwe_type = &quot;negation&quot;
+                head_idx = self._convert_head_to_index(head)
+
+            # Germanic negation: ADV + advmod with known negation word
+            elif pos == &quot;ADV&quot; and dep == &quot;advmod&quot;:
+                if text in self.NEGATION_WORDS or lemma in self.NEGATION_WORDS:
+                    mwe_type = &quot;negation&quot;
+                    head_idx = self._convert_head_to_index(head)
+
+            # Infinitive markers: PART + mark (at, zu, te, att, to)
+            elif pos == &quot;PART&quot; and dep == &quot;mark&quot;:
+                if text in self.INFINITIVE_MARKERS or lemma in self.INFINITIVE_MARKERS:
+                    mwe_type = &quot;grammatical&quot;
+                    head_idx = self._convert_head_to_index(head)
+
+            if mwe_type and head_idx is not None and head_idx != i:
+                if not (0 &lt;= head_idx &lt; len(tokens)):
+                    continue
+
+                existing_group = self._find_group_by_head(mwe_groups, head_idx)
+
+                if existing_group:
+                    if i not in existing_group[&quot;dependent_indices&quot;]:
+                        existing_group[&quot;dependent_indices&quot;].append(i)
+                else:
+                    mwe_groups.append({
+                        &quot;head_idx&quot;: head_idx,
+                        &quot;dependent_indices&quot;: [i],
+                        &quot;type&quot;: mwe_type
+                    })
+
+                processed_indices.add(i)
+
+        # Post-processing: For separated MWEs (particle verbs), include intermediate words
+        # BUT only if the gap is small (max 2 intermediate words for Germanic)
+        # German can have very long gaps: &quot;Er steht jeden Morgen um sechs Uhr auf&quot;
+        # We don't want to include all of &quot;jeden Morgen um sechs Uhr&quot;
+        MAX_INTERMEDIATE_WORDS = 2
+
+        for group in mwe_groups:
+            head_idx = group[&quot;head_idx&quot;]
+            dep_indices = group[&quot;dependent_indices&quot;]
+
+            if not dep_indices:
+                continue
+
+            # Find the span of the MWE
+            all_indices = [head_idx] + dep_indices
+            min_idx = min(all_indices)
+            max_idx = max(all_indices)
+
+            # Count intermediate words (excluding punctuation)
+            intermediate_count = 0
+            for idx in range(min_idx + 1, max_idx):
+                if idx not in all_indices:
+                    token = tokens[idx]
+                    if token.get(&quot;pos&quot;) != &quot;PUNCT&quot;:
+                        intermediate_count += 1
+
+            # Only include intermediates if within limit
+            if intermediate_count &gt; 0 and intermediate_count &lt;= MAX_INTERMEDIATE_WORDS:
+                for idx in range(min_idx, max_idx + 1):
+                    if idx != head_idx and idx not in dep_indices:
+                        token = tokens[idx]
+                        if token.get(&quot;pos&quot;) == &quot;PUNCT&quot;:
+                            continue
+                        dep_indices.append(idx)
+
+        return mwe_groups
+
+
+class RomanceStrategy(StanzaMWEStrategy):
+    &quot;&quot;&quot;
+    Strategy for Romance languages: pt, it, es, fr, ro
+
+    Primary detection: compound (phrasal verbs like &quot;llevar a cabo&quot;)
+    Secondary: aux (perfect tense), negation
+    &quot;&quot;&quot;
+    pass  # Uses base StanzaMWEStrategy
+
+
+class AuxOnlyStrategy(MWEStrategy):
+    &quot;&quot;&quot;
+    Strategy that groups auxiliary verbs AND reflexive clitics with their head verb.
+
+    This is more conservative than full MWE detection - it only groups
+    grammatical constructions like:
+    - Romanian: &quot;a vrut&quot; (has wanted), &quot;s-a &icirc;nt&acirc;lnit&quot; (met), &quot;va merge&quot; (will go)
+    - German: &quot;hat gemacht&quot; (has made), &quot;wird kommen&quot; (will come)
+    - French: &quot;a mang&eacute;&quot; (has eaten), &quot;s'est lev&eacute;&quot; (got up)
+
+    This avoids false positives from compound detection while still
+    providing useful verb grouping for compound tenses.
+
+    Grouped relations:
+    - aux, aux:tense, aux:pass: Auxiliary verbs (a, hat, will, etc.)
+    - expl:pv: Reflexive clitics (s-, m-, se, sich, etc.)
+    - expl:pass: Passive reflexive (se in &quot;se vinde&quot; = is sold)
+
+    Rationale: These elements have no standalone meaning - they only
+    make sense together with their verb.
+    &quot;&quot;&quot;
+
+    # Dependency relations to group with verb
+    # - aux: auxiliary verbs (a, va, etc.)
+    # - expl: expletive/clitic pronouns (l-, m-, s-, etc.)
+    # - expl:pv: pronominal voice clitics
+    # - expl:pass: passive reflexive
+    VERB_DEPS = {&quot;aux&quot;, &quot;expl&quot;, &quot;expl:pv&quot;, &quot;expl:pass&quot;}
+
+    def detect(self, tokens: List[Dict]) -&gt; List[Dict]:
+        &quot;&quot;&quot;Detect aux+verb and clitic+verb groups.&quot;&quot;&quot;
+        mwe_groups = []
+        processed_indices = set()
+
+        for i, token in enumerate(tokens):
+            if i in processed_indices:
+                continue
+
+            dep = token.get(&quot;dep&quot;) or &quot;&quot;
+            head = token.get(&quot;head&quot;)  # 1-based index, 0 = ROOT
+
+            # Detect aux and reflexive clitic relationships
+            should_group = (
+                dep in self.VERB_DEPS or
+                dep.startswith(&quot;aux:&quot;) or
+                dep.startswith(&quot;expl:&quot;)
+            )
+
+            if should_group:
+                head_idx = self._convert_head_to_index(head)
+
+                if head_idx is not None and head_idx != i:
+                    if not (0 &lt;= head_idx &lt; len(tokens)):
+                        continue
+
+                    # Check if head is actually a verb
+                    head_pos = tokens[head_idx].get(&quot;pos&quot;, &quot;&quot;)
+                    if head_pos not in (&quot;VERB&quot;, &quot;AUX&quot;):
+                        continue
+
+                    # Check if we already have a group for this head
+                    existing_group = self._find_group_by_head(mwe_groups, head_idx)
+
+                    if existing_group:
+                        if i not in existing_group[&quot;dependent_indices&quot;]:
+                            existing_group[&quot;dependent_indices&quot;].append(i)
+                    else:
+                        mwe_groups.append({
+                            &quot;head_idx&quot;: head_idx,
+                            &quot;dependent_indices&quot;: [i],
+                            &quot;type&quot;: &quot;aux_verb&quot;  # New type for aux+verb
+                        })
+
+                    processed_indices.add(i)
+
+        return mwe_groups
+
+    def _convert_head_to_index(self, head) -&gt; int:
+        &quot;&quot;&quot;Convert Stanza head (1-based, 0=ROOT) to 0-based token index.&quot;&quot;&quot;
+        if head is None or head == 0:
+            return None
+        return head - 1
+
+    def _find_group_by_head(self, groups: List[Dict], head_idx: int) -&gt; Dict:
+        &quot;&quot;&quot;Find an existing group with the given head index.&quot;&quot;&quot;
+        for group in groups:
+            if group[&quot;head_idx&quot;] == head_idx:
+                return group
+        return None
+
+
+class RomanianStrategy(AuxOnlyStrategy):
+    &quot;&quot;&quot;
+    Strategy for Romanian: ro
+
+    Extends AuxOnlyStrategy to also group:
+    - &quot;să&quot; (subjunctive marker) with its verb: &quot;să scadă&quot; (to decrease)
+    - &quot;o&quot; (future clitic) with its verb: &quot;o să depun&quot; (I will submit)
+
+    Romanian grammatical particles:
+    - &quot;a&quot; (perfect aux): &quot;a scăzut&quot; (has decreased) - handled by base class
+    - &quot;să&quot; (subjunctive): &quot;să scadă&quot; (to decrease) - added here
+    - &quot;o&quot; (future clitic): &quot;o să depun&quot; (I will submit) - added here
+    - &quot;va/voi/vor&quot; (future aux): &quot;va merge&quot; (will go) - handled by base class
+    - Reflexive clitics: &quot;se/s-/m-&quot; - handled by base class
+
+    In Stanza, &quot;să&quot; has dep=&quot;mark&quot; and points to the verb.
+    We only group &quot;mark&quot; when it's the particle &quot;să&quot; to avoid
+    false positives with other subordinators like &quot;dacă&quot;, &quot;că&quot;.
+
+    The &quot;o&quot; future marker is a clitic form and may be parsed with dep=&quot;aux&quot;
+    or dep=&quot;nsubj&quot; (incorrectly as subject pronoun). We explicitly check for it.
+    &quot;&quot;&quot;
+
+    # Romanian subjunctive particles
+    SUBJUNCTIVE_PARTICLES = {&quot;să&quot;, &quot;s-&quot;}
+
+    # Romanian future clitic &quot;o&quot; (from &quot;a vrea&quot; - to want)
+    # Used in constructions like &quot;o să depun&quot; (I will submit)
+    # NOTE: &quot;o&quot; is ONLY a future marker when immediately followed by &quot;să&quot;
+    # Otherwise it's an object pronoun (her/it): &quot;nu o mai poți controla&quot;
+    FUTURE_CLITICS = {&quot;o&quot;}
+
+    # Romanian negation and verbal adverbs that should stay with the verb
+    # &quot;nu mai aveau&quot; = &quot;they no longer had&quot;
+    VERBAL_ADVERBS = {&quot;nu&quot;, &quot;n-&quot;, &quot;mai&quot;}
+
+    def detect(self, tokens: List[Dict]) -&gt; List[Dict]:
+        &quot;&quot;&quot;Detect aux+verb, clitic+verb, să+verb, and o+să+verb groups.&quot;&quot;&quot;
+        # Get base aux groups
+        mwe_groups = super().detect(tokens)
+        processed_indices = {
+            idx for group in mwe_groups for idx in group[&quot;dependent_indices&quot;]
+        }
+
+        # Also group &quot;să&quot; with its verb
+        for i, token in enumerate(tokens):
+            if i in processed_indices:
+                continue
+
+            text = token.get(&quot;text&quot;, &quot;&quot;).lower()
+            dep = token.get(&quot;dep&quot;) or &quot;&quot;
+            head = token.get(&quot;head&quot;)
+
+            # Check if this is &quot;să&quot; with mark relation
+            if text in self.SUBJUNCTIVE_PARTICLES and dep == &quot;mark&quot;:
+                head_idx = self._convert_head_to_index(head)
+
+                if head_idx is not None and head_idx != i:
+                    if not (0 &lt;= head_idx &lt; len(tokens)):
+                        continue
+
+                    # Check if head is a verb
+                    head_pos = tokens[head_idx].get(&quot;pos&quot;, &quot;&quot;)
+                    if head_pos not in (&quot;VERB&quot;, &quot;AUX&quot;):
+                        continue
+
+                    # Check if we already have a group for this head
+                    existing_group = self._find_group_by_head(mwe_groups, head_idx)
+
+                    if existing_group:
+                        if i not in existing_group[&quot;dependent_indices&quot;]:
+                            existing_group[&quot;dependent_indices&quot;].append(i)
+                    else:
+                        mwe_groups.append({
+                            &quot;head_idx&quot;: head_idx,
+                            &quot;dependent_indices&quot;: [i],
+                            &quot;type&quot;: &quot;subjunctive&quot;
+                        })
+
+                    processed_indices.add(i)
+
+        # Handle &quot;o&quot; future clitic: &quot;o să depun&quot; (I will submit)
+        # IMPORTANT: &quot;o&quot; is ONLY a future marker when immediately followed by &quot;să&quot;
+        # Otherwise it's an object pronoun: &quot;nu o mai poți controla&quot; (you can't control it)
+        for i, token in enumerate(tokens):
+            if i in processed_indices:
+                continue
+
+            text = token.get(&quot;text&quot;, &quot;&quot;).lower()
+
+            # Check if this is future clitic &quot;o&quot; - MUST be followed by &quot;să&quot;
+            if text in self.FUTURE_CLITICS:
+                # Only consider &quot;o&quot; as future marker if next token is &quot;să&quot;
+                if i + 1 &lt; len(tokens):
+                    next_token = tokens[i + 1]
+                    next_text = next_token.get(&quot;text&quot;, &quot;&quot;).lower()
+                    if next_text in self.SUBJUNCTIVE_PARTICLES:
+                        # This is &quot;o să&quot; - find the verb that &quot;să&quot; points to
+                        sa_head = next_token.get(&quot;head&quot;)
+                        sa_head_idx = self._convert_head_to_index(sa_head)
+                        if sa_head_idx is not None and 0 &lt;= sa_head_idx &lt; len(tokens):
+                            if tokens[sa_head_idx].get(&quot;pos&quot;, &quot;&quot;) in (&quot;VERB&quot;, &quot;AUX&quot;):
+                                verb_idx = sa_head_idx
+                                existing_group = self._find_group_by_head(mwe_groups, verb_idx)
+
+                                if existing_group:
+                                    if i not in existing_group[&quot;dependent_indices&quot;]:
+                                        existing_group[&quot;dependent_indices&quot;].append(i)
+                                else:
+                                    mwe_groups.append({
+                                        &quot;head_idx&quot;: verb_idx,
+                                        &quot;dependent_indices&quot;: [i],
+                                        &quot;type&quot;: &quot;future&quot;
+                                    })
+
+                                processed_indices.add(i)
+
+        # Handle Romanian verbal adverbs: &quot;nu&quot;, &quot;mai&quot;
+        # &quot;să nu zic&quot; (to not say), &quot;nu mai aveau&quot; (they no longer had)
+        for i, token in enumerate(tokens):
+            if i in processed_indices:
+                continue
+
+            text = token.get(&quot;text&quot;, &quot;&quot;).lower()
+            dep = token.get(&quot;dep&quot;) or &quot;&quot;
+            head = token.get(&quot;head&quot;)
+
+            # Check if this is a verbal adverb (nu, mai) with advmod relation
+            if text in self.VERBAL_ADVERBS and dep == &quot;advmod&quot;:
+                head_idx = self._convert_head_to_index(head)
+
+                if head_idx is not None and head_idx != i:
+                    if not (0 &lt;= head_idx &lt; len(tokens)):
+                        continue
+
+                    # Check if head is a verb
+                    head_pos = tokens[head_idx].get(&quot;pos&quot;, &quot;&quot;)
+                    if head_pos not in (&quot;VERB&quot;, &quot;AUX&quot;):
+                        continue
+
+                    existing_group = self._find_group_by_head(mwe_groups, head_idx)
+
+                    if existing_group:
+                        if i not in existing_group[&quot;dependent_indices&quot;]:
+                            existing_group[&quot;dependent_indices&quot;].append(i)
+                    else:
+                        mwe_groups.append({
+                            &quot;head_idx&quot;: head_idx,
+                            &quot;dependent_indices&quot;: [i],
+                            &quot;type&quot;: &quot;verbal_adverb&quot;
+                        })
+
+                    processed_indices.add(i)
+
+        # Post-processing: For separated MWEs, include intermediate words
+        # E.g., &quot;nu o mai poți controla&quot; - the &quot;o&quot; should be included even though
+        # it's just an object pronoun, because it's semantically part of the phrase
+        # Romanian allows more intermediate words than Germanic (clitics cluster around verb)
+        MAX_INTERMEDIATE_WORDS = 4
+
+        for group in mwe_groups:
+            head_idx = group[&quot;head_idx&quot;]
+            dep_indices = group[&quot;dependent_indices&quot;]
+
+            if not dep_indices:
+                continue
+
+            # Find the span of the MWE (min to max index)
+            all_indices = [head_idx] + dep_indices
+            min_idx = min(all_indices)
+            max_idx = max(all_indices)
+
+            # Count intermediate words (excluding punctuation)
+            intermediate_count = 0
+            for idx in range(min_idx + 1, max_idx):
+                if idx not in all_indices:
+                    token = tokens[idx]
+                    if token.get(&quot;pos&quot;) != &quot;PUNCT&quot;:
+                        intermediate_count += 1
+
+            # Only include intermediates if within limit
+            if intermediate_count &gt; 0 and intermediate_count &lt;= MAX_INTERMEDIATE_WORDS:
+                for idx in range(min_idx, max_idx + 1):
+                    if idx != head_idx and idx not in dep_indices:
+                        token = tokens[idx]
+                        if token.get(&quot;pos&quot;) == &quot;PUNCT&quot;:
+                            continue
+                        dep_indices.append(idx)
+
+        return mwe_groups
+
+
+class GreekStrategy(StanzaMWEStrategy):
+    &quot;&quot;&quot;
+    Strategy for Greek: el
+
+    Primary detection: aux (&Theta;&alpha; future, Έ&chi;&epsilon;&iota; perfect)
+    Secondary: advmod+PART (&Delta;&epsilon;&nu; negation)
+    &quot;&quot;&quot;
+    pass  # Uses base StanzaMWEStrategy
+
+
+class SlavicStrategy(StanzaMWEStrategy):
+    &quot;&quot;&quot;
+    Strategy for Slavic languages: pl, ru
+
+    Limited detection - many MWEs are single words (aspect markers).
+    Uses aux for what's detectable.
+    &quot;&quot;&quot;
+    pass  # Uses base StanzaMWEStrategy
+
+
+class TurkishStrategy(StanzaMWEStrategy):
+    &quot;&quot;&quot;
+    Strategy for Turkish: tr
+
+    Very limited detection - Turkish is agglutinative.
+    Most &quot;MWEs&quot; are single words with suffixes.
+    &quot;&quot;&quot;
+    pass  # Uses base StanzaMWEStrategy
+
+
+class NoOpStrategy(MWEStrategy):
+    &quot;&quot;&quot;No detection - for unsupported languages.&quot;&quot;&quot;
+
+    def detect(self, tokens: List[Dict]) -&gt; List[Dict]:
+        return []
+
+
+# Language to strategy mapping
+# NOTE: Only enable MWE detection for languages where Stanza works reliably.
+# Romance/Slavic/Turkic languages have too many false positives with Stanza.
+LANGUAGE_STRATEGIES = {
+    # ENABLED: Germanic + Greek (90-100% accuracy)
+    # Particle verbs and grammatical constructions are well-defined
+    &quot;de&quot;: GermanicStrategy,
+    &quot;nl&quot;: GermanicStrategy,
+    &quot;sv&quot;: GermanicStrategy,
+    &quot;da&quot;: GermanicStrategy,
+    &quot;no&quot;: GermanicStrategy,
+    &quot;en&quot;: GermanicStrategy,
+    &quot;el&quot;: GreekStrategy,
+
+    # ENABLED: Romanian (aux + subjunctive)
+    # Groups: &quot;a vrut&quot; (perfect), &quot;să scadă&quot; (subjunctive), reflexives
+    &quot;ro&quot;: RomanianStrategy,
+
+    # ENABLED: Romance (aux-only)
+    # Only aux+verb grouping - no compound detection
+    # Groups compound tenses: &quot;a mang&eacute;&quot;, &quot;ha comido&quot;, &quot;ha mangiato&quot;
+    &quot;fr&quot;: AuxOnlyStrategy,
+    &quot;es&quot;: AuxOnlyStrategy,
+    &quot;it&quot;: AuxOnlyStrategy,
+    &quot;pt&quot;: AuxOnlyStrategy,
+
+    # DISABLED: Slavic (unreliable)
+    # &quot;pl&quot;: SlavicStrategy,
+    # &quot;ru&quot;: SlavicStrategy,
+
+    # DISABLED: Turkic (agglutinative, MWEs are single words)
+    # &quot;tr&quot;: TurkishStrategy,
+}
+
+
+def get_strategy_for_language(language_code: str, mode: str = &quot;stanza&quot;) -&gt; MWEStrategy:
+    &quot;&quot;&quot;
+    Get the appropriate MWE detection strategy for a language.
+
+    Args:
+        language_code: ISO language code (e.g., &quot;de&quot;, &quot;en&quot;)
+        mode: Detection mode:
+            - &quot;stanza&quot;: Fast dependency-based detection (default, high recall)
+            - &quot;llm&quot;: Claude-based detection (high precision, slower)
+            - &quot;hybrid&quot;: Stanza for candidates, LLM for validation (best accuracy)
+
+    Returns:
+        MWEStrategy instance
+    &quot;&quot;&quot;
+    if mode == &quot;llm&quot;:
+        from .llm_mwe_detector import LLMMWEStrategy
+        return LLMMWEStrategy(language_code)
+    elif mode == &quot;hybrid&quot;:
+        from .llm_mwe_detector import HybridMWEStrategy
+        return HybridMWEStrategy(language_code)
+    else:  # &quot;stanza&quot; (default)
+        strategy_class = LANGUAGE_STRATEGIES.get(language_code, NoOpStrategy)
+        return strategy_class()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

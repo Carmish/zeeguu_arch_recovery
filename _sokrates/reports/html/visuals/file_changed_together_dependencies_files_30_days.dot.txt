@@ -1,0 +1,80 @@
+graph G {
+    compound="true"
+    rankdir="TB"
+    bgcolor="white"
+    fontname="Tahoma"
+
+    node [
+        fixedsize="false"
+        fontname="Tahoma"
+        color="white"
+        fillcolor="deepskyblue2"
+        fontcolor="black"
+        shape="box"
+        style="filled"
+        penwidth="1.0"
+    ]
+    edge [
+        fontname="Arial"
+        color="#00688b"
+        fontcolor="black"
+        fontsize="12"
+        arrowsize="0.5"
+        penwidth="1.0"
+    ]
+
+
+
+
+    "[zeeguu/api/endpoints/friends.py]" -- "[zeeguu/api/endpoints/user.py]" [label=" 13 ", penwidth="10", color="#00688bFF"];
+    "[zeeguu/core/model/friend_request.py]" -- "[tools/migrations/26-02-24-friendship_system.sql]" [label=" 13 ", penwidth="10", color="#00688bFF"];
+    "[zeeguu/api/endpoints/friends.py]" -- "[tools/migrations/26-02-24-friendship_system.sql]" [label=" 13 ", penwidth="10", color="#00688bFF"];
+    "[zeeguu/core/model/friend_request.py]" -- "[zeeguu/api/endpoints/friends.py]" [label=" 13 ", penwidth="10", color="#00688bFF"];
+    "[zeeguu/core/model/__init__.py]" -- "[zeeguu/core/account_management/user_account_deletion.py]" [label=" 12 ", penwidth="9", color="#00688bED"];
+    "[zeeguu/core/badges/listeners.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 12 ", penwidth="9", color="#00688bED"];
+    "[zeeguu/core/badges/listeners.py]" -- "[tools/migrations/26-02-24-friendship_system.sql]" [label=" 11 ", penwidth="8", color="#00688bDB"];
+    "[zeeguu/api/endpoints/daily_streak.py]" -- "[zeeguu/api/endpoints/user.py]" [label=" 11 ", penwidth="8", color="#00688bDB"];
+    "[zeeguu/api/endpoints/daily_streak.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 11 ", penwidth="8", color="#00688bDB"];
+    "[zeeguu/core/model/friend_request.py]" -- "[zeeguu/core/badges/listeners.py]" [label=" 11 ", penwidth="8", color="#00688bDB"];
+    "[tools/migrations/26-02-24-b--add_username.py]" -- "[zeeguu/core/model/user.py]" [label=" 10 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/core/account_management/user_account_deletion.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 10 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/api/endpoints/friends.py]" -- "[zeeguu/api/endpoints/daily_streak.py]" [label=" 10 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/api/endpoints/friends.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 10 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/core/model/__init__.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 10 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/api/endpoints/user.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 10 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/core/friends/listeners.py]" -- "[zeeguu/core/badges/listeners.py]" [label=" 10 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/core/badges/listeners.py]" -- "[zeeguu/core/badges/badge_progress.py]" [label=" 10 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/core/badges/listeners.py]" -- "[zeeguu/api/endpoints/friends.py]" [label=" 10 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/core/model/user_language.py]" -- "[zeeguu/api/endpoints/friends.py]" [label=" 10 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/core/model/__init__.py]" -- "[zeeguu/core/badges/listeners.py]" [label=" 10 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/core/badges/listeners.py]" -- "[zeeguu/core/account_management/user_account_deletion.py]" [label=" 10 ", penwidth="7", color="#00688bC9"];
+    "[tools/migrations/26-02-19-b--insert_default_badges.sql]" -- "[tools/migrations/26-02-19-a--add_badges.sql]" [label=" 10 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/core/friends/listeners.py]" -- "[zeeguu/api/endpoints/friends.py]" [label=" 9 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/leaderboards/leaderboards.py]" -- "[tools/migrations/26-02-24-friendship_system.sql]" [label=" 9 ", penwidth="6", color="#00688bB7"];
+    "[tools/migrations/26-02-24-friendship_system.sql]" -- "[zeeguu/api/endpoints/user.py]" [label=" 9 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/friend_request.py]" -- "[zeeguu/core/model/__init__.py]" [label=" 9 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/leaderboards/leaderboards.py]" -- "[zeeguu/api/endpoints/friends.py]" [label=" 9 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/badges/listeners.py]" -- "[zeeguu/api/endpoints/user.py]" [label=" 9 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/friends/listeners.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 9 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/api/endpoints/friends.py]" -- "[zeeguu/core/model/user.py]" [label=" 9 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/user_language.py]" -- "[zeeguu/core/badges/listeners.py]" [label=" 9 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/user.py]" -- "[zeeguu/api/endpoints/user.py]" [label=" 9 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/friend_request.py]" -- "[zeeguu/core/account_management/user_account_deletion.py]" [label=" 9 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/account_management/user_account_creation.py]" -- "[tools/migrations/26-02-24-b--add_username.py]" [label=" 9 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/friend_request.py]" -- "[zeeguu/api/endpoints/user.py]" [label=" 9 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/friend_request.py]" -- "[zeeguu/core/leaderboards/leaderboards.py]" [label=" 8 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/friends/listeners.py]" -- "[zeeguu/api/endpoints/user.py]" [label=" 8 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/account_management/user_account_creation.py]" -- "[zeeguu/core/model/user.py]" [label=" 8 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/__init__.py]" -- "[zeeguu/api/endpoints/daily_streak.py]" [label=" 8 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/badges/listeners.py]" -- "[tools/migrations/26-02-19-a--add_badges.sql]" [label=" 8 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/friendship.py]" -- "[zeeguu/api/endpoints/user.py]" [label=" 8 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/friend_request.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 8 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/badges/listeners.py]" -- "[tools/migrations/26-02-19-b--insert_default_badges.sql]" [label=" 8 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/friend_request.py]" -- "[zeeguu/core/friends/listeners.py]" [label=" 8 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/friendship.py]" -- "[zeeguu/api/endpoints/friends.py]" [label=" 8 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/user_language.py]" -- "[zeeguu/core/model/user.py]" [label=" 8 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/__init__.py]" -- "[zeeguu/api/endpoints/user.py]" [label=" 8 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/friendship.py]" -- "[zeeguu/core/friends/listeners.py]" [label=" 8 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/leaderboards/leaderboards.py]" -- "[zeeguu/api/endpoints/daily_streak.py]" [label=" 7 ", penwidth="5", color="#00688bA5"];
+
+}

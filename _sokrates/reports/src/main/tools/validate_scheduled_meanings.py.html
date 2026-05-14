@@ -1,0 +1,299 @@
+<html>
+<head>
+    <title>tools/validate_scheduled_meanings.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/validate_scheduled_meanings.py (<b>187</b> lines of code) (<a href="validate_scheduled_meanings.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python3
+&quot;&quot;&quot;
+Batch Validation Script for Existing Scheduled Meanings
+
+Validates translations for user_words that are already scheduled but have
+not been validated yet (validated != VALID).
+
+Only processes words for users active in the last N days (default 30).
+Inactive users' words are left unvalidated to save API calls.
+
+This is a one-time migration script to bring existing data up to date.
+New words are validated at scheduling time via FourLevelsPerWord.find_or_create().
+
+Usage:
+    python -m tools.validate_scheduled_meanings --dry-run --all
+    python -m tools.validate_scheduled_meanings --max-words 100
+    python -m tools.validate_scheduled_meanings --all
+    python -m tools.validate_scheduled_meanings --all --days-active 60
+&quot;&quot;&quot;
+
+import argparse
+import sys
+from datetime import datetime
+from typing import List, Optional
+
+import zeeguu.core
+from zeeguu.core.model import UserWord, User, Meaning
+from zeeguu.core.model.db import db
+from zeeguu.core.word_scheduling.basicSR.basicSR import BasicSRSchedule
+from zeeguu.logging import log
+
+
+def get_scheduled_words_needing_validation(
+    max_words: Optional[int] = None,
+    user_id: Optional[int] = None,
+    days_active: int = 30,
+    fix_slash_translations: bool = False,
+    fix_idiom_literals: bool = False,
+) -&gt; List[UserWord]:
+    &quot;&quot;&quot;
+    Get user_words that are scheduled but not yet validated.
+
+    Only includes words for users active in the last N days.
+    These are legacy words from before the validation feature was deployed.
+
+    If fix_slash_translations is True, also includes already-validated meanings
+    that have &quot;/&quot; in the translation (need re-validation to pick one).
+
+    If fix_idiom_literals is True, also includes idioms missing literal_meaning.
+    &quot;&quot;&quot;
+    from datetime import timedelta
+    from sqlalchemy import or_, and_
+    from zeeguu.core.model import Phrase
+    from zeeguu.core.model.meaning import PhraseType
+
+    query = (
+        UserWord.query
+        .join(BasicSRSchedule, BasicSRSchedule.user_word_id == UserWord.id)
+        .join(Meaning, UserWord.meaning_id == Meaning.id)
+        .join(Phrase, Meaning.translation_id == Phrase.id)
+        .filter(UserWord.fit_for_study == True)
+    )
+
+    conditions = [Meaning.validated != Meaning.VALID]
+
+    if fix_slash_translations:
+        conditions.append(Phrase.content.like('%/%'))
+
+    if fix_idiom_literals:
+        # Idioms without literal_meaning
+        conditions.append(
+            and_(
+                Meaning.phrase_type == PhraseType.IDIOM,
+                Meaning.literal_meaning.is_(None)
+            )
+        )
+
+    query = query.filter(or_(*conditions))
+
+    if user_id:
+        query = query.filter(UserWord.user_id == user_id)
+    else:
+        # Only validate for active users (saves API calls on abandoned accounts)
+        cutoff_date = datetime.now() - timedelta(days=days_active)
+        query = query.filter(UserWord.user.has(User.last_seen &gt; cutoff_date))
+        log(f&quot;Filtering to users active since {cutoff_date}&quot;)
+
+    # Order by user to batch context switches
+    query = query.order_by(UserWord.user_id)
+
+    if max_words:
+        query = query.limit(max_words)
+
+    return query.all()
+
+
+def validate_user_word(user_word: UserWord) -&gt; dict:
+    &quot;&quot;&quot;
+    Validate a single user_word and return result info.
+
+    Returns dict with: success, action (valid/fixed/invalid/skipped), details
+    &quot;&quot;&quot;
+    from zeeguu.core.llm_services.validation_service import UserWordValidationService
+
+    meaning = user_word.meaning
+    original_word = meaning.origin.content
+    original_translation = meaning.translation.content
+
+    try:
+        result_user_word = UserWordValidationService.validate_and_fix(db.session, user_word)
+
+        if result_user_word is None:
+            return {
+                &quot;success&quot;: True,
+                &quot;action&quot;: &quot;invalid&quot;,
+                &quot;details&quot;: f&quot;'{original_word}' -&gt; '{original_translation}' marked invalid (no correction available)&quot;
+            }
+        elif result_user_word.id != user_word.id:
+            new_meaning = result_user_word.meaning
+            return {
+                &quot;success&quot;: True,
+                &quot;action&quot;: &quot;fixed&quot;,
+                &quot;details&quot;: f&quot;'{original_word}' -&gt; '{original_translation}' fixed to '{new_meaning.origin.content}' -&gt; '{new_meaning.translation.content}'&quot;
+            }
+        elif meaning.validated == Meaning.VALID:
+            return {
+                &quot;success&quot;: True,
+                &quot;action&quot;: &quot;valid&quot;,
+                &quot;details&quot;: f&quot;'{original_word}' -&gt; '{original_translation}' validated as correct&quot;
+            }
+        else:
+            return {
+                &quot;success&quot;: True,
+                &quot;action&quot;: &quot;skipped&quot;,
+                &quot;details&quot;: f&quot;'{original_word}' -&gt; '{original_translation}' skipped (no context)&quot;
+            }
+
+    except Exception as e:
+        return {
+            &quot;success&quot;: False,
+            &quot;action&quot;: &quot;error&quot;,
+            &quot;details&quot;: f&quot;'{original_word}' -&gt; '{original_translation}' error: {str(e)}&quot;
+        }
+
+
+def batch_validate(
+    max_words: Optional[int] = None,
+    user_id: Optional[int] = None,
+    days_active: int = 30,
+    dry_run: bool = False,
+    fix_slash_translations: bool = False,
+    fix_idiom_literals: bool = False,
+) -&gt; dict:
+    &quot;&quot;&quot;
+    Validate all scheduled words that haven't been validated yet.
+
+    Only processes words for users active in the last days_active days.
+    Returns statistics dict.
+    &quot;&quot;&quot;
+    start_time = datetime.now()
+
+    user_words = get_scheduled_words_needing_validation(
+        max_words, user_id, days_active, fix_slash_translations, fix_idiom_literals
+    )
+    total = len(user_words)
+
+    log(f&quot;Found {total} scheduled user_words needing validation&quot;)
+
+    if dry_run:
+        print(f&quot;\n[DRY RUN] Would validate {total} user_words:&quot;)
+        for uw in user_words[:20]:
+            print(f&quot;  - {uw.meaning.origin.content} -&gt; {uw.meaning.translation.content} (user {uw.user_id})&quot;)
+        if total &gt; 20:
+            print(f&quot;  ... and {total - 20} more&quot;)
+        return {&quot;total&quot;: total, &quot;dry_run&quot;: True}
+
+    stats = {
+        &quot;total&quot;: total,
+        &quot;valid&quot;: 0,
+        &quot;fixed&quot;: 0,
+        &quot;invalid&quot;: 0,
+        &quot;skipped&quot;: 0,
+        &quot;errors&quot;: 0,
+    }
+
+    for i, user_word in enumerate(user_words):
+        log(f&quot;[{i+1}/{total}] Validating user_word {user_word.id}&quot;)
+
+        result = validate_user_word(user_word)
+        action = result[&quot;action&quot;]
+
+        if action in stats:
+            stats[action] += 1
+
+        log(f&quot;  {result['action'].upper()}: {result['details']}&quot;)
+
+    end_time = datetime.now()
+    duration = (end_time - start_time).total_seconds()
+
+    stats[&quot;duration_seconds&quot;] = duration
+    stats[&quot;start_time&quot;] = start_time
+    stats[&quot;end_time&quot;] = end_time
+
+    return stats
+
+
+def main():
+    from zeeguu.api.app import create_app
+
+    app = create_app()
+    app.app_context().push()
+
+    parser = argparse.ArgumentParser(
+        description=&quot;Validate scheduled meanings that haven't been validated yet&quot;
+    )
+    parser.add_argument(
+        &quot;--all&quot;, action=&quot;store_true&quot;,
+        help=&quot;Validate all scheduled words needing validation&quot;
+    )
+    parser.add_argument(
+        &quot;--max-words&quot;, type=int,
+        help=&quot;Maximum number of words to validate&quot;
+    )
+    parser.add_argument(
+        &quot;--user-id&quot;, type=int,
+        help=&quot;Only validate words for a specific user&quot;
+    )
+    parser.add_argument(
+        &quot;--dry-run&quot;, action=&quot;store_true&quot;,
+        help=&quot;Show what would be validated without making changes&quot;
+    )
+    parser.add_argument(
+        &quot;--days-active&quot;, type=int, default=30,
+        help=&quot;Only validate for users active in the last N days (default: 30)&quot;
+    )
+    parser.add_argument(
+        &quot;--fix-slash&quot;, action=&quot;store_true&quot;,
+        help=&quot;Also re-validate translations containing '/' to pick one option&quot;
+    )
+    parser.add_argument(
+        &quot;--fix-idiom-literals&quot;, action=&quot;store_true&quot;,
+        help=&quot;Also re-validate idioms missing literal_meaning&quot;
+    )
+
+    args = parser.parse_args()
+
+    if not args.all and not args.max_words and not args.user_id:
+        print(&quot;Error: Must specify --all, --max-words, or --user-id&quot;)
+        print(&quot;Use --dry-run to preview changes&quot;)
+        sys.exit(1)
+
+    stats = batch_validate(
+        max_words=args.max_words,
+        user_id=args.user_id,
+        days_active=args.days_active,
+        dry_run=args.dry_run,
+        fix_slash_translations=args.fix_slash,
+        fix_idiom_literals=args.fix_idiom_literals,
+    )
+
+    if not args.dry_run:
+        print(f&quot;\nValidation completed:&quot;)
+        print(f&quot;  Total processed: {stats['total']}&quot;)
+        print(f&quot;  Valid: {stats['valid']}&quot;)
+        print(f&quot;  Fixed: {stats['fixed']}&quot;)
+        print(f&quot;  Invalid: {stats['invalid']}&quot;)
+        print(f&quot;  Skipped: {stats['skipped']}&quot;)
+        print(f&quot;  Errors: {stats['errors']}&quot;)
+        print(f&quot;  Duration: {stats['duration_seconds']:.1f} seconds&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

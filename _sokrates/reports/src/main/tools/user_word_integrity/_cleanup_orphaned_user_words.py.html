@@ -1,0 +1,251 @@
+<html>
+<head>
+    <title>tools/user_word_integrity/_cleanup_orphaned_user_words.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/user_word_integrity/_cleanup_orphaned_user_words.py (<b>132</b> lines of code) (<a href="_cleanup_orphaned_user_words.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python
+&quot;&quot;&quot;
+Cleanup script to find and delete orphaned UserWords.
+
+An orphaned UserWord is one that has no associated bookmarks.
+These can occur from:
+1. Bookmark updates that changed the word/translation (before the fix)
+2. Manual bookmark deletions
+3. Data inconsistencies
+
+This script:
+1. Finds all UserWords with zero bookmarks
+2. Shows the user which ones will be deleted
+3. Optionally deletes them (with --delete flag)
+&quot;&quot;&quot;
+
+import sys
+import os
+
+# Add project root to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# REQUIRED: Initialize Flask app context for database access
+from zeeguu.api.app import create_app
+from zeeguu.core.model import db
+
+app = create_app()
+app.app_context().push()
+
+from zeeguu.core.model import UserWord, Bookmark, User
+from sqlalchemy import func
+from collections import defaultdict
+import argparse
+
+
+def find_orphaned_user_words(user_id=None):
+    &quot;&quot;&quot;
+    Find all UserWords that have no associated bookmarks.
+
+    Args:
+        user_id: Optional user ID to limit search to specific user
+
+    Returns:
+        List of orphaned UserWord objects
+    &quot;&quot;&quot;
+    # Build query to find UserWords with no bookmarks
+    query = (
+        db.session.query(UserWord)
+        .outerjoin(Bookmark, Bookmark.user_word_id == UserWord.id)
+        .group_by(UserWord.id)
+        .having(func.count(Bookmark.id) == 0)
+    )
+
+    if user_id:
+        query = query.filter(UserWord.user_id == user_id)
+
+    return query.all()
+
+
+def analyze_orphaned_user_words(orphaned_user_words):
+    &quot;&quot;&quot;
+    Analyze and group orphaned UserWords by user.
+
+    Returns:
+        Dictionary mapping user_id to list of orphaned UserWords
+    &quot;&quot;&quot;
+    by_user = defaultdict(list)
+
+    for uw in orphaned_user_words:
+        by_user[uw.user_id].append(uw)
+
+    return by_user
+
+
+def print_orphaned_user_words(orphaned_user_words, verbose=False):
+    &quot;&quot;&quot;
+    Print information about orphaned UserWords.
+    &quot;&quot;&quot;
+    if not orphaned_user_words:
+        print(&quot;\n✓ No orphaned UserWords found!&quot;)
+        return
+
+    by_user = analyze_orphaned_user_words(orphaned_user_words)
+
+    print(f&quot;\n{'='*80}&quot;)
+    print(f&quot;Found {len(orphaned_user_words)} orphaned UserWords across {len(by_user)} users&quot;)
+    print(f&quot;{'='*80}\n&quot;)
+
+    for user_id, user_words in sorted(by_user.items()):
+        user = User.find_by_id(user_id)
+        user_name = user.name if user else &quot;Unknown&quot;
+        user_email = user.email if user else &quot;Unknown&quot;
+
+        print(f&quot;User: {user_name} ({user_email}) - User ID: {user_id}&quot;)
+        print(f&quot;  Orphaned UserWords: {len(user_words)}&quot;)
+
+        if verbose:
+            for uw in user_words[:10]:  # Limit to first 10 for readability
+                meaning = uw.meaning
+                print(f&quot;    - UserWord ID {uw.id}: \&quot;{meaning.origin.content}\&quot; &rarr; \&quot;{meaning.translation.content}\&quot;&quot;)
+                print(f&quot;      Meaning ID: {meaning.id}, Fit for study: {uw.fit_for_study}&quot;)
+
+            if len(user_words) &gt; 10:
+                print(f&quot;    ... and {len(user_words) - 10} more&quot;)
+
+        print()
+
+
+def delete_orphaned_user_words(orphaned_user_words, dry_run=True):
+    &quot;&quot;&quot;
+    Delete orphaned UserWords.
+
+    Args:
+        orphaned_user_words: List of UserWord objects to delete
+        dry_run: If True, only show what would be deleted without actually deleting
+    &quot;&quot;&quot;
+    if not orphaned_user_words:
+        print(&quot;No orphaned UserWords to delete.&quot;)
+        return 0
+
+    if dry_run:
+        print(f&quot;\n[DRY RUN] Would delete {len(orphaned_user_words)} orphaned UserWords&quot;)
+        return 0
+
+    print(f&quot;\nDeleting {len(orphaned_user_words)} orphaned UserWords...&quot;)
+
+    deleted_count = 0
+    for uw in orphaned_user_words:
+        try:
+            # Delete associated data first (schedules and exercises)
+            from zeeguu.core.word_scheduling.basicSR.basicSR import BasicSRSchedule
+            from zeeguu.core.model import Exercise
+
+            # Delete schedule
+            schedule = BasicSRSchedule.find_by_user_word(uw)
+            if schedule:
+                db.session.delete(schedule)
+
+            # Delete exercises (must be deleted before UserWord due to NOT NULL constraint)
+            exercises = Exercise.query.filter_by(user_word_id=uw.id).all()
+            for ex in exercises:
+                db.session.delete(ex)
+
+            db.session.delete(uw)
+            deleted_count += 1
+        except Exception as e:
+            print(f&quot;  ✗ Error deleting UserWord {uw.id}: {e}&quot;)
+
+    try:
+        db.session.commit()
+        print(f&quot;\n✓ Successfully deleted {deleted_count} orphaned UserWords&quot;)
+        return deleted_count
+    except Exception as e:
+        db.session.rollback()
+        print(f&quot;\n✗ Error committing deletions: {e}&quot;)
+        return 0
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description=&quot;Find and optionally delete orphaned UserWords (UserWords with no bookmarks)&quot;
+    )
+    parser.add_argument(
+        &quot;--user-id&quot;,
+        type=int,
+        help=&quot;Only process orphaned UserWords for this user ID&quot;
+    )
+    parser.add_argument(
+        &quot;--user-email&quot;,
+        type=str,
+        help=&quot;Only process orphaned UserWords for this user email&quot;
+    )
+    parser.add_argument(
+        &quot;--delete&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Actually delete the orphaned UserWords (default is dry-run)&quot;
+    )
+    parser.add_argument(
+        &quot;--verbose&quot;,
+        &quot;-v&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Show detailed information about each orphaned UserWord&quot;
+    )
+
+    args = parser.parse_args()
+
+    # Determine user_id from email if provided
+    user_id = args.user_id
+    if args.user_email:
+        user = User.query.filter_by(email=args.user_email).first()
+        if not user:
+            print(f&quot;✗ User with email '{args.user_email}' not found&quot;)
+            sys.exit(1)
+        user_id = user.id
+        print(f&quot;Found user: {user.name} (ID: {user_id})&quot;)
+
+    # Find orphaned UserWords
+    print(&quot;\nSearching for orphaned UserWords...&quot;)
+    orphaned_user_words = find_orphaned_user_words(user_id)
+
+    # Print analysis
+    print_orphaned_user_words(orphaned_user_words, verbose=args.verbose)
+
+    # Delete if requested
+    if args.delete:
+        if not orphaned_user_words:
+            return
+
+        # Confirm deletion
+        response = input(f&quot;\n⚠️  Are you sure you want to delete {len(orphaned_user_words)} orphaned UserWords? [y/N]: &quot;)
+        if response.lower() != 'y':
+            print(&quot;Deletion cancelled.&quot;)
+            return
+
+        delete_orphaned_user_words(orphaned_user_words, dry_run=False)
+    else:
+        if orphaned_user_words:
+            print(&quot;\n💡 Run with --delete to actually delete these orphaned UserWords&quot;)
+            print(&quot;   Example: python -m tools._cleanup_orphaned_user_words --delete&quot;)
+            if not user_id:
+                print(&quot;   Or for specific user: python -m tools._cleanup_orphaned_user_words --user-email i@mir.lu --delete&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

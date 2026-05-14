@@ -1,0 +1,55 @@
+<html>
+<head>
+    <title>zeeguu/api/utils/background.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/utils/background.py (<b>14</b> lines of code) (<a href="background.py">raw</a>):</h3>
+<div id="editor">import threading
+
+from flask import current_app
+
+from zeeguu.logging import log
+
+
+def run_in_background(fn, *args, **kwargs):
+    &quot;&quot;&quot;
+    Run a function in a background thread with a Flask app context.
+
+    The function receives its own app context and db session,
+    so it must re-query any SQLAlchemy objects by ID.
+
+    Usage:
+        run_in_background(my_function, arg1, arg2, kwarg1=val)
+    &quot;&quot;&quot;
+    app = current_app._get_current_object()
+
+    def wrapper():
+        with app.app_context():
+            try:
+                fn(*args, **kwargs)
+            except Exception as e:
+                log(f&quot;[background] Error in {fn.__name__}: {e}&quot;)
+
+    thread = threading.Thread(target=wrapper, daemon=True)
+    thread.start()
+    return thread
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

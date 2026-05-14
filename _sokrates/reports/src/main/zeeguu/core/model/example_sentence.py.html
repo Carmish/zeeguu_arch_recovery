@@ -1,0 +1,188 @@
+<html>
+<head>
+    <title>zeeguu/core/model/example_sentence.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/example_sentence.py (<b>125</b> lines of code) (<a href="example_sentence.py">raw</a>):</h3>
+<div id="editor">from zeeguu.core.model.db import db
+from zeeguu.core.model.language import Language
+from zeeguu.core.model.user import User
+from zeeguu.core.model.ai_generator import AIGenerator
+from zeeguu.core.model.meaning import Meaning
+import sqlalchemy
+
+
+class ExampleSentence(db.Model):
+    &quot;&quot;&quot;
+    Stores example sentences that can be used as contexts for bookmarks.
+    These can be:
+    - AI-generated examples (has ai_generator_id)
+    - User-uploaded examples (has user_id)
+    - System template examples (neither ai_generator_id nor user_id)
+    &quot;&quot;&quot;
+
+    __table_args__ = {&quot;mysql_collate&quot;: &quot;utf8_bin&quot;}
+
+    id = db.Column(db.Integer, primary_key=True)
+    
+    # The example sentence content
+    sentence = db.Column(db.Text, nullable=False)
+    translation = db.Column(db.Text)  # Optional translation of the sentence
+    
+    # Language of the sentence
+    language_id = db.Column(db.Integer, db.ForeignKey(Language.id), nullable=False)
+    language = db.relationship(Language)
+    
+    # The meaning this example demonstrates
+    meaning_id = db.Column(db.Integer, db.ForeignKey(Meaning.id), nullable=False)
+    meaning = db.relationship(Meaning)
+    
+    # CEFR level this example is appropriate for
+    cefr_level = db.Column(db.String(10))  # A1, A2, B1, B2, C1, C2
+    
+    # Source of the example (only one should be set)
+    ai_generator_id = db.Column(db.Integer, db.ForeignKey(AIGenerator.id))
+    ai_generator = db.relationship(AIGenerator)
+    
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    user = db.relationship(User)
+    
+    # Timestamps
+    created_at = db.Column(db.DateTime, nullable=False, default=db.func.now())
+
+    def __init__(
+        self,
+        sentence,
+        language,
+        meaning,
+        translation=None,
+        cefr_level=None,
+        ai_generator=None,
+        user=None,
+    ):
+        self.sentence = sentence
+        self.language = language
+        self.meaning = meaning
+        self.translation = translation
+        self.cefr_level = cefr_level
+        self.ai_generator = ai_generator
+        self.user = user
+
+    def __repr__(self):
+        source = &quot;system&quot;
+        if self.ai_generator:
+            source = f&quot;ai:{self.ai_generator.name}&quot;
+        elif self.user:
+            source = f&quot;user:{self.user.id}&quot;
+        return f&quot;&lt;ExampleSentence {self.id}: {self.sentence[:50]}... ({source})&gt;&quot;
+
+    @property
+    def source_type(self):
+        &quot;&quot;&quot;Returns the type of source for this example&quot;&quot;&quot;
+        if self.ai_generator_id:
+            return &quot;ai_generated&quot;
+        elif self.user_id:
+            return &quot;user_uploaded&quot;
+        else:
+            return &quot;system_template&quot;
+
+    @classmethod
+    def find_by_id(cls, example_id):
+        try:
+            return cls.query.filter_by(id=example_id).one()
+        except sqlalchemy.orm.exc.NoResultFound:
+            return None
+
+    @classmethod
+    def find_by_meaning(cls, meaning, limit=None):
+        &quot;&quot;&quot;Find example sentences for a specific meaning&quot;&quot;&quot;
+        query = cls.query.filter(cls.meaning == meaning).order_by(cls.created_at.desc())
+        if limit:
+            query = query.limit(limit)
+        return query.all()
+
+    @classmethod
+    def create_ai_generated(
+        cls,
+        session,
+        sentence,
+        language,
+        meaning,
+        ai_generator,
+        translation=None,
+        cefr_level=None,
+        commit=True,
+    ):
+        &quot;&quot;&quot;Create an AI-generated example sentence&quot;&quot;&quot;
+        # Debug logging
+        from zeeguu.logging import log
+        log(f&quot;Creating ExampleSentence: sentence='{sentence}', translation='{translation}', cefr_level='{cefr_level}'&quot;)
+        
+        example = cls(
+            sentence=sentence,
+            language=language,
+            meaning=meaning,
+            translation=translation,
+            cefr_level=cefr_level,
+            ai_generator=ai_generator,
+        )
+        session.add(example)
+        if commit:
+            session.commit()
+        return example
+
+    @classmethod
+    def create_user_uploaded(
+        cls,
+        session,
+        sentence,
+        language,
+        meaning,
+        user,
+        translation=None,
+        cefr_level=None,
+        commit=True,
+    ):
+        &quot;&quot;&quot;Create a user-uploaded example sentence&quot;&quot;&quot;
+        example = cls(
+            sentence=sentence,
+            language=language,
+            meaning=meaning,
+            translation=translation,
+            cefr_level=cefr_level,
+            user=user,
+        )
+        session.add(example)
+        if commit:
+            session.commit()
+        return example
+
+    def to_json(self):
+        return {
+            &quot;id&quot;: self.id,
+            &quot;sentence&quot;: self.sentence,
+            &quot;translation&quot;: self.translation,
+            &quot;language&quot;: self.language.code,
+            &quot;cefr_level&quot;: self.cefr_level,
+            &quot;source_type&quot;: self.source_type,
+            &quot;created_at&quot;: self.created_at.isoformat() if self.created_at else None,
+        }</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

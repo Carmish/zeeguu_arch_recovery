@@ -1,0 +1,176 @@
+<html>
+<head>
+    <title>def detect()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def detect()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/mwe/stanza_mwe_detector.py [0:0]</i></p>
+<ul>
+    <li><b>103</b> lines of code</li>
+    <li><b>55</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+    def detect(self, tokens: List[Dict]) -&gt; List[Dict]:
+        &quot;&quot;&quot;Detect aux+verb, clitic+verb, să+verb, and o+să+verb groups.&quot;&quot;&quot;
+        # Get base aux groups
+        mwe_groups = super().detect(tokens)
+        processed_indices = {
+            idx for group in mwe_groups for idx in group[&quot;dependent_indices&quot;]
+        }
+
+        # Also group &quot;să&quot; with its verb
+        for i, token in enumerate(tokens):
+            if i in processed_indices:
+                continue
+
+            text = token.get(&quot;text&quot;, &quot;&quot;).lower()
+            dep = token.get(&quot;dep&quot;) or &quot;&quot;
+            head = token.get(&quot;head&quot;)
+
+            # Check if this is &quot;să&quot; with mark relation
+            if text in self.SUBJUNCTIVE_PARTICLES and dep == &quot;mark&quot;:
+                head_idx = self._convert_head_to_index(head)
+
+                if head_idx is not None and head_idx != i:
+                    if not (0 &lt;= head_idx &lt; len(tokens)):
+                        continue
+
+                    # Check if head is a verb
+                    head_pos = tokens[head_idx].get(&quot;pos&quot;, &quot;&quot;)
+                    if head_pos not in (&quot;VERB&quot;, &quot;AUX&quot;):
+                        continue
+
+                    # Check if we already have a group for this head
+                    existing_group = self._find_group_by_head(mwe_groups, head_idx)
+
+                    if existing_group:
+                        if i not in existing_group[&quot;dependent_indices&quot;]:
+                            existing_group[&quot;dependent_indices&quot;].append(i)
+                    else:
+                        mwe_groups.append({
+                            &quot;head_idx&quot;: head_idx,
+                            &quot;dependent_indices&quot;: [i],
+                            &quot;type&quot;: &quot;subjunctive&quot;
+                        })
+
+                    processed_indices.add(i)
+
+        # Handle &quot;o&quot; future clitic: &quot;o să depun&quot; (I will submit)
+        # IMPORTANT: &quot;o&quot; is ONLY a future marker when immediately followed by &quot;să&quot;
+        # Otherwise it's an object pronoun: &quot;nu o mai poți controla&quot; (you can't control it)
+        for i, token in enumerate(tokens):
+            if i in processed_indices:
+                continue
+
+            text = token.get(&quot;text&quot;, &quot;&quot;).lower()
+
+            # Check if this is future clitic &quot;o&quot; - MUST be followed by &quot;să&quot;
+            if text in self.FUTURE_CLITICS:
+                # Only consider &quot;o&quot; as future marker if next token is &quot;să&quot;
+                if i + 1 &lt; len(tokens):
+                    next_token = tokens[i + 1]
+                    next_text = next_token.get(&quot;text&quot;, &quot;&quot;).lower()
+                    if next_text in self.SUBJUNCTIVE_PARTICLES:
+                        # This is &quot;o să&quot; - find the verb that &quot;să&quot; points to
+                        sa_head = next_token.get(&quot;head&quot;)
+                        sa_head_idx = self._convert_head_to_index(sa_head)
+                        if sa_head_idx is not None and 0 &lt;= sa_head_idx &lt; len(tokens):
+                            if tokens[sa_head_idx].get(&quot;pos&quot;, &quot;&quot;) in (&quot;VERB&quot;, &quot;AUX&quot;):
+                                verb_idx = sa_head_idx
+                                existing_group = self._find_group_by_head(mwe_groups, verb_idx)
+
+                                if existing_group:
+                                    if i not in existing_group[&quot;dependent_indices&quot;]:
+                                        existing_group[&quot;dependent_indices&quot;].append(i)
+                                else:
+                                    mwe_groups.append({
+                                        &quot;head_idx&quot;: verb_idx,
+                                        &quot;dependent_indices&quot;: [i],
+                                        &quot;type&quot;: &quot;future&quot;
+                                    })
+
+                                processed_indices.add(i)
+
+        # Handle Romanian verbal adverbs: &quot;nu&quot;, &quot;mai&quot;
+        # &quot;să nu zic&quot; (to not say), &quot;nu mai aveau&quot; (they no longer had)
+        for i, token in enumerate(tokens):
+            if i in processed_indices:
+                continue
+
+            text = token.get(&quot;text&quot;, &quot;&quot;).lower()
+            dep = token.get(&quot;dep&quot;) or &quot;&quot;
+            head = token.get(&quot;head&quot;)
+
+            # Check if this is a verbal adverb (nu, mai) with advmod relation
+            if text in self.VERBAL_ADVERBS and dep == &quot;advmod&quot;:
+                head_idx = self._convert_head_to_index(head)
+
+                if head_idx is not None and head_idx != i:
+                    if not (0 &lt;= head_idx &lt; len(tokens)):
+                        continue
+
+                    # Check if head is a verb
+                    head_pos = tokens[head_idx].get(&quot;pos&quot;, &quot;&quot;)
+                    if head_pos not in (&quot;VERB&quot;, &quot;AUX&quot;):
+                        continue
+
+                    existing_group = self._find_group_by_head(mwe_groups, head_idx)
+
+                    if existing_group:
+                        if i not in existing_group[&quot;dependent_indices&quot;]:
+                            existing_group[&quot;dependent_indices&quot;].append(i)
+                    else:
+                        mwe_groups.append({
+                            &quot;head_idx&quot;: head_idx,
+                            &quot;dependent_indices&quot;: [i],
+                            &quot;type&quot;: &quot;verbal_adverb&quot;
+                        })
+
+                    processed_indices.add(i)
+
+        # Post-processing: For separated MWEs, include intermediate words
+        # E.g., &quot;nu o mai poți controla&quot; - the &quot;o&quot; should be included even though
+        # it's just an object pronoun, because it's semantically part of the phrase
+        # Romanian allows more intermediate words than Germanic (clitics cluster around verb)
+        MAX_INTERMEDIATE_WORDS = 4
+
+        for group in mwe_groups:
+            head_idx = group[&quot;head_idx&quot;]
+            dep_indices = group[&quot;dependent_indices&quot;]
+
+            if not dep_indices:
+                continue
+
+            # Find the span of the MWE (min to max index)
+            all_indices = [head_idx] + dep_indices
+            min_idx = min(all_indices)
+            max_idx = max(all_indices)
+
+            # Count intermediate words (excluding punctuation)
+            intermediate_count = 0
+            for idx in range(min_idx + 1, max_idx):
+                if idx not in all_indices:
+                    token = tokens[idx]
+                    if token.get(&quot;pos&quot;) != &quot;PUNCT&quot;:
+                        intermediate_count += 1
+
+            # Only include intermediates if within limit
+            if intermediate_count &gt; 0 and intermediate_count &lt;= MAX_INTERMEDIATE_WORDS:
+                for idx in range(min_idx, max_idx + 1):
+                    if idx != head_idx and idx not in dep_indices:
+                        token = tokens[idx]
+                        if token.get(&quot;pos&quot;) == &quot;PUNCT&quot;:
+                            continue
+                        dep_indices.append(idx)
+
+        return mwe_groups
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

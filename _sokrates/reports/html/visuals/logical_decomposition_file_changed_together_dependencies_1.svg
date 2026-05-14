@@ -1,0 +1,73 @@
+<svg width="280pt" height="217pt"
+ viewBox="0.00 0.00 280.00 217.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 212.5)">
+<title>G</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-212.5 276.29,-212.5 276.29,4 -4,4"/>
+<!-- zeeguu -->
+<g id="node1" class="node">
+<title>zeeguu</title>
+<polygon fill="#00b2ee" stroke="white" points="191.75,-208.5 132.25,-208.5 132.25,-172.5 191.75,-172.5 191.75,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="162" y="-185.82" font-family="Tahoma" font-size="14.00">zeeguu</text>
+</g>
+<!-- zeeguu&#45;&#45;zeeguu -->
+<g id="edge1" class="edge">
+<title>zeeguu&#45;&#45;zeeguu</title>
+<path fill="none" stroke="#a0a0a0" stroke-width="10" d="M191.84,-198.59C201.79,-198.59 209.75,-195.89 209.75,-190.5 209.75,-185.11 201.79,-182.41 191.84,-182.41"/>
+<text xml:space="preserve" text-anchor="middle" x="222.88" y="-186.22" font-family="Arial" font-size="12.00"> 352 </text>
+</g>
+<!-- tools -->
+<g id="node2" class="node">
+<title>tools</title>
+<polygon fill="#00b2ee" stroke="white" points="54,-122.25 0,-122.25 0,-86.25 54,-86.25 54,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="27" y="-99.58" font-family="Tahoma" font-size="14.00">tools</text>
+</g>
+<!-- zeeguu&#45;&#45;tools -->
+<g id="edge2" class="edge">
+<title>zeeguu&#45;&#45;tools</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M134.03,-172.04C110.7,-157.49 77.66,-136.86 54.47,-122.4"/>
+<text xml:space="preserve" text-anchor="middle" x="115.71" y="-143.1" font-family="Arial" font-size="12.00"> 184 </text>
+</g>
+<!-- stanza_service -->
+<g id="node4" class="node">
+<title>stanza_service</title>
+<polygon fill="#00b2ee" stroke="white" points="214.62,-122.25 109.38,-122.25 109.38,-86.25 214.62,-86.25 214.62,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="162" y="-99.58" font-family="Tahoma" font-size="14.00">stanza_service</text>
+</g>
+<!-- zeeguu&#45;&#45;stanza_service -->
+<g id="edge6" class="edge">
+<title>zeeguu&#45;&#45;stanza_service</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M162,-172.04C162,-157.58 162,-137.14 162,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="168.38" y="-143.1" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- tools&#45;&#45;tools -->
+<g id="edge3" class="edge">
+<title>tools&#45;&#45;tools</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.368627" d="M54.24,-112.33C64.02,-112.5 72,-109.81 72,-104.25 72,-98.69 64.02,-96 54.24,-96.17"/>
+<text xml:space="preserve" text-anchor="middle" x="81.75" y="-99.97" font-family="Arial" font-size="12.00"> 49 </text>
+</g>
+<!-- ROOT -->
+<g id="node3" class="node">
+<title>ROOT</title>
+<polygon fill="#00b2ee" stroke="white" points="181,-36 127,-36 127,0 181,0 181,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="154" y="-13.32" font-family="Tahoma" font-size="14.00">ROOT</text>
+</g>
+<!-- tools&#45;&#45;ROOT -->
+<g id="edge5" class="edge">
+<title>tools&#45;&#45;ROOT</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M53.31,-85.79C75.11,-71.33 105.93,-50.89 127.72,-36.43"/>
+<text xml:space="preserve" text-anchor="middle" x="104.48" y="-56.85" font-family="Arial" font-size="12.00"> 4 </text>
+</g>
+<!-- ROOT&#45;&#45;zeeguu -->
+<g id="edge4" class="edge">
+<title>ROOT&#45;&#45;zeeguu</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M181.3,-28.78C205.31,-39.01 238.76,-57.63 254,-86.25 261.52,-100.37 261.24,-107.98 254,-122.25 241.1,-147.65 213.61,-165.76 192.01,-176.73"/>
+<text xml:space="preserve" text-anchor="middle" x="265.91" y="-99.97" font-family="Arial" font-size="12.00"> 5 </text>
+</g>
+<!-- stanza_service&#45;&#45;stanza_service -->
+<g id="edge7" class="edge">
+<title>stanza_service&#45;&#45;stanza_service</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M214.98,-111.98C225.3,-111.08 232.62,-108.5 232.62,-104.25 232.62,-100 225.3,-97.42 214.98,-96.52"/>
+<text xml:space="preserve" text-anchor="middle" x="239" y="-99.97" font-family="Arial" font-size="12.00"> 2 </text>
+</g>
+</g>
+</svg>

@@ -1,0 +1,118 @@
+<html>
+<head>
+    <title>def main()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def main()</h3>
+<p style="margin-top: 4px">in <i>tools/reclassify_unclassified_phrases.py [0:0]</i></p>
+<ul>
+    <li><b>86</b> lines of code</li>
+    <li><b>5</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def main():
+    parser = argparse.ArgumentParser(
+        description='Reclassify unclassified multi-word phrases for recently active users'
+    )
+    parser.add_argument(
+        '--days',
+        type=int,
+        default=30,
+        help='Number of days to look back for active users (default: 30)'
+    )
+    parser.add_argument(
+        '--limit',
+        type=int,
+        default=None,
+        help='Maximum number of meanings to classify (default: no limit)'
+    )
+    parser.add_argument(
+        '--dry-run',
+        action='store_true',
+        help='Show what would be done without actually doing it'
+    )
+    parser.add_argument(
+        '--user-id',
+        type=int,
+        default=None,
+        help='Process only a specific user ID'
+    )
+    parser.add_argument(
+        '--batch-size',
+        type=int,
+        default=15,
+        help='Number of meanings to classify per API call (default: 15)'
+    )
+    parser.add_argument(
+        '--interactive',
+        action='store_true',
+        help='Ask for confirmation before unscheduling arbitrary_multi_word phrases'
+    )
+
+    args = parser.parse_args()
+
+    log(&quot;=&quot;*80)
+    log(&quot;Reclassifying Unclassified Multi-Word Phrases&quot;)
+    log(&quot;=&quot;*80)
+    log(f&quot;Configuration:&quot;)
+    log(f&quot;  Days lookback: {args.days}&quot;)
+    log(f&quot;  Limit: {args.limit if args.limit else 'No limit'}&quot;)
+    log(f&quot;  Batch size: {args.batch_size}&quot;)
+    log(f&quot;  Interactive: {args.interactive}&quot;)
+    log(f&quot;  Dry run: {args.dry_run}&quot;)
+    log(f&quot;  Specific user: {args.user_id if args.user_id else 'All recently active'}&quot;)
+    log(&quot;&quot;)
+
+    # Get users to process
+    if args.user_id:
+        users = [User.query.get(args.user_id)]
+        if not users[0]:
+            log(f&quot;Error: User {args.user_id} not found&quot;)
+            return
+        log(f&quot;Processing single user: {users[0].name}&quot;)
+    else:
+        log(f&quot;Finding users active in last {args.days} days...&quot;)
+        users = get_recently_active_users(args.days)
+        log(f&quot;Found {len(users)} recently active users&quot;)
+
+    if not users:
+        log(&quot;No users to process&quot;)
+        return
+
+    # Process users
+    stats = reclassify_for_users(
+        users,
+        limit=args.limit,
+        dry_run=args.dry_run,
+        batch_size=args.batch_size,
+        interactive=args.interactive
+    )
+
+    # Print summary
+    log(&quot;\n&quot; + &quot;=&quot;*80)
+    log(&quot;SUMMARY&quot;)
+    log(&quot;=&quot;*80)
+    log(f&quot;Users processed: {stats['users_processed']}&quot;)
+    log(f&quot;Unclassified meanings found: {stats['meanings_found']}&quot;)
+    log(f&quot;Meanings classified: {stats['meanings_classified']}&quot;)
+    log(f&quot;Meanings failed: {stats['meanings_failed']}&quot;)
+    log(&quot;&quot;)
+    log(&quot;Classification breakdown:&quot;)
+    log(f&quot;  - Arbitrary multi-word (unscheduled): {stats['arbitrary_multi_word']}&quot;)
+    log(f&quot;  - Collocations: {stats.get('collocation', 0)}&quot;)
+    log(f&quot;  - Idioms: {stats.get('idiom', 0)}&quot;)
+    log(f&quot;  - Expressions: {stats.get('expression', 0)}&quot;)
+    log(f&quot;  - Single word: {stats.get('single_word', 0)}&quot;)
+
+    if args.dry_run:
+        log(&quot;\n[DRY RUN] No changes were made to the database&quot;)
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

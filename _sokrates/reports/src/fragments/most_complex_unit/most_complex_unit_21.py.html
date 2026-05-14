@@ -1,0 +1,118 @@
+<html>
+<head>
+    <title>def prepare_lesson_generation()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def prepare_lesson_generation()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/audio_lessons/daily_lesson_generator.py [0:0]</i></p>
+<ul>
+    <li><b>64</b> lines of code</li>
+    <li><b>26</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+    def prepare_lesson_generation(self, user, timezone_offset=0, canonical_suggestion=None, lesson_type=&quot;three_words_lesson&quot;):
+        &quot;&quot;&quot;
+        Validate and prepare for lesson generation (synchronous, fast).
+        Returns either an error/existing-lesson dict, or a preparation dict
+        with all info needed to generate in the background.
+
+        Args:
+            user: The User object to generate a lesson for
+            timezone_offset: Client's timezone offset in minutes from UTC
+            canonical_suggestion: Canonicalized topic/situation (max 100 chars)
+            lesson_type: Optional type (&quot;topic&quot; or &quot;situation&quot;)
+
+        Returns:
+            Dictionary with either error info, existing lesson, or preparation data
+        &quot;&quot;&quot;
+        log(
+            f&quot;[prepare_lesson_generation] Starting for user {user.id} ({user.name}), timezone_offset={timezone_offset}&quot;
+        )
+
+        # Check if a lesson already exists for today
+        existing_lesson = self.get_todays_lesson_for_user(user, timezone_offset)
+        if existing_lesson.get(&quot;lesson_id&quot;):
+            return existing_lesson
+        elif existing_lesson.get(&quot;error&quot;) and existing_lesson.get(&quot;status_code&quot;) == 404:
+            # Stale lesson record with missing audio file &mdash; delete it so we can regenerate
+            log(
+                f&quot;[generate_daily_lesson_for_user] Found stale lesson with missing audio, deleting...&quot;
+            )
+            self.delete_todays_lesson_for_user(user, timezone_offset)
+
+        # Select words for the lesson (only required for vocabulary lessons)
+        is_dialogue = canonical_suggestion and lesson_type in (&quot;topic&quot;, &quot;situation&quot;)
+        selected_words, unscheduled_words = [], []
+        if not is_dialogue:
+            selected_words, unscheduled_words = self.select_words_for_lesson(
+                user, 3, return_unscheduled_info=True
+            )
+            log(
+                f&quot;[prepare_lesson_generation] Selected {len(selected_words)} words for lesson&quot;
+            )
+            if len(selected_words) &lt; 2:
+                return {
+                    &quot;error&quot;: f&quot;Not enough words available for audio lesson. Need at least 2 words that haven't been in previous audio lessons.&quot;,
+                    &quot;available_words&quot;: len(selected_words),
+                    &quot;status_code&quot;: 400,
+                }
+
+        # Get user's languages and CEFR level
+        origin_language = user.learned_language.code
+        translation_language = user.native_language.code
+        cefr_level = user.cefr_level_for_learned_language()
+
+        # Check if language is supported for audio generation
+        from zeeguu.core.audio_lessons.voice_config import is_language_supported_for_audio
+        if not is_language_supported_for_audio(origin_language):
+            return {
+                &quot;error&quot;: f&quot;Audio lessons are not yet available for {user.learned_language.name}&quot;,
+                &quot;status_code&quot;: 400,
+            }
+
+        # Check if native language is supported for teacher voice
+        if not is_language_supported_for_audio(translation_language):
+            return {
+                &quot;error&quot;: f&quot;Audio lessons are not yet available for speakers of {user.native_language.name}&quot;,
+                &quot;status_code&quot;: 400,
+            }
+
+        # Check if a generation is already in progress for this user
+        active_progress = AudioLessonGenerationProgress.find_active_for_user(user)
+        if active_progress:
+            return {
+                &quot;error&quot;: &quot;A lesson is already being generated. Please wait for it to complete.&quot;,
+                &quot;in_progress&quot;: True,
+                &quot;status_code&quot;: 409,
+            }
+
+        # Create progress tracking record
+        # Dialogue lessons (topic/situation) generate one segment; auto generates per-word
+        is_dialogue = canonical_suggestion and lesson_type in (&quot;topic&quot;, &quot;situation&quot;)
+        progress_total = 1 if is_dialogue else len(selected_words)
+        progress = AudioLessonGenerationProgress.create_for_user(
+            user=user, total_segments=progress_total
+        )
+        db.session.commit()  # Commit so frontend can see it immediately
+
+        # Return preparation data for background generation
+        return {
+            &quot;selected_word_ids&quot;: [w.id for w in selected_words],
+            &quot;unscheduled_word_ids&quot;: [w.id for w in unscheduled_words],
+            &quot;origin_language&quot;: origin_language,
+            &quot;translation_language&quot;: translation_language,
+            &quot;cefr_level&quot;: cefr_level,
+            &quot;progress_id&quot;: progress.id,
+            &quot;canonical_suggestion&quot;: canonical_suggestion,
+            &quot;lesson_type&quot;: lesson_type,
+        }
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

@@ -1,0 +1,84 @@
+zeeguu/core/account_management/user_account_creation.py (6 lines):
+	- line 94: # TODO: delete after the new onboarding of Iga is done
+	- line 97: username, # TODO: this should be name (and add username too)
+	- line 113: # TODO Implement this when username is implemented
+	- line 169: # TODO Only run this if username is not provided, but rather auto-generated. Implement it when username is implemented
+	- line 201: # TODO: Implement this when username is implemented
+	- line 241: # TODO Only run this if username is not provided, but rather auto-generated. Implement it when username is implemented
+
+
+zeeguu/api/endpoints/translation.py (2 lines):
+	- line 76: # ML: TODO:
+	- line 105: # TODO: must remove theurl, and title - they are not used in the calling method.
+
+
+zeeguu/core/model/user.py (2 lines):
+	- line 693: # TODO: join with Article on language_id
+	- line 1194: TODO: must think better about this...
+
+
+zeeguu/core/model/bookmark.py (2 lines):
+	- line 392: # TODO: This will be temporary.
+	- line 530: # TODO: Tiago remember to also delete the only places that calls this
+
+
+zeeguu/core/model/user_activitiy_data.py (2 lines):
+	- line 110: # TODO: To delete this... i don't think it's ever used
+	- line 188: extra_value: str = None,  # TODO: to delete this, i don't think it's ever used.
+
+
+tools/migrations/25-05-24--adding_the_user_word_table.sql (2 lines):
+	- line 1: -- TODO: This script does not include adding the user_word to the basic_sr_schedule.
+	- line 2: -- TODO: Could it be that it got added by SQLAlchemy? Otherwise make sure to add it here below.
+
+
+zeeguu/api/endpoints/article.py (1 line):
+	- line 621: # TODO: Add admin/teacher check here if needed
+
+
+zeeguu/core/user_statistics/exercise_sessions.py (1 line):
+	- line 10: # TODO: use also the cohort_id somehow
+
+
+zeeguu/core/model/exercise_outcome.py (1 line):
+	- line 22: # TODO: Rename to EXERCISE_FEEDBACK
+
+
+zeeguu/core/model/phrase.py (1 line):
+	- line 36: # TODO: Performance
+
+
+zeeguu/core/word_scheduling/basicSR/basicSR.py (1 line):
+	- line 81: # TODO: There's no reason for this duplicating the behavior above.
+
+
+zeeguu/api/endpoints/sessions.py (1 line):
+	- line 108: # TODO: ideally update in parallel with running the decorated method?
+
+
+zeeguu/core/language/strategies/frequency_difficulty_estimator.py (1 line):
+	- line 121: # TODO: must test this thing
+
+
+zeeguu/core/model/article_tokenization_cache.py (1 line):
+	- line 25: # TODO: tokenized_summary and tokenized_title are now redundant since tokenized_content
+
+
+tools/ml/cefr_trainers/train_cefr_classifiers_with_frequency.py (1 line):
+	- line 59: # TODO: Load actual CEFR word lists for each language
+
+
+zeeguu/core/model/source.py (1 line):
+	- line 25: # TODO: Tiago - move article title to here
+
+
+zeeguu/core/model/text.py (1 line):
+	- line 132: # TODO: Tiago, Delete after Text is deleted
+
+
+zeeguu/core/model/video.py (1 line):
+	- line 131: # TODO: Remove this temporary workaround (this is because source_id is unique in video table)
+
+
+zeeguu/core/semantic_vector_api/retrieve_embeddings.py (1 line):
+	- line 13: # TODO: At some point update the Embedding API to not talk only about articles

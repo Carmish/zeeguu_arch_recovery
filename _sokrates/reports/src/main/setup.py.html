@@ -1,0 +1,94 @@
+<html>
+<head>
+    <title>setup.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">setup.py (<b>46</b> lines of code) (<a href="setup.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python
+# -*- coding: utf8 -*-
+import setuptools
+from setuptools.command.develop import develop
+from setuptools.command.install import install
+
+from os import getenv, path
+
+# Note: This is duplicate with zeeguu/config/__init__.py but we can't avoid it
+# because at the time we're running the setup.py we don't have the packages installed yet
+# and also we can't import it from there with a relative import
+# I guess everything would be easier if by default, we would work with in /zeeguu-resources
+# that would make the container preparation easier, because we would not have to define
+# zeeguu_resources ... come on, that's not that hard
+ZEEGUU_RESOURCES_FOLDER = getenv(&quot;ZEEGUU_RESOURCES_FOLDER&quot;) or path.expanduser(&quot;~&quot;)
+
+
+class DevelopScript(develop):
+    def run(self):
+        develop.run(self)
+        ntlk_install_packages()
+
+
+class InstallScript(install):
+    def run(self):
+        install.run(self)
+        ntlk_install_packages()
+
+
+def ntlk_install_packages():
+    import nltk
+    import os
+
+    # install in /var/www if available
+    # when API is run with mod_wsgi from container
+    # in the docker container
+    if os.path.exists(ZEEGUU_RESOURCES_FOLDER) and os.access(
+        ZEEGUU_RESOURCES_FOLDER, os.W_OK
+    ):
+        nltk_data_dir = os.path.join(ZEEGUU_RESOURCES_FOLDER, &quot;nltk_data&quot;)
+        nltk.download(&quot;punkt&quot;, download_dir=nltk_data_dir)
+        nltk.download(&quot;punkt_tab&quot;, download_dir=nltk_data_dir)
+        nltk.download(&quot;averaged_perceptron_tagger&quot;, download_dir=nltk_data_dir)
+    else:
+        print(&quot;Downloading nltk packages...&quot;)
+        nltk.download(&quot;punkt&quot;)
+        nltk.download(&quot;punkt_tab&quot;)
+        nltk.download(&quot;averaged_perceptron_tagger&quot;)
+
+
+setuptools.setup(
+    name=&quot;zeeguu_api&quot;,
+    version=&quot;0.31&quot;,
+    packages=setuptools.find_packages(),
+    include_package_data=True,
+    zip_safe=False,
+    author=&quot;The Zeeguu Team&quot;,
+    author_email=&quot;zeeguu.team@gmail.com&quot;,
+    description=(
+        &quot;API for Zeeguu, a project that aims to accelerate vocabulary&quot;
+        &quot; acquisition in a second language&quot;
+    ),
+    keywords=&quot; API, second language acquisition&quot;,
+    cmdclass={
+        &quot;develop&quot;: DevelopScript,
+        &quot;install&quot;: InstallScript,
+    },
+)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

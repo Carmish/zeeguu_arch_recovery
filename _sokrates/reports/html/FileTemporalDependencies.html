@@ -1,0 +1,2890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Zeeguu-api Temporal Dependencies</title>
+  <style type="text/css" media="all">
+    body {
+      font-family: Roboto, Vollkorn, Ubuntu, Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif;
+      margin-left:5%;
+      margin-right:5%;
+    }
+    table {
+      color: #333;
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+    td, th {
+      border: 1px solid #CCC;
+      height: 30px;
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    th {
+      background: #F3F3F3;
+      font-weight: bold;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    td {
+      background: #FFFFFF;
+      text-align: left;
+    }
+    h3 {
+      margin-top: 0
+    }
+    h1 {
+      margin-bottom: 6px;
+    }
+    p {
+      margin-top: 0;
+    }
+    a {
+      text-decoration: none;
+    }
+    .reportSubtitle {
+      color: grey;
+    }
+    .group {
+      margin-bottom: 10px;
+      border: solid lightgrey 1px;
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+      border-radius: 2px;
+    }
+    .section {
+      margin-bottom: 30px;
+      border: solid lightgrey 1px;
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+      border-radius: 2px;
+      padding: 0;
+    }
+    .sectionHeader {
+      margin-bottom: 30px;
+      padding: 20px;
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19);
+      background-color: lightskyblue;
+    }
+    .sectionTitle {
+      font-size: 140%;
+    }
+    .sectionSubtitle {
+      font-size: 90%; color: grey;
+    }
+    .subSectionTitle {
+      font-size: 140%;
+    }
+    .subSectionSubtitle {
+      font-size: 90%; color: grey;
+    }
+    .subSection {
+      margin-bottom: 30px;
+      border: solid lightgrey 1px;
+      padding-top: 0;
+      padding-bottom: 0;
+      box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 1px 9px 0 rgba(0, 0, 0, 0.19);
+    }
+    .subSectionHeader {
+      border: solid lightgrey 1px;
+      padding: 6px;
+      background-color: lightgrey;
+      box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0.2), 0 2px 9px 0 rgba(0, 0, 0, 0.19);
+    }
+    .sectionBody {
+      margin: 20px;
+    }
+.tab {
+ overflow: hidden;
+ border: 1px solid #ccc;
+ background-color: #f1f1f1;
+}
+.tab button {
+ font-family: Roboto, Vollkorn, Ubuntu, Optima, Segoe, Segoe UI, Candara, Calibri, Arial, sans-serif;
+ font-size: 100%;
+ background-color: inherit;
+ float: left;
+ border: none;
+ outline: none;
+ cursor: pointer;
+ padding: 14px 16px;
+ transition: 0.3s;
+}
+.tab button:hover {
+ background-color: #ddd;
+}
+.tab button.active {
+ background-color: #ccc;
+}
+.tabcontent {
+ display: none;
+ padding: 6px 12px;
+ border: 1px solid #ccc;
+ overflow-y: auto;
+ border-top: none;
+}
+  </style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <script type="text/javascript">
+    function showHide(id) {
+      var e = document.getElementById(id);
+      e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+    }
+    function showHideDisappear(id) {
+      var e = document.getElementById(id);
+      e.style.display = '';      var eTrigger = document.getElementById(id + '_trigger');
+      eTrigger.style.display = 'none';
+    }
+    function openTab(evt, tabName) {
+     var i, tabcontent, tablinks;
+     tabcontent = document.getElementsByClassName("tabcontent");
+     for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+     }
+     tablinks = document.getElementsByClassName("tablinks");
+     for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+     }
+     document.getElementById(tabName).style.display = "block";
+     evt.currentTarget.className += " active";
+    }
+  </script>
+  
+</head>
+
+<body><div id="report">
+
+
+<div style='font-size: 36px; margin-top: 15px; padding-bottom: 15px; white-space: nowrap; overflow: hidden;'><a href='index.html' style="font-size: 100%;text-decoration:none">
+<img style='height: 64px' valign='middle' src='https://zeljkoobrenovic.github.io/sokrates-media/icons/repository.png'>
+<div style='margin-left: 4px; display: inline-block; vertical-align: middle; font-size: 120%'><div style='color: #bbbbbb; font-size: 60%;'>Zeeguu-api</div><div style='height: 34px; font-size: 100%'>Temporal Dependencies</div></div></div>
+</a>
+</div>
+
+<p style="margin-top: 12px; color: grey">A temporal dependency occurs when developers change two or more files at the same time (i.e. they are a part of the same commit).</p>
+<div class="tab">
+  <button class='tablinks active' onclick='openTab(event, "30_days")'>Past 30 Days</button>
+  <button class='tablinks' onclick='openTab(event, "90_days")'>Past 3 Months</button>
+  <button class='tablinks' onclick='openTab(event, "180_days")'>Past 6 Months</button>
+</div>
+<div id="30_days" class="tabcontent" style="display: block">
+<br/>
+<div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Files Most Frequently Changed Together (Top 50)</span></div><div class='sectionBody'>
+<p><a href='../data/text/temporal_dependencies.txt' target='_blank'>data...</a></p>
+<div style="max-height: 400px; overflow-y: auto">
+<table>
+<th>Pairs</th>
+<th># same commits</th>
+<th># commits 1</th>
+<th># commits 2</th>
+<th>latest commit</th>
+<tr>
+<td>zeeguu/api/endpoints/friends.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">13</td>
+<td>85 (15%)</td>
+<td>101 (12%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/friend_request.py<br/>tools/migrations/26-02-24-friendship_system.sql</td>
+<td style="text-align: center">13</td>
+<td>43 (30%)</td>
+<td>35 (37%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/friends.py<br/>tools/migrations/26-02-24-friendship_system.sql</td>
+<td style="text-align: center">13</td>
+<td>85 (15%)</td>
+<td>35 (37%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/friend_request.py<br/>zeeguu/api/endpoints/friends.py</td>
+<td style="text-align: center">13</td>
+<td>43 (30%)</td>
+<td>85 (15%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/__init__.py<br/>zeeguu/core/account_management/user_account_deletion.py</td>
+<td style="text-align: center">12</td>
+<td>127 (9%)</td>
+<td>26 (46%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/badges/listeners.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">12</td>
+<td>21 (57%)</td>
+<td>53 (22%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/badges/listeners.py<br/>tools/migrations/26-02-24-friendship_system.sql</td>
+<td style="text-align: center">11</td>
+<td>21 (52%)</td>
+<td>35 (31%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/daily_streak.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">11</td>
+<td>58 (18%)</td>
+<td>101 (10%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/daily_streak.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">11</td>
+<td>58 (18%)</td>
+<td>53 (20%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/friend_request.py<br/>zeeguu/core/badges/listeners.py</td>
+<td style="text-align: center">11</td>
+<td>43 (25%)</td>
+<td>21 (52%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>tools/migrations/26-02-24-b--add_username.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">10</td>
+<td>16 (62%)</td>
+<td>206 (4%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/account_management/user_account_deletion.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">10</td>
+<td>26 (38%)</td>
+<td>53 (18%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/friends.py<br/>zeeguu/api/endpoints/daily_streak.py</td>
+<td style="text-align: center">10</td>
+<td>85 (11%)</td>
+<td>58 (17%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/friends.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">10</td>
+<td>85 (11%)</td>
+<td>53 (18%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/__init__.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">10</td>
+<td>127 (7%)</td>
+<td>53 (18%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/user.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">10</td>
+<td>101 (9%)</td>
+<td>53 (18%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/friends/listeners.py<br/>zeeguu/core/badges/listeners.py</td>
+<td style="text-align: center">10</td>
+<td>13 (76%)</td>
+<td>21 (47%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/badges/listeners.py<br/>zeeguu/core/badges/badge_progress.py</td>
+<td style="text-align: center">10</td>
+<td>21 (47%)</td>
+<td>26 (38%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/badges/listeners.py<br/>zeeguu/api/endpoints/friends.py</td>
+<td style="text-align: center">10</td>
+<td>21 (47%)</td>
+<td>85 (11%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/api/endpoints/friends.py</td>
+<td style="text-align: center">10</td>
+<td>60 (16%)</td>
+<td>85 (11%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/__init__.py<br/>zeeguu/core/badges/listeners.py</td>
+<td style="text-align: center">10</td>
+<td>127 (7%)</td>
+<td>21 (47%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/badges/listeners.py<br/>zeeguu/core/account_management/user_account_deletion.py</td>
+<td style="text-align: center">10</td>
+<td>21 (47%)</td>
+<td>26 (38%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>tools/migrations/26-02-19-b--insert_default_badges.sql<br/>tools/migrations/26-02-19-a--add_badges.sql</td>
+<td style="text-align: center">10</td>
+<td>11 (90%)</td>
+<td>10 (100%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/friends/listeners.py<br/>zeeguu/api/endpoints/friends.py</td>
+<td style="text-align: center">9</td>
+<td>13 (69%)</td>
+<td>85 (10%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/leaderboards/leaderboards.py<br/>tools/migrations/26-02-24-friendship_system.sql</td>
+<td style="text-align: center">9</td>
+<td>16 (56%)</td>
+<td>35 (25%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>tools/migrations/26-02-24-friendship_system.sql<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">9</td>
+<td>35 (25%)</td>
+<td>101 (8%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/friend_request.py<br/>zeeguu/core/model/__init__.py</td>
+<td style="text-align: center">9</td>
+<td>43 (20%)</td>
+<td>127 (7%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/leaderboards/leaderboards.py<br/>zeeguu/api/endpoints/friends.py</td>
+<td style="text-align: center">9</td>
+<td>16 (56%)</td>
+<td>85 (10%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/badges/listeners.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">9</td>
+<td>21 (42%)</td>
+<td>101 (8%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/friends/listeners.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">9</td>
+<td>13 (69%)</td>
+<td>53 (16%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/friends.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">9</td>
+<td>85 (10%)</td>
+<td>206 (4%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/core/badges/listeners.py</td>
+<td style="text-align: center">9</td>
+<td>60 (15%)</td>
+<td>21 (42%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">9</td>
+<td>206 (4%)</td>
+<td>101 (8%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/friend_request.py<br/>zeeguu/core/account_management/user_account_deletion.py</td>
+<td style="text-align: center">9</td>
+<td>43 (20%)</td>
+<td>26 (34%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/account_management/user_account_creation.py<br/>tools/migrations/26-02-24-b--add_username.py</td>
+<td style="text-align: center">9</td>
+<td>51 (17%)</td>
+<td>16 (56%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/friend_request.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">9</td>
+<td>43 (20%)</td>
+<td>101 (8%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/friend_request.py<br/>zeeguu/core/leaderboards/leaderboards.py</td>
+<td style="text-align: center">8</td>
+<td>43 (18%)</td>
+<td>16 (50%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/friends/listeners.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">8</td>
+<td>13 (61%)</td>
+<td>101 (7%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/account_management/user_account_creation.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">8</td>
+<td>51 (15%)</td>
+<td>206 (3%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/__init__.py<br/>zeeguu/api/endpoints/daily_streak.py</td>
+<td style="text-align: center">8</td>
+<td>127 (6%)</td>
+<td>58 (13%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/badges/listeners.py<br/>tools/migrations/26-02-19-a--add_badges.sql</td>
+<td style="text-align: center">8</td>
+<td>21 (38%)</td>
+<td>10 (80%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/friendship.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">8</td>
+<td>9 (88%)</td>
+<td>101 (7%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/friend_request.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">8</td>
+<td>43 (18%)</td>
+<td>53 (15%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/badges/listeners.py<br/>tools/migrations/26-02-19-b--insert_default_badges.sql</td>
+<td style="text-align: center">8</td>
+<td>21 (38%)</td>
+<td>11 (72%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/friend_request.py<br/>zeeguu/core/friends/listeners.py</td>
+<td style="text-align: center">8</td>
+<td>43 (18%)</td>
+<td>13 (61%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/friendship.py<br/>zeeguu/api/endpoints/friends.py</td>
+<td style="text-align: center">8</td>
+<td>9 (88%)</td>
+<td>85 (9%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">8</td>
+<td>60 (13%)</td>
+<td>206 (3%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/__init__.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">8</td>
+<td>127 (6%)</td>
+<td>101 (7%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/friendship.py<br/>zeeguu/core/friends/listeners.py</td>
+<td style="text-align: center">8</td>
+<td>9 (88%)</td>
+<td>13 (61%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/leaderboards/leaderboards.py<br/>zeeguu/api/endpoints/daily_streak.py</td>
+<td style="text-align: center">7</td>
+<td>16 (43%)</td>
+<td>58 (12%)</td>
+<td>2026-04-23</td>
+</tr>
+</table>
+</div>
+</div></div>
+<div style="margin: 10px;">
+<div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Dependencies between files in same commits</span>  <div class='subSectionSubtitle'>The number on the lines shows the number of shared commits.</div></div><div class='sectionBody'>
+<div style="width: 100%; overflow: auto; font-weight: normal;">
+<svg width="2406pt" height="562pt"
+ viewBox="0.00 0.00 2406.00 562.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 557.5)">
+<title>G</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-557.5 2401.75,-557.5 2401.75,4 -4,4"/>
+<!-- [zeeguu/api/endpoints/friends.py] -->
+<g id="node1" class="node">
+<title>[zeeguu/api/endpoints/friends.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="776.12,-294.75 553.88,-294.75 553.88,-258.75 776.12,-258.75 776.12,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="665" y="-272.07" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/friends.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/user.py] -->
+<g id="node2" class="node">
+<title>[zeeguu/api/endpoints/user.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1183.5,-122.25 978.5,-122.25 978.5,-86.25 1183.5,-86.25 1183.5,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="1081" y="-99.58" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/user.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge1" class="edge">
+<title>[zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="10" d="M666.31,-258.52C669.04,-235.24 677.49,-194.19 703.5,-172.5 744.34,-138.45 881.21,-120.7 978.36,-112.18"/>
+<text xml:space="preserve" text-anchor="middle" x="713.25" y="-186.22" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql] -->
+<g id="node4" class="node">
+<title>[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]</title>
+<polygon fill="#00b2ee" stroke="white" points="1051.88,-208.5 732.12,-208.5 732.12,-172.5 1051.88,-172.5 1051.88,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="892" y="-185.82" font-family="Tahoma" font-size="14.00">[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]</text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql] -->
+<g id="edge3" class="edge">
+<title>[zeeguu/api/endpoints/friends.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]</title>
+<path fill="none" stroke="#00688b" stroke-width="10" d="M702.41,-258.28C724.34,-248.35 752.71,-236.04 778.5,-226.5 795.33,-220.28 813.82,-214.24 830.91,-208.98"/>
+<text xml:space="preserve" text-anchor="middle" x="788.25" y="-229.35" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/api/endpoints/badges.py] -->
+<g id="node8" class="node">
+<title>[zeeguu/api/endpoints/badges.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1759.25,-36 1534.75,-36 1534.75,0 1759.25,0 1759.25,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="1647" y="-13.32" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/badges.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge14" class="edge">
+<title>[zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M644.26,-258.33C614.03,-230.87 564.75,-176.92 596.5,-140.25 657.19,-70.16 1276.16,-35.19 1534.59,-23.55"/>
+<text xml:space="preserve" text-anchor="middle" x="606.25" y="-143.1" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- [zeeguu/api/endpoints/daily_streak.py] -->
+<g id="node9" class="node">
+<title>[zeeguu/api/endpoints/daily_streak.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1434.88,-208.5 1181.12,-208.5 1181.12,-172.5 1434.88,-172.5 1434.88,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="1308" y="-185.82" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/daily_streak.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/daily_streak.py] -->
+<g id="edge13" class="edge">
+<title>[zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/daily_streak.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M743.41,-258.29C793.08,-247.77 858.8,-234.83 917.5,-226.5 1005.11,-214.06 1104.44,-205.23 1181,-199.55"/>
+<text xml:space="preserve" text-anchor="middle" x="927.25" y="-229.35" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- [zeeguu/core/model/user.py] -->
+<g id="node11" class="node">
+<title>[zeeguu/core/model/user.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="532.5,-208.5 339.5,-208.5 339.5,-172.5 532.5,-172.5 532.5,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="436" y="-185.82" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge31" class="edge">
+<title>[zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M617.55,-258.29C578.25,-243.83 522.67,-223.39 483.39,-208.93"/>
+<text xml:space="preserve" text-anchor="middle" x="570.59" y="-229.35" font-family="Arial" font-size="12.00"> 9 </text>
+</g>
+<!-- [zeeguu/api/endpoints/user.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge16" class="edge">
+<title>[zeeguu/api/endpoints/user.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M1183.83,-87.94C1282.95,-73.19 1432.54,-50.92 1534.73,-35.71"/>
+<text xml:space="preserve" text-anchor="middle" x="1407.64" y="-56.85" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- [zeeguu/core/model/friend_request.py] -->
+<g id="node3" class="node">
+<title>[zeeguu/core/model/friend_request.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1413.75,-553.5 1156.25,-553.5 1156.25,-517.5 1413.75,-517.5 1413.75,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="1285" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/friend_request.py]</text>
+</g>
+<!-- [zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/api/endpoints/friends.py] -->
+<g id="edge4" class="edge">
+<title>[zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/api/endpoints/friends.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="10" d="M1156.06,-527.29C996.2,-517.16 740.68,-496.61 708,-467.25 658.06,-422.39 659.78,-332.76 663.02,-295.08"/>
+<text xml:space="preserve" text-anchor="middle" x="683.6" y="-401.85" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge36" class="edge">
+<title>[zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M1414.19,-523.37C1533.99,-504.98 1703.07,-456.22 1767,-327 1777.02,-306.74 1860.6,-276.81 1764,-172.5 1744.56,-151.5 1369.61,-124.15 1183.71,-111.8"/>
+<text xml:space="preserve" text-anchor="middle" x="1786.6" y="-315.6" font-family="Arial" font-size="12.00"> 9 </text>
+</g>
+<!-- [zeeguu/core/model/friend_request.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql] -->
+<g id="edge2" class="edge">
+<title>[zeeguu/core/model/friend_request.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]</title>
+<path fill="none" stroke="#00688b" stroke-width="10" d="M1268.48,-517.21C1232.38,-480.39 1142.37,-393.62 1051,-345 983.7,-309.19 932.33,-356.04 887,-294.75 868.43,-269.64 877.42,-230.97 885.07,-208.77"/>
+<text xml:space="preserve" text-anchor="middle" x="1118.43" y="-358.73" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/__init__.py] -->
+<g id="node5" class="node">
+<title>[zeeguu/core/model/__init__.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2010.5,-467.25 1793.5,-467.25 1793.5,-431.25 2010.5,-431.25 2010.5,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="1902" y="-444.57" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/__init__.py]</text>
+</g>
+<!-- [zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/core/model/__init__.py] -->
+<g id="edge27" class="edge">
+<title>[zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/core/model/__init__.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M1414.18,-529.87C1536.85,-524.66 1712.17,-514.85 1779,-499.5 1809.71,-492.44 1842.78,-478.84 1866.89,-467.71"/>
+<text xml:space="preserve" text-anchor="middle" x="1830.51" y="-488.1" font-family="Arial" font-size="12.00"> 9 </text>
+</g>
+<!-- [zeeguu/core/account_management/user_account_deletion.py] -->
+<g id="node6" class="node">
+<title>[zeeguu/core/account_management/user_account_deletion.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2348.62,-294.75 1943.38,-294.75 1943.38,-258.75 2348.62,-258.75 2348.62,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="2146" y="-272.07" font-family="Tahoma" font-size="14.00">[zeeguu/core/account_management/user_account_deletion.py]</text>
+</g>
+<!-- [zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/core/account_management/user_account_deletion.py] -->
+<g id="edge34" class="edge">
+<title>[zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/core/account_management/user_account_deletion.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M1414.22,-529.25C1611.61,-520.25 1970.67,-499.65 2020,-467.25 2085.88,-423.98 2125.6,-333.07 2139.92,-295.04"/>
+<text xml:space="preserve" text-anchor="middle" x="2092.22" y="-401.85" font-family="Arial" font-size="12.00"> 9 </text>
+</g>
+<!-- [zeeguu/core/badges/listeners.py] -->
+<g id="node7" class="node">
+<title>[zeeguu/core/badges/listeners.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1397.62,-381 1172.38,-381 1172.38,-345 1397.62,-345 1397.62,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="1285" y="-358.32" font-family="Tahoma" font-size="14.00">[zeeguu/core/badges/listeners.py]</text>
+</g>
+<!-- [zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/core/badges/listeners.py] -->
+<g id="edge10" class="edge">
+<title>[zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/core/badges/listeners.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M1285,-517.21C1285,-484.53 1285,-414.05 1285,-381.33"/>
+<text xml:space="preserve" text-anchor="middle" x="1294.38" y="-444.98" font-family="Arial" font-size="12.00"> 11 </text>
+</g>
+<!-- [zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge43" class="edge">
+<title>[zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M1414.15,-531.21C1704.77,-522.94 2385,-498.45 2385,-450.25 2385,-450.25 2385,-450.25 2385,-103.25 2385,-41.07 1966.08,-24.76 1759.49,-20.5"/>
+<text xml:space="preserve" text-anchor="middle" x="2391.38" y="-272.48" font-family="Arial" font-size="12.00"> 8 </text>
+</g>
+<!-- [zeeguu/core/friends/listeners.py] -->
+<g id="node12" class="node">
+<title>[zeeguu/core/friends/listeners.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="660.5,-467.25 437.5,-467.25 437.5,-431.25 660.5,-431.25 660.5,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="549" y="-444.57" font-family="Tahoma" font-size="14.00">[zeeguu/core/friends/listeners.py]</text>
+</g>
+<!-- [zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/core/friends/listeners.py] -->
+<g id="edge45" class="edge">
+<title>[zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/core/friends/listeners.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M1155.77,-532.59C1001.38,-529.37 752.59,-520.96 662.25,-499.5 633.46,-492.66 602.8,-478.89 580.65,-467.64"/>
+<text xml:space="preserve" text-anchor="middle" x="668.62" y="-488.1" font-family="Arial" font-size="12.00"> 8 </text>
+</g>
+<!-- [zeeguu/core/leaderboards/leaderboards.py] -->
+<g id="node17" class="node">
+<title>[zeeguu/core/leaderboards/leaderboards.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1042.25,-381 751.75,-381 751.75,-345 1042.25,-345 1042.25,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="897" y="-358.32" font-family="Tahoma" font-size="14.00">[zeeguu/core/leaderboards/leaderboards.py]</text>
+</g>
+<!-- [zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/core/leaderboards/leaderboards.py] -->
+<g id="edge37" class="edge">
+<title>[zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/core/leaderboards/leaderboards.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M1156.01,-523.59C1116.81,-518.25 1079.89,-510.51 1064,-499.5 1021.79,-470.25 1046.88,-431.35 1007,-399 998.05,-391.74 987.57,-385.98 976.7,-381.4"/>
+<text xml:space="preserve" text-anchor="middle" x="1045.31" y="-444.98" font-family="Arial" font-size="12.00"> 8 </text>
+</g>
+<!-- [tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge26" class="edge">
+<title>[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M931.16,-172.04C963.6,-157.58 1009.47,-137.14 1041.89,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="1004.19" y="-143.1" font-family="Arial" font-size="12.00"> 9 </text>
+</g>
+<!-- [zeeguu/core/model/__init__.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge48" class="edge">
+<title>[zeeguu/core/model/__init__.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M1897.39,-431.1C1880.54,-368.97 1821.91,-158.35 1797,-140.25 1795.47,-139.14 1381.37,-119.44 1183.7,-110.09"/>
+<text xml:space="preserve" text-anchor="middle" x="1864.44" y="-272.48" font-family="Arial" font-size="12.00"> 8 </text>
+</g>
+<!-- [zeeguu/core/model/__init__.py]&#45;&#45;[zeeguu/core/account_management/user_account_deletion.py] -->
+<g id="edge5" class="edge">
+<title>[zeeguu/core/model/__init__.py]&#45;&#45;[zeeguu/core/account_management/user_account_deletion.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="9" stroke-opacity="0.929412" d="M1922.4,-430.76C1954.49,-403.7 2019.28,-350.81 2079,-312.75 2088.74,-306.54 2099.7,-300.47 2109.89,-295.17"/>
+<text xml:space="preserve" text-anchor="middle" x="2041.04" y="-358.73" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/__init__.py]&#45;&#45;[zeeguu/core/badges/listeners.py] -->
+<g id="edge21" class="edge">
+<title>[zeeguu/core/model/__init__.py]&#45;&#45;[zeeguu/core/badges/listeners.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M1793.11,-433.38C1682.06,-418.22 1510.53,-394.8 1398.01,-379.43"/>
+<text xml:space="preserve" text-anchor="middle" x="1640.19" y="-401.85" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- [zeeguu/core/model/__init__.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge15" class="edge">
+<title>[zeeguu/core/model/__init__.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M1906.26,-430.94C1910.05,-414 1915,-387.38 1915,-364 1915,-364 1915,-364 1915,-103.25 1915,-68.68 1832.83,-46.56 1759.49,-33.71"/>
+<text xml:space="preserve" text-anchor="middle" x="1924.75" y="-229.35" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- [zeeguu/core/model/__init__.py]&#45;&#45;[zeeguu/api/endpoints/daily_streak.py] -->
+<g id="edge40" class="edge">
+<title>[zeeguu/core/model/__init__.py]&#45;&#45;[zeeguu/api/endpoints/daily_streak.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M1878.94,-430.77C1843.09,-403.22 1772.32,-347.41 1717,-294.75 1701.28,-279.79 1702.35,-270.34 1684,-258.75 1642.73,-232.68 1626.71,-236.83 1579,-226.5 1571.48,-224.87 1501.97,-215.9 1435.23,-207.45"/>
+<text xml:space="preserve" text-anchor="middle" x="1756.89" y="-315.6" font-family="Arial" font-size="12.00"> 8 </text>
+</g>
+<!-- [zeeguu/core/account_management/user_account_deletion.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge12" class="edge">
+<title>[zeeguu/core/account_management/user_account_deletion.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M2135.17,-258.37C2107.19,-215.17 2027.71,-102.89 1929,-54 1899.6,-39.44 1824.63,-30.56 1759.38,-25.39"/>
+<text xml:space="preserve" text-anchor="middle" x="2064.35" y="-143.1" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- [zeeguu/core/badges/listeners.py]&#45;&#45;[zeeguu/api/endpoints/friends.py] -->
+<g id="edge19" class="edge">
+<title>[zeeguu/core/badges/listeners.py]&#45;&#45;[zeeguu/api/endpoints/friends.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M1171.96,-351.46C1065.37,-341.5 920.92,-327.93 914.5,-327 856.61,-318.57 791.81,-305.68 742.75,-295.19"/>
+<text xml:space="preserve" text-anchor="middle" x="924.25" y="-315.6" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- [zeeguu/core/badges/listeners.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge29" class="edge">
+<title>[zeeguu/core/badges/listeners.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M1286.17,-344.51C1286.74,-322.41 1284.6,-284.21 1266,-258.75 1238.06,-220.5 1209.14,-237.9 1172,-208.5 1139.59,-182.84 1109.43,-144.71 1093.27,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="1253.45" y="-229.35" font-family="Arial" font-size="12.00"> 9 </text>
+</g>
+<!-- [zeeguu/core/badges/listeners.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql] -->
+<g id="edge7" class="edge">
+<title>[zeeguu/core/badges/listeners.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M1172.28,-348.42C1091.75,-336.96 991.77,-318.61 957.25,-294.75 926.37,-273.41 907,-232.22 897.99,-208.83"/>
+<text xml:space="preserve" text-anchor="middle" x="966.62" y="-272.48" font-family="Arial" font-size="12.00"> 11 </text>
+</g>
+<!-- [zeeguu/core/badges/listeners.py]&#45;&#45;[zeeguu/core/account_management/user_account_deletion.py] -->
+<g id="edge22" class="edge">
+<title>[zeeguu/core/badges/listeners.py]&#45;&#45;[zeeguu/core/account_management/user_account_deletion.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M1397.91,-358.25C1511.22,-353.71 1690.61,-344.41 1845,-327 1915.51,-319.05 1994.67,-305.93 2054.11,-295.23"/>
+<text xml:space="preserve" text-anchor="middle" x="1954.46" y="-315.6" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- [zeeguu/core/badges/listeners.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge6" class="edge">
+<title>[zeeguu/core/badges/listeners.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="9" stroke-opacity="0.929412" d="M1397.68,-357.03C1488.95,-351.96 1609.71,-342.58 1656,-327 1760.72,-291.76 1795.26,-257.59 1835,-154.5 1858.19,-94.34 1778.68,-56.4 1715.96,-36.44"/>
+<text xml:space="preserve" text-anchor="middle" x="1837.08" y="-186.22" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/badges/badge_progress.py] -->
+<g id="node13" class="node">
+<title>[zeeguu/core/badges/badge_progress.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1257.25,-294.75 984.75,-294.75 984.75,-258.75 1257.25,-258.75 1257.25,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="1121" y="-272.07" font-family="Tahoma" font-size="14.00">[zeeguu/core/badges/badge_progress.py]</text>
+</g>
+<!-- [zeeguu/core/badges/listeners.py]&#45;&#45;[zeeguu/core/badges/badge_progress.py] -->
+<g id="edge18" class="edge">
+<title>[zeeguu/core/badges/listeners.py]&#45;&#45;[zeeguu/core/badges/badge_progress.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M1251.02,-344.54C1222.87,-330.08 1183.07,-309.64 1154.94,-295.18"/>
+<text xml:space="preserve" text-anchor="middle" x="1222.57" y="-315.6" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- [tools/migrations/26&#45;02&#45;19&#45;b&#45;&#45;insert_default_badges.sql] -->
+<g id="node15" class="node">
+<title>[tools/migrations/26&#45;02&#45;19&#45;b&#45;&#45;insert_default_badges.sql]</title>
+<polygon fill="#00b2ee" stroke="white" points="1675.25,-294.75 1312.75,-294.75 1312.75,-258.75 1675.25,-258.75 1675.25,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="1494" y="-272.07" font-family="Tahoma" font-size="14.00">[tools/migrations/26&#45;02&#45;19&#45;b&#45;&#45;insert_default_badges.sql]</text>
+</g>
+<!-- [zeeguu/core/badges/listeners.py]&#45;&#45;[tools/migrations/26&#45;02&#45;19&#45;b&#45;&#45;insert_default_badges.sql] -->
+<g id="edge44" class="edge">
+<title>[zeeguu/core/badges/listeners.py]&#45;&#45;[tools/migrations/26&#45;02&#45;19&#45;b&#45;&#45;insert_default_badges.sql]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M1328.3,-344.54C1364.17,-330.08 1414.9,-309.64 1450.75,-295.18"/>
+<text xml:space="preserve" text-anchor="middle" x="1408.39" y="-315.6" font-family="Arial" font-size="12.00"> 8 </text>
+</g>
+<!-- [tools/migrations/26&#45;02&#45;19&#45;a&#45;&#45;add_badges.sql] -->
+<g id="node16" class="node">
+<title>[tools/migrations/26&#45;02&#45;19&#45;a&#45;&#45;add_badges.sql]</title>
+<polygon fill="#00b2ee" stroke="white" points="1754.88,-208.5 1453.12,-208.5 1453.12,-172.5 1754.88,-172.5 1754.88,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="1604" y="-185.82" font-family="Tahoma" font-size="14.00">[tools/migrations/26&#45;02&#45;19&#45;a&#45;&#45;add_badges.sql]</text>
+</g>
+<!-- [zeeguu/core/badges/listeners.py]&#45;&#45;[tools/migrations/26&#45;02&#45;19&#45;a&#45;&#45;add_badges.sql] -->
+<g id="edge41" class="edge">
+<title>[zeeguu/core/badges/listeners.py]&#45;&#45;[tools/migrations/26&#45;02&#45;19&#45;a&#45;&#45;add_badges.sql]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M1397.91,-358.72C1502.76,-353.01 1647.94,-337.4 1684,-294.75 1708.82,-265.4 1665.7,-229.65 1633.73,-208.85"/>
+<text xml:space="preserve" text-anchor="middle" x="1697.75" y="-272.48" font-family="Arial" font-size="12.00"> 8 </text>
+</g>
+<!-- [zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge8" class="edge">
+<title>[zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M1260.97,-172.04C1222.01,-157.58 1166.92,-137.14 1127.97,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="1217.47" y="-143.1" font-family="Arial" font-size="12.00"> 11 </text>
+</g>
+<!-- [zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge9" class="edge">
+<title>[zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M1342.69,-172.05C1407.74,-139.34 1547.35,-69.12 1612.36,-36.42"/>
+<text xml:space="preserve" text-anchor="middle" x="1520.57" y="-99.97" font-family="Arial" font-size="12.00"> 11 </text>
+</g>
+<!-- [tools/migrations/26&#45;02&#45;24&#45;b&#45;&#45;add_username.py] -->
+<g id="node10" class="node">
+<title>[tools/migrations/26&#45;02&#45;24&#45;b&#45;&#45;add_username.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="400.38,-294.75 83.62,-294.75 83.62,-258.75 400.38,-258.75 400.38,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="242" y="-272.07" font-family="Tahoma" font-size="14.00">[tools/migrations/26&#45;02&#45;24&#45;b&#45;&#45;add_username.py]</text>
+</g>
+<!-- [tools/migrations/26&#45;02&#45;24&#45;b&#45;&#45;add_username.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge11" class="edge">
+<title>[tools/migrations/26&#45;02&#45;24&#45;b&#45;&#45;add_username.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M282.2,-258.29C315.49,-243.83 362.57,-223.39 395.85,-208.93"/>
+<text xml:space="preserve" text-anchor="middle" x="360.37" y="-229.35" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- [zeeguu/core/model/user.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge33" class="edge">
+<title>[zeeguu/core/model/user.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M532.97,-174.28C568.31,-168.05 603.62,-160.83 620,-154.5 631.3,-150.13 631.73,-144 643.25,-140.25 703.24,-120.71 868.62,-111.81 978.05,-107.96"/>
+<text xml:space="preserve" text-anchor="middle" x="649.62" y="-143.1" font-family="Arial" font-size="12.00"> 9 </text>
+</g>
+<!-- [zeeguu/core/friends/listeners.py]&#45;&#45;[zeeguu/api/endpoints/friends.py] -->
+<g id="edge24" class="edge">
+<title>[zeeguu/core/friends/listeners.py]&#45;&#45;[zeeguu/api/endpoints/friends.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M560.76,-430.96C582.99,-398.28 630.95,-327.8 653.21,-295.08"/>
+<text xml:space="preserve" text-anchor="middle" x="624.91" y="-358.73" font-family="Arial" font-size="12.00"> 9 </text>
+</g>
+<!-- [zeeguu/core/friends/listeners.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge38" class="edge">
+<title>[zeeguu/core/friends/listeners.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M526.57,-431.11C521.48,-425.98 516.76,-419.92 514,-413.25 487.54,-349.37 488.96,-312.66 532.25,-258.75 597.36,-177.67 634.67,-171.02 734,-140.25 778.1,-126.59 892.8,-116.78 978.33,-111.09"/>
+<text xml:space="preserve" text-anchor="middle" x="538.62" y="-272.48" font-family="Arial" font-size="12.00"> 8 </text>
+</g>
+<!-- [zeeguu/core/friends/listeners.py]&#45;&#45;[zeeguu/core/badges/listeners.py] -->
+<g id="edge17" class="edge">
+<title>[zeeguu/core/friends/listeners.py]&#45;&#45;[zeeguu/core/badges/listeners.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M585.8,-430.87C596.89,-425.42 609.03,-419.26 620,-413.25 630.71,-407.38 631.8,-402.52 643.5,-399 741.15,-369.63 1000.25,-387.72 1102,-381 1124.76,-379.5 1149.09,-377.51 1172.32,-375.42"/>
+<text xml:space="preserve" text-anchor="middle" x="653.25" y="-401.85" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- [zeeguu/core/friends/listeners.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge30" class="edge">
+<title>[zeeguu/core/friends/listeners.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M437.24,-442.16C276.72,-431.88 0,-407.81 0,-364 0,-364 0,-364 0,-103.25 0,-26.26 1163.04,-19.17 1534.44,-18.87"/>
+<text xml:space="preserve" text-anchor="middle" x="6.38" y="-229.35" font-family="Arial" font-size="12.00"> 9 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py] -->
+<g id="node14" class="node">
+<title>[zeeguu/core/model/user_language.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="975.12,-467.25 716.88,-467.25 716.88,-431.25 975.12,-431.25 975.12,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="846" y="-444.57" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_language.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/friends.py] -->
+<g id="edge20" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/friends.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M801.03,-430.85C775.99,-419.49 745.52,-402.73 723.5,-381 710.08,-367.76 685.95,-320.69 673.28,-294.92"/>
+<text xml:space="preserve" text-anchor="middle" x="733.25" y="-358.73" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/badges/listeners.py] -->
+<g id="edge32" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/badges/listeners.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M936.96,-430.79C1012.3,-416.33 1118.84,-395.89 1194.16,-381.43"/>
+<text xml:space="preserve" text-anchor="middle" x="1098.16" y="-401.85" font-family="Arial" font-size="12.00"> 9 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge47" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M716.63,-435.77C674.74,-430.19 634.36,-422.71 616,-413.25 525.64,-366.7 464.57,-252.5 443.83,-208.85"/>
+<text xml:space="preserve" text-anchor="middle" x="522.5" y="-315.6" font-family="Arial" font-size="12.00"> 8 </text>
+</g>
+<!-- [tools/migrations/26&#45;02&#45;19&#45;b&#45;&#45;insert_default_badges.sql]&#45;&#45;[tools/migrations/26&#45;02&#45;19&#45;a&#45;&#45;add_badges.sql] -->
+<g id="edge23" class="edge">
+<title>[tools/migrations/26&#45;02&#45;19&#45;b&#45;&#45;insert_default_badges.sql]&#45;&#45;[tools/migrations/26&#45;02&#45;19&#45;a&#45;&#45;add_badges.sql]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M1516.79,-258.29C1535.67,-243.83 1562.37,-223.39 1581.24,-208.93"/>
+<text xml:space="preserve" text-anchor="middle" x="1565.34" y="-229.35" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- [zeeguu/core/leaderboards/leaderboards.py]&#45;&#45;[zeeguu/api/endpoints/friends.py] -->
+<g id="edge28" class="edge">
+<title>[zeeguu/core/leaderboards/leaderboards.py]&#45;&#45;[zeeguu/api/endpoints/friends.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M798.94,-344.6C780.43,-339.9 761.48,-334.1 744.25,-327 743.53,-326.71 715.37,-309.17 692.82,-295.11"/>
+<text xml:space="preserve" text-anchor="middle" x="750.62" y="-315.6" font-family="Arial" font-size="12.00"> 9 </text>
+</g>
+<!-- [zeeguu/core/leaderboards/leaderboards.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql] -->
+<g id="edge25" class="edge">
+<title>[zeeguu/core/leaderboards/leaderboards.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M867.82,-344.64C851.54,-332.96 833.18,-315.84 826.25,-294.75 816.77,-265.89 813.19,-251.81 830,-226.5 834.72,-219.4 841.4,-213.58 848.64,-208.87"/>
+<text xml:space="preserve" text-anchor="middle" x="832.62" y="-272.48" font-family="Arial" font-size="12.00"> 9 </text>
+</g>
+<!-- [zeeguu/core/leaderboards/leaderboards.py]&#45;&#45;[zeeguu/api/endpoints/daily_streak.py] -->
+<g id="edge50" class="edge">
+<title>[zeeguu/core/leaderboards/leaderboards.py]&#45;&#45;[zeeguu/api/endpoints/daily_streak.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M892.84,-344.86C888.43,-322.08 884.73,-281.99 906.25,-258.75 925.01,-238.5 1070.31,-217.94 1180.83,-204.97"/>
+<text xml:space="preserve" text-anchor="middle" x="912.62" y="-272.48" font-family="Arial" font-size="12.00"> 7 </text>
+</g>
+<!-- [zeeguu/core/account_management/user_account_creation.py] -->
+<g id="node18" class="node">
+<title>[zeeguu/core/account_management/user_account_creation.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="472.38,-381 65.62,-381 65.62,-345 472.38,-345 472.38,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="269" y="-358.32" font-family="Tahoma" font-size="14.00">[zeeguu/core/account_management/user_account_creation.py]</text>
+</g>
+<!-- [zeeguu/core/account_management/user_account_creation.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;b&#45;&#45;add_username.py] -->
+<g id="edge35" class="edge">
+<title>[zeeguu/core/account_management/user_account_creation.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;b&#45;&#45;add_username.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M263.41,-344.54C258.77,-330.08 252.22,-309.64 247.59,-295.18"/>
+<text xml:space="preserve" text-anchor="middle" x="263.49" y="-315.6" font-family="Arial" font-size="12.00"> 9 </text>
+</g>
+<!-- [zeeguu/core/account_management/user_account_creation.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge39" class="edge">
+<title>[zeeguu/core/account_management/user_account_creation.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M333.11,-344.5C360.07,-334.12 389.62,-318.26 409,-294.75 429.51,-269.87 434.61,-231.11 435.78,-208.84"/>
+<text xml:space="preserve" text-anchor="middle" x="433.58" y="-272.48" font-family="Arial" font-size="12.00"> 8 </text>
+</g>
+<!-- [zeeguu/core/model/friendship.py] -->
+<g id="node19" class="node">
+<title>[zeeguu/core/model/friendship.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="523.12,-553.5 294.88,-553.5 294.88,-517.5 523.12,-517.5 523.12,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="409" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/friendship.py]</text>
+</g>
+<!-- [zeeguu/core/model/friendship.py]&#45;&#45;[zeeguu/api/endpoints/friends.py] -->
+<g id="edge46" class="edge">
+<title>[zeeguu/core/model/friendship.py]&#45;&#45;[zeeguu/api/endpoints/friends.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M408.38,-517.24C408.42,-495.39 411.35,-457.45 429,-431.25 455.01,-392.64 572.99,-326.49 631.66,-295.17"/>
+<text xml:space="preserve" text-anchor="middle" x="467.49" y="-401.85" font-family="Arial" font-size="12.00"> 8 </text>
+</g>
+<!-- [zeeguu/core/model/friendship.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge42" class="edge">
+<title>[zeeguu/core/model/friendship.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M294.41,-530.32C185.42,-523.13 38,-503.54 38,-450.25 38,-450.25 38,-450.25 38,-189.5 38,-142.66 715.01,-116.61 978.14,-108.25"/>
+<text xml:space="preserve" text-anchor="middle" x="44.38" y="-315.6" font-family="Arial" font-size="12.00"> 8 </text>
+</g>
+<!-- [zeeguu/core/model/friendship.py]&#45;&#45;[zeeguu/core/friends/listeners.py] -->
+<g id="edge49" class="edge">
+<title>[zeeguu/core/model/friendship.py]&#45;&#45;[zeeguu/core/friends/listeners.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M438.01,-517.04C462.04,-502.58 496.01,-482.14 520.03,-467.68"/>
+<text xml:space="preserve" text-anchor="middle" x="493.76" y="-488.1" font-family="Arial" font-size="12.00"> 8 </text>
+</g>
+</g>
+</svg>
+
+
+</div>
+<div style="">
+Download: 
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_files_30_days.svg'>SVG</a>
+ 
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_files_30_days.dot.txt'>DOT</a>
+ 
+<a style='text-decoration: none' target='_blank' href='https://obren.io/tools/graphviz/'>(open online Graphviz editor)</a>
+</div>
+<br/>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_files_30_days_force_2d.html'>Open 2D force graph (file dependencies)...</a>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_files_30_days_force_3d.html'>Open 3D force graph (file dependencies)...</a>
+<br/>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_with_commits_components_30_days_force_2d.html'>Open 2D force graph (file dependencies with commits)...</a>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_with_commits_components_30_days_force_3d.html'>Open 3D force graph (file dependencies with commits)...</a>
+<br/>
+</div></div>
+</div>
+<div style="margin: 10px;">
+<div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Dependencies between components in same commits (primary)</span>  <div class='subSectionSubtitle'>The number on the lines shows the number of shared commits.</div></div><div class='sectionBody'>
+<div style="width: 100%; overflow: auto; font-weight: normal;">
+<svg width="105pt" height="130pt"
+ viewBox="0.00 0.00 105.00 130.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 126.25)">
+<title>G</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-126.25 101,-126.25 101,4 -4,4"/>
+<!-- zeeguu -->
+<g id="node1" class="node">
+<title>zeeguu</title>
+<polygon fill="#00b2ee" stroke="white" points="59.5,-122.25 0,-122.25 0,-86.25 59.5,-86.25 59.5,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="29.75" y="-99.58" font-family="Tahoma" font-size="14.00">zeeguu</text>
+</g>
+<!-- zeeguu&#45;&#45;zeeguu -->
+<g id="edge1" class="edge">
+<title>zeeguu&#45;&#45;zeeguu</title>
+<path fill="none" stroke="#a0a0a0" stroke-width="10" d="M59.59,-112.34C69.54,-112.34 77.5,-109.64 77.5,-104.25 77.5,-98.86 69.54,-96.16 59.59,-96.16"/>
+<text xml:space="preserve" text-anchor="middle" x="87.25" y="-99.97" font-family="Arial" font-size="12.00"> 57 </text>
+</g>
+<!-- tools -->
+<g id="node2" class="node">
+<title>tools</title>
+<polygon fill="#00b2ee" stroke="white" points="56.75,-36 2.75,-36 2.75,0 56.75,0 56.75,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="29.75" y="-13.32" font-family="Tahoma" font-size="14.00">tools</text>
+</g>
+<!-- zeeguu&#45;&#45;tools -->
+<g id="edge2" class="edge">
+<title>zeeguu&#45;&#45;tools</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M29.75,-85.79C29.75,-71.33 29.75,-50.89 29.75,-36.43"/>
+<text xml:space="preserve" text-anchor="middle" x="39.5" y="-56.85" font-family="Arial" font-size="12.00"> 32 </text>
+</g>
+<!-- tools&#45;&#45;tools -->
+<g id="edge3" class="edge">
+<title>tools&#45;&#45;tools</title>
+<path fill="none" stroke="#a0a0a0" stroke-width="2" stroke-opacity="0.439216" d="M56.99,-26.08C66.77,-26.25 74.75,-23.56 74.75,-18 74.75,-12.44 66.77,-9.75 56.99,-9.92"/>
+<text xml:space="preserve" text-anchor="middle" x="84.5" y="-13.72" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+</g>
+</svg>
+
+
+</div>
+<div style="">
+Download: 
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_logical_decomposition_1_30_days.svg'>SVG</a>
+ 
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_logical_decomposition_1_30_days.dot.txt'>DOT</a>
+ 
+<a style='text-decoration: none' target='_blank' href='https://obren.io/tools/graphviz/'>(open online Graphviz editor)</a>
+</div>
+<br/>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_logical_decomposition_1_30_days_force_2d.html'>Open 2D force graph (file dependencies)...</a>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_logical_decomposition_1_30_days_force_3d.html'>Open 3D force graph (file dependencies)...</a>
+<br/>
+</div></div>
+</div>
+</div>
+<div id="90_days" class="tabcontent" style="display: none">
+<br/>
+<div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Files Most Frequently Changed Together (Top 50)</span></div><div class='sectionBody'>
+<p><a href='../data/text/temporal_dependencies.txt' target='_blank'>data...</a></p>
+<div style="max-height: 400px; overflow-y: auto">
+<table>
+<th>Pairs</th>
+<th># same commits</th>
+<th># commits 1</th>
+<th># commits 2</th>
+<th>latest commit</th>
+<tr>
+<td>zeeguu/core/model/friend_request.py<br/>zeeguu/api/endpoints/friends.py</td>
+<td style="text-align: center">27</td>
+<td>43 (62%)</td>
+<td>85 (31%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/audio_lessons.py<br/>zeeguu/core/audio_lessons/daily_lesson_generator.py</td>
+<td style="text-align: center">24</td>
+<td>46 (52%)</td>
+<td>86 (27%)</td>
+<td>2026-04-06</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/daily_streak.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">23</td>
+<td>58 (39%)</td>
+<td>101 (22%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/friends.py<br/>tools/migrations/26-02-24-friendship_system.sql</td>
+<td style="text-align: center">23</td>
+<td>85 (27%)</td>
+<td>35 (65%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/account_management/user_account_creation.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">22</td>
+<td>51 (43%)</td>
+<td>206 (10%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">22</td>
+<td>60 (36%)</td>
+<td>206 (10%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">22</td>
+<td>206 (10%)</td>
+<td>101 (21%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/api/endpoints/daily_streak.py</td>
+<td style="text-align: center">22</td>
+<td>60 (36%)</td>
+<td>58 (37%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/daily_audio_lesson.py<br/>zeeguu/core/audio_lessons/daily_lesson_generator.py</td>
+<td style="text-align: center">21</td>
+<td>28 (75%)</td>
+<td>86 (24%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/friends.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">20</td>
+<td>85 (23%)</td>
+<td>101 (19%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/badges/badge_progress.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">20</td>
+<td>26 (76%)</td>
+<td>53 (37%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/friend_request.py<br/>tools/migrations/26-02-24-friendship_system.sql</td>
+<td style="text-align: center">20</td>
+<td>43 (46%)</td>
+<td>35 (57%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/badge.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">20</td>
+<td>23 (86%)</td>
+<td>53 (37%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/daily_streak.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">20</td>
+<td>58 (34%)</td>
+<td>53 (37%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/friends.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">19</td>
+<td>85 (22%)</td>
+<td>206 (9%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/daily_streak.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">19</td>
+<td>58 (32%)</td>
+<td>206 (9%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/friends.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">18</td>
+<td>85 (21%)</td>
+<td>53 (33%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/friends.py<br/>zeeguu/api/endpoints/daily_streak.py</td>
+<td style="text-align: center">18</td>
+<td>85 (21%)</td>
+<td>58 (31%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">18</td>
+<td>206 (8%)</td>
+<td>53 (33%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/audio_lesson_meaning.py<br/>zeeguu/core/audio_lessons/daily_lesson_generator.py</td>
+<td style="text-align: center">18</td>
+<td>27 (66%)</td>
+<td>86 (20%)</td>
+<td>2026-04-06</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/api/endpoints/translation.py</td>
+<td style="text-align: center">16</td>
+<td>60 (26%)</td>
+<td>137 (11%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">16</td>
+<td>60 (26%)</td>
+<td>53 (30%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/audio_lesson_meaning.py<br/>zeeguu/api/endpoints/audio_lessons.py</td>
+<td style="text-align: center">16</td>
+<td>27 (59%)</td>
+<td>46 (34%)</td>
+<td>2026-04-06</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/core/badges/badge_progress.py</td>
+<td style="text-align: center">16</td>
+<td>60 (26%)</td>
+<td>26 (61%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/user.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">15</td>
+<td>101 (14%)</td>
+<td>53 (28%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/audio_lessons/script_generator.py<br/>zeeguu/core/audio_lessons/daily_lesson_generator.py</td>
+<td style="text-align: center">15</td>
+<td>35 (42%)</td>
+<td>86 (17%)</td>
+<td>2026-04-06</td>
+</tr>
+<tr>
+<td>tools/migrations/26-02-24-friendship_system.sql<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">15</td>
+<td>35 (42%)</td>
+<td>206 (7%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/api/endpoints/friends.py</td>
+<td style="text-align: center">15</td>
+<td>60 (25%)</td>
+<td>85 (17%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/audio_lessons.py<br/>zeeguu/core/model/daily_audio_lesson.py</td>
+<td style="text-align: center">15</td>
+<td>46 (32%)</td>
+<td>28 (53%)</td>
+<td>2026-04-06</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/badge.py<br/>zeeguu/core/badges/badge_progress.py</td>
+<td style="text-align: center">14</td>
+<td>23 (60%)</td>
+<td>26 (53%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/core/audio_lessons/daily_lesson_generator.py</td>
+<td style="text-align: center">13</td>
+<td>60 (21%)</td>
+<td>86 (15%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">13</td>
+<td>60 (21%)</td>
+<td>101 (12%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>tools/migrations/26-02-24-friendship_system.sql<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">13</td>
+<td>35 (37%)</td>
+<td>101 (12%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/badges/listeners.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">13</td>
+<td>21 (61%)</td>
+<td>53 (24%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_word.py<br/>zeeguu/api/endpoints/translation.py</td>
+<td style="text-align: center">13</td>
+<td>58 (22%)</td>
+<td>137 (9%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_word.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">13</td>
+<td>58 (22%)</td>
+<td>53 (24%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py<br/>zeeguu/core/model/user_language.py</td>
+<td style="text-align: center">13</td>
+<td>39 (33%)</td>
+<td>60 (21%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/__init__.py<br/>zeeguu/core/account_management/user_account_deletion.py</td>
+<td style="text-align: center">13</td>
+<td>127 (10%)</td>
+<td>26 (50%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_word.py<br/>zeeguu/core/model/user_language.py</td>
+<td style="text-align: center">13</td>
+<td>58 (22%)</td>
+<td>60 (21%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/badges/badge_progress.py<br/>zeeguu/core/audio_lessons/daily_lesson_generator.py</td>
+<td style="text-align: center">13</td>
+<td>26 (50%)</td>
+<td>86 (15%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/audio_lesson_generation_progress.py<br/>zeeguu/api/endpoints/audio_lessons.py</td>
+<td style="text-align: center">13</td>
+<td>20 (65%)</td>
+<td>46 (28%)</td>
+<td>2026-04-06</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_word.py<br/>zeeguu/core/badges/badge_progress.py</td>
+<td style="text-align: center">13</td>
+<td>58 (22%)</td>
+<td>26 (50%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_word.py<br/>zeeguu/core/audio_lessons/daily_lesson_generator.py</td>
+<td style="text-align: center">13</td>
+<td>58 (22%)</td>
+<td>86 (15%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py<br/>zeeguu/core/model/user_word.py</td>
+<td style="text-align: center">13</td>
+<td>39 (33%)</td>
+<td>58 (22%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/audio_lessons/daily_lesson_generator.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">12</td>
+<td>86 (13%)</td>
+<td>53 (22%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>tools/migrations/26-02-24-friendship_system.sql<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">12</td>
+<td>35 (34%)</td>
+<td>53 (22%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/audio_lessons/daily_lesson_generator.py<br/>zeeguu/api/endpoints/translation.py</td>
+<td style="text-align: center">12</td>
+<td>86 (13%)</td>
+<td>137 (8%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/audio_lesson_meaning.py<br/>zeeguu/core/model/daily_audio_lesson.py</td>
+<td style="text-align: center">12</td>
+<td>27 (44%)</td>
+<td>28 (42%)</td>
+<td>2026-04-06</td>
+</tr>
+<tr>
+<td>zeeguu/core/badges/badge_progress.py<br/>zeeguu/api/endpoints/translation.py</td>
+<td style="text-align: center">12</td>
+<td>26 (46%)</td>
+<td>137 (8%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/audio_lessons/script_generator.py<br/>zeeguu/api/endpoints/audio_lessons.py</td>
+<td style="text-align: center">12</td>
+<td>35 (34%)</td>
+<td>46 (26%)</td>
+<td>2026-04-06</td>
+</tr>
+</table>
+</div>
+</div></div>
+<div style="margin: 10px;">
+<div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Dependencies between files in same commits</span>  <div class='subSectionSubtitle'>The number on the lines shows the number of shared commits.</div></div><div class='sectionBody'>
+<div style="width: 100%; overflow: auto; font-weight: normal;">
+<svg width="3342pt" height="648pt"
+ viewBox="0.00 0.00 3342.00 648.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 643.75)">
+<title>G</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-643.75 3338.38,-643.75 3338.38,4 -4,4"/>
+<!-- [zeeguu/core/model/friend_request.py] -->
+<g id="node1" class="node">
+<title>[zeeguu/core/model/friend_request.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="257.5,-467.25 0,-467.25 0,-431.25 257.5,-431.25 257.5,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="128.75" y="-444.57" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/friend_request.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py] -->
+<g id="node2" class="node">
+<title>[zeeguu/api/endpoints/friends.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="712.88,-381 490.62,-381 490.62,-345 712.88,-345 712.88,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="601.75" y="-358.32" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/friends.py]</text>
+</g>
+<!-- [zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/api/endpoints/friends.py] -->
+<g id="edge1" class="edge">
+<title>[zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/api/endpoints/friends.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="10" d="M226.76,-430.79C307.93,-416.33 422.73,-395.89 503.87,-381.43"/>
+<text xml:space="preserve" text-anchor="middle" x="403.32" y="-401.85" font-family="Arial" font-size="12.00"> 27 </text>
+</g>
+<!-- [tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql] -->
+<g id="node7" class="node">
+<title>[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]</title>
+<polygon fill="#00b2ee" stroke="white" points="565.62,-294.75 245.88,-294.75 245.88,-258.75 565.62,-258.75 565.62,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="405.75" y="-272.07" font-family="Tahoma" font-size="14.00">[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]</text>
+</g>
+<!-- [zeeguu/core/model/friend_request.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql] -->
+<g id="edge12" class="edge">
+<title>[zeeguu/core/model/friend_request.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M157.09,-430.8C210.32,-398.04 324.62,-327.69 377.65,-295.04"/>
+<text xml:space="preserve" text-anchor="middle" x="304.54" y="-358.73" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [zeeguu/api/endpoints/daily_streak.py] -->
+<g id="node5" class="node">
+<title>[zeeguu/api/endpoints/daily_streak.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1393.62,-294.75 1139.88,-294.75 1139.88,-258.75 1393.62,-258.75 1393.62,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="1266.75" y="-272.07" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/daily_streak.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/daily_streak.py] -->
+<g id="edge18" class="edge">
+<title>[zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/daily_streak.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M713.3,-358.35C844.66,-353.39 1054.72,-343.25 1131.75,-327 1165.19,-319.95 1201.5,-306.34 1228.04,-295.21"/>
+<text xml:space="preserve" text-anchor="middle" x="1190.82" y="-315.6" font-family="Arial" font-size="12.00"> 18 </text>
+</g>
+<!-- [zeeguu/api/endpoints/user.py] -->
+<g id="node6" class="node">
+<title>[zeeguu/api/endpoints/user.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1331.25,-122.25 1126.25,-122.25 1126.25,-86.25 1331.25,-86.25 1331.25,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="1228.75" y="-99.58" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/user.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge10" class="edge">
+<title>[zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M713.18,-353.5C827.5,-343.36 996.61,-324.02 1054.75,-294.75 1134.54,-254.58 1195.86,-161.51 1218.87,-122.72"/>
+<text xml:space="preserve" text-anchor="middle" x="1150.8" y="-229.35" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql] -->
+<g id="edge4" class="edge">
+<title>[zeeguu/api/endpoints/friends.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M561.14,-344.54C527.5,-330.08 479.93,-309.64 446.31,-295.18"/>
+<text xml:space="preserve" text-anchor="middle" x="525.23" y="-315.6" font-family="Arial" font-size="12.00"> 23 </text>
+</g>
+<!-- [zeeguu/core/model/user.py] -->
+<g id="node9" class="node">
+<title>[zeeguu/core/model/user.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="939.25,-208.5 746.25,-208.5 746.25,-172.5 939.25,-172.5 939.25,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="842.75" y="-185.82" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge15" class="edge">
+<title>[zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M597.98,-344.83C594.12,-322.37 591.2,-283.05 611.25,-258.75 628.96,-237.28 690.76,-219.97 746.05,-208.29"/>
+<text xml:space="preserve" text-anchor="middle" x="621" y="-272.48" font-family="Arial" font-size="12.00"> 19 </text>
+</g>
+<!-- [zeeguu/api/endpoints/badges.py] -->
+<g id="node13" class="node">
+<title>[zeeguu/api/endpoints/badges.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1504,-36 1279.5,-36 1279.5,0 1504,0 1504,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="1391.75" y="-13.32" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/badges.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge17" class="edge">
+<title>[zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M490.13,-356.71C394.95,-349.58 268.6,-333 236.75,-294.75 226.51,-282.45 227.41,-271.74 236.75,-258.75 358.07,-89.96 1013.25,-38.11 1279.33,-23.87"/>
+<text xml:space="preserve" text-anchor="middle" x="369.65" y="-186.22" font-family="Arial" font-size="12.00"> 18 </text>
+</g>
+<!-- [zeeguu/api/endpoints/audio_lessons.py] -->
+<g id="node3" class="node">
+<title>[zeeguu/api/endpoints/audio_lessons.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2515.25,-467.25 2250.25,-467.25 2250.25,-431.25 2515.25,-431.25 2515.25,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="2382.75" y="-444.57" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/audio_lessons.py]</text>
+</g>
+<!-- [zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="node4" class="node">
+<title>[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2346.12,-294.75 1993.38,-294.75 1993.38,-258.75 2346.12,-258.75 2346.12,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="2169.75" y="-272.07" font-family="Tahoma" font-size="14.00">[zeeguu/core/audio_lessons/daily_lesson_generator.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/audio_lessons.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge2" class="edge">
+<title>[zeeguu/api/endpoints/audio_lessons.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M2382.92,-430.97C2382.2,-408.4 2377.61,-368.95 2355.75,-345 2333.53,-320.65 2301.82,-305.11 2270.86,-295.19"/>
+<text xml:space="preserve" text-anchor="middle" x="2384.49" y="-358.73" font-family="Arial" font-size="12.00"> 24 </text>
+</g>
+<!-- [zeeguu/core/model/daily_audio_lesson.py] -->
+<g id="node11" class="node">
+<title>[zeeguu/core/model/daily_audio_lesson.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2346.88,-381 2064.62,-381 2064.62,-345 2346.88,-345 2346.88,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="2205.75" y="-358.32" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/daily_audio_lesson.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/audio_lessons.py]&#45;&#45;[zeeguu/core/model/daily_audio_lesson.py] -->
+<g id="edge29" class="edge">
+<title>[zeeguu/api/endpoints/audio_lessons.py]&#45;&#45;[zeeguu/core/model/daily_audio_lesson.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M2346.08,-430.79C2315.7,-416.33 2272.74,-395.89 2242.38,-381.43"/>
+<text xml:space="preserve" text-anchor="middle" x="2314.6" y="-401.85" font-family="Arial" font-size="12.00"> 15 </text>
+</g>
+<!-- [zeeguu/core/audio_lessons/daily_lesson_generator.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge45" class="edge">
+<title>[zeeguu/core/audio_lessons/daily_lesson_generator.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M2149.17,-258.44C2117.64,-231.34 2056.46,-176.37 2012.75,-122.25 1990.22,-94.36 2000.6,-72.26 1969.75,-54 1930.85,-30.97 1661.26,-23.02 1504.36,-20.33"/>
+<text xml:space="preserve" text-anchor="middle" x="2049.6" y="-143.1" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/api/endpoints/translation.py] -->
+<g id="node16" class="node">
+<title>[zeeguu/api/endpoints/translation.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1916.75,-208.5 1672.75,-208.5 1672.75,-172.5 1916.75,-172.5 1916.75,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="1794.75" y="-185.82" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/translation.py]</text>
+</g>
+<!-- [zeeguu/core/audio_lessons/daily_lesson_generator.py]&#45;&#45;[zeeguu/api/endpoints/translation.py] -->
+<g id="edge47" class="edge">
+<title>[zeeguu/core/audio_lessons/daily_lesson_generator.py]&#45;&#45;[zeeguu/api/endpoints/translation.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M2049.32,-258.25C2020.03,-253.28 1988.9,-247.38 1960.25,-240.75 1921.99,-231.9 1879.55,-219.21 1847.23,-208.93"/>
+<text xml:space="preserve" text-anchor="middle" x="1970" y="-229.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge3" class="edge">
+<title>[zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M1262.9,-258.46C1255.61,-225.78 1239.9,-155.3 1232.61,-122.58"/>
+<text xml:space="preserve" text-anchor="middle" x="1261.28" y="-186.22" font-family="Arial" font-size="12.00"> 23 </text>
+</g>
+<!-- [zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge16" class="edge">
+<title>[zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M1147.67,-258.26C1127.82,-253.66 1107.7,-247.9 1089.25,-240.75 1077.86,-236.33 1077.22,-230.69 1065.75,-226.5 1025.72,-211.87 979.46,-203.35 939.48,-198.4"/>
+<text xml:space="preserve" text-anchor="middle" x="1099" y="-229.35" font-family="Arial" font-size="12.00"> 19 </text>
+</g>
+<!-- [zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge14" class="edge">
+<title>[zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M1275.15,-258.51C1297.92,-211.73 1360.66,-82.85 1383.39,-36.17"/>
+<text xml:space="preserve" text-anchor="middle" x="1341.88" y="-143.1" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [zeeguu/api/endpoints/user.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge25" class="edge">
+<title>[zeeguu/api/endpoints/user.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M1262.52,-85.79C1290.5,-71.33 1330.06,-50.89 1358.02,-36.43"/>
+<text xml:space="preserve" text-anchor="middle" x="1329.76" y="-56.85" font-family="Arial" font-size="12.00"> 15 </text>
+</g>
+<!-- [tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge33" class="edge">
+<title>[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M454.93,-258.35C482.22,-248.78 516.8,-236.8 547.75,-226.5 622.77,-201.54 640.03,-189.46 717.25,-172.5 893.76,-133.74 941.8,-147.47 1120.75,-122.25 1122.44,-122.01 1124.15,-121.77 1125.87,-121.52"/>
+<text xml:space="preserve" text-anchor="middle" x="727" y="-186.22" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge27" class="edge">
+<title>[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M491.96,-258.31C509.74,-253.53 528.1,-247.71 544.75,-240.75 556.02,-236.04 556.72,-230.53 568.25,-226.5 625.17,-206.62 692.25,-197.82 745.86,-194.02"/>
+<text xml:space="preserve" text-anchor="middle" x="578" y="-229.35" font-family="Arial" font-size="12.00"> 15 </text>
+</g>
+<!-- [tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge46" class="edge">
+<title>[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M431.97,-258.34C467.61,-235.44 533.98,-195.42 595.75,-172.5 829.96,-85.59 1122.06,-45.4 1279.18,-28.93"/>
+<text xml:space="preserve" text-anchor="middle" x="693.48" y="-143.1" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/account_management/user_account_creation.py] -->
+<g id="node8" class="node">
+<title>[zeeguu/core/account_management/user_account_creation.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1046.12,-294.75 639.38,-294.75 639.38,-258.75 1046.12,-258.75 1046.12,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="842.75" y="-272.07" font-family="Tahoma" font-size="14.00">[zeeguu/core/account_management/user_account_creation.py]</text>
+</g>
+<!-- [zeeguu/core/account_management/user_account_creation.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge5" class="edge">
+<title>[zeeguu/core/account_management/user_account_creation.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M842.75,-258.29C842.75,-243.83 842.75,-223.39 842.75,-208.93"/>
+<text xml:space="preserve" text-anchor="middle" x="852.5" y="-229.35" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/core/model/user.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge7" class="edge">
+<title>[zeeguu/core/model/user.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M922.73,-172.04C988.98,-157.58 1082.65,-137.14 1148.87,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="1068.61" y="-143.1" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/core/model/user.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge19" class="edge">
+<title>[zeeguu/core/model/user.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M880,-172.17C928.98,-149.91 1018.11,-111.16 1097.25,-86.25 1163.16,-65.5 1239.23,-48.3 1297.55,-36.49"/>
+<text xml:space="preserve" text-anchor="middle" x="1107" y="-99.97" font-family="Arial" font-size="12.00"> 18 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py] -->
+<g id="node10" class="node">
+<title>[zeeguu/core/model/user_language.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1635.88,-467.25 1377.62,-467.25 1377.62,-431.25 1635.88,-431.25 1635.88,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="1506.75" y="-444.57" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_language.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/friends.py] -->
+<g id="edge28" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/friends.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M1377.34,-438.52C1291.6,-431.89 1176.66,-422.64 1075.25,-413.25 951.19,-401.77 809.04,-386.73 713.14,-376.31"/>
+<text xml:space="preserve" text-anchor="middle" x="1085" y="-401.85" font-family="Arial" font-size="12.00"> 15 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge31" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1636.23,-435.94C1695.96,-426.54 1766.39,-410.02 1824.75,-381 1846.61,-370.13 1844.77,-356.61 1866.25,-345 1912.38,-320.06 1928.68,-324.68 1979.75,-312.75 2007.19,-306.34 2037.07,-300.37 2064.85,-295.24"/>
+<text xml:space="preserve" text-anchor="middle" x="1876" y="-358.73" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/daily_streak.py] -->
+<g id="edge8" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/daily_streak.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M1445.32,-430.78C1432.77,-425.99 1419.98,-420.17 1408.75,-413.25 1354.8,-379.99 1304.28,-323.53 1280.69,-295.14"/>
+<text xml:space="preserve" text-anchor="middle" x="1372.92" y="-358.73" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge32" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1457.77,-430.93C1449.81,-426.25 1442.34,-420.43 1436.75,-413.25 1393.54,-357.79 1438.43,-319.33 1402.75,-258.75 1366.67,-197.49 1297.63,-147.73 1258.23,-122.74"/>
+<text xml:space="preserve" text-anchor="middle" x="1425.93" y="-272.48" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge6" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M1444.92,-430.81C1425.62,-425.29 1404.28,-419.1 1384.75,-413.25 1261.43,-376.33 1214.19,-400.13 1108.25,-327 1076.53,-305.11 1086.42,-280.72 1054.75,-258.75 1020.33,-234.87 977,-219.15 938.5,-208.96"/>
+<text xml:space="preserve" text-anchor="middle" x="1118" y="-315.6" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/core/badges/badge_progress.py] -->
+<g id="node12" class="node">
+<title>[zeeguu/core/badges/badge_progress.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1816,-381 1543.5,-381 1543.5,-345 1816,-345 1816,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="1679.75" y="-358.32" font-family="Tahoma" font-size="14.00">[zeeguu/core/badges/badge_progress.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/badges/badge_progress.py] -->
+<g id="edge24" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/badges/badge_progress.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M1542.6,-430.79C1572.29,-416.33 1614.27,-395.89 1643.95,-381.43"/>
+<text xml:space="preserve" text-anchor="middle" x="1613.36" y="-401.85" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge22" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M1500.17,-430.82C1491.61,-406.54 1477.75,-361.02 1477.75,-320.88 1477.75,-320.88 1477.75,-320.88 1477.75,-103.25 1477.75,-73.36 1450.92,-50.58 1427.23,-36.28"/>
+<text xml:space="preserve" text-anchor="middle" x="1487.5" y="-229.35" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/translation.py] -->
+<g id="edge21" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/translation.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M1507.53,-430.79C1509.33,-408.72 1515.28,-370.56 1534.75,-345 1587.89,-275.27 1682.57,-231.13 1741.83,-208.91"/>
+<text xml:space="preserve" text-anchor="middle" x="1571.54" y="-315.6" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/core/model/daily_audio_lesson.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge9" class="edge">
+<title>[zeeguu/core/model/daily_audio_lesson.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M2198.29,-344.54C2192.11,-330.08 2183.38,-309.64 2177.2,-295.18"/>
+<text xml:space="preserve" text-anchor="middle" x="2199.66" y="-315.6" font-family="Arial" font-size="12.00"> 21 </text>
+</g>
+<!-- [zeeguu/core/badges/badge_progress.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge40" class="edge">
+<title>[zeeguu/core/badges/badge_progress.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1720.49,-344.56C1747.68,-333.67 1784.51,-320.31 1818.25,-312.75 1836.24,-308.72 1914.89,-300.75 1993.23,-293.44"/>
+<text xml:space="preserve" text-anchor="middle" x="1828" y="-315.6" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/badges/badge_progress.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge11" class="edge">
+<title>[zeeguu/core/badges/badge_progress.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M1674.02,-344.87C1655.9,-293.18 1594.8,-137.28 1491.75,-54 1482.88,-46.83 1472.44,-41.08 1461.71,-36.49"/>
+<text xml:space="preserve" text-anchor="middle" x="1622.88" y="-186.22" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [zeeguu/core/badges/badge_progress.py]&#45;&#45;[zeeguu/api/endpoints/translation.py] -->
+<g id="edge49" class="edge">
+<title>[zeeguu/core/badges/badge_progress.py]&#45;&#45;[zeeguu/api/endpoints/translation.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1691.41,-344.71C1713.45,-312.03 1760.99,-241.55 1783.06,-208.83"/>
+<text xml:space="preserve" text-anchor="middle" x="1758.43" y="-272.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/badge.py] -->
+<g id="node14" class="node">
+<title>[zeeguu/core/model/badge.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="925,-467.25 718.5,-467.25 718.5,-431.25 925,-431.25 925,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="821.75" y="-444.57" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/badge.py]</text>
+</g>
+<!-- [zeeguu/core/model/badge.py]&#45;&#45;[zeeguu/core/badges/badge_progress.py] -->
+<g id="edge30" class="edge">
+<title>[zeeguu/core/model/badge.py]&#45;&#45;[zeeguu/core/badges/badge_progress.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M925.24,-438.09C1079.91,-422.9 1371.49,-394.27 1543.36,-377.39"/>
+<text xml:space="preserve" text-anchor="middle" x="1311.87" y="-401.85" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/model/badge.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge13" class="edge">
+<title>[zeeguu/core/model/badge.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M718.25,-445.08C536.66,-438.13 179.75,-417.64 179.75,-364 179.75,-364 179.75,-364 179.75,-103.25 179.75,-48.46 978.42,-27.11 1279.09,-21.01"/>
+<text xml:space="preserve" text-anchor="middle" x="189.5" y="-229.35" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [zeeguu/core/model/audio_lesson_meaning.py] -->
+<g id="node15" class="node">
+<title>[zeeguu/core/model/audio_lesson_meaning.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2183.25,-553.5 1876.25,-553.5 1876.25,-517.5 2183.25,-517.5 2183.25,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="2029.75" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/audio_lesson_meaning.py]</text>
+</g>
+<!-- [zeeguu/core/model/audio_lesson_meaning.py]&#45;&#45;[zeeguu/api/endpoints/audio_lessons.py] -->
+<g id="edge23" class="edge">
+<title>[zeeguu/core/model/audio_lesson_meaning.py]&#45;&#45;[zeeguu/api/endpoints/audio_lessons.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M2102.89,-517.04C2163.48,-502.58 2249.14,-482.14 2309.7,-467.68"/>
+<text xml:space="preserve" text-anchor="middle" x="2237.13" y="-488.1" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/core/model/audio_lesson_meaning.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge20" class="edge">
+<title>[zeeguu/core/model/audio_lesson_meaning.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M2027.42,-517.08C2023.61,-481.48 2019.7,-399.19 2055.75,-345 2070.96,-322.14 2096.81,-305.97 2120.05,-295.22"/>
+<text xml:space="preserve" text-anchor="middle" x="2042.69" y="-401.85" font-family="Arial" font-size="12.00"> 18 </text>
+</g>
+<!-- [zeeguu/core/model/audio_lesson_meaning.py]&#45;&#45;[zeeguu/core/model/daily_audio_lesson.py] -->
+<g id="edge48" class="edge">
+<title>[zeeguu/core/model/audio_lesson_meaning.py]&#45;&#45;[zeeguu/core/model/daily_audio_lesson.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M2047.59,-517.21C2081.33,-484.53 2154.09,-414.05 2187.86,-381.33"/>
+<text xml:space="preserve" text-anchor="middle" x="2145" y="-444.98" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/audio_lessons/script_generator.py] -->
+<g id="node17" class="node">
+<title>[zeeguu/core/audio_lessons/script_generator.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2911.25,-553.5 2598.25,-553.5 2598.25,-517.5 2911.25,-517.5 2911.25,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="2754.75" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/audio_lessons/script_generator.py]</text>
+</g>
+<!-- [zeeguu/core/audio_lessons/script_generator.py]&#45;&#45;[zeeguu/api/endpoints/audio_lessons.py] -->
+<g id="edge50" class="edge">
+<title>[zeeguu/core/audio_lessons/script_generator.py]&#45;&#45;[zeeguu/api/endpoints/audio_lessons.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M2677.67,-517.04C2613.83,-502.58 2523.55,-482.14 2459.73,-467.68"/>
+<text xml:space="preserve" text-anchor="middle" x="2600.77" y="-488.1" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/audio_lessons/script_generator.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge26" class="edge">
+<title>[zeeguu/core/audio_lessons/script_generator.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M2728.66,-517.2C2664.77,-475.63 2494.28,-369.37 2337.75,-312.75 2318.28,-305.71 2297,-299.91 2276.32,-295.2"/>
+<text xml:space="preserve" text-anchor="middle" x="2563.06" y="-401.85" font-family="Arial" font-size="12.00"> 15 </text>
+</g>
+<!-- [zeeguu/core/badges/listeners.py] -->
+<g id="node18" class="node">
+<title>[zeeguu/core/badges/listeners.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2247.38,-122.25 2022.12,-122.25 2022.12,-86.25 2247.38,-86.25 2247.38,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="2134.75" y="-99.58" font-family="Tahoma" font-size="14.00">[zeeguu/core/badges/listeners.py]</text>
+</g>
+<!-- [zeeguu/core/badges/listeners.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge34" class="edge">
+<title>[zeeguu/core/badges/listeners.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M2098.73,-85.79C2073.81,-74.58 2039.53,-60.88 2007.75,-54 1914.97,-33.9 1655.36,-24.85 1504.42,-21.19"/>
+<text xml:space="preserve" text-anchor="middle" x="2064.06" y="-56.85" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/user_word.py] -->
+<g id="node19" class="node">
+<title>[zeeguu/core/model/user_word.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1828.5,-553.5 1595,-553.5 1595,-517.5 1828.5,-517.5 1828.5,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="1711.75" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_word.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge43" class="edge">
+<title>[zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1828.78,-521.34C1894.23,-513.51 1963.89,-504.23 1969.75,-499.5 2006.74,-469.67 1987,-442.45 2006.25,-399 2017.24,-374.19 2018.52,-366.75 2034.75,-345 2047.02,-328.57 2050.29,-323.51 2067.75,-312.75 2079.07,-305.78 2091.95,-299.98 2104.67,-295.24"/>
+<text xml:space="preserve" text-anchor="middle" x="2016" y="-401.85" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/core/model/user_language.py] -->
+<g id="edge39" class="edge">
+<title>[zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/core/model/user_language.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1669.27,-517.04C1634.09,-502.58 1584.34,-482.14 1549.17,-467.68"/>
+<text xml:space="preserve" text-anchor="middle" x="1631.27" y="-488.1" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/core/badges/badge_progress.py] -->
+<g id="edge42" class="edge">
+<title>[zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/core/badges/badge_progress.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1708.51,-517.21C1702.37,-484.53 1689.14,-414.05 1683,-381.33"/>
+<text xml:space="preserve" text-anchor="middle" x="1708.68" y="-444.98" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge36" class="edge">
+<title>[zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1819.48,-517.01C1884.85,-503.24 1955.75,-481.17 1955.75,-450.25 1955.75,-450.25 1955.75,-450.25 1955.75,-103.25 1955.75,-58.05 1668.73,-34.46 1504.19,-24.66"/>
+<text xml:space="preserve" text-anchor="middle" x="1965.5" y="-272.48" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/api/endpoints/translation.py] -->
+<g id="edge35" class="edge">
+<title>[zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/api/endpoints/translation.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1745,-517.01C1786.89,-492.84 1856.92,-444.89 1885.75,-381 1914.65,-316.96 1848.63,-242.08 1814.1,-208.87"/>
+<text xml:space="preserve" text-anchor="middle" x="1902.63" y="-358.73" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py] -->
+<g id="node20" class="node">
+<title>[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1801.75,-639.75 1383.75,-639.75 1383.75,-603.75 1801.75,-603.75 1801.75,-639.75"/>
+<text xml:space="preserve" text-anchor="middle" x="1592.75" y="-617.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]</text>
+</g>
+<!-- [zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]&#45;&#45;[zeeguu/core/model/user_language.py] -->
+<g id="edge37" class="edge">
+<title>[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]&#45;&#45;[zeeguu/core/model/user_language.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1584.03,-603.46C1567.55,-570.78 1531.99,-500.3 1515.49,-467.58"/>
+<text xml:space="preserve" text-anchor="middle" x="1568.05" y="-531.23" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]&#45;&#45;[zeeguu/core/model/user_word.py] -->
+<g id="edge44" class="edge">
+<title>[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]&#45;&#45;[zeeguu/core/model/user_word.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1617.41,-603.29C1637.83,-588.83 1666.71,-568.39 1687.12,-553.93"/>
+<text xml:space="preserve" text-anchor="middle" x="1669.12" y="-574.35" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/__init__.py] -->
+<g id="node21" class="node">
+<title>[zeeguu/core/model/__init__.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="3240.25,-639.75 3023.25,-639.75 3023.25,-603.75 3240.25,-603.75 3240.25,-639.75"/>
+<text xml:space="preserve" text-anchor="middle" x="3131.75" y="-617.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/__init__.py]</text>
+</g>
+<!-- [zeeguu/core/account_management/user_account_deletion.py] -->
+<g id="node22" class="node">
+<title>[zeeguu/core/account_management/user_account_deletion.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="3334.38,-553.5 2929.12,-553.5 2929.12,-517.5 3334.38,-517.5 3334.38,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="3131.75" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/account_management/user_account_deletion.py]</text>
+</g>
+<!-- [zeeguu/core/model/__init__.py]&#45;&#45;[zeeguu/core/account_management/user_account_deletion.py] -->
+<g id="edge38" class="edge">
+<title>[zeeguu/core/model/__init__.py]&#45;&#45;[zeeguu/core/account_management/user_account_deletion.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M3131.75,-603.29C3131.75,-588.83 3131.75,-568.39 3131.75,-553.93"/>
+<text xml:space="preserve" text-anchor="middle" x="3141.5" y="-574.35" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/audio_lesson_generation_progress.py] -->
+<g id="node23" class="node">
+<title>[zeeguu/core/model/audio_lesson_generation_progress.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2580.25,-553.5 2201.25,-553.5 2201.25,-517.5 2580.25,-517.5 2580.25,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="2390.75" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/audio_lesson_generation_progress.py]</text>
+</g>
+<!-- [zeeguu/core/model/audio_lesson_generation_progress.py]&#45;&#45;[zeeguu/api/endpoints/audio_lessons.py] -->
+<g id="edge41" class="edge">
+<title>[zeeguu/core/model/audio_lesson_generation_progress.py]&#45;&#45;[zeeguu/api/endpoints/audio_lessons.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M2389.09,-517.04C2387.72,-502.58 2385.78,-482.14 2384.41,-467.68"/>
+<text xml:space="preserve" text-anchor="middle" x="2396.98" y="-488.1" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+</g>
+</svg>
+
+
+</div>
+<div style="">
+Download: 
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_files_90_days.svg'>SVG</a>
+ 
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_files_90_days.dot.txt'>DOT</a>
+ 
+<a style='text-decoration: none' target='_blank' href='https://obren.io/tools/graphviz/'>(open online Graphviz editor)</a>
+</div>
+<br/>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_files_90_days_force_2d.html'>Open 2D force graph (file dependencies)...</a>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_files_90_days_force_3d.html'>Open 3D force graph (file dependencies)...</a>
+<br/>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_with_commits_components_90_days_force_2d.html'>Open 2D force graph (file dependencies with commits)...</a>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_with_commits_components_90_days_force_3d.html'>Open 3D force graph (file dependencies with commits)...</a>
+<br/>
+</div></div>
+</div>
+<div style="margin: 10px;">
+<div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Dependencies between components in same commits (primary)</span>  <div class='subSectionSubtitle'>The number on the lines shows the number of shared commits.</div></div><div class='sectionBody'>
+<div style="width: 100%; overflow: auto; font-weight: normal;">
+<svg width="159pt" height="217pt"
+ viewBox="0.00 0.00 159.00 217.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 212.5)">
+<title>G</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-212.5 155,-212.5 155,4 -4,4"/>
+<!-- zeeguu -->
+<g id="node1" class="node">
+<title>zeeguu</title>
+<polygon fill="#00b2ee" stroke="white" points="106.75,-208.5 47.25,-208.5 47.25,-172.5 106.75,-172.5 106.75,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="77" y="-185.82" font-family="Tahoma" font-size="14.00">zeeguu</text>
+</g>
+<!-- zeeguu&#45;&#45;zeeguu -->
+<g id="edge1" class="edge">
+<title>zeeguu&#45;&#45;zeeguu</title>
+<path fill="none" stroke="#a0a0a0" stroke-width="10" d="M106.84,-198.59C116.79,-198.59 124.75,-195.89 124.75,-190.5 124.75,-185.11 116.79,-182.41 106.84,-182.41"/>
+<text xml:space="preserve" text-anchor="middle" x="137.88" y="-186.22" font-family="Arial" font-size="12.00"> 215 </text>
+</g>
+<!-- tools -->
+<g id="node2" class="node">
+<title>tools</title>
+<polygon fill="#00b2ee" stroke="white" points="54,-122.25 0,-122.25 0,-86.25 54,-86.25 54,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="27" y="-99.58" font-family="Tahoma" font-size="14.00">tools</text>
+</g>
+<!-- zeeguu&#45;&#45;tools -->
+<g id="edge2" class="edge">
+<title>zeeguu&#45;&#45;tools</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M66.64,-172.04C58.06,-157.58 45.92,-137.14 37.35,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="64.74" y="-143.1" font-family="Arial" font-size="12.00"> 93 </text>
+</g>
+<!-- ROOT -->
+<g id="node3" class="node">
+<title>ROOT</title>
+<polygon fill="#00b2ee" stroke="white" points="105,-36 51,-36 51,0 105,0 105,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="78" y="-13.32" font-family="Tahoma" font-size="14.00">ROOT</text>
+</g>
+<!-- zeeguu&#45;&#45;ROOT -->
+<g id="edge4" class="edge">
+<title>zeeguu&#45;&#45;ROOT</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M85.01,-172.25C90.74,-158.92 97.96,-139.84 101,-122.25 103.73,-106.48 103.62,-102.03 101,-86.25 98.09,-68.72 91.17,-49.63 85.68,-36.29"/>
+<text xml:space="preserve" text-anchor="middle" x="109.38" y="-99.97" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- tools&#45;&#45;tools -->
+<g id="edge3" class="edge">
+<title>tools&#45;&#45;tools</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.368627" d="M54.24,-112.33C64.02,-112.5 72,-109.81 72,-104.25 72,-98.69 64.02,-96 54.24,-96.17"/>
+<text xml:space="preserve" text-anchor="middle" x="81.75" y="-99.97" font-family="Arial" font-size="12.00"> 26 </text>
+</g>
+<!-- tools&#45;&#45;ROOT -->
+<g id="edge5" class="edge">
+<title>tools&#45;&#45;ROOT</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M37.57,-85.79C46.32,-71.33 58.7,-50.89 67.45,-36.43"/>
+<text xml:space="preserve" text-anchor="middle" x="61.93" y="-56.85" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+</g>
+</svg>
+
+
+</div>
+<div style="">
+Download: 
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_logical_decomposition_1_90_days.svg'>SVG</a>
+ 
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_logical_decomposition_1_90_days.dot.txt'>DOT</a>
+ 
+<a style='text-decoration: none' target='_blank' href='https://obren.io/tools/graphviz/'>(open online Graphviz editor)</a>
+</div>
+<br/>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_logical_decomposition_1_90_days_force_2d.html'>Open 2D force graph (file dependencies)...</a>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_logical_decomposition_1_90_days_force_3d.html'>Open 3D force graph (file dependencies)...</a>
+<br/>
+</div></div>
+</div>
+</div>
+<div id="180_days" class="tabcontent" style="display: none">
+<br/>
+<div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Files Most Frequently Changed Together (Top 50)</span></div><div class='sectionBody'>
+<p><a href='../data/text/temporal_dependencies.txt' target='_blank'>data...</a></p>
+<div style="max-height: 400px; overflow-y: auto">
+<table>
+<th>Pairs</th>
+<th># same commits</th>
+<th># commits 1</th>
+<th># commits 2</th>
+<th>latest commit</th>
+<tr>
+<td>zeeguu/api/endpoints/audio_lessons.py<br/>zeeguu/core/audio_lessons/daily_lesson_generator.py</td>
+<td style="text-align: center">28</td>
+<td>46 (60%)</td>
+<td>86 (32%)</td>
+<td>2026-04-06</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/friend_request.py<br/>zeeguu/api/endpoints/friends.py</td>
+<td style="text-align: center">27</td>
+<td>43 (62%)</td>
+<td>85 (31%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/account_management/user_account_creation.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">24</td>
+<td>51 (47%)</td>
+<td>206 (11%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/daily_streak.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">23</td>
+<td>58 (39%)</td>
+<td>101 (22%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">23</td>
+<td>206 (11%)</td>
+<td>101 (22%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/api/endpoints/daily_streak.py</td>
+<td style="text-align: center">23</td>
+<td>60 (38%)</td>
+<td>58 (39%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/friends.py<br/>tools/migrations/26-02-24-friendship_system.sql</td>
+<td style="text-align: center">23</td>
+<td>85 (27%)</td>
+<td>35 (65%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">22</td>
+<td>60 (36%)</td>
+<td>206 (10%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/audio_lesson_meaning.py<br/>zeeguu/core/audio_lessons/daily_lesson_generator.py</td>
+<td style="text-align: center">22</td>
+<td>27 (81%)</td>
+<td>86 (25%)</td>
+<td>2026-04-06</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/daily_streak.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">21</td>
+<td>58 (36%)</td>
+<td>206 (10%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/daily_audio_lesson.py<br/>zeeguu/core/audio_lessons/daily_lesson_generator.py</td>
+<td style="text-align: center">21</td>
+<td>28 (75%)</td>
+<td>86 (24%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/friends.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">20</td>
+<td>85 (23%)</td>
+<td>101 (19%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/badges/badge_progress.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">20</td>
+<td>26 (76%)</td>
+<td>53 (37%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/daily_streak.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">20</td>
+<td>58 (34%)</td>
+<td>53 (37%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/friend_request.py<br/>tools/migrations/26-02-24-friendship_system.sql</td>
+<td style="text-align: center">20</td>
+<td>43 (46%)</td>
+<td>35 (57%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/badge.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">20</td>
+<td>23 (86%)</td>
+<td>53 (37%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/friends.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">19</td>
+<td>85 (22%)</td>
+<td>206 (9%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">18</td>
+<td>206 (8%)</td>
+<td>53 (33%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/friends.py<br/>zeeguu/api/endpoints/daily_streak.py</td>
+<td style="text-align: center">18</td>
+<td>85 (21%)</td>
+<td>58 (31%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/friends.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">18</td>
+<td>85 (21%)</td>
+<td>53 (33%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/audio_lessons/script_generator.py<br/>zeeguu/core/audio_lessons/daily_lesson_generator.py</td>
+<td style="text-align: center">17</td>
+<td>35 (48%)</td>
+<td>86 (19%)</td>
+<td>2026-04-06</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">16</td>
+<td>60 (26%)</td>
+<td>53 (30%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/core/badges/badge_progress.py</td>
+<td style="text-align: center">16</td>
+<td>60 (26%)</td>
+<td>26 (61%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/audio_lesson_generation_progress.py<br/>zeeguu/api/endpoints/audio_lessons.py</td>
+<td style="text-align: center">16</td>
+<td>20 (80%)</td>
+<td>46 (34%)</td>
+<td>2026-04-06</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/audio_lesson_generation_progress.py<br/>zeeguu/core/audio_lessons/daily_lesson_generator.py</td>
+<td style="text-align: center">16</td>
+<td>20 (80%)</td>
+<td>86 (18%)</td>
+<td>2026-04-06</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/audio_lesson_meaning.py<br/>zeeguu/api/endpoints/audio_lessons.py</td>
+<td style="text-align: center">16</td>
+<td>27 (59%)</td>
+<td>46 (34%)</td>
+<td>2026-04-06</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/api/endpoints/translation.py</td>
+<td style="text-align: center">16</td>
+<td>60 (26%)</td>
+<td>137 (11%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/audio_lessons.py<br/>zeeguu/core/model/daily_audio_lesson.py</td>
+<td style="text-align: center">15</td>
+<td>46 (32%)</td>
+<td>28 (53%)</td>
+<td>2026-04-06</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/api/endpoints/friends.py</td>
+<td style="text-align: center">15</td>
+<td>60 (25%)</td>
+<td>85 (17%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/user.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">15</td>
+<td>101 (14%)</td>
+<td>53 (28%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>tools/migrations/26-02-24-friendship_system.sql<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">15</td>
+<td>35 (42%)</td>
+<td>206 (7%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/badge.py<br/>zeeguu/core/badges/badge_progress.py</td>
+<td style="text-align: center">14</td>
+<td>23 (60%)</td>
+<td>26 (53%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/accounts.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">14</td>
+<td>37 (37%)</td>
+<td>206 (6%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py<br/>zeeguu/core/model/user_language.py</td>
+<td style="text-align: center">13</td>
+<td>39 (33%)</td>
+<td>60 (21%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_word.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">13</td>
+<td>58 (22%)</td>
+<td>206 (6%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>tools/migrations/26-02-24-friendship_system.sql<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">13</td>
+<td>35 (37%)</td>
+<td>101 (12%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/__init__.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">13</td>
+<td>51 (25%)</td>
+<td>206 (6%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_word.py<br/>zeeguu/api/endpoints/translation.py</td>
+<td style="text-align: center">13</td>
+<td>58 (22%)</td>
+<td>137 (9%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/badges/badge_progress.py<br/>zeeguu/core/audio_lessons/daily_lesson_generator.py</td>
+<td style="text-align: center">13</td>
+<td>26 (50%)</td>
+<td>86 (15%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/badges/listeners.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">13</td>
+<td>21 (61%)</td>
+<td>53 (24%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/api/endpoints/user.py</td>
+<td style="text-align: center">13</td>
+<td>60 (21%)</td>
+<td>101 (12%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py<br/>zeeguu/core/model/user_word.py</td>
+<td style="text-align: center">13</td>
+<td>39 (33%)</td>
+<td>58 (22%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_word.py<br/>zeeguu/core/badges/badge_progress.py</td>
+<td style="text-align: center">13</td>
+<td>58 (22%)</td>
+<td>26 (50%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_word.py<br/>zeeguu/api/endpoints/badges.py</td>
+<td style="text-align: center">13</td>
+<td>58 (22%)</td>
+<td>53 (24%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_word.py<br/>zeeguu/core/model/user_language.py</td>
+<td style="text-align: center">13</td>
+<td>58 (22%)</td>
+<td>60 (21%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_language.py<br/>zeeguu/core/audio_lessons/daily_lesson_generator.py</td>
+<td style="text-align: center">13</td>
+<td>60 (21%)</td>
+<td>86 (15%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/user_word.py<br/>zeeguu/core/audio_lessons/daily_lesson_generator.py</td>
+<td style="text-align: center">13</td>
+<td>58 (22%)</td>
+<td>86 (15%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/api/endpoints/translation.py<br/>zeeguu/core/model/user.py</td>
+<td style="text-align: center">13</td>
+<td>137 (9%)</td>
+<td>206 (6%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/model/__init__.py<br/>zeeguu/core/account_management/user_account_deletion.py</td>
+<td style="text-align: center">13</td>
+<td>127 (10%)</td>
+<td>26 (50%)</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>zeeguu/core/leaderboards/leaderboards.py<br/>zeeguu/api/endpoints/friends.py</td>
+<td style="text-align: center">12</td>
+<td>16 (75%)</td>
+<td>85 (14%)</td>
+<td>2026-04-23</td>
+</tr>
+</table>
+</div>
+</div></div>
+<div style="margin: 10px;">
+<div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Dependencies between files in same commits</span>  <div class='subSectionSubtitle'>The number on the lines shows the number of shared commits.</div></div><div class='sectionBody'>
+<div style="width: 100%; overflow: auto; font-weight: normal;">
+<svg width="3404pt" height="648pt"
+ viewBox="0.00 0.00 3404.00 648.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 643.75)">
+<title>G</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-643.75 3400.12,-643.75 3400.12,4 -4,4"/>
+<!-- [zeeguu/api/endpoints/audio_lessons.py] -->
+<g id="node1" class="node">
+<title>[zeeguu/api/endpoints/audio_lessons.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="585,-467.25 320,-467.25 320,-431.25 585,-431.25 585,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="452.5" y="-444.57" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/audio_lessons.py]</text>
+</g>
+<!-- [zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="node2" class="node">
+<title>[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="952.88,-294.75 600.12,-294.75 600.12,-258.75 952.88,-258.75 952.88,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="776.5" y="-272.07" font-family="Tahoma" font-size="14.00">[zeeguu/core/audio_lessons/daily_lesson_generator.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/audio_lessons.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge1" class="edge">
+<title>[zeeguu/api/endpoints/audio_lessons.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="10" d="M319.58,-442.55C213.57,-433.25 91.62,-408.86 149,-345 178.82,-311.82 424.7,-293.63 599.64,-284.8"/>
+<text xml:space="preserve" text-anchor="middle" x="158.75" y="-358.73" font-family="Arial" font-size="12.00"> 28 </text>
+</g>
+<!-- [zeeguu/core/model/daily_audio_lesson.py] -->
+<g id="node12" class="node">
+<title>[zeeguu/core/model/daily_audio_lesson.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="791.62,-381 509.38,-381 509.38,-345 791.62,-345 791.62,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="650.5" y="-358.32" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/daily_audio_lesson.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/audio_lessons.py]&#45;&#45;[zeeguu/core/model/daily_audio_lesson.py] -->
+<g id="edge28" class="edge">
+<title>[zeeguu/api/endpoints/audio_lessons.py]&#45;&#45;[zeeguu/core/model/daily_audio_lesson.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M493.53,-430.79C527.51,-416.33 575.56,-395.89 609.53,-381.43"/>
+<text xml:space="preserve" text-anchor="middle" x="573.1" y="-401.85" font-family="Arial" font-size="12.00"> 15 </text>
+</g>
+<!-- [zeeguu/core/model/friend_request.py] -->
+<g id="node3" class="node">
+<title>[zeeguu/core/model/friend_request.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2718.25,-467.25 2460.75,-467.25 2460.75,-431.25 2718.25,-431.25 2718.25,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="2589.5" y="-444.57" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/friend_request.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py] -->
+<g id="node4" class="node">
+<title>[zeeguu/api/endpoints/friends.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2944.62,-381 2722.38,-381 2722.38,-345 2944.62,-345 2944.62,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="2833.5" y="-358.32" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/friends.py]</text>
+</g>
+<!-- [zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/api/endpoints/friends.py] -->
+<g id="edge2" class="edge">
+<title>[zeeguu/core/model/friend_request.py]&#45;&#45;[zeeguu/api/endpoints/friends.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="9" stroke-opacity="0.929412" d="M2640.06,-430.79C2681.93,-416.33 2741.15,-395.89 2783.01,-381.43"/>
+<text xml:space="preserve" text-anchor="middle" x="2735.86" y="-401.85" font-family="Arial" font-size="12.00"> 27 </text>
+</g>
+<!-- [tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql] -->
+<g id="node10" class="node">
+<title>[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]</title>
+<polygon fill="#00b2ee" stroke="white" points="2749.38,-294.75 2429.62,-294.75 2429.62,-258.75 2749.38,-258.75 2749.38,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="2589.5" y="-272.07" font-family="Tahoma" font-size="14.00">[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]</text>
+</g>
+<!-- [zeeguu/core/model/friend_request.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql] -->
+<g id="edge15" class="edge">
+<title>[zeeguu/core/model/friend_request.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M2589.5,-430.96C2589.5,-398.28 2589.5,-327.8 2589.5,-295.08"/>
+<text xml:space="preserve" text-anchor="middle" x="2599.25" y="-358.73" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [zeeguu/core/model/user.py] -->
+<g id="node6" class="node">
+<title>[zeeguu/core/model/user.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2251,-208.5 2058,-208.5 2058,-172.5 2251,-172.5 2251,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="2154.5" y="-185.82" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge17" class="edge">
+<title>[zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M2823.22,-344.52C2807.16,-317.85 2776.12,-269 2758.5,-258.75 2715.69,-233.85 2410.8,-209.3 2251.27,-197.98"/>
+<text xml:space="preserve" text-anchor="middle" x="2799.7" y="-272.48" font-family="Arial" font-size="12.00"> 19 </text>
+</g>
+<!-- [zeeguu/api/endpoints/daily_streak.py] -->
+<g id="node7" class="node">
+<title>[zeeguu/api/endpoints/daily_streak.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="3076.38,-294.75 2822.62,-294.75 2822.62,-258.75 3076.38,-258.75 3076.38,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="2949.5" y="-272.07" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/daily_streak.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/daily_streak.py] -->
+<g id="edge19" class="edge">
+<title>[zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/daily_streak.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M2857.54,-344.54C2877.44,-330.08 2905.6,-309.64 2925.5,-295.18"/>
+<text xml:space="preserve" text-anchor="middle" x="2908.2" y="-315.6" font-family="Arial" font-size="12.00"> 18 </text>
+</g>
+<!-- [zeeguu/api/endpoints/user.py] -->
+<g id="node8" class="node">
+<title>[zeeguu/api/endpoints/user.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2562,-122.25 2357,-122.25 2357,-86.25 2562,-86.25 2562,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="2459.5" y="-99.58" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/user.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge12" class="edge">
+<title>[zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M2945.08,-353.98C3030.1,-343.16 3126.2,-317.84 3085.5,-258.75 3026.63,-173.27 2724.39,-131.07 2562.38,-114.31"/>
+<text xml:space="preserve" text-anchor="middle" x="3078.25" y="-229.35" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql] -->
+<g id="edge7" class="edge">
+<title>[zeeguu/api/endpoints/friends.py]&#45;&#45;[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M2782.94,-344.54C2741.07,-330.08 2681.85,-309.64 2639.99,-295.18"/>
+<text xml:space="preserve" text-anchor="middle" x="2735.86" y="-315.6" font-family="Arial" font-size="12.00"> 23 </text>
+</g>
+<!-- [zeeguu/api/endpoints/badges.py] -->
+<g id="node14" class="node">
+<title>[zeeguu/api/endpoints/badges.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2266.75,-36 2042.25,-36 2042.25,0 2266.75,0 2266.75,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="2154.5" y="-13.32" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/badges.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge20" class="edge">
+<title>[zeeguu/api/endpoints/friends.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M2944.88,-352.43C2999.47,-346.53 3058.71,-337.99 3083.5,-327 3114.73,-313.16 3142.5,-311.91 3142.5,-277.75 3142.5,-277.75 3142.5,-277.75 3142.5,-103.25 3142.5,-59.73 2525.83,-32.39 2266.87,-22.83"/>
+<text xml:space="preserve" text-anchor="middle" x="3152.25" y="-186.22" font-family="Arial" font-size="12.00"> 18 </text>
+</g>
+<!-- [zeeguu/core/account_management/user_account_creation.py] -->
+<g id="node5" class="node">
+<title>[zeeguu/core/account_management/user_account_creation.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2300.88,-294.75 1894.12,-294.75 1894.12,-258.75 2300.88,-258.75 2300.88,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="2097.5" y="-272.07" font-family="Tahoma" font-size="14.00">[zeeguu/core/account_management/user_account_creation.py]</text>
+</g>
+<!-- [zeeguu/core/account_management/user_account_creation.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge3" class="edge">
+<title>[zeeguu/core/account_management/user_account_creation.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M2109.31,-258.29C2119.09,-243.83 2132.93,-223.39 2142.7,-208.93"/>
+<text xml:space="preserve" text-anchor="middle" x="2139.16" y="-229.35" font-family="Arial" font-size="12.00"> 24 </text>
+</g>
+<!-- [zeeguu/core/model/user.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge5" class="edge">
+<title>[zeeguu/core/model/user.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M2217.7,-172.04C2270.04,-157.58 2344.06,-137.14 2396.38,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="2335.01" y="-143.1" font-family="Arial" font-size="12.00"> 23 </text>
+</g>
+<!-- [zeeguu/core/model/user.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge18" class="edge">
+<title>[zeeguu/core/model/user.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M2154.5,-172.21C2154.5,-139.53 2154.5,-69.05 2154.5,-36.33"/>
+<text xml:space="preserve" text-anchor="middle" x="2164.25" y="-99.97" font-family="Arial" font-size="12.00"> 18 </text>
+</g>
+<!-- [zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge10" class="edge">
+<title>[zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M2906.64,-258.34C2877.06,-247.15 2836.54,-233.46 2799.5,-226.5 2773.1,-221.54 2424.83,-204.39 2251.34,-196.09"/>
+<text xml:space="preserve" text-anchor="middle" x="2863.85" y="-229.35" font-family="Arial" font-size="12.00"> 21 </text>
+</g>
+<!-- [zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge4" class="edge">
+<title>[zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M2927.91,-258.29C2914.15,-247.86 2895.58,-235.04 2877.5,-226.5 2769.88,-175.69 2636.47,-141.5 2549.73,-122.72"/>
+<text xml:space="preserve" text-anchor="middle" x="2845.35" y="-186.22" font-family="Arial" font-size="12.00"> 23 </text>
+</g>
+<!-- [zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge14" class="edge">
+<title>[zeeguu/api/endpoints/daily_streak.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M2938.93,-258.44C2924.03,-235.47 2894.68,-195.17 2859.5,-172.5 2675.63,-54.02 2414.57,-25.75 2267.18,-19.75"/>
+<text xml:space="preserve" text-anchor="middle" x="2837.45" y="-143.1" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [zeeguu/api/endpoints/user.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge30" class="edge">
+<title>[zeeguu/api/endpoints/user.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M2396.3,-85.79C2343.96,-71.33 2269.94,-50.89 2217.62,-36.43"/>
+<text xml:space="preserve" text-anchor="middle" x="2335.01" y="-56.85" font-family="Arial" font-size="12.00"> 15 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py] -->
+<g id="node9" class="node">
+<title>[zeeguu/core/model/user_language.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1785.62,-467.25 1527.38,-467.25 1527.38,-431.25 1785.62,-431.25 1785.62,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="1656.5" y="-444.57" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_language.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge46" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1526.93,-442.52C1475.52,-437.73 1416.4,-429.02 1364.5,-413.25 1351.14,-409.19 1349.41,-404.32 1336.5,-399 1318.37,-391.53 1187.54,-349.67 1168.5,-345 1081.65,-323.71 982.36,-306.75 905.44,-295.19"/>
+<text xml:space="preserve" text-anchor="middle" x="1291.92" y="-358.73" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/friends.py] -->
+<g id="edge29" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/friends.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M1785.99,-444.67C1933.84,-440 2182.87,-430.32 2396.5,-413.25 2507.42,-404.39 2633.69,-389.65 2721.88,-378.6"/>
+<text xml:space="preserve" text-anchor="middle" x="2550.71" y="-401.85" font-family="Arial" font-size="12.00"> 15 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge8" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M1587.36,-430.81C1522.07,-410.25 1427.9,-369.08 1384.5,-294.75 1376.43,-280.93 1373.69,-270.55 1384.5,-258.75 1429.15,-210.03 1861.06,-196.47 2057.77,-192.81"/>
+<text xml:space="preserve" text-anchor="middle" x="1416.74" y="-315.6" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/daily_streak.py] -->
+<g id="edge6" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/daily_streak.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M1785.92,-431.62C1787.45,-431.49 1788.98,-431.37 1790.5,-431.25 1918.61,-421.15 2244.02,-445.16 2368.5,-413.25 2382.03,-409.78 2383.58,-404.3 2396.5,-399 2523.26,-346.96 2558,-338.96 2692.5,-312.75 2717.53,-307.87 2770.71,-300.46 2822.23,-293.71"/>
+<text xml:space="preserve" text-anchor="middle" x="2554.11" y="-358.73" font-family="Arial" font-size="12.00"> 23 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge41" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1785.93,-431.75C1787.46,-431.58 1788.98,-431.41 1790.5,-431.25 1912.07,-418.02 2239.3,-452.51 2338.5,-381 2339.22,-380.48 2425.66,-182.71 2451.98,-122.46"/>
+<text xml:space="preserve" text-anchor="middle" x="2401.64" y="-272.48" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/badges/badge_progress.py] -->
+<g id="node13" class="node">
+<title>[zeeguu/core/badges/badge_progress.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1159.75,-381 887.25,-381 887.25,-345 1159.75,-345 1159.75,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="1023.5" y="-358.32" font-family="Tahoma" font-size="14.00">[zeeguu/core/badges/badge_progress.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/badges/badge_progress.py] -->
+<g id="edge23" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/core/badges/badge_progress.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M1526.9,-436.84C1463.5,-430.76 1386.14,-422.61 1317,-413.25 1250.31,-404.23 1175.51,-391.64 1118.11,-381.44"/>
+<text xml:space="preserve" text-anchor="middle" x="1326.75" y="-401.85" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge22" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M1569.28,-430.81C1547.61,-425.79 1524.56,-419.86 1503.5,-413.25 1466.92,-401.77 1455,-402.85 1423.5,-381 1351.02,-330.74 1289.5,-322.82 1289.5,-234.62 1289.5,-234.62 1289.5,-234.62 1289.5,-103.25 1289.5,-28.52 1807.6,-19 2041.86,-18.51"/>
+<text xml:space="preserve" text-anchor="middle" x="1299.31" y="-229.35" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/api/endpoints/translation.py] -->
+<g id="node18" class="node">
+<title>[zeeguu/api/endpoints/translation.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2329.5,-381 2085.5,-381 2085.5,-345 2329.5,-345 2329.5,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="2207.5" y="-358.32" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/translation.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/translation.py] -->
+<g id="edge27" class="edge">
+<title>[zeeguu/core/model/user_language.py]&#45;&#45;[zeeguu/api/endpoints/translation.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M1770.67,-430.79C1865.23,-416.33 1998.95,-395.89 2093.48,-381.43"/>
+<text xml:space="preserve" text-anchor="middle" x="1974.74" y="-401.85" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge31" class="edge">
+<title>[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M2507.48,-258.29C2461.4,-248.62 2402.82,-236.56 2350.5,-226.5 2318.25,-220.3 2282.95,-213.88 2251.3,-208.26"/>
+<text xml:space="preserve" text-anchor="middle" x="2426" y="-229.35" font-family="Arial" font-size="12.00"> 15 </text>
+</g>
+<!-- [tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]&#45;&#45;[zeeguu/api/endpoints/user.py] -->
+<g id="edge36" class="edge">
+<title>[tools/migrations/26&#45;02&#45;24&#45;friendship_system.sql]&#45;&#45;[zeeguu/api/endpoints/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M2576.32,-258.46C2551.4,-225.78 2497.66,-155.3 2472.72,-122.58"/>
+<text xml:space="preserve" text-anchor="middle" x="2547.17" y="-186.22" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/audio_lesson_meaning.py] -->
+<g id="node11" class="node">
+<title>[zeeguu/core/model/audio_lesson_meaning.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="307,-553.5 0,-553.5 0,-517.5 307,-517.5 307,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="153.5" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/audio_lesson_meaning.py]</text>
+</g>
+<!-- [zeeguu/core/model/audio_lesson_meaning.py]&#45;&#45;[zeeguu/api/endpoints/audio_lessons.py] -->
+<g id="edge26" class="edge">
+<title>[zeeguu/core/model/audio_lesson_meaning.py]&#45;&#45;[zeeguu/api/endpoints/audio_lessons.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M215.45,-517.04C266.77,-502.58 339.33,-482.14 390.63,-467.68"/>
+<text xml:space="preserve" text-anchor="middle" x="330.65" y="-488.1" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/core/model/audio_lesson_meaning.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge9" class="edge">
+<title>[zeeguu/core/model/audio_lesson_meaning.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M144.38,-517.07C127.14,-481.45 94.58,-399.12 130.5,-345 147.03,-320.1 160.78,-321.01 189.5,-312.75 263.76,-291.4 455.44,-283.06 599.72,-279.81"/>
+<text xml:space="preserve" text-anchor="middle" x="124.28" y="-401.85" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/core/model/daily_audio_lesson.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge11" class="edge">
+<title>[zeeguu/core/model/daily_audio_lesson.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M676.61,-344.54C698.23,-330.08 728.81,-309.64 750.43,-295.18"/>
+<text xml:space="preserve" text-anchor="middle" x="730.79" y="-315.6" font-family="Arial" font-size="12.00"> 21 </text>
+</g>
+<!-- [zeeguu/core/badges/badge_progress.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge39" class="edge">
+<title>[zeeguu/core/badges/badge_progress.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M972.32,-344.54C929.93,-330.08 869.99,-309.64 827.61,-295.18"/>
+<text xml:space="preserve" text-anchor="middle" x="924.54" y="-315.6" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/badges/badge_progress.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge13" class="edge">
+<title>[zeeguu/core/badges/badge_progress.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M1044.4,-344.56C1060.67,-328.94 1080.5,-304.42 1080.5,-277.75 1080.5,-277.75 1080.5,-277.75 1080.5,-103.25 1080.5,-56.48 1128.32,-66.08 1173.5,-54 1255.35,-32.11 1802.07,-23.11 2041.99,-20.18"/>
+<text xml:space="preserve" text-anchor="middle" x="1090.25" y="-186.22" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [zeeguu/core/model/badge.py] -->
+<g id="node15" class="node">
+<title>[zeeguu/core/model/badge.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1227.75,-467.25 1021.25,-467.25 1021.25,-431.25 1227.75,-431.25 1227.75,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="1124.5" y="-444.57" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/badge.py]</text>
+</g>
+<!-- [zeeguu/core/model/badge.py]&#45;&#45;[zeeguu/core/badges/badge_progress.py] -->
+<g id="edge32" class="edge">
+<title>[zeeguu/core/model/badge.py]&#45;&#45;[zeeguu/core/badges/badge_progress.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M1103.57,-430.79C1086.24,-416.33 1061.73,-395.89 1044.4,-381.43"/>
+<text xml:space="preserve" text-anchor="middle" x="1089.8" y="-401.85" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/model/badge.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge16" class="edge">
+<title>[zeeguu/core/model/badge.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="7" stroke-opacity="0.788235" d="M1147.96,-430.97C1165.87,-415.61 1187.5,-391.4 1187.5,-364 1187.5,-364 1187.5,-364 1187.5,-103.25 1187.5,-77.15 1196.8,-66.88 1219.5,-54 1254.67,-34.05 1800.82,-23.96 2041.76,-20.46"/>
+<text xml:space="preserve" text-anchor="middle" x="1197.25" y="-229.35" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [zeeguu/core/audio_lessons/script_generator.py] -->
+<g id="node16" class="node">
+<title>[zeeguu/core/audio_lessons/script_generator.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="491,-381 178,-381 178,-345 491,-345 491,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="334.5" y="-358.32" font-family="Tahoma" font-size="14.00">[zeeguu/core/audio_lessons/script_generator.py]</text>
+</g>
+<!-- [zeeguu/core/audio_lessons/script_generator.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge21" class="edge">
+<title>[zeeguu/core/audio_lessons/script_generator.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M426.08,-344.54C501.94,-330.08 609.21,-309.64 685.03,-295.18"/>
+<text xml:space="preserve" text-anchor="middle" x="591.71" y="-315.6" font-family="Arial" font-size="12.00"> 17 </text>
+</g>
+<!-- [zeeguu/core/model/audio_lesson_generation_progress.py] -->
+<g id="node17" class="node">
+<title>[zeeguu/core/model/audio_lesson_generation_progress.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="856,-553.5 477,-553.5 477,-517.5 856,-517.5 856,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="666.5" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/audio_lesson_generation_progress.py]</text>
+</g>
+<!-- [zeeguu/core/model/audio_lesson_generation_progress.py]&#45;&#45;[zeeguu/api/endpoints/audio_lessons.py] -->
+<g id="edge24" class="edge">
+<title>[zeeguu/core/model/audio_lesson_generation_progress.py]&#45;&#45;[zeeguu/api/endpoints/audio_lessons.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M622.16,-517.04C585.43,-502.58 533.5,-482.14 496.78,-467.68"/>
+<text xml:space="preserve" text-anchor="middle" x="582.06" y="-488.1" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/core/model/audio_lesson_generation_progress.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge25" class="edge">
+<title>[zeeguu/core/model/audio_lesson_generation_progress.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M689.81,-517.07C721.93,-491.43 778.32,-440.12 800.5,-381 811.49,-351.71 797.3,-315.79 786.53,-294.96"/>
+<text xml:space="preserve" text-anchor="middle" x="801.74" y="-401.85" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/api/endpoints/translation.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge48" class="edge">
+<title>[zeeguu/api/endpoints/translation.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M2247.02,-344.62C2284.52,-325.56 2332.03,-293.09 2309.5,-258.75 2293.57,-234.47 2266.78,-218.91 2239.91,-208.96"/>
+<text xml:space="preserve" text-anchor="middle" x="2325.07" y="-272.48" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/api/endpoints/accounts.py] -->
+<g id="node19" class="node">
+<title>[zeeguu/api/endpoints/accounts.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1629,-294.75 1394,-294.75 1394,-258.75 1629,-258.75 1629,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="1511.5" y="-272.07" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/accounts.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/accounts.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge33" class="edge">
+<title>[zeeguu/api/endpoints/accounts.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M1629.2,-259.85C1632,-259.48 1634.76,-259.11 1637.5,-258.75 1783.98,-239.34 1953.88,-217.34 2057.77,-203.94"/>
+<text xml:space="preserve" text-anchor="middle" x="1887.97" y="-229.35" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py] -->
+<g id="node20" class="node">
+<title>[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2059.5,-639.75 1641.5,-639.75 1641.5,-603.75 2059.5,-603.75 2059.5,-639.75"/>
+<text xml:space="preserve" text-anchor="middle" x="1850.5" y="-617.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]</text>
+</g>
+<!-- [zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]&#45;&#45;[zeeguu/core/model/user_language.py] -->
+<g id="edge34" class="edge">
+<title>[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]&#45;&#45;[zeeguu/core/model/user_language.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1830.83,-603.46C1793.65,-570.78 1713.44,-500.3 1676.22,-467.58"/>
+<text xml:space="preserve" text-anchor="middle" x="1782.54" y="-531.23" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/user_word.py] -->
+<g id="node21" class="node">
+<title>[zeeguu/core/model/user_word.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1442.25,-553.5 1208.75,-553.5 1208.75,-517.5 1442.25,-517.5 1442.25,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="1325.5" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_word.py]</text>
+</g>
+<!-- [zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]&#45;&#45;[zeeguu/core/model/user_word.py] -->
+<g id="edge42" class="edge">
+<title>[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]&#45;&#45;[zeeguu/core/model/user_word.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1741.72,-603.29C1651.62,-588.83 1524.21,-568.39 1434.14,-553.93"/>
+<text xml:space="preserve" text-anchor="middle" x="1629.18" y="-574.35" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge47" class="edge">
+<title>[zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1208.45,-528.37C1135.88,-523.2 1050.28,-514.23 1016.5,-499.5 903.52,-450.24 898.25,-400.3 811.5,-312.75 805.81,-307.01 799.59,-300.77 793.98,-295.17"/>
+<text xml:space="preserve" text-anchor="middle" x="906.7" y="-401.85" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge35" class="edge">
+<title>[zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1323.34,-517.11C1317.07,-457.81 1305.94,-265.04 1420.5,-226.5 1479.26,-206.73 1871.94,-196.81 2057.59,-193.17"/>
+<text xml:space="preserve" text-anchor="middle" x="1339.79" y="-358.73" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/core/model/user_language.py] -->
+<g id="edge45" class="edge">
+<title>[zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/core/model/user_language.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1394.08,-517.04C1450.89,-502.58 1531.22,-482.14 1588,-467.68"/>
+<text xml:space="preserve" text-anchor="middle" x="1520.57" y="-488.1" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/core/badges/badge_progress.py] -->
+<g id="edge43" class="edge">
+<title>[zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/core/badges/badge_progress.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1208.29,-526.26C1123.83,-517.6 1020.13,-500.41 993,-467.25 972.41,-442.08 993.9,-403.42 1009.78,-381.25"/>
+<text xml:space="preserve" text-anchor="middle" x="1002.75" y="-444.98" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge44" class="edge">
+<title>[zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1312.22,-517.29C1292.13,-490.11 1254.72,-434.79 1239.5,-381 1221.77,-318.35 1233.5,-299.74 1233.5,-234.62 1233.5,-234.62 1233.5,-234.62 1233.5,-103.25 1233.5,-49.28 1291.95,-66.32 1344.5,-54 1473.57,-23.73 1851.27,-19.05 2041.82,-18.7"/>
+<text xml:space="preserve" text-anchor="middle" x="1242.67" y="-272.48" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/api/endpoints/translation.py] -->
+<g id="edge38" class="edge">
+<title>[zeeguu/core/model/user_word.py]&#45;&#45;[zeeguu/api/endpoints/translation.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1442.67,-521.08C1537.88,-509.37 1675.44,-490.6 1794.5,-467.25 1920.51,-442.53 2065.72,-403.8 2146.02,-381.47"/>
+<text xml:space="preserve" text-anchor="middle" x="1962.85" y="-444.98" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/api/endpoints/__init__.py] -->
+<g id="node22" class="node">
+<title>[zeeguu/api/endpoints/__init__.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1876,-294.75 1647,-294.75 1647,-258.75 1876,-258.75 1876,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="1761.5" y="-272.07" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/__init__.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/__init__.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge37" class="edge">
+<title>[zeeguu/api/endpoints/__init__.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M1842.93,-258.29C1910.38,-243.83 2005.75,-223.39 2073.17,-208.93"/>
+<text xml:space="preserve" text-anchor="middle" x="1991.28" y="-229.35" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/badges/listeners.py] -->
+<g id="node23" class="node">
+<title>[zeeguu/core/badges/listeners.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="3396.12,-122.25 3170.88,-122.25 3170.88,-86.25 3396.12,-86.25 3396.12,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="3283.5" y="-99.58" font-family="Tahoma" font-size="14.00">[zeeguu/core/badges/listeners.py]</text>
+</g>
+<!-- [zeeguu/core/badges/listeners.py]&#45;&#45;[zeeguu/api/endpoints/badges.py] -->
+<g id="edge40" class="edge">
+<title>[zeeguu/core/badges/listeners.py]&#45;&#45;[zeeguu/api/endpoints/badges.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M3248.07,-85.81C3223.13,-74.46 3188.58,-60.58 3156.5,-54 2989.61,-19.75 2492.09,-17.41 2267.15,-18.21"/>
+<text xml:space="preserve" text-anchor="middle" x="3212.87" y="-56.85" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/model/__init__.py] -->
+<g id="node24" class="node">
+<title>[zeeguu/core/model/__init__.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2829,-639.75 2612,-639.75 2612,-603.75 2829,-603.75 2829,-639.75"/>
+<text xml:space="preserve" text-anchor="middle" x="2720.5" y="-617.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/__init__.py]</text>
+</g>
+<!-- [zeeguu/core/account_management/user_account_deletion.py] -->
+<g id="node25" class="node">
+<title>[zeeguu/core/account_management/user_account_deletion.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2923.12,-553.5 2517.88,-553.5 2517.88,-517.5 2923.12,-517.5 2923.12,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="2720.5" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/account_management/user_account_deletion.py]</text>
+</g>
+<!-- [zeeguu/core/model/__init__.py]&#45;&#45;[zeeguu/core/account_management/user_account_deletion.py] -->
+<g id="edge49" class="edge">
+<title>[zeeguu/core/model/__init__.py]&#45;&#45;[zeeguu/core/account_management/user_account_deletion.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M2720.5,-603.29C2720.5,-588.83 2720.5,-568.39 2720.5,-553.93"/>
+<text xml:space="preserve" text-anchor="middle" x="2730.25" y="-574.35" font-family="Arial" font-size="12.00"> 13 </text>
+</g>
+<!-- [zeeguu/core/leaderboards/leaderboards.py] -->
+<g id="node26" class="node">
+<title>[zeeguu/core/leaderboards/leaderboards.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="3026.75,-467.25 2736.25,-467.25 2736.25,-431.25 3026.75,-431.25 3026.75,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="2881.5" y="-444.57" font-family="Tahoma" font-size="14.00">[zeeguu/core/leaderboards/leaderboards.py]</text>
+</g>
+<!-- [zeeguu/core/leaderboards/leaderboards.py]&#45;&#45;[zeeguu/api/endpoints/friends.py] -->
+<g id="edge50" class="edge">
+<title>[zeeguu/core/leaderboards/leaderboards.py]&#45;&#45;[zeeguu/api/endpoints/friends.py]</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M2871.55,-430.79C2863.32,-416.33 2851.67,-395.89 2843.43,-381.43"/>
+<text xml:space="preserve" text-anchor="middle" x="2870.12" y="-401.85" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+</g>
+</svg>
+
+
+</div>
+<div style="">
+Download: 
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_files_180_days.svg'>SVG</a>
+ 
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_files_180_days.dot.txt'>DOT</a>
+ 
+<a style='text-decoration: none' target='_blank' href='https://obren.io/tools/graphviz/'>(open online Graphviz editor)</a>
+</div>
+<br/>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_files_180_days_force_2d.html'>Open 2D force graph (file dependencies)...</a>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_files_180_days_force_3d.html'>Open 3D force graph (file dependencies)...</a>
+<br/>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_with_commits_components_180_days_force_2d.html'>Open 2D force graph (file dependencies with commits)...</a>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_with_commits_components_180_days_force_3d.html'>Open 3D force graph (file dependencies with commits)...</a>
+<br/>
+</div></div>
+</div>
+<div style="margin: 10px;">
+<div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Dependencies between components in same commits (primary)</span>  <div class='subSectionSubtitle'>The number on the lines shows the number of shared commits.</div></div><div class='sectionBody'>
+<div style="width: 100%; overflow: auto; font-weight: normal;">
+<svg width="280pt" height="217pt"
+ viewBox="0.00 0.00 280.00 217.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 212.5)">
+<title>G</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-212.5 276.29,-212.5 276.29,4 -4,4"/>
+<!-- zeeguu -->
+<g id="node1" class="node">
+<title>zeeguu</title>
+<polygon fill="#00b2ee" stroke="white" points="191.75,-208.5 132.25,-208.5 132.25,-172.5 191.75,-172.5 191.75,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="162" y="-185.82" font-family="Tahoma" font-size="14.00">zeeguu</text>
+</g>
+<!-- zeeguu&#45;&#45;zeeguu -->
+<g id="edge1" class="edge">
+<title>zeeguu&#45;&#45;zeeguu</title>
+<path fill="none" stroke="#a0a0a0" stroke-width="10" d="M191.84,-198.59C201.79,-198.59 209.75,-195.89 209.75,-190.5 209.75,-185.11 201.79,-182.41 191.84,-182.41"/>
+<text xml:space="preserve" text-anchor="middle" x="222.88" y="-186.22" font-family="Arial" font-size="12.00"> 352 </text>
+</g>
+<!-- tools -->
+<g id="node2" class="node">
+<title>tools</title>
+<polygon fill="#00b2ee" stroke="white" points="54,-122.25 0,-122.25 0,-86.25 54,-86.25 54,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="27" y="-99.58" font-family="Tahoma" font-size="14.00">tools</text>
+</g>
+<!-- zeeguu&#45;&#45;tools -->
+<g id="edge2" class="edge">
+<title>zeeguu&#45;&#45;tools</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M134.03,-172.04C110.7,-157.49 77.66,-136.86 54.47,-122.4"/>
+<text xml:space="preserve" text-anchor="middle" x="115.71" y="-143.1" font-family="Arial" font-size="12.00"> 184 </text>
+</g>
+<!-- stanza_service -->
+<g id="node4" class="node">
+<title>stanza_service</title>
+<polygon fill="#00b2ee" stroke="white" points="214.62,-122.25 109.38,-122.25 109.38,-86.25 214.62,-86.25 214.62,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="162" y="-99.58" font-family="Tahoma" font-size="14.00">stanza_service</text>
+</g>
+<!-- zeeguu&#45;&#45;stanza_service -->
+<g id="edge6" class="edge">
+<title>zeeguu&#45;&#45;stanza_service</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M162,-172.04C162,-157.58 162,-137.14 162,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="168.38" y="-143.1" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- tools&#45;&#45;tools -->
+<g id="edge3" class="edge">
+<title>tools&#45;&#45;tools</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.368627" d="M54.24,-112.33C64.02,-112.5 72,-109.81 72,-104.25 72,-98.69 64.02,-96 54.24,-96.17"/>
+<text xml:space="preserve" text-anchor="middle" x="81.75" y="-99.97" font-family="Arial" font-size="12.00"> 49 </text>
+</g>
+<!-- ROOT -->
+<g id="node3" class="node">
+<title>ROOT</title>
+<polygon fill="#00b2ee" stroke="white" points="181,-36 127,-36 127,0 181,0 181,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="154" y="-13.32" font-family="Tahoma" font-size="14.00">ROOT</text>
+</g>
+<!-- tools&#45;&#45;ROOT -->
+<g id="edge5" class="edge">
+<title>tools&#45;&#45;ROOT</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M53.31,-85.79C75.11,-71.33 105.93,-50.89 127.72,-36.43"/>
+<text xml:space="preserve" text-anchor="middle" x="104.48" y="-56.85" font-family="Arial" font-size="12.00"> 4 </text>
+</g>
+<!-- ROOT&#45;&#45;zeeguu -->
+<g id="edge4" class="edge">
+<title>ROOT&#45;&#45;zeeguu</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M181.3,-28.78C205.31,-39.01 238.76,-57.63 254,-86.25 261.52,-100.37 261.24,-107.98 254,-122.25 241.1,-147.65 213.61,-165.76 192.01,-176.73"/>
+<text xml:space="preserve" text-anchor="middle" x="265.91" y="-99.97" font-family="Arial" font-size="12.00"> 5 </text>
+</g>
+<!-- stanza_service&#45;&#45;stanza_service -->
+<g id="edge7" class="edge">
+<title>stanza_service&#45;&#45;stanza_service</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M214.98,-111.98C225.3,-111.08 232.62,-108.5 232.62,-104.25 232.62,-100 225.3,-97.42 214.98,-96.52"/>
+<text xml:space="preserve" text-anchor="middle" x="239" y="-99.97" font-family="Arial" font-size="12.00"> 2 </text>
+</g>
+</g>
+</svg>
+
+
+</div>
+<div style="">
+Download: 
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_logical_decomposition_1_180_days.svg'>SVG</a>
+ 
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_logical_decomposition_1_180_days.dot.txt'>DOT</a>
+ 
+<a style='text-decoration: none' target='_blank' href='https://obren.io/tools/graphviz/'>(open online Graphviz editor)</a>
+</div>
+<br/>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_logical_decomposition_1_180_days_force_2d.html'>Open 2D force graph (file dependencies)...</a>
+<a style='text-decoration: none' target='_blank' href='visuals/file_changed_together_dependencies_logical_decomposition_1_180_days_force_3d.html'>Open 3D force graph (file dependencies)...</a>
+<br/>
+</div></div>
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<html>
+<head>
+    <title>zeeguu/core/model/starred_article.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/starred_article.py (<b>74</b> lines of code) (<a href="starred_article.py">raw</a>):</h3>
+<div id="editor">from datetime import datetime
+
+from sqlalchemy.orm.exc import NoResultFound
+
+from sqlalchemy import (
+    Column,
+    UniqueConstraint,
+    Integer,
+    ForeignKey,
+    String,
+    DateTime,
+)
+from sqlalchemy.orm import relationship
+
+from zeeguu.core.constants import SIMPLE_TIME_FORMAT
+from zeeguu.core.model import Url, User
+from zeeguu.core.model.language import Language
+from zeeguu.core.model.db import db
+
+
+class StarredArticle(db.Model):
+    &quot;&quot;&quot;
+
+    This keeps track of information regarding a user's starred articles.
+
+    &quot;&quot;&quot;
+
+    __table_args__ = {&quot;mysql_collate&quot;: &quot;utf8_bin&quot;}
+
+    id = Column(Integer, primary_key=True)
+
+    url_id = Column(Integer, ForeignKey(Url.id))
+    url = relationship(Url)
+
+    user_id = Column(Integer, ForeignKey(User.id))
+    user = relationship(User)
+
+    title = Column(String(255))
+
+    language_id = Column(Integer, ForeignKey(Language.id))
+    language = relationship(Language)
+
+    # Useful for ordering past read articles
+    starred_date = Column(DateTime)
+
+    # Together an url_id and user_id identify an article
+    UniqueConstraint(url_id, user_id)
+
+    def __init__(self, user, url, _title: str, language):
+        self.user = user
+        self.url = url
+        self.title = _title
+        self.language = language
+        self.starred_date = datetime.now()
+
+    def __repr__(self):
+        return f&quot;{self.user} has starred: {self.title}&quot;
+
+    def as_dict(self):
+        return dict(
+            user_id=self.user_id,
+            url=self.url.as_string(),
+            title=self.title,
+            language=self.language.code,
+            starred_date=self.starred_date.strftime(SIMPLE_TIME_FORMAT),
+        )
+
+    @classmethod
+    def find_or_create(cls, session, user: User, _url, _title: str, _language):
+        &quot;&quot;&quot;
+
+                    create a new object and add it to the db if it's not already there
+                    otherwise retrieve the existing object and update
+
+                    in case of creation, the created object is incomplete
+
+        \ &quot;&quot;&quot;
+
+        language = Language.find(_language)
+        url = Url.find_or_create(session, _url, _title)
+
+        try:
+            return cls.query.filter_by(user=user, url=url).one()
+        except NoResultFound:
+            try:
+                new = cls(user, url, _title, language)
+                session.add(new)
+                session.commit()
+                return new
+            except Exception as e:
+                from sentry_sdk import capture_exception
+
+                capture_exception(e)
+                print(&quot;seems we avoided a race condition&quot;)
+                session.rollback()
+                return cls.query.filter_by(user=user, url=url).one()
+
+    @classmethod
+    def delete(cls, session, user, _url):
+
+        try:
+            url = Url.find(_url)
+            item = cls.query.filter_by(user=user, url=url).one()
+            session.delete(item)
+            session.commit()
+        except Exception as e:
+            from sentry_sdk import capture_exception
+
+            capture_exception(e)
+
+    @classmethod
+    def all_for_user(cls, user):
+        return cls.query.filter_by(user=user).all()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

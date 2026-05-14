@@ -1,0 +1,158 @@
+<html>
+<head>
+    <title>def get_one_translation()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def get_one_translation()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/api/endpoints/translation.py [0:0]</i></p>
+<ul>
+    <li><b>106</b> lines of code</li>
+    <li><b>10</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def get_one_translation(from_lang_code, to_lang_code):
+    zeeguu_log(
+        f&quot;[TRANSLATION-ENTRY-IMMEDIATE] ENTERED get_one_translation function: from={from_lang_code}, to={to_lang_code}&quot;
+    )
+    &quot;&quot;&quot;
+    :return: json array with translations
+    &quot;&quot;&quot;
+    from zeeguu.logging import log
+
+    log(
+        f&quot;[TRANSLATION-ENTRY] get_one_translation CALLED: from={from_lang_code}, to={to_lang_code}, user={flask.g.user_id}&quot;
+    )
+
+    word_str = request.json[&quot;word&quot;].strip(punctuation_extended)
+    log(f&quot;[TRANSLATION-ENTRY] word='{word_str}'&quot;)
+    w_sent_i = request.json.get(&quot;w_sent_i&quot;, None)
+    w_token_i = request.json.get(&quot;w_token_i&quot;, None)
+    w_total_tokens = request.json.get(&quot;w_total_tokens&quot;, None)
+    context = request.json.get(&quot;context&quot;, &quot;&quot;).strip()
+    c_paragraph_i = request.json.get(&quot;c_paragraph_i&quot;, None)
+    c_sent_i = request.json.get(&quot;c_sent_i&quot;, None)
+    c_token_i = request.json.get(&quot;c_token_i&quot;, None)
+    article_id = request.json.get(&quot;articleID&quot;, None)
+    source_id = request.json.get(&quot;source_id&quot;, None)
+    in_content = request.json.get(&quot;in_content&quot;, None)
+    left_ellipsis = request.json.get(&quot;left_ellipsis&quot;, None)
+    right_ellipsis = request.json.get(&quot;right_ellipsis&quot;, None)
+    context_identifier = ContextIdentifier.from_dictionary(
+        request.json.get(&quot;context_identifier&quot;, None)
+    )
+    # The front end send the data in the following format:
+    # ('context_identifier[context_type]', 'ArticleFragment')
+
+    # Check if this is an MWE expression
+    is_mwe_expression = request.json.get(&quot;is_mwe_expression&quot;, False)
+    is_separated_mwe = request.json.get(&quot;is_separated_mwe&quot;, False)
+    full_sentence_context = request.json.get(&quot;full_sentence_context&quot;, None)  # Full sentence for context
+    mwe_partner_token_i = request.json.get(&quot;mwe_partner_token_i&quot;, None)  # Partner token for MWE
+
+    # if we have an own translation that is our first &quot;best guess&quot;
+    # ML: TODO:
+    # - word translated in the same text / articleID / url should still be considered
+    # even if not exactly this context
+    # - a teacher's translation or a senior user's should still
+    # be considered here
+
+    print(&quot;getting own past translation....&quot;)
+    # This has become less relevant since Tiago implemented the highlighting of the past translations
+    # In the exercises however, if one translates a word, this can still be useful ... unless we create the
+    # same history highlighting in the exercises
+    user = User.find_by_id(flask.g.user_id)
+    bookmark = get_own_past_translation(
+        user, word_str, from_lang_code, to_lang_code, context
+    )
+    if bookmark:
+        translation = bookmark.user_word.meaning.translation.content
+        likelihood = 1
+        source = &quot;Own past translation&quot;
+
+        return json_result(
+            {
+                &quot;translation&quot;: translation,
+                &quot;bookmark_id&quot;: bookmark.id,
+                &quot;source&quot;: source,
+                &quot;likelihood&quot;: likelihood,
+            }
+        )
+
+    else:
+        # TODO: must remove theurl, and title - they are not used in the calling method.
+        from zeeguu.logging import log
+        import time
+
+        if IS_DEV_SKIP_TRANSLATION:
+            print(&quot;Dev Skipping Translation&quot;)
+            t1 = {&quot;translation&quot;: f&quot;T-({to_lang_code})-'{word_str}'&quot;, &quot;likelihood&quot;: None, &quot;source&quot;: &quot;DEV_SKIP&quot;}
+        else:
+            log(f&quot;[TRANSLATION] Word: '{word_str}', separated_mwe={is_separated_mwe}&quot;)
+            start_time = time.time()
+            t1 = get_best_translation(word_str, context, from_lang_code, to_lang_code, is_separated_mwe, full_sentence_context)
+            elapsed = time.time() - start_time
+            log(f&quot;[TRANSLATION] Completed in {elapsed:.3f}s: '{t1.get('translation') if t1 else 'FAILED'}'&quot;)
+
+        log(
+            f&quot;[TRANSLATION-TIMING] About to call Bookmark.find_or_create for word='{word_str}'&quot;
+        )
+        bookmark_start = time.time()
+        user = User.find_by_id(flask.g.user_id)
+
+        # Get translation source from frontend, default to 'reading'
+        translation_source = request.json.get(&quot;translation_source&quot;, &quot;reading&quot;)
+        browsing_session_id = request.json.get(&quot;browsing_session_id&quot;, None)
+        reading_session_id = request.json.get(&quot;reading_session_id&quot;, None)
+
+        bookmark = Bookmark.find_or_create(
+            db_session,
+            user,
+            word_str,
+            from_lang_code,
+            t1[&quot;translation&quot;],
+            to_lang_code,
+            context,
+            article_id,
+            source_id,
+            c_paragraph_i=c_paragraph_i,
+            c_sentence_i=c_sent_i,
+            c_token_i=c_token_i,
+            left_ellipsis=left_ellipsis,
+            right_ellipsis=right_ellipsis,
+            sentence_i=w_sent_i,
+            token_i=w_token_i,
+            total_tokens=w_total_tokens,
+            context_identifier=context_identifier,
+            translation_source=translation_source,
+            browsing_session_id=browsing_session_id,
+            reading_session_id=reading_session_id,
+            is_mwe=is_mwe_expression,
+            mwe_partner_token_i=mwe_partner_token_i,
+        )
+
+        bookmark_elapsed = time.time() - bookmark_start
+        log(
+            f&quot;[TRANSLATION-TIMING] Bookmark.find_or_create completed in {bookmark_elapsed:.3f}s for word='{word_str}'&quot;
+        )
+        from zeeguu.core import events
+        events.word_translated.send(None, user_id=user.id, db_session=db_session)
+        db_session.commit()
+
+    return json_result(
+        {
+            &quot;translation&quot;: t1[&quot;translation&quot;],
+            &quot;bookmark_id&quot;: bookmark.id,
+            &quot;source&quot;: t1[&quot;source&quot;],
+            &quot;likelihood&quot;: t1[&quot;likelihood&quot;],
+        }
+    )
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

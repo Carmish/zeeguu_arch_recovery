@@ -1,0 +1,460 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/exercises.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/exercises.py (<b>266</b> lines of code) (<a href="exercises.py">raw</a>):</h3>
+<div id="editor">import traceback
+import flask
+from sqlalchemy.exc import NoResultFound
+
+from zeeguu.core.exercises.similar_words import similar_words
+from zeeguu.core.model.bookmark import Bookmark
+from zeeguu.core.model.user import User
+
+from zeeguu.api.utils.route_wrappers import cross_domain, requires_session
+from zeeguu.api.utils.json_result import json_result
+from zeeguu.api.utils.parse_json_boolean import parse_json_boolean
+from . import api, db_session
+from flask import request
+
+from zeeguu.core.word_scheduling.basicSR.basicSR import BasicSRSchedule
+
+
+# ====================================
+#  All Scheduled User Words
+# ====================================
+@api.route(&quot;/all_scheduled_user_words&quot;, methods=[&quot;GET&quot;, &quot;POST&quot;])
+@cross_domain
+@requires_session
+def get_all_scheduled_user_words():
+    &quot;&quot;&quot;
+    Returns all the user words scheduled for learning
+    Is used to render the Words&gt;Learning page
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    user_words = BasicSRSchedule.scheduled_user_words(user)
+
+    return _user_words_as_json_result(user_words)
+
+
+@api.route(&quot;/count_of_all_scheduled_user_words&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_count_of_all_scheduled_user_words():
+    user = User.find_by_id(flask.g.user_id)
+    word_count = BasicSRSchedule.scheduled_user_words_count(user)
+    return json_result(word_count)
+
+
+# ====================================
+# User words recommended for practice
+# ====================================
+@api.route(
+    &quot;/user_words_recommended_for_practice&quot;,
+    methods=[&quot;GET&quot;],
+)
+@cross_domain
+@requires_session
+def get_user_words_recommended_for_practice():
+
+    user = User.find_by_id(flask.g.user_id)
+    to_study = BasicSRSchedule.user_words_to_study(user)
+    return _user_words_as_json_result(to_study)
+
+
+@api.route(&quot;/count_of_user_words_recommended_for_practice&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_count_of_user_words_recommended_for_practice():
+    &quot;&quot;&quot;
+    Returns the count of user words recommended for practice.
+    Uses the same validation logic as user_words_recommended_for_practice
+    to ensure the count matches the actual exercises shown.
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    to_study = BasicSRSchedule.user_words_to_study(user)
+    # Count only valid user words (same filtering as the actual exercises endpoint)
+    valid_count = _count_valid_user_words(to_study)
+    return json_result(valid_count)
+
+
+@api.route(&quot;/next_word_due_time&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_next_word_due_time():
+    &quot;&quot;&quot;
+    Returns when the next word is due for practice.
+    Used by frontend to show &quot;Next word available in X minutes&quot; messages.
+
+    Returns:
+        - null if no words are scheduled
+        - ISO timestamp string if a word is scheduled
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    next_time = BasicSRSchedule.next_practice_time_for_user(user)
+
+    if next_time is None:
+        return json_result(None)
+
+    return json_result(next_time.isoformat())
+
+
+@api.route(
+    &quot;/user_words_due_today&quot;,
+    methods=[&quot;GET&quot;],
+)
+@cross_domain
+@requires_session
+def get_user_words_due_today():
+
+    user = User.find_by_id(flask.g.user_id)
+    with_tokens = parse_json_boolean(request.form.get(&quot;with_context&quot;, &quot;false&quot;))
+    to_study = BasicSRSchedule.scheduled_words_due_today(user)
+
+    return _user_words_as_json_result(to_study, True, with_tokens)
+
+
+# =====================================
+# User words next to be studied
+# =====================================
+
+
+@api.route(
+    &quot;/user_words_next_in_learning&quot;,
+    methods=[&quot;GET&quot;],
+)
+@cross_domain
+@requires_session
+def get_user_words_next_in_learning():
+
+    user = User.find_by_id(flask.g.user_id)
+    next_in_learning = BasicSRSchedule.user_words_not_scheduled(user, 6)
+
+    return _user_words_as_json_result(next_in_learning)
+
+
+# ====================================
+# Backward compatibility (deprecated)
+# ====================================
+@api.route(&quot;/all_scheduled_bookmarks&quot;, methods=[&quot;GET&quot;, &quot;POST&quot;])
+@cross_domain
+@requires_session
+def get_all_scheduled_bookmarks():
+    &quot;&quot;&quot;DEPRECATED: Use /all_scheduled_user_words instead&quot;&quot;&quot;
+    return get_all_scheduled_user_words()
+
+@api.route(&quot;/count_of_all_scheduled_words&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_count_of_all_scheduled_words():
+    &quot;&quot;&quot;DEPRECATED: Use /count_of_all_scheduled_user_words instead&quot;&quot;&quot;
+    return get_count_of_all_scheduled_user_words()
+
+@api.route(&quot;/bookmarks_recommended_for_practice&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_bookmarks_recommended_for_practice():
+    &quot;&quot;&quot;DEPRECATED: Use /user_words_recommended_for_practice instead&quot;&quot;&quot;
+    return get_user_words_recommended_for_practice()
+
+@api.route(&quot;/count_of_bookmarks_recommended_for_practice&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_count_of_bookmarks_recommended_for_practice():
+    &quot;&quot;&quot;DEPRECATED: Use /count_of_user_words_recommended_for_practice instead&quot;&quot;&quot;
+    return get_count_of_user_words_recommended_for_practice()
+
+@api.route(&quot;/bookmarks_due_today&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_bookmarks_due_today():
+    &quot;&quot;&quot;DEPRECATED: Use /user_words_due_today instead&quot;&quot;&quot;
+    return get_user_words_due_today()
+
+@api.route(&quot;/bookmarks_next_in_learning&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_bookmarks_next_in_learning():
+    &quot;&quot;&quot;DEPRECATED: Use /user_words_next_in_learning instead&quot;&quot;&quot;
+    return get_user_words_next_in_learning()
+
+
+# ====================================
+# Uploading exercise info
+# ====================================
+
+
+@api.route(
+    &quot;/report_exercise_outcome&quot;,
+    methods=[&quot;POST&quot;],
+)
+@requires_session
+def report_exercise_outcome():
+    &quot;&quot;&quot;
+    In the model parlance, an exercise is an entry in a table that
+    logs the performance of an exercise. Every such performance, has a source, and an outcome.
+
+    :param exercise_outcome: One of: C, Retry, Wrong, Typo, Too easy...
+    :param exercise_source: has been assigned to your app by zeeguu
+    :param exercise_solving_speed: in milliseconds
+    :param user_word_id: the user_word for which the data is reported
+    :param session_id: assuming that the exercise submitter knows which session is this exercise part of
+    :return:
+    &quot;&quot;&quot;
+
+    outcome = request.form.get(&quot;outcome&quot;, &quot;&quot;)
+    source = request.form.get(&quot;source&quot;)
+    solving_speed = request.form.get(&quot;solving_speed&quot;)
+    user_word_id = request.form.get(&quot;user_word_id&quot;)
+    other_feedback = request.form.get(&quot;other_feedback&quot;)
+    session_id = int(request.form.get(&quot;session_id&quot;))
+
+    if not solving_speed.isdigit():
+        solving_speed = 0
+
+    try:
+        from zeeguu.core.model.user_word import UserWord
+        user_word = UserWord.query.get(user_word_id)
+        if not user_word:
+            return &quot;FAIL - UserWord not found&quot;
+
+        user_word.report_exercise_outcome(
+            db_session,
+            source,
+            outcome,
+            solving_speed,
+            session_id,
+            other_feedback,
+        )
+
+        return &quot;OK&quot;
+    except Exception as e:
+        traceback.print_exc()
+        print(f&quot;Error reporting exercise outcome for UserWord {user_word_id}: {e}&quot;)
+        return &quot;FAIL&quot;
+
+
+@api.route(&quot;/similar_words/&lt;bookmark_id&gt;&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def similar_words_api(bookmark_id):
+    bookmark = Bookmark.find(bookmark_id)
+    user = User.find_by_id(flask.g.user_id)
+    return json_result(
+        similar_words(
+            bookmark.user_word.meaning.origin.content,
+            bookmark.user_word.meaning.origin.language,
+            user,
+        )
+    )
+
+
+def _bookmarks_as_json_result(bookmarks, with_exercise_info, with_tokens):
+    bookmark_dicts = [
+        b.as_dictionary(
+            with_exercise_info=with_exercise_info, with_context_tokenized=with_tokens
+        )
+        for b in bookmarks
+    ]
+    return json_result(bookmark_dicts)
+
+
+def _count_valid_user_words(user_words):
+    &quot;&quot;&quot;
+    Count user words that pass validation.
+    Uses the same validation logic as _user_words_as_json_result to ensure
+    the badge count matches the actual exercises shown.
+    &quot;&quot;&quot;
+    if not user_words:
+        return 0
+
+    valid_count = 0
+    for user_word in user_words:
+        try:
+            # Validate that the user_word can be serialized (same check as _user_words_as_json_result)
+            user_word.as_dictionary()
+            valid_count += 1
+        except (ValueError, Exception):
+            # Skip invalid user words (same as _user_words_as_json_result)
+            continue
+
+    return valid_count
+
+
+def _user_words_as_json_result(user_words):
+    from zeeguu.logging import log
+    from zeeguu.core.model import db
+    from zeeguu.core.word_scheduling.basicSR.four_levels_per_word import FourLevelsPerWord
+
+    if not user_words:
+        return json_result([])
+
+    # Batch-load all schedules in ONE query to avoid N+1 problem
+    # Use FourLevelsPerWord (the actual subclass) to get proper polymorphic behavior
+    user_word_ids = [uw.id for uw in user_words]
+    schedules = FourLevelsPerWord.query.filter(
+        FourLevelsPerWord.user_word_id.in_(user_word_ids)
+    ).all()
+
+    # Create a lookup map: user_word_id -&gt; schedule
+    schedule_map = {s.user_word_id: s for s in schedules}
+
+    # Get tokenized contexts - use cache when available
+    context_map = {}  # user_word_id -&gt; tokenized_context
+
+    for uw in user_words:
+        try:
+            bm = uw.preferred_bookmark
+            if bm and bm.context:
+                # Use cached tokenization if available, otherwise tokenize and cache
+                tokenized = bm.context.get_tokenized(session=db.session)
+                if tokenized:
+                    context_map[uw.id] = tokenized
+        except Exception as e:
+            log(f&quot;Failed to get tokenized context for user_word {uw.id}: {e}&quot;)
+
+    dicts = []
+    words_to_delete = []
+
+    for user_word in user_words:
+        try:
+            # Pass pre-loaded schedule and pre-tokenized context
+            schedule = schedule_map.get(user_word.id)
+            tokenized_context = context_map.get(user_word.id)
+            dicts.append(user_word.as_dictionary(
+                schedule=schedule,
+                pre_tokenized_context=tokenized_context
+            ))
+        except ValueError as e:
+            # This means validate_data_integrity() couldn't repair the issue
+            # (i.e., UserWord has no bookmarks at all)
+            log(f&quot;UserWord {user_word.id} failed validation and cannot be repaired: {str(e)}&quot;)
+            words_to_delete.append(user_word)
+        except Exception as e:
+            # Log any other unexpected errors and skip
+            log(f&quot;Unexpected error processing UserWord {user_word.id}: {str(e)}&quot;)
+            continue
+
+    # Delete UserWords that couldn't be repaired
+    if words_to_delete:
+        for word in words_to_delete:
+            try:
+                db.session.delete(word)
+                log(f&quot;Deleted UserWord {word.id} due to unrepairable data integrity issues&quot;)
+            except:
+                log(f&quot;Failed to delete UserWord {word.id}&quot;)
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+            log(&quot;Failed to commit UserWord deletions&quot;)
+
+    return json_result(dicts)
+
+
+# ====================================
+# Report Exercise Issue
+# ====================================
+
+
+@api.route(&quot;/report_exercise_issue&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def report_exercise_issue():
+    &quot;&quot;&quot;
+    Report a problem with an exercise.
+
+    Request body (JSON):
+    {
+        &quot;bookmark_id&quot;: 123,
+        &quot;exercise_source&quot;: &quot;FindWordInContextCloze&quot;,
+        &quot;reason&quot;: &quot;word_not_shown&quot;,  // word_not_shown, context_confusing, wrong_translation, context_wrong, other
+        &quot;comment&quot;: &quot;Optional details&quot;,  // optional
+        &quot;context_used&quot;: &quot;The context sentence...&quot;  // optional
+    }
+
+    Response (200):
+    {
+        &quot;success&quot;: true,
+        &quot;message&quot;: &quot;Report submitted&quot;,
+        &quot;report_id&quot;: 123
+    }
+    &quot;&quot;&quot;
+    from zeeguu.logging import log
+    from zeeguu.core.model import ExerciseReport, ExerciseSource
+
+    user = User.find_by_id(flask.g.user_id)
+    data = request.get_json()
+
+    if not data:
+        return json_result({&quot;error&quot;: &quot;JSON body required&quot;}), 400
+
+    bookmark_id = data.get(&quot;bookmark_id&quot;)
+    exercise_source_name = data.get(&quot;exercise_source&quot;, &quot;&quot;).strip()
+    reason = data.get(&quot;reason&quot;, &quot;&quot;).strip()
+    comment = (data.get(&quot;comment&quot;) or &quot;&quot;).strip() or None
+    context_used = (data.get(&quot;context_used&quot;) or &quot;&quot;).strip() or None
+
+    if not bookmark_id or not exercise_source_name or not reason:
+        return json_result({&quot;error&quot;: &quot;bookmark_id, exercise_source, and reason are required&quot;}), 400
+
+    valid_reasons = [&quot;word_not_shown&quot;, &quot;wrong_highlighting&quot;, &quot;context_confusing&quot;, &quot;wrong_translation&quot;, &quot;context_wrong&quot;, &quot;other&quot;]
+    if reason not in valid_reasons:
+        return json_result({&quot;error&quot;: f&quot;reason must be one of: {valid_reasons}&quot;}), 400
+
+    # Find the bookmark
+    bookmark = Bookmark.find(bookmark_id)
+    if not bookmark:
+        return json_result({&quot;error&quot;: &quot;Bookmark not found&quot;}), 404
+
+    # Find or create the exercise source
+    exercise_source = ExerciseSource.find_or_create(db_session, exercise_source_name)
+
+    # Check if already reported
+    existing = ExerciseReport.find_by_user_bookmark_source(
+        user.id, bookmark.id, exercise_source.id
+    )
+    if existing:
+        return json_result({
+            &quot;success&quot;: True,
+            &quot;message&quot;: &quot;You have already reported this exercise&quot;,
+            &quot;report_id&quot;: existing.id,
+            &quot;already_reported&quot;: True
+        })
+
+    try:
+        report = ExerciseReport.create(
+            db_session, user, bookmark, exercise_source, reason, comment, context_used
+        )
+        log(f&quot;User {user.id} reported exercise issue for bookmark {bookmark.id}: {reason}&quot;)
+
+        return json_result({
+            &quot;success&quot;: True,
+            &quot;message&quot;: &quot;Thanks for the feedback!&quot;,
+            &quot;report_id&quot;: report.id
+        })
+    except Exception as e:
+        log(f&quot;Error creating exercise report: {e}&quot;)
+        traceback.print_exc()
+        return json_result({&quot;error&quot;: &quot;Failed to submit report&quot;}), 500
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

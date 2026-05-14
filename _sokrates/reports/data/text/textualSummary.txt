@@ -1,0 +1,82 @@
+Start of analysis
+Found 901 files
+650 are in the main's scope  (58313 lines of code)
+  *.py: 505 files, (47129 lines of code)
+  *.ipynb: 2 files, (8654 lines of code)
+  *.sql: 136 files, (2427 lines of code)
+  *.cfg: 5 files, (64 lines of code)
+  *.toml: 1 files, (38 lines of code)
+  *.in: 1 files, (1 lines of code)
+80 are in the test's scope  (7282 lines of code)
+  *.py: 75 files, (3904 lines of code)
+  *.html: 1 files, (3320 lines of code)
+  *.rss: 1 files, (34 lines of code)
+  *.sh: 3 files, (24 lines of code)
+0 are in the generated's scope  (0 lines of code)
+14 are in the build and deployment's scope  (249 lines of code)
+  *.sh: 14 files, (249 lines of code)
+59 are in the other's scope  (8369 lines of code)
+  *.json: 9 files, (4148 lines of code)
+  *.md: 29 files, (3413 lines of code)
+  *.txt: 20 files, (745 lines of code)
+  *.svg: 1 files, (63 lines of code)
+Excluded from analyses 98 files
+Analysing dependencies...
+3 are in the DECOMPOSITION_primary/stanza_service's scope  (362 lines of code)
+  *.py: 3 files, (362 lines of code)
+351 are in the DECOMPOSITION_primary/zeeguu's scope  (38002 lines of code)
+  *.py: 349 files, (33648 lines of code)
+  *.ipynb: 1 files, (4327 lines of code)
+  *.sql: 1 files, (27 lines of code)
+285 are in the DECOMPOSITION_primary/tools's scope  (19746 lines of code)
+  *.py: 149 files, (13019 lines of code)
+  *.ipynb: 1 files, (4327 lines of code)
+  *.sql: 135 files, (2400 lines of code)
+11 are in the DECOMPOSITION_primary/ROOT's scope  (203 lines of code)
+  *.py: 4 files, (100 lines of code)
+  *.cfg: 5 files, (64 lines of code)
+  *.toml: 1 files, (38 lines of code)
+  *.in: 1 files, (1 lines of code)
+  - "primary", found 0 dependencies (0 component dependencies)
+19 are in the CONCERN_general/TODOs's scope  (4482 lines of code)
+  *.py: 18 files, (4352 lines of code)
+  *.sql: 1 files, (130 lines of code)
+631 are in the CONCERN_general/Unclassified's scope  (53831 lines of code)
+  *.py: 487 files, (42777 lines of code)
+  *.ipynb: 2 files, (8654 lines of code)
+  *.sql: 135 files, (2297 lines of code)
+  *.cfg: 5 files, (64 lines of code)
+  *.toml: 1 files, (38 lines of code)
+  *.in: 1 files, (1 lines of code)
+Analysing units...
+Basic unit metrics...
+  - found 2303 units (30405 lines of code in units)
+Unit size 7417 / 5384 / 9594 / 4965 / 3045
+Unit size per component:
+Unit Size Component stanza_service: 34 / 43 / 157 / 57 / 0
+Unit Size Component zeeguu: 6547 / 4435 / 6065 / 2923 / 1962
+Unit Size Component tools: 830 / 891 / 3348 / 1985 / 1083
+Unit Size Component ROOT: 6 / 15 / 24 / 0 / 0
+Unit size per extension:
+Unit Size Extension py: 7417 / 5384 / 9594 / 4965 / 3045
+Conditional complexity: 15198 / 6831 / 5713 / 2253 / 410
+Conditional complexity per component:
+Conditional Complexity Component stanza_service 122 / 78 / 91 / 0 / 0
+Conditional Complexity Component zeeguu 12234 / 4271 / 3607 / 1410 / 410
+Conditional Complexity Component tools 2821 / 2458 / 2015 / 843 / 0
+Conditional Complexity Component ROOT 21 / 24 / 0 / 0 / 0
+Conditional complexity per extension:
+Conditional Complexity Component py: 15198 / 6831 / 5713 / 2253 / 410
+Analysing duplication...
+  - found 1137 duplicates (15834 duplicated lines vs. 54829 cleaned lines) in 183 files
+  - per component:primary
+     - "zeeguu": 8711 duplicated lines vs. 35548 total lines
+     - "tools": 7063 duplicated lines vs. 18741 total lines
+     - "stanza_service": 54 duplicated lines vs. 351 total lines
+     - "ROOT": 6 duplicated lines vs. 189 total lines
+  - per extension:
+     - "ipynb": 8654 duplicated lines vs. 8654 total lines
+     - "py": 7050 duplicated lines vs. 43645 total lines
+     - "sql": 130 duplicated lines vs. 2427 total lines
+Total analysis time: 69.20s
+

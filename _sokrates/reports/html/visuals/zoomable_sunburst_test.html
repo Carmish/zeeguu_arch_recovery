@@ -1,0 +1,635 @@
+<head>
+    <style>
+        body {
+            font-family: Sans-serif;
+            font-size: 11px;
+        }
+
+        .slice {
+            cursor: pointer;
+        }
+
+        .slice .main-arc {
+            stroke: #fff;
+            stroke-width: 1px;
+        }
+
+        .slice .hidden-arc {
+            fill: none;
+        }
+
+        .slice text {
+            pointer-events: none;
+            dominant-baseline: middle;
+            text-anchor: middle;
+        }
+    </style>
+
+    <script src='https://d3js.org/d3.v4.min.js'></script>
+</head>
+<body>
+<script>
+    const width = window.innerWidth,
+        height = window.innerHeight,
+        maxRadius = (Math.min(width, height) / 2) - 5;
+
+    const formatNumber = d3.format(',d');
+
+    const x = d3.scaleLinear()
+        .range([0, 2 * Math.PI])
+        .clamp(true);
+
+    const y = d3.scaleSqrt()
+        .range([maxRadius * .1, maxRadius]);
+
+    const color = d3.scaleOrdinal(d3.schemeCategory20);
+
+    const partition = d3.partition();
+
+    const arc = d3.arc()
+        .startAngle(d => x(d.x0))
+        .endAngle(d => x(d.x1))
+        .innerRadius(d => Math.max(0, y(d.y0)))
+        .outerRadius(d => Math.max(0, y(d.y1)));
+
+    const middleArcLine = d => {
+        const halfPi = Math.PI / 2;
+        const angles = [x(d.x0) - halfPi, x(d.x1) - halfPi];
+        const r = Math.max(0, (y(d.y0) + y(d.y1)) / 2);
+
+        const middleAngle = (angles[1] + angles[0]) / 2;
+        const invertDirection = middleAngle > 0 && middleAngle < Math.PI; // On lower quadrants write text ccw
+        if (invertDirection) {
+            angles.reverse();
+        }
+
+        const path = d3.path();
+        path.arc(0, 0, r, angles[0], angles[1], invertDirection);
+        return path.toString();
+    };
+
+    const textFits = d => {
+        const CHAR_SPACE = 6;
+
+        const deltaAngle = x(d.x1) - x(d.x0);
+        const r = Math.max(0, (y(d.y0) + y(d.y1)) / 2);
+        const perimeter = r * deltaAngle;
+
+        return d.data.name.length * CHAR_SPACE < perimeter;
+    };
+
+    const svg = d3.select('body').append('svg')
+        .style('width', '100vw')
+        .style('height', '100vh')
+        .attr('viewBox', `${-width / 2} ${-height / 2} ${width} ${height}`)
+        .on('click', () => focusOn()); // Reset zoom on canvas click
+
+    var rootData = {
+        "name": "",
+        "children": [ {
+  "name" : "zeeguu",
+  "color" : "",
+  "size" : 0,
+  "children" : [ {
+    "name" : "core",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "test",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "test_friends.py",
+        "color" : "",
+        "size" : 109,
+        "children" : [ ]
+      }, {
+        "name" : "conftest.py",
+        "color" : "",
+        "size" : 62,
+        "children" : [ ]
+      }, {
+        "name" : "test_retrieve_and_compute.py",
+        "color" : "",
+        "size" : 42,
+        "children" : [ ]
+      }, {
+        "name" : "test_user.py",
+        "color" : "",
+        "size" : 243,
+        "children" : [ ]
+      }, {
+        "name" : "test_logging.py",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      }, {
+        "name" : "testing_data.py",
+        "color" : "",
+        "size" : 7,
+        "children" : [ ]
+      }, {
+        "name" : "test_user_word.py",
+        "color" : "",
+        "size" : 33,
+        "children" : [ ]
+      }, {
+        "name" : "test_tokenizer.py",
+        "color" : "",
+        "size" : 336,
+        "children" : [ ]
+      }, {
+        "name" : "test_url_keywords.py",
+        "color" : "",
+        "size" : 32,
+        "children" : [ ]
+      }, {
+        "name" : "test_feed.py",
+        "color" : "",
+        "size" : 1,
+        "children" : [ ]
+      }, {
+        "name" : "test_data",
+        "color" : "",
+        "size" : 0,
+        "children" : [ {
+          "name" : "spiegel.rss",
+          "color" : "",
+          "size" : 34,
+          "children" : [ ]
+        }, {
+          "name" : "lemonde_formation.html",
+          "color" : "",
+          "size" : 3320,
+          "children" : [ ]
+        } ]
+      }, {
+        "name" : "test_scheduling.py",
+        "color" : "",
+        "size" : 234,
+        "children" : [ ]
+      }, {
+        "name" : "__init__.py",
+        "color" : "",
+        "size" : 1,
+        "children" : [ ]
+      }, {
+        "name" : "test_user_article.py",
+        "color" : "",
+        "size" : 23,
+        "children" : [ ]
+      }, {
+        "name" : "test_text.py",
+        "color" : "",
+        "size" : 12,
+        "children" : [ ]
+      }, {
+        "name" : "test_difficulty_estimator_factory.py",
+        "color" : "",
+        "size" : 24,
+        "children" : [ ]
+      }, {
+        "name" : "test_cohort.py",
+        "color" : "",
+        "size" : 35,
+        "children" : [ ]
+      }, {
+        "name" : "test_domain.py",
+        "color" : "",
+        "size" : 31,
+        "children" : [ ]
+      }, {
+        "name" : "rules",
+        "color" : "",
+        "size" : 0,
+        "children" : [ {
+          "name" : "exercise_rule.py",
+          "color" : "",
+          "size" : 40,
+          "children" : [ ]
+        }, {
+          "name" : "phrase_rule.py",
+          "color" : "",
+          "size" : 23,
+          "children" : [ ]
+        }, {
+          "name" : "exercise_session_rule.py",
+          "color" : "",
+          "size" : 12,
+          "children" : [ ]
+        }, {
+          "name" : "outcome_rule.py",
+          "color" : "",
+          "size" : 46,
+          "children" : [ ]
+        }, {
+          "name" : "cohort_rule.py",
+          "color" : "",
+          "size" : 30,
+          "children" : [ ]
+        }, {
+          "name" : "topic_rule.py",
+          "color" : "",
+          "size" : 35,
+          "children" : [ ]
+        }, {
+          "name" : "url_rule.py",
+          "color" : "",
+          "size" : 17,
+          "children" : [ ]
+        }, {
+          "name" : "user_article_rule.py",
+          "color" : "",
+          "size" : 25,
+          "children" : [ ]
+        }, {
+          "name" : "source_text_rule.py",
+          "color" : "",
+          "size" : 12,
+          "children" : [ ]
+        }, {
+          "name" : "language_rule.py",
+          "color" : "",
+          "size" : 66,
+          "children" : [ ]
+        }, {
+          "name" : "user_exercise_session_rule.py",
+          "color" : "",
+          "size" : 22,
+          "children" : [ ]
+        }, {
+          "name" : "bookmark_rule.py",
+          "color" : "",
+          "size" : 67,
+          "children" : [ ]
+        }, {
+          "name" : "__init__.py",
+          "color" : "",
+          "size" : 1,
+          "children" : [ ]
+        }, {
+          "name" : "article_rule.py",
+          "color" : "",
+          "size" : 38,
+          "children" : [ ]
+        }, {
+          "name" : "feed_rule.py",
+          "color" : "",
+          "size" : 25,
+          "children" : [ ]
+        }, {
+          "name" : "exercise_source_rule.py",
+          "color" : "",
+          "size" : 35,
+          "children" : [ ]
+        }, {
+          "name" : "source_rule.py",
+          "color" : "",
+          "size" : 19,
+          "children" : [ ]
+        }, {
+          "name" : "user_word_rule.py",
+          "color" : "",
+          "size" : 25,
+          "children" : [ ]
+        }, {
+          "name" : "bookmark_context_rule.py",
+          "color" : "",
+          "size" : 27,
+          "children" : [ ]
+        }, {
+          "name" : "new_text_rule.py",
+          "color" : "",
+          "size" : 12,
+          "children" : [ ]
+        }, {
+          "name" : "user_reading_session_rule.py",
+          "color" : "",
+          "size" : 18,
+          "children" : [ ]
+        }, {
+          "name" : "text_rule.py",
+          "color" : "",
+          "size" : 22,
+          "children" : [ ]
+        }, {
+          "name" : "scheduler_rule.py",
+          "color" : "",
+          "size" : 11,
+          "children" : [ ]
+        }, {
+          "name" : "base_rule.py",
+          "color" : "",
+          "size" : 19,
+          "children" : [ ]
+        }, {
+          "name" : "meaning_rule.py",
+          "color" : "",
+          "size" : 25,
+          "children" : [ ]
+        }, {
+          "name" : "user_rule.py",
+          "color" : "",
+          "size" : 44,
+          "children" : [ ]
+        } ]
+      }, {
+        "name" : "tests_difficulty_estimator_strategies",
+        "color" : "",
+        "size" : 0,
+        "children" : [ {
+          "name" : "test_default_difficulty_estimator.py",
+          "color" : "",
+          "size" : 21,
+          "children" : [ ]
+        }, {
+          "name" : "test_frequency_difficulty_estimator.py",
+          "color" : "",
+          "size" : 18,
+          "children" : [ ]
+        }, {
+          "name" : "test_flesch_kincaid_difficulty_estimator.py",
+          "color" : "",
+          "size" : 125,
+          "children" : [ ]
+        }, {
+          "name" : "__init__.py",
+          "color" : "",
+          "size" : 1,
+          "children" : [ ]
+        } ]
+      }, {
+        "name" : "test_url.py",
+        "color" : "",
+        "size" : 40,
+        "children" : [ ]
+      }, {
+        "name" : "_session_data.py",
+        "color" : "",
+        "size" : 24,
+        "children" : [ ]
+      }, {
+        "name" : "test_bookmark.py",
+        "color" : "",
+        "size" : 126,
+        "children" : [ ]
+      }, {
+        "name" : "mocking_the_web.py",
+        "color" : "",
+        "size" : 109,
+        "children" : [ ]
+      }, {
+        "name" : "test_article.py",
+        "color" : "",
+        "size" : 40,
+        "children" : [ ]
+      }, {
+        "name" : "test_user_preferences.py",
+        "color" : "",
+        "size" : 31,
+        "children" : [ ]
+      }, {
+        "name" : "test_language.py",
+        "color" : "",
+        "size" : 45,
+        "children" : [ ]
+      }, {
+        "name" : "test_app.py",
+        "color" : "",
+        "size" : 18,
+        "children" : [ ]
+      }, {
+        "name" : "test_user_article_broken_report.py",
+        "color" : "",
+        "size" : 106,
+        "children" : [ ]
+      }, {
+        "name" : "model_test_mixin.py",
+        "color" : "",
+        "size" : 18,
+        "children" : [ ]
+      }, {
+        "name" : "fixtures.py",
+        "color" : "",
+        "size" : 12,
+        "children" : [ ]
+      } ]
+    } ]
+  }, {
+    "name" : "operations",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "crawler",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "crawl_ab_test.sh",
+        "color" : "",
+        "size" : 17,
+        "children" : [ ]
+      } ]
+    } ]
+  }, {
+    "name" : "api",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "test",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "test_friends.py",
+        "color" : "",
+        "size" : 219,
+        "children" : [ ]
+      }, {
+        "name" : "test_bookmark_positions.py",
+        "color" : "",
+        "size" : 199,
+        "children" : [ ]
+      }, {
+        "name" : "conftest.py",
+        "color" : "",
+        "size" : 48,
+        "children" : [ ]
+      }, {
+        "name" : "test_user_data.py",
+        "color" : "",
+        "size" : 8,
+        "children" : [ ]
+      }, {
+        "name" : "test_reading_session.py",
+        "color" : "",
+        "size" : 14,
+        "children" : [ ]
+      }, {
+        "name" : "test_endpoint_names.py",
+        "color" : "",
+        "size" : 12,
+        "children" : [ ]
+      }, {
+        "name" : "test_badges.py",
+        "color" : "",
+        "size" : 52,
+        "children" : [ ]
+      }, {
+        "name" : "test_account_creation.py",
+        "color" : "",
+        "size" : 68,
+        "children" : [ ]
+      }, {
+        "name" : "test_browsing_session.py",
+        "color" : "",
+        "size" : 7,
+        "children" : [ ]
+      }, {
+        "name" : "test_bookmarks.py",
+        "color" : "",
+        "size" : 64,
+        "children" : [ ]
+      }, {
+        "name" : "test_user_article.py",
+        "color" : "",
+        "size" : 30,
+        "children" : [ ]
+      }, {
+        "name" : "test_exercise_session.py",
+        "color" : "",
+        "size" : 41,
+        "children" : [ ]
+      }, {
+        "name" : "test_username.py",
+        "color" : "",
+        "size" : 153,
+        "children" : [ ]
+      }, {
+        "name" : "test_bookmark.py",
+        "color" : "",
+        "size" : 109,
+        "children" : [ ]
+      }, {
+        "name" : "test_teacher_dashboard.py",
+        "color" : "",
+        "size" : 66,
+        "children" : [ ]
+      }, {
+        "name" : "test_article.py",
+        "color" : "",
+        "size" : 14,
+        "children" : [ ]
+      }, {
+        "name" : "fixtures.py",
+        "color" : "",
+        "size" : 120,
+        "children" : [ ]
+      } ]
+    } ]
+  } ]
+}, {
+  "name" : "tools",
+  "color" : "",
+  "size" : 0,
+  "children" : [ {
+    "name" : "sh",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "run_tests.sh",
+      "color" : "",
+      "size" : 1,
+      "children" : [ ]
+    } ]
+  } ]
+}, {
+  "name" : "run_tests.sh",
+  "color" : "",
+  "size" : 6,
+  "children" : [ ]
+} ]
+    }
+
+
+    root = d3.hierarchy(rootData);
+    root.sum(d => d.size);
+
+    const slice = svg.selectAll('g.slice')
+        .data(partition(root).descendants());
+
+    slice.exit().remove();
+
+    const newSlice = slice.enter()
+        .append('g').attr('class', 'slice')
+        .on('click', d => {
+            d3.event.stopPropagation();
+            focusOn(d);
+        });
+
+    newSlice.append('title')
+        .text(d => d.data.name + '\n' + formatNumber(d.value));
+
+    newSlice.append('path')
+        .attr('class', 'main-arc')
+        .style('fill', d => color((d.children ? d : d.parent).data.name))
+        .attr('d', arc);
+
+    newSlice.append('path')
+        .attr('class', 'hidden-arc')
+        .attr('id', (_, i) => `hiddenArc${i}`)
+        .attr('d', middleArcLine);
+
+    const text = newSlice.append('text')
+        .attr('display', d => textFits(d) ? null : 'none');
+
+    // Add white contour
+    text.append('textPath')
+        .attr('startOffset', '50%')
+        .attr('xlink:href', (_, i) => `#hiddenArc${i}`)
+        .text(d => d.data.name)
+        .style('fill', 'none')
+        .style('stroke', '#fff')
+        .style('stroke-width', 5)
+        .style('stroke-linejoin', 'round');
+
+    text.append('textPath')
+        .attr('startOffset', '50%')
+        .attr('xlink:href', (_, i) => `#hiddenArc${i}`)
+        .text(d => d.data.name);
+
+    function focusOn(d = {x0: 0, x1: 1, y0: 0, y1: 1}) {
+        const transition = svg.transition()
+            .duration(750)
+            .tween('scale', () => {
+                const xd = d3.interpolate(x.domain(), [d.x0, d.x1]),
+                    yd = d3.interpolate(y.domain(), [d.y0, 1]);
+                return t => {
+                    x.domain(xd(t));
+                    y.domain(yd(t));
+                };
+            });
+
+        transition.selectAll('path.main-arc')
+            .attrTween('d', d => () => arc(d));
+
+        transition.selectAll('path.hidden-arc')
+            .attrTween('d', d => () => middleArcLine(d));
+
+        transition.selectAll('text')
+            .attrTween('display', d => () => textFits(d) ? null : 'none');
+
+        moveStackToFront(d);
+
+        //
+
+        function moveStackToFront(elD) {
+            svg.selectAll('.slice').filter(d => d === elD)
+                .each(function (d) {
+                    this.parentNode.appendChild(this);
+                    if (d.parent) {
+                        moveStackToFront(d.parent);
+                    }
+                })
+        }
+    }
+</script>
+</body>

@@ -1,0 +1,188 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/speech.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/speech.py (<b>109</b> lines of code) (<a href="speech.py">raw</a>):</h3>
+<div id="editor">import os.path
+import re
+
+from flask import request
+
+from zeeguu.api.endpoints import api
+from zeeguu.api.utils import cross_domain, requires_session
+from zeeguu.core.model import Article
+from zeeguu.config import ZEEGUU_DATA_FOLDER
+
+IS_DEV_SKIP_TRANSLATION = int(os.environ.get(&quot;DEV_SKIP_TRANSLATION&quot;, 0)) == 1
+
+# See: https://cloud.google.com/text-to-speech/docs/voices
+PREFERRED_VOICES = {
+    &quot;da&quot;: &quot;da-DK-Wavenet-F&quot;,
+    &quot;fr&quot;: &quot;fr-FR-Chirp3-HD-Erinome&quot;,
+    &quot;en&quot;: &quot;en-US-Chirp-HD-F&quot;,
+    &quot;nl&quot;: &quot;nl-NL-Chirp3-HD-Achernar&quot;,
+    &quot;de&quot;: &quot;de-DE-Chirp-HD-F&quot;,
+    &quot;it&quot;: &quot;it-IT-Neural2-A&quot;,
+    &quot;pt&quot;: &quot;pt-PT-Wavenet-E&quot;,
+    &quot;sv&quot;: &quot;sv-SE-Wavenet-F&quot;,
+    &quot;no&quot;: &quot;nb-NO-Wavenet-F&quot;,
+    &quot;pl&quot;: &quot;pl-PL-Chirp3-HD-Aoede&quot;,
+    &quot;ru&quot;: &quot;ru-RU-Standard-C&quot;,
+    &quot;es&quot;: &quot;es-ES-Chirp-HD-F&quot;,
+    &quot;ro&quot;: &quot;ro-RO-Wavenet-B&quot;,
+    &quot;el&quot;: &quot;el-GR-Wavenet-B&quot;,
+}
+
+
+def voice_for_language(language_id):
+    if PREFERRED_VOICES.get(language_id):
+        print(
+            f&quot;getting {PREFERRED_VOICES[language_id]} voice for language {language_id}&quot;
+        )
+        return PREFERRED_VOICES[language_id]
+    print(&quot;getting default voice for language {}&quot;.format(language_id))
+    return _code_from_id(language_id) + &quot;-Standard-A&quot;
+
+
+@api.route(&quot;/text_to_speech&quot;, methods=(&quot;POST&quot;,))
+@cross_domain
+@requires_session
+def tts():
+    import zeeguu.core
+    from zeeguu.core.model import Phrase, Language
+
+    db_session = zeeguu.core.model.db.session
+
+    text_to_pronounce = request.form.get(&quot;text&quot;, &quot;&quot;)
+    language_id = request.form.get(&quot;language_id&quot;, &quot;&quot;)
+
+    if not text_to_pronounce:
+        return &quot;&quot;
+
+    phrase = Phrase.find_or_create(
+        db_session, text_to_pronounce, Language.find_or_create(language_id)
+    )
+    audio_file_path = &quot;&quot;
+    if IS_DEV_SKIP_TRANSLATION:
+        audio_file_path = &quot;/static/test.mp3&quot;
+    else:
+        audio_file_path = _file_name_for_phrase(phrase, language_id)
+        if not os.path.isfile(ZEEGUU_DATA_FOLDER + audio_file_path):
+            _save_speech_to_file(phrase.content, language_id, audio_file_path)
+
+    print(audio_file_path)
+    return audio_file_path
+
+
+@api.route(&quot;/mp3_of_full_article&quot;, methods=(&quot;POST&quot;,))
+@cross_domain
+@requires_session
+def mp3_of_full_article():
+    print(&quot;in mp3_of_full_article&quot;)
+    import zeeguu.core
+
+    db_session = zeeguu.core.model.db.session
+
+    # TR: Get this from the database, rather than the front end.
+    # Otherwise, it should be more generic.
+    # text_to_pronounce = request.form.get(&quot;text&quot;, &quot;&quot;)
+    # language_id = request.form.get(&quot;language_id&quot;, &quot;&quot;)
+    article_id = request.form.get(&quot;article_id&quot;, &quot;&quot;)
+
+    print(&quot;ID:&quot; + article_id)
+    if not article_id:
+        return &quot;&quot;
+
+    article = Article.find_by_id(article_id)
+    text_to_pronounce = article.content
+    language_id = article.language_id
+
+    if (not text_to_pronounce) or (not article_id) or (not language_id):
+        return &quot;&quot;
+
+    audio_file_path = _file_name_for_full_article(
+        text_to_pronounce, language_id, article_id
+    )
+
+    if not os.path.isfile(ZEEGUU_DATA_FOLDER + audio_file_path):
+        _save_speech_to_file(text_to_pronounce, language_id, audio_file_path)
+
+    print(audio_file_path)
+    return audio_file_path
+
+
+def _save_speech_to_file(text_to_speak, language_id, audio_file_path):
+    from google.cloud import texttospeech
+
+    # Instantiates a client
+    client = texttospeech.TextToSpeechClient()
+
+    # Set the text input to be synthesized
+    synthesis_input = texttospeech.SynthesisInput(text=text_to_speak)
+
+    # Build the voice request
+    voice = texttospeech.VoiceSelectionParams(
+        language_code=_code_from_id(language_id), name=voice_for_language(language_id)
+    )
+
+    # Select the type of audio file you want returned
+    audio_config = texttospeech.AudioConfig(
+        audio_encoding=texttospeech.AudioEncoding.MP3
+    )
+
+    # Perform the text-to-speech request on the text input with the selected
+    # voice parameters and audio file type
+    response = client.synthesize_speech(
+        input=synthesis_input, voice=voice, audio_config=audio_config
+    )
+
+    # The response's audio_content is binary.
+    with open(ZEEGUU_DATA_FOLDER + audio_file_path, &quot;wb&quot;) as out:
+        # Write the response to the output file.
+        out.write(response.audio_content)
+
+
+def _file_name_for_phrase(phrase, language_id):
+    word_without_special_chars = re.sub(&quot;[^A-Za-z0-9]+&quot;, &quot;_&quot;, phrase.content)
+    return f&quot;/speech/{language_id}_{phrase.id}_{word_without_special_chars}.mp3&quot;
+
+
+def _file_name_for_full_article(full_article_text, language_id, article_id):
+    # create md5 hash of the phrase and return it
+    import hashlib
+
+    m = hashlib.md5()
+    m.update(full_article_text.encode(&quot;utf-8&quot;))
+    return f&quot;/speech/art_{article_id}_{language_id}_{m.hexdigest()}.mp3&quot;
+
+
+def _code_from_id(language_id):
+    # If they're not here, we assume the xy-XY form
+    irregular_language_codes = {
+        &quot;da&quot;: &quot;da-DK&quot;,
+        &quot;en&quot;: &quot;en-US&quot;,
+    }
+    if irregular_language_codes.get(language_id):
+        return irregular_language_codes[language_id]
+    return f&quot;{language_id}-{language_id.upper()}&quot;
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

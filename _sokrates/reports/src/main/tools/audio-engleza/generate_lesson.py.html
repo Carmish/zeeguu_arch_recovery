@@ -1,0 +1,235 @@
+<html>
+<head>
+    <title>tools/audio-engleza/generate_lesson.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/audio-engleza/generate_lesson.py (<b>138</b> lines of code) (<a href="generate_lesson.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python3
+&quot;&quot;&quot;
+Audio-Engleza: English lessons generator for elderly Romanian speakers.
+
+This tool generates English audio lessons with Romanian explanations and manages
+the lesson index for the audio-engleza.github.io website.
+
+This tool has a staged approach:
+1. Generate the lesson script (including translation)
+2. Show script to user for confirmation
+3. Generate audio only after confirmation
+4. Update lesson index and deploy to website
+&quot;&quot;&quot;
+
+import sys
+import os
+import json
+import shutil
+from datetime import datetime
+from zeeguu.api.app import create_app
+from zeeguu.core.audio_lessons.script_generator import generate_lesson_script
+from zeeguu.core.audio_lessons.voice_synthesizer import VoiceSynthesizer
+
+# Configuration
+WEBSITE_DIR = &quot;/Users/gh/zeeguu/audio-engleza.github.io&quot;
+AUDIO_DIR = os.path.join(WEBSITE_DIR, &quot;audio&quot;)
+LESSON_INDEX_FILE = os.path.join(WEBSITE_DIR, &quot;lessons.json&quot;)
+
+def generate_script(english_phrase, romanian_translation):
+    &quot;&quot;&quot;Generate the lesson script for review&quot;&quot;&quot;
+    
+    script = generate_lesson_script(
+        origin_word=english_phrase,
+        translation_word=romanian_translation,
+        origin_language=&quot;en&quot;,
+        translation_language=&quot;ro&quot;,
+        cefr_level=&quot;A1&quot;,
+        generator_prompt_file=&quot;basic_english_for_elderly_romanian.txt&quot;,
+    )
+    
+    return script
+
+def generate_audio(script, lesson_id, english_phrase):
+    &quot;&quot;&quot;Generate the audio file from the approved script&quot;&quot;&quot;
+    
+    voice_synthesizer = VoiceSynthesizer()
+    
+    mp3_path = voice_synthesizer.generate_lesson_audio(
+        audio_lesson_meaning_id=lesson_id,
+        script=script,
+        language_code=&quot;en&quot;,  # Target language is English
+        cefr_level=&quot;A1&quot;,
+        teacher_language=&quot;ro&quot;,  # Teacher speaks Romanian
+    )
+    
+    return mp3_path
+
+def load_lesson_index():
+    &quot;&quot;&quot;Load the existing lesson index or create a new one&quot;&quot;&quot;
+    if os.path.exists(LESSON_INDEX_FILE):
+        with open(LESSON_INDEX_FILE, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    else:
+        return {&quot;lessons&quot;: [], &quot;last_updated&quot;: None}
+
+def save_lesson_index(index):
+    &quot;&quot;&quot;Save the lesson index&quot;&quot;&quot;
+    index[&quot;last_updated&quot;] = datetime.now().isoformat()
+    with open(LESSON_INDEX_FILE, 'w', encoding='utf-8') as f:
+        json.dump(index, f, ensure_ascii=False, indent=2)
+
+def get_next_lesson_id():
+    &quot;&quot;&quot;Get the next available lesson ID&quot;&quot;&quot;
+    index = load_lesson_index()
+    if not index[&quot;lessons&quot;]:
+        return 1
+    return max(lesson[&quot;id&quot;] for lesson in index[&quot;lessons&quot;]) + 1
+
+def add_lesson_to_index(lesson_id, english_phrase, romanian_translation, filename):
+    &quot;&quot;&quot;Add a new lesson to the index&quot;&quot;&quot;
+    index = load_lesson_index()
+    
+    new_lesson = {
+        &quot;id&quot;: lesson_id,
+        &quot;english&quot;: english_phrase,
+        &quot;romanian&quot;: romanian_translation,
+        &quot;filename&quot;: filename,
+        &quot;created_at&quot;: datetime.now().isoformat()
+    }
+    
+    index[&quot;lessons&quot;].append(new_lesson)
+    save_lesson_index(index)
+    return new_lesson
+
+def create_semantic_filename(english_phrase, lesson_id):
+    &quot;&quot;&quot;Create a semantic filename from the English phrase&quot;&quot;&quot;
+    # Convert to lowercase and replace spaces and special chars with underscores
+    import re
+    semantic_name = re.sub(r'[^a-zA-Z0-9\s]', '', english_phrase.lower())
+    semantic_name = re.sub(r'\s+', '_', semantic_name.strip())
+    
+    # Add lesson ID as suffix for uniqueness
+    return f&quot;{semantic_name}_{lesson_id}.mp3&quot;
+
+def deploy_lesson(lesson_id, source_mp3_path, english_phrase):
+    &quot;&quot;&quot;Deploy the lesson to the website directory&quot;&quot;&quot;
+    # Create audio directory if it doesn't exist
+    os.makedirs(AUDIO_DIR, exist_ok=True)
+    
+    # Create semantic filename
+    filename = create_semantic_filename(english_phrase, lesson_id)
+    dest_path = os.path.join(AUDIO_DIR, filename)
+    shutil.copy2(source_mp3_path, dest_path)
+    
+    return f&quot;audio/{filename}&quot;  # Return relative path for the index
+
+def main():
+    print(&quot;\n&quot; + &quot;=&quot;*60)
+    print(&quot;AUDIO-ENGLEZA: English Lessons Generator&quot;)
+    print(&quot;For elderly Romanian speakers&quot;)
+    print(&quot;=&quot;*60 + &quot;\n&quot;)
+    
+    # Get phrase to teach
+    print(&quot;Enter the English phrase to teach:&quot;)
+    print(&quot;Examples: 'Hello', 'Thank you', 'How are you?', 'Nice to see you'&quot;)
+    english_phrase = input(&quot;English phrase: &quot;).strip()
+    
+    if not english_phrase:
+        print(&quot;Error: Please provide an English phrase&quot;)
+        sys.exit(1)
+    
+    print(&quot;\nEnter the Romanian translation:&quot;)
+    print(&quot;Examples: 'Bună ziua', 'Mulțumesc', 'Ce mai faci?', 'Mă bucur să te văd'&quot;)
+    romanian_translation = input(&quot;Romanian translation: &quot;).strip()
+    
+    if not romanian_translation:
+        print(&quot;Error: Please provide a Romanian translation&quot;)
+        sys.exit(1)
+    
+    # Stage 1: Generate script
+    print(&quot;\n&quot; + &quot;-&quot;*40)
+    print(&quot;STAGE 1: GENERATING LESSON SCRIPT&quot;)
+    print(&quot;-&quot;*40)
+    
+    app = create_app()
+    with app.app_context():
+        try:
+            script = generate_script(english_phrase, romanian_translation)
+            
+            print(&quot;\nGenerated Script:&quot;)
+            print(&quot;=&quot;*50)
+            print(script)
+            print(&quot;=&quot;*50)
+            
+            # Stage 2: Confirm script
+            print(&quot;\n&quot; + &quot;-&quot;*40)
+            print(&quot;STAGE 2: SCRIPT REVIEW&quot;)
+            print(&quot;-&quot;*40)
+            print(&quot;\nPlease review the script above.&quot;)
+            print(&quot;The script should:&quot;)
+            print(&quot;  - Be very simple and repetitive&quot;)
+            print(&quot;  - Include practical conversation examples&quot;)
+            print(&quot;  - Have lots of pauses for practice&quot;)
+            print(&quot;  - Break down words clearly&quot;)
+            
+            confirm = input(&quot;\nDo you want to generate audio for this script? (yes/no): &quot;).strip().lower()
+            
+            if confirm != 'yes':
+                print(&quot;\nScript generation cancelled. You can modify the prompt and try again.&quot;)
+                sys.exit(0)
+            
+            # Stage 3: Generate audio
+            print(&quot;\n&quot; + &quot;-&quot;*40)
+            print(&quot;STAGE 3: GENERATING AUDIO &amp; DEPLOYING&quot;)
+            print(&quot;-&quot;*40)
+            
+            # Get next lesson ID automatically
+            lesson_id = get_next_lesson_id()
+            print(f&quot;\nAssigning lesson ID: {lesson_id}&quot;)
+            
+            print(f&quot;Generating audio for lesson {lesson_id}...&quot;)
+            mp3_path = generate_audio(script, lesson_id, english_phrase)
+            
+            # Stage 4: Deploy to website
+            print(f&quot;\nDeploying lesson to website...&quot;)
+            filename = deploy_lesson(lesson_id, mp3_path, english_phrase)
+            
+            # Stage 5: Update index
+            print(f&quot;Updating lesson index...&quot;)
+            lesson_entry = add_lesson_to_index(lesson_id, english_phrase, romanian_translation, filename)
+            
+            print(&quot;\n&quot; + &quot;=&quot;*60)
+            print(&quot;SUCCESS!&quot;)
+            print(&quot;=&quot;*60)
+            print(f&quot;Audio lesson generated and deployed successfully!&quot;)
+            print(f&quot;\nLesson details:&quot;)
+            print(f&quot;  - Lesson ID: {lesson_id}&quot;)
+            print(f&quot;  - English phrase: {english_phrase}&quot;)
+            print(f&quot;  - Romanian translation: {romanian_translation}&quot;)
+            print(f&quot;  - Audio file: {filename}&quot;)
+            print(f&quot;  - Website location: {WEBSITE_DIR}/{filename}&quot;)
+            print(f&quot;  - Index updated: {LESSON_INDEX_FILE}&quot;)
+            print(&quot;\nThe lesson is now available on the audio-engleza website!&quot;)
+            
+        except Exception as e:
+            print(f&quot;\nError generating lesson: {e}&quot;)
+            sys.exit(1)
+
+if __name__ == &quot;__main__&quot;:
+    main()</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

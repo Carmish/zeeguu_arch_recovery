@@ -1,0 +1,141 @@
+<html>
+<head>
+    <title>zeeguu/core/content_retriever/parse_with_readability_server.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/content_retriever/parse_with_readability_server.py (<b>74</b> lines of code) (<a href="parse_with_readability_server.py">raw</a>):</h3>
+<div id="editor">import json
+
+import newspaper
+from langdetect import detect
+import requests
+
+from zeeguu.core.content_retriever.crawler_exceptions import (
+    FailedToParseWithReadabilityServer,
+    SkippedForLowQuality,
+)
+
+READABILITY_SERVER_CLEANUP_URI = &quot;http://readability_server:3456/cleanup?url=&quot;
+READABILITY_SERVER_CLEANUP_POST_URI = &quot;http://readability_server:3456/cleanup&quot;
+TIMEOUT_SECONDS = 10  # Most articles complete in 1-3s; 10s timeout for problem sites
+
+
+def download_and_parse(url, html_content=None, request_timeout=TIMEOUT_SECONDS):
+    &quot;&quot;&quot;
+    Parse article using readability server and newspaper.
+
+    Args:
+        url: Article URL
+        html_content: Optional pre-fetched HTML content. If provided, sent to readability server via POST.
+        request_timeout: Request timeout in seconds
+    &quot;&quot;&quot;
+    # This code will be run twice when using a newspaper source
+    # Maybe add a flag to avoid running this if the feed type == newspaper
+    # Configure newspaper with timeout
+    config = newspaper.Config()
+    config.fetch_images = False
+    config.request_timeout = 10  # 10 second timeout for downloading
+    config.browser_user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'  # Modern browser UA
+
+    from zeeguu.logging import log
+
+    np_article = newspaper.Article(url=url, config=config)
+
+    if html_content:
+        # Use provided HTML content instead of downloading
+        log(f&quot;   Using pre-fetched HTML content&quot;)
+        np_article.set_html(html_content)
+    else:
+        # Download HTML from URL
+        log(f&quot;   Downloading HTML with newspaper (timeout: {config.request_timeout}s)...&quot;)
+        try:
+            np_article.download()
+            log(f&quot;   ✓ HTML downloaded ({len(np_article.html) if np_article.html else 0} bytes)&quot;)
+        except Exception as e:
+            log(f&quot;   ✗ Newspaper download failed: {e}&quot;)
+            raise
+
+    log(f&quot;   Parsing HTML with newspaper...&quot;)
+    try:
+        np_article.parse()
+    except ValueError as e:
+        # lxml raises ValueError for content with invalid control characters
+        # e.g., &quot;All strings must be XML compatible: Unicode or ASCII, no NULL bytes or control characters&quot;
+        log(f&quot;   ✗ Newspaper parse failed (invalid characters): {e}&quot;)
+        raise SkippedForLowQuality(f&quot;Article contains invalid characters: {e}&quot;)
+    log(f&quot;   ✓ Parsed ({len(np_article.text)} chars)&quot;)
+
+    # Call readability server - always use POST with the HTML we already fetched
+    log(f&quot;   Calling readability server...&quot;)
+    import time
+    readability_start = time.time()
+    result_dict = None  # Initialize to None for exception handling
+
+    try:
+        # Use the HTML content we already fetched (either passed in or downloaded by newspaper)
+        html_to_send = html_content if html_content else np_article.html
+
+        # POST endpoint with HTML content - avoids double fetch!
+        result = requests.post(
+            READABILITY_SERVER_CLEANUP_POST_URI,
+            json={&quot;url&quot;: url, &quot;htmlContent&quot;: html_to_send},
+            timeout=request_timeout
+        )
+
+        readability_duration = time.time() - readability_start
+        log(f&quot;   ✓ Readability server responded in {readability_duration:.1f}s (status: {result.status_code})&quot;)
+
+        if result.status_code == 500:
+            log(f&quot;   ✗ Readability server error: {result.text}&quot;)
+            raise FailedToParseWithReadabilityServer(result.text)
+
+        result_dict = json.loads(result.text)
+        text_length = len(result_dict.get(&quot;text&quot;, &quot;&quot;))
+        html_length = len(result_dict.get(&quot;html&quot;, &quot;&quot;))
+        log(f&quot;   Extracted {text_length} chars of text, {html_length} chars of HTML&quot;)
+
+        np_article.text = result_dict[&quot;text&quot;]
+        np_article.htmlContent = result_dict[&quot;html&quot;]
+    except requests.exceptions.Timeout:
+        readability_duration = time.time() - readability_start
+        log(f&quot;   ✗ Readability server timeout after {request_timeout}s - rejecting article&quot;)
+        raise FailedToParseWithReadabilityServer(f&quot;Readability server timeout after {request_timeout}s&quot;)
+    except requests.exceptions.RequestException as e:
+        log(f&quot;   ✗ Readability server request failed: {e} - rejecting article&quot;)
+        raise FailedToParseWithReadabilityServer(f&quot;Readability server request failed: {e}&quot;)
+
+    # Use title from readability server if available and better than newspaper's
+    if result_dict and &quot;title&quot; in result_dict and result_dict[&quot;title&quot;]:
+        if not np_article.title or len(result_dict[&quot;title&quot;]) &gt; len(np_article.title):
+            np_article.title = result_dict[&quot;title&quot;]
+
+    # Update other metadata if available
+    if result_dict and &quot;byline&quot; in result_dict and result_dict[&quot;byline&quot;]:
+        if not np_article.authors:
+            np_article.authors = [result_dict[&quot;byline&quot;]]
+
+    if np_article.meta_lang == &quot;&quot;:
+        np_article.meta_lang = detect(np_article.text)
+
+    # Other relevant attributes: title, text, summary, authors
+    return np_article
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

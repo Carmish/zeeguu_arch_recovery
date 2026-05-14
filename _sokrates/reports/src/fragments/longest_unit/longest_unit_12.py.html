@@ -1,0 +1,213 @@
+<html>
+<head>
+    <title>def translate_and_adapt_article()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def translate_and_adapt_article()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/api/endpoints/article.py [0:0]</i></p>
+<ul>
+    <li><b>123</b> lines of code</li>
+    <li><b>33</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def translate_and_adapt_article():
+    &quot;&quot;&quot;
+    Translate an article to the user's learned language and adapt it to their level.
+
+    Expects:
+        - url: str - URL of the article to translate
+        - target_language: str (optional) - defaults to user's learned language
+
+    Returns:
+        JSON with translated article data and fragments
+    &quot;&quot;&quot;
+    from zeeguu.core.llm_services.simplification_service import SimplificationService
+    from zeeguu.core.model import User
+    from zeeguu.core.model.article import Article
+    from zeeguu.core.content_retriever import download_and_parse
+
+    url = request.form.get(&quot;url&quot;)
+    if not url:
+        flask.abort(400, &quot;URL required&quot;)
+
+    user = User.find_by_id(flask.g.user_id)
+    target_language = request.form.get(&quot;target_language&quot;, user.learned_language.code)
+
+    # Get user's CEFR level first for the translated URL key
+    try:
+        user_level = user.cefr_level_for_learned_language()
+        log(f&quot;User {user.id} CEFR level for {target_language}: {user_level}&quot;)
+    except Exception as e:
+        log(f&quot;Error getting CEFR level for user {user.id}: {e}&quot;)
+        user_level = &quot;A1&quot;  # Default to A1 if there's an error
+        log(f&quot;Defaulting to A1 level&quot;)
+
+    # Detect source language first
+    try:
+        article_obj = download_and_parse(url)
+        article_content = article_obj.text
+        text = re.sub(HTML_TAG_CLEANR, &quot;&quot;, article_content)
+        source_language = detect(text)
+    except Exception as e:
+        log(f&quot;Failed to detect source language: {e}&quot;)
+        source_language = &quot;unknown&quot;
+
+    # Create a unique identifier for this translated article
+    # Based on source language, target language and CEFR level so translations can be shared between users
+    # Format: url#translated-from-SOURCE-to-TARGET-LEVEL
+    translated_url_key = (
+        f&quot;{url}#translated-from-{source_language}-to-{target_language}-{user_level}&quot;
+    )
+
+    from zeeguu.core.model.url import Url
+
+    # Check if we already have a translated version for this user
+    #
+    try:
+        existing_url = Url.find(translated_url_key)
+        if existing_url:
+            existing_article = Article.find(translated_url_key)
+            if existing_article:
+                log(f&quot;Found existing translated article for {url}&quot;)
+                from zeeguu.core.model.user_article import UserArticle
+
+                uai = UserArticle.user_article_info(
+                    user, existing_article, with_content=True
+                )
+                uai[&quot;is_translated&quot;] = True
+                # Extract source language from the URL key format: url#translated-from-SOURCE-to-TARGET-LEVEL
+                try:
+                    # Parse the URL fragment to get source language
+                    fragment = translated_url_key.split(&quot;#&quot;)[
+                        1
+                    ]  # Get &quot;translated-from-SOURCE-to-TARGET-LEVEL&quot;
+                    parts = fragment.split(&quot;-&quot;)
+                    # Format is: translated-from-SOURCE-to-TARGET-LEVEL
+                    # So source language is at index 2
+                    source_lang = parts[2] if len(parts) &gt; 2 else &quot;unknown&quot;
+                    uai[&quot;source_language&quot;] = source_lang
+                except:
+                    uai[&quot;source_language&quot;] = &quot;unknown&quot;  # Fallback if parsing fails
+                return json_result(uai)
+    except:
+        # No existing translation found, continue with creating a new one
+        pass
+
+    # Fetch the article content using readability server
+    try:
+        # We already downloaded the article above, reuse it
+        article_title = article_obj.title
+
+        log(f&quot;Article content length: {len(article_content)} characters&quot;)
+        log(f&quot;Article title: {article_title}&quot;)
+        log(f&quot;First 200 chars: {article_content[:200]}...&quot;)
+
+        if not article_content or article_content.strip() == &quot;&quot;:
+            flask.abort(400, &quot;Could not extract article content from URL&quot;)
+
+        # Use the simplification service to translate and adapt
+        simplification_service = SimplificationService()
+
+        # Create a combined prompt for translation and adaptation
+        result = simplification_service.translate_and_adapt(
+            title=article_title,
+            content=article_content,
+            source_language=source_language,
+            target_language=target_language,
+            target_level=user_level,
+        )
+
+        if not result:
+            flask.abort(500, &quot;Translation failed&quot;)
+
+        # Create and save the translated article to DB for caching
+        from zeeguu.core.model.user_article import UserArticle
+        from zeeguu.core.model.source import Source
+        from zeeguu.core.model.source_type import SourceType
+        from datetime import datetime
+
+        # Create URL and language objects with unique translated URL
+        translated_url = Url.find_or_create(db_session, translated_url_key)
+        target_lang_obj = Language.find(target_language)
+
+        # Create Source object just like find_or_create does
+        source_type = SourceType.find_by_type(SourceType.ARTICLE)
+        source = Source.find_or_create(
+            db_session,
+            result[&quot;content&quot;],  # Use translated content
+            source_type,
+            target_lang_obj,
+            0,
+        )
+
+        # Use LLM-generated summary if available, otherwise create from content
+        if &quot;summary&quot; in result and result[&quot;summary&quot;]:
+            clean_summary = result[&quot;summary&quot;]
+        else:
+            # Fallback: create summary from content
+            from bs4 import BeautifulSoup
+
+            clean_content = BeautifulSoup(result[&quot;content&quot;], &quot;html.parser&quot;).get_text()
+            clean_summary = (
+                clean_content[:200] + &quot;...&quot;
+                if len(clean_content) &gt; 200
+                else clean_content
+            )
+
+        # Create article with proper source (like find_or_create does)
+        article = Article(
+            translated_url,  # url (unique for translation)
+            result[&quot;title&quot;],  # title
+            None,  # authors
+            source,  # source (this is the key!)
+            result.get(&quot;summary&quot;, clean_summary),  # summary (clean text)
+            datetime.now(),  # published_time
+            None,  # feed
+            target_lang_obj,  # language
+            result[&quot;content&quot;],  # htmlContent (keep HTML for parsing)
+            None,  # uploader
+        )
+
+        # Set the CEFR level to match the user's level for display
+        article.cefr_level = user_level
+
+        # Extract and save main image from original article
+        from zeeguu.core.content_retriever.article_downloader import (
+            extract_article_image,
+        )
+
+        main_img_url = extract_article_image(article_obj)
+        if main_img_url and main_img_url != &quot;&quot;:
+            article.img_url = Url.find_or_create(db_session, main_img_url)
+
+        # Save to DB for caching
+        db_session.add(article)
+        db_session.commit()  # Need to commit to get article.id for fragments
+
+        # Create article fragments (this is what was missing!)
+        article.create_article_fragments(db_session)
+        db_session.commit()
+
+        # Use the same user_article_info flow as find_or_create_article
+        uai = UserArticle.user_article_info(user, article, with_content=True)
+
+        # Mark it as translated
+        uai[&quot;is_translated&quot;] = True
+        uai[&quot;source_language&quot;] = source_language
+
+        # Return in the format expected by frontend (like find_or_create_article)
+        return json_result(uai)
+
+    except Exception as e:
+        log(f&quot;Translation failed for {url}: {str(e)}&quot;)
+        flask.abort(500, f&quot;Translation failed: {str(e)}&quot;)
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

@@ -1,0 +1,230 @@
+<html>
+<head>
+    <title>zeeguu/core/emailer/zeeguu_mailer.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/emailer/zeeguu_mailer.py (<b>131</b> lines of code) (<a href="zeeguu_mailer.py">raw</a>):</h3>
+<div id="editor">from smtplib import SMTP
+
+import yagmail
+import zeeguu
+from zeeguu.logging import logger, log
+
+
+class ZeeguuMailer(object):
+    def __init__(self, message_subject, message_body, to_email):
+
+        self.message_body = message_body
+        self.to_email = to_email
+        self.message_subject = message_subject
+
+        self.our_email = zeeguu.core.app.config.get(&quot;SMTP_EMAIL&quot;)
+        self.password = zeeguu.core.app.config.get(&quot;SMTP_PASS&quot;)
+
+    def send_with_yagmail(self):
+        yag = yagmail.SMTP(self.our_email, self.password)
+        yag.send(self.to_email, self.message_subject, contents=self.message_body)
+
+    def send(self):
+        # this next line disables the mailer also during unit testing
+        if not zeeguu.core.app.config.get(&quot;SEND_NOTIFICATION_EMAILS&quot;, False):
+            log(&quot;returning without sending&quot;)
+            return
+        try:
+            log(&quot;sending email...&quot;)
+            self.send_with_yagmail()
+        except Exception as e:
+            log(f&quot;Failed to send email: {e}&quot;)
+            from sentry_sdk import capture_exception
+
+            capture_exception(e)
+
+    def _content_of_email(self):
+        from email.mime.text import MIMEText
+
+        message = MIMEText(self.message_body)
+        message[&quot;From&quot;] = self.our_email
+        message[&quot;To&quot;] = self.to_email
+        message[&quot;Subject&quot;] = self.message_subject
+
+        return message.as_string()
+
+    @classmethod
+    def send_feedback(cls, subject, context, message, user, url=None):
+
+        print(&quot;sending feedback...&quot;)
+        mailer = ZeeguuMailer(
+            subject,
+            f&quot;Dear Zeeguu Team,\n\nWrt. **{context}** I'd like to report that: \n\n&quot;
+            + message
+            + f&quot;\n@url ({url})&quot;
+            + &quot;\n\n&quot;
+            + &quot;Cheers,\n&quot;
+            + f&quot;{user.name} ({user.id}, {user.email})&quot;,
+            zeeguu.core.app.config.get(&quot;SMTP_EMAIL&quot;),
+        )
+        mailer.send()
+
+    @classmethod
+    def notify_audio_experiment(cls, data, user):
+        content = f&quot;{user.name} ({user.email}, {user.invitation_code})\n&quot;
+        content += data.get(&quot;event&quot;, &quot;&quot;)
+        content += &quot;\n&quot;
+        content += data.get(&quot;value&quot;, &quot;&quot;)
+        content += &quot;\n&quot;
+        content += data.get(&quot;extra_data&quot;, &quot;&quot;)
+        content += &quot;\n&quot;
+        content += data.get(&quot;time&quot;, &quot;&quot;)
+        content += &quot;\n\n&quot;
+        content += &quot;Cheers,\n Your Friendly Zeeguu Server&quot;
+
+        prefix = &quot;@i&quot;
+        for handle in [&quot;jkak&quot;, &quot;gupe&quot;, &quot;mlun&quot;]:
+            ZeeguuMailer(
+                &quot;Audio Experiment Event&quot;,
+                content,
+                handle + prefix + &quot;tu&quot; + &quot;.d&quot; + &quot;k&quot;,
+            ).send()
+
+    @classmethod
+    def send_mail(cls, subject, content_lines):
+
+        logger.info(&quot;Sending email...&quot;)
+        body = &quot;\r\n&quot;.join(content_lines)
+        mailer = ZeeguuMailer(subject, body, zeeguu.core.app.config.get(&quot;SMTP_EMAIL&quot;))
+        mailer.send()
+
+    @classmethod
+    def send_content_retrieved_notification(cls, article, old_content=&quot;&quot;):
+        def flag(lang_code):
+            flag_map = {&quot;fr&quot;: &quot;🇫🇷&quot;, &quot;da&quot;: &quot;🇩🇰&quot;, &quot;de&quot;: &quot;🇩🇪&quot;, &quot;nl&quot;: &quot;🇳🇱&quot;, &quot;es&quot;: &quot;🇪🇸&quot;}
+
+            return flag_map.get(lang_code, &quot;&quot;)
+
+        title = f&quot;NEW ({flag(article.language.code)}) {article.title}&quot;
+        content = f&quot;{article.url.as_string()}&quot; + &quot;\n&quot;
+        content += f&quot;Published: {article.published_time}&quot; + &quot;\n&quot;
+        content += f&quot;Difficulty: {article.fk_difficulty}&quot; + &quot;\n&quot;
+        content += f&quot;Word Count: {article.word_count}&quot; + &quot;\n&quot;
+        content += f&quot;Topics: {article.topics_as_string()}&quot; + &quot;\n&quot;
+        content += f&quot;https://www.zeeguu.org/read/article?id={article.id}&quot; + &quot;\n\n&quot;
+
+        content += &quot;\n\n&quot; + article.title + &quot;\n\n&quot;
+        content += article.get_content()
+
+        if old_content:
+            content += &quot;\n\n\n\n\n\n\n\n\n\n\n\n&quot;
+            content += &quot;--------&quot; + &quot;\n&quot;
+            content += &quot;--------&quot; + &quot;\n&quot;
+            content += &quot;--------&quot; + &quot;\n&quot;
+            content += &quot;--------&quot; + &quot;\n&quot;
+            content += &quot;OLD CONTENT&quot; + &quot;\n\n&quot;
+            content += old_content
+
+        mailer = ZeeguuMailer(
+            title,
+            content,
+            &quot;zeeguu.team@gmail.com&quot;,
+        )
+        mailer.send()
+
+    @classmethod
+    def notify_article_completion(cls, user, article, completion_percentage):
+        &quot;&quot;&quot;
+        Send email notification when a user completes reading an article.
+        
+        Args:
+            user: The User who completed the article
+            article: The Article that was completed
+            completion_percentage: The reading completion percentage
+        &quot;&quot;&quot;
+        try:
+            from zeeguu.core.model.user_article import UserArticle
+            from zeeguu.core.model.bookmark import Bookmark
+            from flask import current_app
+            
+            # Get user-article info for additional context
+            user_article = UserArticle.find(user, article)
+            
+            # Get all translations/bookmarks for this user and article
+            bookmarks = Bookmark.find_all_for_user_and_article(user, article)
+            translation_count = len(bookmarks)
+            
+            # Create list of translations
+            translations_text = &quot;&quot;
+            if translation_count &gt; 0:
+                translations_text = &quot;\nTranslations Made:\n&quot;
+                for i, bookmark in enumerate(bookmarks, 1):
+                    origin_word = bookmark.user_word.meaning.origin.content
+                    translation_word = bookmark.user_word.meaning.translation.content
+                    translations_text += f&quot;{i:2d}. {origin_word} &rarr; {translation_word}\n&quot;
+            else:
+                translations_text = &quot;\nNo translations were made during this reading session.\n&quot;
+            
+            # Create email content
+            subject = f&quot;📖 Article Completed - {user.name} ({translation_count} translations)&quot;
+            
+            body = f&quot;&quot;&quot;User Completed Article Reading
+
+User: {user.name} ({user.email})
+User ID: {user.id}
+Article ID: {article.id}
+Article Title: {article.title}
+Article URL: {article.url.as_string()}
+Language: {article.language.name}
+Word Count: {article.word_count}
+Completion: {completion_percentage*100:.1f}%
+Difficulty: {article.fk_difficulty}
+Number of Translations: {translation_count}
+
+Article Info:
+- Published: {article.published_time.strftime('%Y-%m-%d') if article.published_time else 'Unknown'}
+- Topics: {article.topics_as_string()}
+
+User Interaction:
+- Article opened: {'Yes' if user_article and user_article.opened else 'No'}
+- Article starred: {'Yes' if user_article and user_article.starred else 'No'}  
+- Article liked: {user_article.liked if user_article and user_article.liked is not None else 'Not rated'}
+{translations_text}
+View article: https://www.zeeguu.org/read/article?id={article.id}
+
+---
+Generated by Zeeguu Article Tracking System
+&quot;&quot;&quot;
+            
+            # Send email to configured recipient
+            to_email = current_app.config.get(
+                &quot;ARTICLE_COMPLETION_EMAIL&quot;, 
+                current_app.config.get(&quot;SMTP_EMAIL&quot;)
+            )
+            
+            if to_email:
+                mailer = cls(subject, body, to_email)
+                mailer.send()
+                log(f&quot;[article_completion] Sent completion notification for article {article.id} by user {user.id} with {translation_count} translations&quot;)
+            
+        except Exception as e:
+            # Don't fail if email fails
+            log(f&quot;[article_completion] Failed to send article completion notification: {str(e)}&quot;)
+            from sentry_sdk import capture_exception
+            capture_exception(e)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

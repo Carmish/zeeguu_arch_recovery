@@ -1,0 +1,320 @@
+<html>
+<head>
+    <title>zeeguu/core/model/video.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/video.py (<b>246</b> lines of code) (<a href="video.py">raw</a>):</h3>
+<div id="editor">from datetime import datetime
+
+from zeeguu.core.model.db import db
+from zeeguu.core.model.caption import Caption
+from zeeguu.core.model.language import Language
+from zeeguu.core.model.url import Url
+from zeeguu.core.model.video_tag import VideoTag
+from zeeguu.core.model.video_tag_map import VideoTagMap
+from zeeguu.core.model.video_topic_map import VideoTopicMap
+from zeeguu.core.model.yt_channel import YTChannel
+from zeeguu.core.model.source import Source
+from zeeguu.core.model.source_type import SourceType
+from zeeguu.core.model.context_identifier import ContextIdentifier
+from zeeguu.core.model.context_type import ContextType
+from zeeguu.core.language.fk_to_cefr import fk_to_cefr
+from zeeguu.core.util.encoding import datetime_to_json
+
+MAX_CHAR_COUNT_IN_SUMMARY = 297
+
+NO_CAPTIONS_AVAILABLE = 1
+NOT_IN_EXPECTED_LANGUAGE = 2
+DUBBED_AUDIO = 3
+
+
+class Video(db.Model):
+    __tablename__ = &quot;video&quot;
+    __table_args__ = {&quot;mysql_collate&quot;: &quot;utf8_bin&quot;}
+
+    id = db.Column(db.Integer, primary_key=True)
+    video_unique_key = db.Column(db.String(512), unique=True, nullable=False)
+    title = db.Column(db.String(512))
+    description = db.Column(db.Text)
+    published_time = db.Column(db.DateTime)
+    channel_id = db.Column(db.Integer, db.ForeignKey(&quot;yt_channel.id&quot;))
+    thumbnail_url_id = db.Column(db.Integer, db.ForeignKey(Url.id))
+
+    duration = db.Column(db.Integer)
+    language_id = db.Column(db.Integer, db.ForeignKey(&quot;language.id&quot;))
+
+    source_id = db.Column(db.Integer, db.ForeignKey(Source.id), unique=True)
+    source = db.relationship(Source, foreign_keys=&quot;Video.source_id&quot;)
+
+    broken = db.Column(db.Integer)
+    crawled_at = db.Column(db.DateTime)
+    thumbnail_url = db.relationship(Url, foreign_keys=&quot;Video.thumbnail_url_id&quot;)
+
+    channel = db.relationship(&quot;YTChannel&quot;, back_populates=&quot;videos&quot;)
+    topics = db.relationship(&quot;VideoTopicMap&quot;, back_populates=&quot;video&quot;)
+    language = db.relationship(&quot;Language&quot;)
+    captions = db.relationship(&quot;Caption&quot;, back_populates=&quot;video&quot;)
+
+    def __init__(
+        self,
+        video_unique_key,
+        title,
+        source,
+        description,
+        published_time,
+        channel,
+        thumbnail_url,
+        duration,
+        language,
+        broken=0,
+        crawled_at=datetime.now(),
+    ):
+        self.video_unique_key = video_unique_key
+        self.title = title
+        self.source = source
+        self.description = description
+        self.published_time = published_time
+        self.channel = channel
+        self.thumbnail_url = thumbnail_url
+        self.duration = duration
+        self.language = language
+        self.broken = broken
+        self.crawled_at = crawled_at
+
+    def __repr__(self):
+        return f&quot;&lt;Video title: {self.title} unique_key: {self.video_unique_key}&gt;&quot;
+
+    def get_content(self):
+        return self.source.get_content()
+
+    @classmethod
+    def find_by_id(cls, video_id: int):
+        return cls.query.filter_by(id=video_id).first()
+
+    @classmethod
+    def find_or_create(
+        cls,
+        session,
+        video_unique_key,
+        language,
+        upload_index=True,
+    ):
+        from zeeguu.core.elastic.indexing import index_video
+
+        # Import here to avoid circular dependency:
+        # video -&gt; youtube_api -&gt; util -&gt; compute_fk -&gt; model -&gt; video
+        from zeeguu.core.youtube_api.youtube_api import (
+            fetch_video_info,
+            fetch_channel_info,
+        )
+
+        video = (
+            session.query(cls).filter(cls.video_unique_key == video_unique_key).first()
+        )
+
+        if video:
+            print(f&quot;Video already crawled. Returning... (Broken: {video.broken})&quot;)
+            return video
+
+        try:
+            video_info = fetch_video_info(video_unique_key, language)
+        except ValueError as e:
+            print(f&quot;Error fetching video info for {video_unique_key}: {e}&quot;)
+            return None
+
+        if isinstance(language, str):
+            language = session.query(Language).filter_by(code=language).first()
+
+        channel_info = fetch_channel_info(video_info[&quot;channelId&quot;])
+
+        thumbnail_url = channel_info[&quot;thumbnail&quot;]
+        channel = YTChannel.find_or_create(
+            session, video_info[&quot;channelId&quot;], channel_info, thumbnail_url, language
+        )
+
+        url_object = Url.find_or_create(session, video_info[&quot;thumbnail&quot;])
+
+        # TODO: Remove this temporary workaround (this is because source_id is unique in video table)
+        if video_info[&quot;broken&quot;] != 0:
+            source = None
+        else:
+            source = Source.find_or_create(
+                session,
+                video_info[&quot;text&quot;],
+                SourceType.find_by_type(SourceType.VIDEO),
+                language,
+                False,
+                False,
+            )
+
+        new_video = cls(
+            video_unique_key=video_unique_key,
+            title=video_info[&quot;title&quot;],
+            source=source,
+            description=video_info[&quot;description&quot;],
+            published_time=video_info[&quot;publishedAt&quot;],
+            channel=channel,
+            thumbnail_url=url_object,
+            duration=video_info[&quot;duration&quot;],
+            language=language,
+            broken=video_info[&quot;broken&quot;],
+        )
+        session.add(new_video)
+
+        try:
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            raise e
+
+        # Skip captions and topic if video is broken (this also means that the video is not indexed)
+        if video_info[&quot;broken&quot;] != 0:
+            return new_video
+
+        # Add captions
+        try:
+            for caption in video_info[&quot;captions&quot;]:
+                new_caption = Caption.create(
+                    session=session,
+                    video=new_video,
+                    time_start=caption[&quot;time_start&quot;],
+                    time_end=caption[&quot;time_end&quot;],
+                    text=caption[&quot;text&quot;],
+                )
+                session.add(new_caption)
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            raise e
+
+        try:
+            for tag_text in video_info[&quot;tags&quot;]:
+                new_tag = VideoTag.find_or_create(session, tag_text)
+                video_tag_map = VideoTagMap.find_or_create(
+                    session, video=new_video, tag=new_tag
+                )
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            raise e
+
+        # add topic
+        print(&quot;Adding topic&quot;)
+        try:
+            new_video.assign_inferred_topics(session)
+        except Exception as e:
+            print(
+                f&quot;Error adding topic to video ({video_unique_key}) with elastic search: {e}&quot;
+            )
+            print(&quot;Video will be saved without a topic for now.&quot;)
+            session.rollback()
+
+        # Index video if it is not broken
+        if new_video.broken == 0:
+            index_video(new_video, session)
+
+        return new_video
+
+    def assign_inferred_topics(self, session, commit=True):
+        from zeeguu.core.model.article_topic_map import TopicOriginType
+        from zeeguu.core.semantic_search import (
+            get_topic_classification_based_on_similar_content,
+        )
+
+        topic = get_topic_classification_based_on_similar_content(
+            self.get_content(), verbose=True
+        )
+        if topic:
+            video_topic_map = VideoTopicMap(
+                video=self, topic=topic, origin_type=TopicOriginType.INFERRED
+            )
+            print(f&quot;Assigned Topic: {video_topic_map}&quot;)
+            session.add(video_topic_map)
+            if commit:
+                session.commit()
+        else:
+            print(
+                f&quot;No topic generated for video ({self.video_unique_key}) using elastic search.&quot;
+            )
+
+    def topics_as_tuple(self):
+        topics = []
+        for topic in self.topics:
+            if topic.topic.title == &quot;&quot; or topic.topic.title is None:
+                continue
+            topics.append((topic.topic.title, topic.origin_type))
+        return topics
+
+    def video_info(self, with_content=False):
+        text = self.get_content()
+        summary = text[:MAX_CHAR_COUNT_IN_SUMMARY].replace(&quot;\n&quot;, &quot; &quot;) + &quot;...&quot;
+        result_dict = dict(
+            id=self.id,
+            video_unique_key=self.video_unique_key,
+            source_id=self.source.id,
+            title=self.title,
+            description=self.description,
+            summary=summary,
+            channel=self.channel.as_dictionary(),
+            thumbnail_url=(
+                self.thumbnail_url.as_string() if self.thumbnail_url else None
+            ),
+            topics_list=self.topics_as_tuple(),
+            duration=self.duration,
+            language_code=self.language.code,
+            metrics=dict(
+                difficulty=self.source.fk_difficulty / 100,
+                cefr_level=fk_to_cefr(self.source.fk_difficulty),
+            ),
+            video=True,
+        )
+
+        if self.published_time:
+            result_dict[&quot;published_time&quot;] = datetime_to_json(self.published_time)
+
+        if with_content:
+            from zeeguu.core.mwe import tokenize_for_reading
+
+            result_dict[&quot;captions&quot;] = [
+                {
+                    &quot;time_start&quot;: caption.time_start / 1000,  # convert to seconds
+                    &quot;time_end&quot;: caption.time_end / 1000,
+                    &quot;text&quot;: caption.get_content(),
+                    &quot;tokenized_text&quot;: tokenize_for_reading(
+                        caption.get_content(), self.language, mode=&quot;stanza&quot;
+                    ),
+                    &quot;context_identifier&quot;: ContextIdentifier(
+                        ContextType.VIDEO_CAPTION, video_caption_id=caption.id
+                    ).as_dictionary(),
+                }
+                for caption in self.captions
+            ]
+
+            result_dict[&quot;tokenized_title&quot;] = {
+                &quot;tokens&quot;: tokenize_for_reading(self.title, self.language, mode=&quot;stanza&quot;),
+                &quot;context_identifier&quot;: ContextIdentifier(
+                    ContextType.VIDEO_TITLE, video_id=self.id
+                ).as_dictionary(),
+            }
+
+        return result_dict
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

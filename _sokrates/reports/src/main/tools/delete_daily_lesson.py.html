@@ -1,0 +1,105 @@
+<html>
+<head>
+    <title>tools/delete_daily_lesson.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/delete_daily_lesson.py (<b>50</b> lines of code) (<a href="delete_daily_lesson.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python3
+&quot;&quot;&quot;
+Delete today's daily audio lessons for a given user.
+
+Usage:
+    python -m tools.delete_daily_lesson &lt;user_id&gt; [language_code]
+
+Without language_code: deletes today's lessons in ALL languages.
+With language_code (e.g. 'it', 'da'): deletes only that language's lesson.
+&quot;&quot;&quot;
+import os
+import sys
+from datetime import datetime, timedelta
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from zeeguu.api.app import create_app
+from zeeguu.core.model import db, User
+from zeeguu.core.model.daily_audio_lesson import DailyAudioLesson
+from zeeguu.core.model.language import Language
+from zeeguu.config import ZEEGUU_DATA_FOLDER
+
+
+def main():
+    if len(sys.argv) &lt; 2:
+        print(&quot;Usage: python -m tools.delete_daily_lesson &lt;user_id&gt; [language_code]&quot;)
+        sys.exit(1)
+
+    user_id = int(sys.argv[1])
+    lang_filter = sys.argv[2] if len(sys.argv) &gt; 2 else None
+
+    app = create_app()
+    with app.app_context():
+        user = User.find_by_id(user_id)
+        if not user:
+            print(f&quot;User {user_id} not found.&quot;)
+            sys.exit(1)
+
+        print(f&quot;User: {user.name} (ID: {user.id})&quot;)
+
+        # Find today's lessons (generous window: last 24 hours)
+        cutoff = datetime.now() - timedelta(hours=24)
+        query = DailyAudioLesson.query.filter_by(user_id=user.id).filter(
+            DailyAudioLesson.created_at &gt;= cutoff
+        )
+
+        if lang_filter:
+            language = Language.find(lang_filter)
+            if not language:
+                print(f&quot;Language '{lang_filter}' not found.&quot;)
+                sys.exit(1)
+            query = query.filter_by(language_id=language.id)
+
+        lessons = query.all()
+
+        if not lessons:
+            print(&quot;No recent lessons found.&quot;)
+            return
+
+        for lesson in lessons:
+            lang_name = lesson.language.name if lesson.language else &quot;?&quot;
+            print(f&quot;  Deleting lesson {lesson.id} ({lang_name}, created {lesson.created_at})&quot;)
+
+            # Delete audio file
+            audio_path = os.path.join(
+                ZEEGUU_DATA_FOLDER, &quot;audio&quot;, &quot;daily_lessons&quot;, f&quot;{lesson.id}.mp3&quot;
+            )
+            if os.path.exists(audio_path):
+                os.remove(audio_path)
+                print(f&quot;    Deleted audio file&quot;)
+
+            db.session.delete(lesson)
+
+        db.session.commit()
+        print(f&quot;\nDeleted {len(lessons)} lesson(s).&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

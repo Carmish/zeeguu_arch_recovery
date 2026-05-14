@@ -1,0 +1,103 @@
+<html>
+<head>
+    <title>zeeguu/core/model/domain_name.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/domain_name.py (<b>59</b> lines of code) (<a href="domain_name.py">raw</a>):</h3>
+<div id="editor">import re
+
+import sqlalchemy
+from sqlalchemy.orm.exc import NoResultFound
+import time
+
+import logging
+
+import zeeguu.core
+
+from zeeguu.core.model.db import db
+
+
+class DomainName(db.Model):
+    __table_args__ = {&quot;mysql_collate&quot;: &quot;utf8_bin&quot;}
+    __tablename__ = &quot;domain_name&quot;
+
+    id = db.Column(db.Integer, primary_key=True)
+    domain_name = db.Column(db.String(255), unique=True)
+
+    def __init__(self, url):
+        self.domain_name = self.extract_domain_name(url)
+
+    def extract_domain_name(self, url):
+        protocol_re = &quot;(.*://)?&quot;
+        domain_re = &quot;([^/?]*)&quot;
+
+        domain = re.findall(protocol_re + domain_re, url)[0]
+        return domain[0] + domain[1]
+
+    @classmethod
+    def get_domain(self, url):
+        protocol_re = &quot;(.*://)?&quot;
+        domain_re = &quot;([^/?]*)&quot;
+        path_re = &quot;(.*)&quot;
+
+        domain = re.findall(protocol_re + domain_re, url)[0]
+        return domain[0] + domain[1]
+
+    @classmethod
+    def for_url_string(cls, url_string):
+        only_domain_str = DomainName.get_domain(url_string)
+        try:
+            return cls.query.filter(cls.domain_name == only_domain_str).one()
+        except sqlalchemy.orm.exc.NoResultFound:
+            # print &quot;tried, but didn't find &quot; + domain_url
+            return cls(only_domain_str)
+
+    @classmethod
+    def find(cls, domain_url):
+        return cls.query.filter(DomainName.domain_name == domain_url).one()
+
+    @classmethod
+    def find_or_create(cls, session, url: str):
+        _domain = cls.get_domain(url)
+        try:
+            return cls.find(_domain)
+        except sqlalchemy.orm.exc.NoResultFound or sqlalchemy.exc.InterfaceError:
+            # except:
+            try:
+                new = cls(_domain)
+                session.add(new)
+                session.commit()
+                return new
+            except sqlalchemy.exc.IntegrityError or sqlalchemy.exc.DatabaseError:
+                # except:
+                for i in range(10):
+                    try:
+                        session.rollback()
+                        d = cls.find(_domain)
+                        logging.info(&quot;found domain after recovering from race&quot;)
+                        return d
+                    except:
+                        logging.info(&quot;exception of second degree in domain...&quot; + str(i))
+                        time.sleep(0.1)
+                        continue
+                    break
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

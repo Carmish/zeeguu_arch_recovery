@@ -1,0 +1,263 @@
+<html>
+<head>
+    <title>zeeguu/core/language/ml_cefr_classifier.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/language/ml_cefr_classifier.py (<b>130</b> lines of code) (<a href="ml_cefr_classifier.py">raw</a>):</h3>
+<div id="editor">&quot;&quot;&quot;
+ML-Based CEFR Classifier (ML-1)
+
+Per-language Random Forest classifiers for CEFR level assessment.
+Uses 12 fast-to-compute linguistic features to predict CEFR levels.
+
+Branded as &quot;ML-1&quot; in the UI to distinguish from future ML models (ML-2, etc.)
+
+Models are trained on LLM-assessed articles and stored in $ZEEGUU_DATA_FOLDER/ml_models/cefr_estimation/
+&quot;&quot;&quot;
+
+import os
+import re
+import pickle
+import numpy as np
+from zeeguu.logging import log
+
+# Module-level cache for loaded models (avoids disk I/O on every prediction)
+_MODEL_CACHE = {}
+
+
+def extract_features(content, fk_difficulty, word_count):
+    &quot;&quot;&quot;
+    Extract 12 linguistic features from article content.
+
+    Features:
+    1. FK difficulty (already computed)
+    2. Word count (already computed)
+    3. Average word length
+    4. Average chars per word
+    5. Average sentence length
+    6. Sentence length std dev
+    7. Type-token ratio (vocabulary richness)
+    8. Long word ratio (words &gt;7 chars)
+    9. Punctuation complexity (semicolons, colons, em-dashes)
+    10. Average paragraph length
+    11. Interactive ratio (questions/exclamations per sentence)
+    12. Character count
+    &quot;&quot;&quot;
+
+    if not content or len(content.strip()) == 0:
+        # Return default features for empty content
+        return np.array([fk_difficulty or 50, word_count or 0] + [0.0] * 10)
+
+    # Basic counts
+    char_count = len(content)
+
+    # Word-level features
+    words = re.findall(r&quot;\b\w+\b&quot;, content.lower())
+    if not words:
+        return np.array([fk_difficulty or 50, word_count or 0] + [0.0] * 10)
+
+    actual_word_count = len(words)
+    avg_word_length = np.mean([len(w) for w in words])
+    long_word_ratio = sum(1 for w in words if len(w) &gt; 7) / actual_word_count
+
+    # Vocabulary richness (type-token ratio)
+    unique_words = len(set(words))
+    type_token_ratio = unique_words / actual_word_count if actual_word_count &gt; 0 else 0
+
+    # Sentence-level features
+    sentences = re.split(r&quot;[.!?]+&quot;, content)
+    sentences = [s.strip() for s in sentences if s.strip()]
+
+    if sentences:
+        sentence_lengths = [len(re.findall(r&quot;\b\w+\b&quot;, s)) for s in sentences]
+        avg_sentence_length = np.mean(sentence_lengths)
+        sentence_length_std = (
+            np.std(sentence_lengths) if len(sentence_lengths) &gt; 1 else 0
+        )
+
+        # Interactive ratio (questions/exclamations)
+        interactive_marks = content.count(&quot;?&quot;) + content.count(&quot;!&quot;)
+        interactive_ratio = (
+            interactive_marks / len(sentences) if len(sentences) &gt; 0 else 0
+        )
+    else:
+        avg_sentence_length = 0
+        sentence_length_std = 0
+        interactive_ratio = 0
+
+    # Punctuation complexity
+    complex_punct = content.count(&quot;;&quot;) + content.count(&quot;:&quot;) + content.count(&quot;&mdash;&quot;)
+    punct_complexity = complex_punct / actual_word_count if actual_word_count &gt; 0 else 0
+
+    # Paragraph-level features
+    paragraphs = [p.strip() for p in content.split(&quot;\n\n&quot;) if p.strip()]
+    if paragraphs:
+        paragraph_lengths = [len(re.findall(r&quot;\b\w+\b&quot;, p)) for p in paragraphs]
+        avg_paragraph_length = np.mean(paragraph_lengths)
+    else:
+        avg_paragraph_length = actual_word_count  # Treat entire text as one paragraph
+
+    # Average chars per word (different from avg_word_length)
+    avg_chars_per_word = char_count / actual_word_count if actual_word_count &gt; 0 else 0
+
+    features = np.array(
+        [
+            fk_difficulty or 50,  # 1. FK difficulty
+            word_count or actual_word_count,  # 2. Word count
+            avg_word_length,  # 3. Average word length
+            avg_chars_per_word,  # 4. Average chars per word
+            avg_sentence_length,  # 5. Average sentence length
+            sentence_length_std,  # 6. Sentence length std dev
+            type_token_ratio,  # 7. Type-token ratio
+            long_word_ratio,  # 8. Long word ratio
+            punct_complexity,  # 9. Punctuation complexity
+            avg_paragraph_length,  # 10. Average paragraph length
+            interactive_ratio,  # 11. Interactive ratio
+            char_count,  # 12. Character count
+        ]
+    )
+
+    return features
+
+
+def load_model(language_code):
+    &quot;&quot;&quot;
+    Load trained ML-1 (Random Forest) model for given language.
+
+    Uses module-level cache to avoid repeated disk I/O - models are loaded once
+    and reused for the lifetime of the Python process.
+
+    Models are stored in $ZEEGUU_DATA_FOLDER/ml_models/cefr_estimation/cefr_classifier_{lang}.pkl
+
+    Returns:
+        model: Trained sklearn RandomForestClassifier, or None if not found
+    &quot;&quot;&quot;
+    # Check cache first
+    if language_code in _MODEL_CACHE:
+        cached = _MODEL_CACHE[language_code]
+        if cached is None:
+            log(f&quot;ML model for {language_code} is cached as unavailable&quot;)
+        return cached
+
+    try:
+        data_folder = os.environ.get(&quot;ZEEGUU_DATA_FOLDER&quot;)
+        log(f&quot;ML classifier: ZEEGUU_DATA_FOLDER = {data_folder}&quot;)
+
+        if not data_folder:
+            log(
+                f&quot;ZEEGUU_DATA_FOLDER not set, ML classifier unavailable for {language_code}&quot;
+            )
+            # Cache the None result to avoid repeated checks
+            _MODEL_CACHE[language_code] = None
+            return None
+
+        model_path = os.path.join(
+            data_folder,
+            &quot;ml_models&quot;,
+            &quot;cefr_estimation&quot;,
+            f&quot;cefr_classifier_{language_code}.pkl&quot;,
+        )
+
+        log(f&quot;ML classifier: Looking for model at {model_path}&quot;)
+        log(f&quot;ML classifier: File exists: {os.path.exists(model_path)}&quot;)
+
+        if os.path.exists(model_path):
+            # Check permissions
+            log(f&quot;ML classifier: File is readable: {os.access(model_path, os.R_OK)}&quot;)
+            try:
+                file_size = os.path.getsize(model_path)
+                log(f&quot;ML classifier: File size: {file_size} bytes ({file_size / (1024*1024):.1f} MB)&quot;)
+            except Exception as e:
+                log(f&quot;ML classifier: Could not get file size: {e}&quot;)
+
+        if not os.path.exists(model_path):
+            log(f&quot;ML model not found for {language_code}: {model_path}&quot;)
+            # Cache the None result to avoid repeated filesystem checks
+            _MODEL_CACHE[language_code] = None
+            return None
+
+        log(f&quot;Loading ML model for {language_code} from disk (first time)&quot;)
+        with open(model_path, &quot;rb&quot;) as f:
+            log(f&quot;ML classifier: File opened successfully, loading pickle...&quot;)
+            data = pickle.load(f)
+            log(f&quot;ML classifier: Pickle loaded, type: {type(data)}&quot;)
+            # Extract model from dict (pickle file contains metadata)
+            model = data.get(&quot;model&quot;) if isinstance(data, dict) else data
+            log(f&quot;ML classifier: Model extracted, type: {type(model)}&quot;)
+
+        # Cache the loaded model
+        _MODEL_CACHE[language_code] = model
+        log(f&quot;ML classifier: Model for {language_code} cached successfully&quot;)
+        return model
+
+    except Exception as e:
+        log(f&quot;Failed to load ML model for {language_code}: {e}&quot;)
+        import traceback
+        log(f&quot;ML classifier traceback: {traceback.format_exc()}&quot;)
+        # Cache the None result to avoid repeated failed attempts
+        _MODEL_CACHE[language_code] = None
+        return None
+
+
+def predict_cefr_level(content, language_code, fk_difficulty, word_count):
+    &quot;&quot;&quot;
+    Predict CEFR level using ML-1 (language-specific Random Forest classifier).
+
+    Args:
+        content: Article text content
+        language_code: ISO language code (e.g., 'de', 'es', 'it')
+        fk_difficulty: Flesch-Kincaid difficulty score
+        word_count: Article word count
+
+    Returns:
+        CEFR level string ('A1', 'A2', 'B1', 'B2', 'C1', 'C2') or None if model unavailable
+    &quot;&quot;&quot;
+    log(f&quot;ML classifier: predict_cefr_level called for language={language_code}, word_count={word_count}, fk={fk_difficulty}&quot;)
+
+    # Load model for this language
+    model = load_model(language_code)
+    if model is None:
+        log(f&quot;ML classifier: Model not available for {language_code}, returning None&quot;)
+        return None
+
+    log(f&quot;ML classifier: Model loaded successfully, extracting features...&quot;)
+
+    # Extract features
+    features = extract_features(content, fk_difficulty, word_count)
+    log(f&quot;ML classifier: Features extracted: {features}&quot;)
+
+    # Reshape for sklearn (expects 2D array)
+    features = features.reshape(1, -1)
+
+    # Predict
+    try:
+        log(f&quot;ML classifier: Making prediction...&quot;)
+        prediction = model.predict(features)[0]
+        log(f&quot;ML classifier: Prediction successful: {prediction}&quot;)
+        return prediction
+
+    except Exception as e:
+        log(f&quot;ML prediction failed for {language_code}: {e}&quot;)
+        import traceback
+        log(f&quot;ML classifier prediction traceback: {traceback.format_exc()}&quot;)
+        return None
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

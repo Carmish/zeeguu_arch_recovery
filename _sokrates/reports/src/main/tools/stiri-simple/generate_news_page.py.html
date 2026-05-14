@@ -1,0 +1,808 @@
+<html>
+<head>
+    <title>tools/stiri-simple/generate_news_page.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/stiri-simple/generate_news_page.py (<b>242</b> lines of code) (<a href="generate_news_page.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python
+&quot;&quot;&quot;
+Genereaza o pagina simpla cu stirile zilei in limba romana.
+Foloseste doar articolele simplificate la nivelul A2.
+&quot;&quot;&quot;
+
+import sys
+import os
+from datetime import datetime, timedelta
+from pathlib import Path
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), &quot;../../../../api&quot;))
+
+from zeeguu.api.app import create_app
+from zeeguu.core.model import db, Article, Language
+from sqlalchemy import and_, desc
+
+app = create_app()
+app.app_context().push()
+
+
+def is_negative_news(article):
+    &quot;&quot;&quot;
+    Determina daca un articol contine stiri negative folosind combinatie de filtre.
+    &quot;&quot;&quot;
+    # First check with keywords for obvious negative content
+    keyword_negative = _is_negative_news_keywords(article)
+    
+    # If keywords say it's negative, trust them (high precision)
+    if keyword_negative:
+        return True
+    
+    # If keywords say it's not negative, double-check with Anthropic API
+    return _is_negative_news_anthropic(article)
+
+
+def _is_negative_news_anthropic(article):
+    &quot;&quot;&quot;
+    Foloseste Anthropic API pentru detectarea stirilor negative.
+    &quot;&quot;&quot;
+    import anthropic
+    import os
+    
+    try:
+        # Get API key from environment
+        api_key = os.getenv('ANTHROPIC_API_KEY')
+        if not api_key:
+            print(&quot;No Anthropic API key found, skipping AI analysis&quot;)
+            return False
+        
+        # Prepare text for analysis (title + summary)
+        text_parts = []
+        if article.title:
+            text_parts.append(f&quot;Titlu: {article.title}&quot;)
+        if article.summary:
+            text_parts.append(f&quot;Rezumat: {article.summary}&quot;)
+        
+        if not text_parts:
+            return False
+            
+        text_to_analyze = '\n'.join(text_parts)
+        
+        # Create Anthropic client and analyze
+        client = anthropic.Anthropic(api_key=api_key)
+        
+        response = client.messages.create(
+            model=&quot;claude-3-haiku-20240307&quot;,
+            max_tokens=10,
+            messages=[{
+                &quot;role&quot;: &quot;user&quot;,
+                &quot;content&quot;: f&quot;&quot;&quot;Analizează următorul articol &icirc;n rom&acirc;nă și determină dacă este o știre negativă.
+
+Consideră ca negative: crime, violență, accidente, dezastre naturale, decese, boli grave, corupție, scandaluri, război, conflict, abuzuri, tragedii, probleme economice grave.
+
+Nu considera ca negative: știri despre politică normală, sport, cultură, educație, tehnologie, vremea normală, evenimente pozitive.
+
+Articol:
+{text_to_analyze}
+
+Răspunde doar cu &quot;DA&quot; dacă este negativă sau &quot;NU&quot; dacă nu este negativă.&quot;&quot;&quot;
+            }]
+        )
+        
+        result = response.content[0].text.strip().upper()
+        is_negative = result == &quot;DA&quot;
+        
+        # Debug output
+        if is_negative:
+            print(f&quot;AI detected negative: {article.title[:50]}...&quot;)
+            
+        return is_negative
+        
+    except Exception as e:
+        print(f&quot;Error using Anthropic API for negative detection: {e}&quot;)
+        return False
+
+
+def _is_negative_news_keywords(article):
+    &quot;&quot;&quot;
+    Fallback: Determina daca un articol contine stiri negative pe baza de cuvinte cheie.
+    &quot;&quot;&quot;
+    negative_keywords = [
+        # Crime and violence
+        'mort', 'moarte', 'moare', 'ucis', 'omor&acirc;t', 'crimă', 'criminal', 'asasinat',
+        '&icirc;mpușcat', '&icirc;njunghiat', 'bătut', 'violență', 'viol', 'agresiune', 'atac',
+        
+        # Accidents and disasters  
+        'accident', 'accidentat', 'rănit', 'răniți', 'victimă', 'victime', 'explozie',
+        'incendiu', 'cutremur', 'inundații', 'dezastru', 'catastrofă', 'prăbușit',
+        
+        # Disease and suffering
+        'cancer', 'boală', 'bolnav', 'epidemie', 'pandemie', 'virus', 'infectat',
+        'suferă', 'suferință', 'durere', 'spital', 'internat',
+        
+        # Corruption and scandals
+        'corupție', 'corupt', 'șpagă', 'mită', 'scandal', 'fraudă', 'furt', 'furat',
+        'arestat', 'reținut', 'condamnat', '&icirc;nchisoare', 'pușcărie',
+        
+        # Economic problems
+        'criză', 'faliment', 'șomaj', 'șomer', 'concediat', 'disponibilizat', 'sărăcie',
+        'datorii', 'executat silit',
+        
+        # War and conflict
+        'război', 'conflict', 'bombardament', 'bombardat', 'atacat', 'invazie',
+        'refugiați', 'muniție', 'armă', 'militar',
+        
+        # Abuse and harassment
+        'abuz', 'hărțuire', 'amenințare', 'amenințat', 'șantaj', 'intimidare',
+        
+        # Other negative terms
+        'tragic', 'tragedie', 'groaznic', 'oribil', 'șocant', '&icirc;ngrozitor',
+        'demis', 'destituit', 'investigat', 'cercetat penal'
+    ]
+    
+    # Combine title and summary for analysis
+    text_to_analyze = []
+    if article.title:
+        text_to_analyze.append(article.title.lower())
+    if article.summary:
+        text_to_analyze.append(article.summary.lower())
+    
+    full_text = ' '.join(text_to_analyze)
+    
+    # Check for negative keywords
+    for keyword in negative_keywords:
+        if keyword in full_text:
+            return True
+    
+    return False
+
+
+def is_too_complex_or_long(article):
+    &quot;&quot;&quot;
+    Determina daca un articol este prea complex sau prea lung pentru nivelul A2.
+    &quot;&quot;&quot;
+    # Complex vocabulary that might be difficult for A2 learners
+    complex_keywords = [
+        # Political/Economic jargon
+        'restructurare', 'reorganizare', 'implementare', 'reglementare', 'legislație',
+        'amendament', 'constituțional', 'parlamentar', 'guvernamental', 'administrativ',
+        'bugetar', 'fiscal', 'monetary', 'investiții', 'finanțare', 'creditare',
+        'inflație', 'devaluare', 'recesiune', 'dezvoltare economică',
+        
+        # Legal/Administrative terms
+        'procedură', 'juridic', 'proces-verbal', 'hotăr&acirc;re judecătorească', 
+        'instanță', 'tribunal', 'curtea de apel', 'casație', 'normativ',
+        'ordonanță', 'metodologie', 'reglementări', 'legislativ',
+        'influențare', 'numiri', 'transparență', 'negocieri secrete',
+        
+        # Medical/Scientific terms
+        'diagnostic', 'tratament', 'terapie', 'medicație', 'patologie',
+        'chirurgie', 'intervenție', 'analize', 'investigații', 'tehnologii',
+        'cercetare', 'studiu clinic', 'metodă', 'procedeu', 'sistem',
+        
+        # Complex concepts
+        'strategie', 'implementare', 'dezvoltare', 'modernizare', 'digitalizare',
+        'transformare', 'optimizare', 'eficientizare', 'reorganizare',
+        'restructurare', 'consolidare', 'diversificare',
+        
+        # Foreign terms commonly used
+        'management', 'marketing', 'leadership', 'business', 'startup',
+        'corporate', 'networking', 'outsourcing', 'freelancer'
+    ]
+    
+    # Combine title, summary and first part of content
+    text_to_analyze = []
+    if article.title:
+        text_to_analyze.append(article.title.lower())
+    if article.summary:
+        text_to_analyze.append(article.summary.lower())
+    if article.content:
+        text_to_analyze.append(article.content[:300].lower())
+    
+    full_text = ' '.join(text_to_analyze)
+    
+    # Check length - title should be reasonable for A2
+    if article.title and len(article.title) &gt; 70:
+        return True
+        
+    # Check summary length - should be concise
+    if article.summary and len(article.summary) &gt; 180:
+        return True
+    
+    # Check content length - not too long for A2 readers
+    if article.content and len(article.content) &gt; 1500:
+        return True
+    
+    # Count complex words in the text
+    complex_word_count = 0
+    for keyword in complex_keywords:
+        if keyword in full_text:
+            complex_word_count += 1
+    
+    # If too many complex words, filter out
+    if complex_word_count &gt; 2:
+        return True
+    
+    # Check for very long sentences (might be too complex)
+    if article.content:
+        sentences = article.content.split('.')
+        for sentence in sentences[:3]:  # Check first 3 sentences
+            if len(sentence.strip()) &gt; 150:  # Very long sentence
+                return True
+    
+    return False
+
+
+def get_recent_romanian_articles_a2(days_back=3, filter_negative=True, filter_complex=True):
+    &quot;&quot;&quot;
+    Obtine articolele recente in romana simplificate la nivelul A2.
+    Filtreaza stirile negative daca filter_negative=True.
+    &quot;&quot;&quot;
+    cutoff_date = datetime.now() - timedelta(days=days_back)
+    
+    romanian = Language.find_or_create(&quot;ro&quot;)
+    
+    # Get more articles initially since we'll filter some out
+    limit = 60 if (filter_negative or filter_complex) else 20
+    
+    articles = (
+        Article.query
+        .filter(
+            and_(
+                Article.cefr_level == &quot;A2&quot;,
+                Article.language_id == romanian.id,
+                Article.published_time &gt;= cutoff_date,
+                Article.broken == 0,
+                Article.deleted == 0,
+                Article.parent_article_id != None  # Doar articole simplificate
+            )
+        )
+        .order_by(desc(Article.published_time))
+        .limit(limit)
+        .all()
+    )
+    
+    if filter_negative or filter_complex:
+        # Filter out negative news and/or complex articles
+        filtered_articles = []
+        for article in articles:
+            if filter_negative and is_negative_news(article):
+                continue
+            if filter_complex and is_too_complex_or_long(article):
+                continue
+            filtered_articles.append(article)
+            # Stop when we have enough filtered articles
+            if len(filtered_articles) &gt;= 20:
+                break
+        
+        filtered_count = len(articles) - len(filtered_articles)
+        print(f&quot;Filtered out {filtered_count} articles (negative: {filter_negative}, complex: {filter_complex})&quot;)
+        print(f&quot;Showing {len(filtered_articles)} suitable articles&quot;)
+        return filtered_articles
+    
+    return articles
+
+
+def generate_article_html(article):
+    &quot;&quot;&quot;
+    Genereaza HTML pentru un singur articol (pagina completa).
+    &quot;&quot;&quot;
+    html = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;ro&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, user-scalable=yes&quot;&gt;
+    &lt;title&gt;{article.title}&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;../article-styles.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;button onclick=&quot;history.back()&quot; class=&quot;back-button&quot;&gt;&larr; &Icirc;napoi la știri&lt;/button&gt;
+    
+    &lt;div class=&quot;article-container&quot;&gt;
+        &lt;h1&gt;{article.title}&lt;/h1&gt;
+        &lt;div class=&quot;meta&quot;&gt;
+            {article.published_time.strftime(&quot;%d %B %Y, %H:%M&quot;) if article.published_time else &quot;&quot;}
+        &lt;/div&gt;
+        &lt;div class=&quot;content&quot;&gt;
+            {article.htmlContent or article.content.replace(chr(10), '&lt;br&gt;' + chr(10)) if article.content else ''}
+        &lt;/div&gt;
+    &lt;/div&gt;
+
+    &lt;button onclick=&quot;history.back()&quot; class=&quot;back-button-bottom&quot;&gt;&larr; &Icirc;napoi la știri&lt;/button&gt;
+
+    &lt;script&gt;
+        // Preserve portal URL from referrer if available
+        if (document.referrer) {{
+            const referrerUrl = new URL(document.referrer);
+            const portalUrl = referrerUrl.searchParams.get('portal');
+            if (portalUrl) {{
+                sessionStorage.setItem('stirisimple_portal_url', portalUrl);
+            }}
+        }}
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;&quot;&quot;&quot;
+    
+    return html
+
+
+def generate_index_html(articles, current_date):
+    &quot;&quot;&quot;
+    Genereaza pagina principala cu lista de stiri, grupate pe date.
+    &quot;&quot;&quot;
+    from datetime import datetime
+    from collections import defaultdict
+    
+    # Format current date for display
+    current_datetime = datetime.now()
+    generated_time = current_datetime.strftime(&quot;%d %B %Y, %H:%M&quot;)
+    
+    # Romanian month names
+    romanian_months = {
+        'January': 'ianuarie', 'February': 'februarie', 'March': 'martie',
+        'April': 'aprilie', 'May': 'mai', 'June': 'iunie',
+        'July': 'iulie', 'August': 'august', 'September': 'septembrie',
+        'October': 'octombrie', 'November': 'noiembrie', 'December': 'decembrie'
+    }
+    
+    for eng, rom in romanian_months.items():
+        generated_time = generated_time.replace(eng, rom)
+    
+    # Group articles by publication date
+    articles_by_date = defaultdict(list)
+    
+    for article in articles:
+        if article.published_time:
+            pub_date = article.published_time.strftime(&quot;%Y-%m-%d&quot;)
+            articles_by_date[pub_date].append(article)
+        else:
+            # Articles without publish date go to today
+            articles_by_date[current_date].append(article)
+    
+    # Sort dates in descending order (newest first)
+    sorted_dates = sorted(articles_by_date.keys(), reverse=True)
+    
+    articles_html = &quot;&quot;
+    
+    for date_key in sorted_dates:
+        articles_for_date = articles_by_date[date_key]
+        
+        # Format date for display
+        date_obj = datetime.strptime(date_key, &quot;%Y-%m-%d&quot;)
+        formatted_date = date_obj.strftime(&quot;%d %B %Y&quot;)
+        for eng, rom in romanian_months.items():
+            formatted_date = formatted_date.replace(eng, rom)
+        
+        # Add date header
+        articles_html += f&quot;&quot;&quot;
+        &lt;h2 class=&quot;date-header&quot;&gt;{formatted_date}&lt;/h2&gt;
+        &quot;&quot;&quot;
+        
+        # Add articles for this date
+        for article in articles_for_date:
+            # Extrage prima imagine din continut (daca exista)
+            image_html = &quot;&quot;
+            if article.htmlContent and '&lt;img' in article.htmlContent:
+                import re
+                img_match = re.search(r'&lt;img[^&gt;]+src=&quot;([^&quot;]+)&quot;[^&gt;]*&gt;', article.htmlContent)
+                if img_match:
+                    image_html = f'&lt;img src=&quot;{img_match.group(1)}&quot; alt=&quot;&quot; loading=&quot;lazy&quot;&gt;'
+            
+            # Genereaza sumarul
+            summary = article.summary or &quot;&quot;
+            if not summary and article.content:
+                summary = article.content[:200] + &quot;...&quot; if len(article.content) &gt; 200 else article.content
+            
+            articles_html += f&quot;&quot;&quot;
+            &lt;article class=&quot;news-item&quot;&gt;
+                &lt;a href=&quot;articles/{current_date}/article_{article.id}.html&quot; class=&quot;news-link&quot;&gt;
+                    {image_html}
+                    &lt;h2&gt;{article.title}&lt;/h2&gt;
+                    &lt;p class=&quot;summary&quot;&gt;{summary}&lt;/p&gt;
+                    &lt;span class=&quot;read-more&quot;&gt;Citește mai mult &rarr;&lt;/span&gt;
+                &lt;/a&gt;
+            &lt;/article&gt;
+            &quot;&quot;&quot;
+    
+    html = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;ro&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0, user-scalable=yes&quot;&gt;
+    &lt;title&gt;Știri - Rom&acirc;nă A2&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;styles.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;a href=&quot;../index.html&quot; class=&quot;back-button&quot; id=&quot;backButton&quot; style=&quot;display: block;&quot; aria-label=&quot;Acasă&quot;&gt;
+        &larr; Acasă
+    &lt;/a&gt;
+    
+    &lt;div class=&quot;generated-note&quot;&gt;Generat la {generated_time}&lt;/div&gt;
+    &lt;h1&gt;Știri&lt;/h1&gt;
+    
+    {articles_html if articles_html else '&lt;div class=&quot;no-news&quot;&gt;Nu sunt știri disponibile momentan.&lt;/div&gt;'}
+
+    &lt;script&gt;
+        // Show back button if coming from portal (with persistent storage)
+        const urlParams = new URLSearchParams(window.location.search);
+        let portalUrl = urlParams.get('portal');
+        
+        // If portal URL is in current URL, store it in sessionStorage
+        if (portalUrl) {{
+            sessionStorage.setItem('stirisimple_portal_url', portalUrl);
+        }} else {{
+            // If not in URL, try to get it from sessionStorage
+            portalUrl = sessionStorage.getItem('stirisimple_portal_url');
+        }}
+        
+        // Show button if we have a portal URL from either source
+        if (portalUrl) {{
+            const backButton = document.getElementById('backButton');
+            backButton.style.display = 'block';
+            backButton.href = portalUrl;
+        }}
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;&quot;&quot;&quot;
+    
+    return html
+
+
+def generate_css_files(output_dir):
+    &quot;&quot;&quot;
+    Genereaza fisierele CSS in directorul de output.
+    &quot;&quot;&quot;
+    # Generate styles.css for index page
+    styles_css = &quot;&quot;&quot;* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, sans-serif;
+    font-size: 24px;
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 100%;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.back-button {
+    position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: block;
+    width: 90%;
+    max-width: 300px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 33px;
+    font-weight: bold;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+}
+
+.back-button:hover {
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4);
+    background: linear-gradient(135deg, #e1467c 0%, #f04867 100%);
+}
+
+.back-button:focus {
+    outline: 3px solid #FFD700;
+    outline-offset: 2px;
+}
+
+.generated-note {
+    font-size: 18px;
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+h1 {
+    font-size: 48px;
+    text-align: center;
+    margin-top: 160px;
+    margin-bottom: 30px;
+    color: #1a1a1a;
+}
+
+.date-header {
+    font-size: 36px;
+    color: #333;
+    margin: 40px 0 20px 0;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #007AFF;
+    font-weight: 600;
+}
+
+.date-header:first-child {
+    margin-top: 0px;
+}
+
+.news-item {
+    background-color: white;
+    margin-bottom: 40px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.news-link {
+    display: block;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.news-link:hover {
+    background-color: #f9f9f9;
+}
+
+.news-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    margin: -20px -20px 15px -20px;
+    border-radius: 0;
+}
+
+.news-item h2 {
+    font-size: 33px;
+    line-height: 1.3;
+    margin-bottom: 10px;
+    color: #1a1a1a;
+}
+
+.summary {
+    font-size: 24px;
+    line-height: 1.6;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.read-more {
+    font-size: 21px;
+    color: #007AFF;
+    font-weight: 600;
+}
+
+.no-news {
+    text-align: center;
+    padding: 40px;
+    font-size: 27px;
+    color: #666;
+}
+
+@media (min-width: 768px) {
+    body {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .news-item img {
+        height: 250px;
+    }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+@media (prefers-contrast: high) {
+    .news-item {
+        border: 2px solid #333;
+    }
+
+    .read-more {
+        text-decoration: underline;
+    }
+}
+&quot;&quot;&quot;
+
+    # Generate article-styles.css for article pages
+    article_styles_css = &quot;&quot;&quot;* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, sans-serif;
+    font-size: 27px;
+    line-height: 1.8;
+    padding: 20px;
+    padding-top: 120px;
+    max-width: 100%;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.back-button {
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    display: block;
+    width: 90%;
+    max-width: 700px;
+    padding: 20px;
+    background-color: #007AFF;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 30px;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background-color: #0051D5;
+}
+
+.back-button-bottom {
+    display: block;
+    width: 100%;
+    padding: 20px;
+    margin-top: 30px;
+    background-color: #007AFF;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    font-size: 30px;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.back-button-bottom:hover {
+    background-color: #0051D5;
+}
+
+.article-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+h1 {
+    font-size: 42px;
+    line-height: 1.3;
+    margin-bottom: 15px;
+    color: #1a1a1a;
+}
+
+.meta {
+    font-size: 21px;
+    color: #666;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.content {
+    font-size: 27px;
+    line-height: 1.8;
+    color: #333;
+}
+
+.content p {
+    margin-bottom: 15px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 20px 0;
+    border-radius: 10px;
+}
+
+@media (min-width: 768px) {
+    body {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+}
+&quot;&quot;&quot;
+
+    # Write CSS files
+    with open(output_dir / &quot;styles.css&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+        f.write(styles_css)
+    print(&quot;Generated styles.css&quot;)
+
+    with open(output_dir / &quot;article-styles.css&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+        f.write(article_styles_css)
+    print(&quot;Generated article-styles.css&quot;)
+
+
+def main():
+    &quot;&quot;&quot;
+    Genereaza paginile HTML.
+    &quot;&quot;&quot;
+    output_dir = Path(__file__).parent / &quot;output&quot;
+    output_dir.mkdir(exist_ok=True)
+
+    # Generate CSS files
+    generate_css_files(output_dir)
+
+    # Data curentă pentru structura de linkuri
+    current_date = datetime.now().strftime(&quot;%Y-%m-%d&quot;)
+    
+    print(&quot;Obținere articole din baza de date...&quot;)
+    articles = get_recent_romanian_articles_a2(filter_negative=True, filter_complex=False)
+    
+    if not articles:
+        print(&quot;Nu s-au găsit articole simplificate A2 &icirc;n rom&acirc;nă.&quot;)
+        # Genereaza pagina goala
+        index_html = generate_index_html([], current_date)
+        with open(output_dir / &quot;index.html&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+            f.write(index_html)
+        print(f&quot;Pagină goală generată &icirc;n: {output_dir / 'index.html'}&quot;)
+        return
+    
+    print(f&quot;S-au găsit {len(articles)} articole.&quot;)
+    
+    # Genereaza pagina principala
+    index_html = generate_index_html(articles, current_date)
+    with open(output_dir / &quot;index.html&quot;, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+        f.write(index_html)
+    print(f&quot;Pagină principală generată: {output_dir / 'index.html'}&quot;)
+    
+    # Genereaza paginile individuale pentru fiecare articol
+    # Creează subdirectorul articles/data
+    current_date = datetime.now().strftime(&quot;%Y-%m-%d&quot;)
+    articles_date_dir = output_dir / &quot;articles&quot; / current_date
+    articles_date_dir.mkdir(parents=True, exist_ok=True)
+    
+    for article in articles:
+        article_html = generate_article_html(article)
+        filename = f&quot;article_{article.id}.html&quot;
+        with open(articles_date_dir / filename, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+            f.write(article_html)
+        print(f&quot;  - Articol generat: articles/{current_date}/{filename}&quot;)
+    
+    print(f&quot;\nToate paginile au fost generate &icirc;n: {output_dir}&quot;)
+    print(f&quot;Deschide {output_dir / 'index.html'} &icirc;n browser pentru a vizualiza știrile.&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

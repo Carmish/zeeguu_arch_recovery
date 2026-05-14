@@ -1,0 +1,225 @@
+<html>
+<head>
+    <title>def diagnose_user()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def diagnose_user()</h3>
+<p style="margin-top: 4px">in <i>tools/diagnose_recommendations.py [0:0]</i></p>
+<ul>
+    <li><b>161</b> lines of code</li>
+    <li><b>46</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def diagnose_user(user_identifier):
+    # Find user
+    if user_identifier.isdigit():
+        user = User.find_by_id(int(user_identifier))
+    else:
+        user = User.find(user_identifier)
+
+    if not user:
+        print(f&quot;User not found: {user_identifier}&quot;)
+        return
+
+    print(f&quot;\n{'='*60}&quot;)
+    print(f&quot;DIAGNOSIS FOR: {user.name} (ID: {user.id})&quot;)
+    print(f&quot;Learning: {user.learned_language.name}&quot;)
+    print(f&quot;{'='*60}\n&quot;)
+
+    # 1. Topic Subscriptions
+    print(&quot;1. TOPIC SUBSCRIPTIONS&quot;)
+    print(&quot;-&quot; * 40)
+    subscriptions = TopicSubscription.all_for_user(user)
+    if subscriptions:
+        for sub in subscriptions:
+            print(f&quot;   + {sub.topic.title}&quot;)
+    else:
+        print(&quot;   (none - will see all topics)&quot;)
+
+    # Topic Filters (excluded)
+    filters = TopicFilter.all_for_user(user)
+    if filters:
+        print(&quot;\n   Excluded topics:&quot;)
+        for f in filters:
+            print(f&quot;   - {f.topic.title}&quot;)
+    print()
+
+    # 2. Hidden Articles
+    print(&quot;2. HIDDEN ARTICLES&quot;)
+    print(&quot;-&quot; * 40)
+    hidden_articles = (
+        UserArticle.query.filter_by(user=user)
+        .filter(UserArticle.hidden.isnot(None))
+        .all()
+    )
+    print(f&quot;   Total hidden: {len(hidden_articles)}&quot;)
+
+    # Count hidden articles by topic
+    hidden_topics = {}
+    if hidden_articles:
+        for ua in hidden_articles:
+            article = Article.find_by_id(ua.article_id)
+            if article and article.topics:
+                for topic_map in article.topics:
+                    topic_name = topic_map.topic.title
+                    hidden_topics[topic_name] = hidden_topics.get(topic_name, 0) + 1
+
+    # Count TOTAL articles per topic for this language (from ES)
+    print(f&quot;\n   Articles per topic (hidden vs total available in {user.learned_language.name}):&quot;)
+    print(&quot;   &quot; + &quot;-&quot; * 55)
+
+    from zeeguu.core.model.topic import Topic
+    es = Elasticsearch(ES_CONN_STRING)
+
+    all_topics = Topic.query.all()
+    topic_stats = []
+
+    for topic in all_topics:
+        # Count total in ES for this language
+        query = {
+            &quot;query&quot;: {
+                &quot;bool&quot;: {
+                    &quot;must&quot;: [
+                        {&quot;match&quot;: {&quot;language&quot;: user.learned_language.name}},
+                        {&quot;bool&quot;: {&quot;should&quot;: [
+                            {&quot;match&quot;: {&quot;topics&quot;: topic.title}},
+                            {&quot;match&quot;: {&quot;topics_inferred&quot;: topic.title}}
+                        ]}}
+                    ]
+                }
+            }
+        }
+        try:
+            res = es.count(index=ES_ZINDEX, body=query)
+            total = res.get('count', 0)
+        except:
+            total = &quot;?&quot;
+
+        hidden = hidden_topics.get(topic.title, 0)
+        if total != &quot;?&quot; and total &gt; 0:
+            pct = f&quot;({hidden*100//total}%)&quot; if hidden &gt; 0 else &quot;&quot;
+            topic_stats.append((topic.title, hidden, total, pct))
+
+    # Sort by hidden count descending
+    for topic_name, hidden, total, pct in sorted(topic_stats, key=lambda x: -x[1]):
+        if hidden &gt; 0 or total &gt; 50:  # Show if hidden any, or has significant articles
+            print(f&quot;      {topic_name:30} {hidden:4} hidden / {total:5} total {pct}&quot;)
+    print()
+
+    # 3. Ignored Sources
+    print(&quot;3. IGNORED SOURCES (behavioral filtering)&quot;)
+    print(&quot;-&quot; * 40)
+    ignored_source_ids = UserActivityData.get_sources_ignored_by_user(user)
+    print(f&quot;   Total ignored sources (articles scrolled past 2+ times): {len(ignored_source_ids)}&quot;)
+    if ignored_source_ids:
+        print(&quot;   Ignored articles (showing first 10):&quot;)
+        for sid in ignored_source_ids[:10]:
+            article = Article.query.filter_by(source_id=sid).first()
+            if article:
+                title = article.title[:50] + &quot;...&quot; if len(article.title) &gt; 50 else article.title
+                topics = &quot;, &quot;.join([tm.topic.title for tm in article.topics]) if article.topics else &quot;(no topic)&quot;
+                print(f&quot;      [{topics}] {title}&quot;)
+    print()
+
+    # 4. Test ES Query
+    print(&quot;4. ELASTICSEARCH QUERY TEST&quot;)
+    print(&quot;-&quot; * 40)
+
+    # Collect exclusions (same logic as endpoint)
+    articles_to_exclude = [ua.article_id for ua in hidden_articles]
+    print(f&quot;   Articles to exclude: {len(articles_to_exclude)}&quot;)
+    print(f&quot;   Sources to exclude: {len(ignored_source_ids)}&quot;)
+
+    try:
+        content = article_recommendations_for_user(
+            user,
+            count=20,
+            page=0,
+            articles_to_exclude=articles_to_exclude
+        )
+        print(f&quot;   ES query SUCCESS - returned {len(content)} items&quot;)
+
+        if content:
+            # Analyze topics in results
+            result_topics = {}
+            for item in content:
+                if hasattr(item, 'topics') and item.topics:
+                    for topic_map in item.topics:
+                        topic_name = topic_map.topic.title
+                        result_topics[topic_name] = result_topics.get(topic_name, 0) + 1
+
+            print(&quot;   Topics in results:&quot;)
+            for topic, count in sorted(result_topics.items(), key=lambda x: -x[1]):
+                print(f&quot;      {topic}: {count}&quot;)
+        else:
+            print(&quot;   WARNING: Query returned 0 results!&quot;)
+            print(&quot;   This could trigger the DB fallback (no topic filter)!&quot;)
+
+    except Exception as e:
+        print(f&quot;   ES query FAILED: {type(e).__name__}: {e}&quot;)
+        print(&quot;   This WILL trigger the DB fallback (no topic filter)!&quot;)
+    print()
+
+    # 5. Check available articles for subscribed topics
+    if subscriptions:
+        print(&quot;5. AVAILABLE ARTICLES FOR SUBSCRIBED TOPICS&quot;)
+        print(&quot;-&quot; * 40)
+
+        es = Elasticsearch(ES_CONN_STRING)
+
+        for sub in subscriptions:
+            topic_name = sub.topic.title
+
+            # Count total articles with this topic in ES
+            query = {
+                &quot;query&quot;: {
+                    &quot;bool&quot;: {
+                        &quot;must&quot;: [
+                            {&quot;match&quot;: {&quot;language&quot;: user.learned_language.name}},
+                            {&quot;bool&quot;: {&quot;should&quot;: [
+                                {&quot;match&quot;: {&quot;topics&quot;: topic_name}},
+                                {&quot;match&quot;: {&quot;topics_inferred&quot;: topic_name}}
+                            ]}}
+                        ]
+                    }
+                }
+            }
+
+            try:
+                res = es.count(index=ES_ZINDEX, body=query)
+                total = res.get('count', 0)
+                print(f&quot;   {topic_name}: {total} total articles in ES&quot;)
+            except Exception as e:
+                print(f&quot;   {topic_name}: ES error - {e}&quot;)
+
+    print()
+    print(&quot;=&quot;*60)
+    print(&quot;SUMMARY&quot;)
+    print(&quot;=&quot;*60)
+
+    issues = []
+    if len(hidden_articles) &gt; 50:
+        issues.append(f&quot;Many hidden articles ({len(hidden_articles)}) - could exhaust topic pool&quot;)
+    if len(ignored_source_ids) &gt; 20:
+        issues.append(f&quot;Many ignored sources ({len(ignored_source_ids)}) - could filter out topic-specific feeds&quot;)
+    if not subscriptions:
+        issues.append(&quot;No topic subscriptions - will see all topics by default&quot;)
+
+    if issues:
+        print(&quot;Potential issues found:&quot;)
+        for issue in issues:
+            print(f&quot;  - {issue}&quot;)
+    else:
+        print(&quot;No obvious issues detected.&quot;)
+
+    print()
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

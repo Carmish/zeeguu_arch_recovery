@@ -1,0 +1,170 @@
+<html>
+<head>
+    <title>def update_bookmark_pointer()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def update_bookmark_pointer()</h3>
+<p style="margin-top: 4px">in <i>tools/update_bookmark_pointers.py [0:0]</i></p>
+<ul>
+    <li><b>116</b> lines of code</li>
+    <li><b>16</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def update_bookmark_pointer(bookmark):
+    global TEXTS_NOT_FOUND
+    global ALREADY_SEARCHED_TEXTS
+    # Tokenized text returns paragraph, sents, token
+    # Since we know there is not multiple paragraphs, we take the first
+    text = bookmark.text
+    if text is None:
+        print(f&quot;B({bookmark.id}) doesn't have a text associated.&quot;)
+        return False
+
+    article = None
+    if text.article_id:
+        article = Article.find_by_id(text.article_id)
+
+    tokenizer = get_tokenizer(
+        bookmark.user_word.meaning.origin.language, TOKENIZER_MODEL
+    )
+
+    tokenized_context = tokenizer.tokenize_text(
+        text.content, as_serializable_dictionary=False
+    )  # list of toke objects [t1,t2]
+    text_context = get_text_list(
+        tokenized_context
+    )  # list of string representations of the token objects
+    if article and text.id not in ALREADY_SEARCHED_TEXTS:
+
+        # We have an article; we try to find the context and anchor it.
+        tokenized_article_content = tokenizer.tokenize_text(article.content, False)
+
+        text_article_content = get_text_list(tokenized_article_content)
+
+        context_len = len(text_context)
+        context_found = False
+        token_context_start = None
+
+        # Find the first token of the context
+        i_article_title_start = -1
+        i_article_context_start = find_sublist_in_list(
+            text_article_content, text_context
+        )
+        if i_article_context_start == -1:
+            # We didn't find it, try in title:
+            tokenized_article_title = tokenizer.tokenize_text(article.title, False)
+            text_article_title = get_text_list(tokenized_article_title)
+            i_article_title_start = find_sublist_in_list(
+                text_article_title, text_context
+            )
+            text.in_content = False if i_article_title_start &gt; -1 else None
+        else:
+            text.in_content = True
+
+        context_found = i_article_context_start &gt; -1 or i_article_title_start &gt; -1
+        if context_found:
+            index_context_start = max(i_article_context_start, i_article_title_start)
+            token_context_start = (
+                tokenized_article_content[index_context_start]
+                if text.in_content
+                else tokenized_article_title[index_context_start]
+            )
+            index_token_after_context = index_context_start + context_len
+            text.paragraph_i = token_context_start.par_i
+            text.sentence_i = token_context_start.sent_i
+            text.token_i = token_context_start.token_i
+            text.left_ellipsis = token_context_start.token_i != 0
+            text.right_ellipsis = (
+                has_right_elipsis(index_token_after_context, tokenized_article_content)
+                if text.in_content
+                else has_right_elipsis(
+                    index_token_after_context, tokenized_article_title
+                )
+            )
+            # By here we have the ancors or the context, so we save it to the DB
+            db_session.add(text)
+        else:
+            print(f&quot;Text {bookmark.text_id} was not found in article.&quot;)
+            TEXTS_NOT_FOUND += 1
+
+        ALREADY_SEARCHED_TEXTS.add(text.id)
+
+    # We anchor the bookmark in the context, if we find it.
+    first_token_i = -1
+    is_bookmark_substring_of_context = (
+        bookmark.user_word.meaning.origin.content in text.content
+    )
+    if is_bookmark_substring_of_context:
+        tokenized_bookmark = tokenizer.tokenize_text(
+            bookmark.user_word.meaning.origin.content, False
+        )
+        text_bookmark = get_text_list(tokenized_bookmark)
+        first_tokenization = text_bookmark
+        first_token_i = find_sublist_in_list(text_context, text_bookmark)
+        if first_token_i == -1:
+
+            # We didn't find it, we try with the punctuation stripped.
+            text_bookmark = [strip_trailing_punctuation(t) for t in text_bookmark]
+            second_tokenization = text_bookmark
+            first_token_i = find_sublist_in_list(text_context, text_bookmark)
+            if first_token_i == -1:
+                # Some cases the tokenizer will not tokenize the last token correctly
+                # Context: ['Sundhed', '17.', 'jul', '.']
+                # Bookmark ('Sundhed 17'): ['Sundhed', '17'], because we trim puctuation at
+                # end. In this case, we can try to find it in the context, if we also remove
+                # trailing punctuation.
+                first_token_i = find_sublist_in_list(
+                    [strip_trailing_punctuation(t) for t in text_context],
+                    text_bookmark,
+                )
+                if first_token_i == -1:
+                    # The tokenizer doesn't garantee that the same substring in different
+                    # contexts is the same, this attempts to emulate the old tokenizer.
+                    # 1. ['cessez', 'le-feu', 'sera']
+                    # 2. ['cessez', '-le-feu', 'sera']
+                    # 3. (This code) ['cessez-le-feu', 'sera']
+                    # ['Guerre', 'en', 'Ukraine', ':', 'Macron', 'assure', 'qu&rsquo;un', 'cessez-le-feu', 'sera', 'demand&eacute;', '&agrave;', 'la', 'Russie', 'durant', 'les', 'JO', 'de', 'Paris']
+                    text_bookmark = strip_trailing_punctuation(
+                        bookmark.user_word.meaning.origin.content
+                    ).split()
+                    first_token_i = find_sublist_in_list(text_context, text_bookmark)
+
+    if first_token_i &gt; -1:
+        # By here we anchored the bookmark and we save it
+        first_token_ocurrence = tokenized_context[first_token_i]
+        bookmark.sentence_i = first_token_ocurrence.sent_i
+        bookmark.token_i = first_token_ocurrence.token_i
+        bookmark.total_tokens = len(text_bookmark)
+        db_session.add(bookmark)
+        return True
+    else:
+        if is_bookmark_substring_of_context:
+            print(&quot;First tokenization: &quot;)
+            print(first_tokenization)
+            print(&quot;Second Tokenization: &quot;)
+            print(second_tokenization)
+            print(&quot;Final Tokenization: &quot;)
+            print(text_bookmark)
+            print(&quot;Context tokenized: &quot;)
+            print(text_context)
+        print(f&quot;Couldn't find bookmark {bookmark.id} in text {text.id}.&quot;)
+        print(
+            f&quot;Bookmark '{bookmark.user_word.meaning.origin.content}' is substring of context: {is_bookmark_substring_of_context}&quot;
+        )
+        if not is_bookmark_substring_of_context:
+            print(&quot;Context: &quot;)
+            print(text.content)
+        print(f&quot;Deleting bookmark id: {bookmark.id}&quot;)
+        print(&quot;-&quot; * 20)
+        db_session.delete(bookmark)
+        return False
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

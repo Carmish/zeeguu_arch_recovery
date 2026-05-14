@@ -1,0 +1,163 @@
+<html>
+<head>
+    <title>def as_dictionary()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def as_dictionary()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/model/user_word.py [0:0]</i></p>
+<ul>
+    <li><b>104</b> lines of code</li>
+    <li><b>24</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+    def as_dictionary(self, schedule=None, pre_tokenized_context=None, with_context_tokenized=True):
+        &quot;&quot;&quot;
+        Convert UserWord to dictionary for JSON serialization.
+
+        Args:
+            schedule: Optional pre-loaded BasicSRSchedule instance to avoid N+1 queries.
+                     If not provided, will query the database (slower for batch operations).
+            pre_tokenized_context: Optional pre-tokenized context from batch tokenization.
+                     If not provided, will tokenize on demand (slower for batch operations).
+            with_context_tokenized: Whether to include tokenized context (default True).
+                     Set to False for list views where tokenization isn't needed - saves ~150ms per word.
+        &quot;&quot;&quot;
+        # Note: Data integrity validation removed from hot path for performance
+        # Run periodic checks with: python -m tools._check_and_fix_data_integrity
+        # Write-time validation happens via SQLAlchemy event listeners
+
+        try:
+            translation_word = self.meaning.translation.content
+            translation_language = self.meaning.translation.language.code
+        except AttributeError as e:
+            translation_word = &quot;&quot;
+            translation_language = &quot;&quot;
+            log(
+                f&quot;Exception caught: for some reason there was no translation for {self.id}&quot;
+            )
+            print(str(e))
+
+        # Ensure the phrase rank is calculated (especially for multi-word phrases)
+        self.meaning.origin.ensure_rank_is_calculated()
+
+        # Always use the database rank (unified approach for single and multi-word phrases)
+        word_rank = self.meaning.origin.rank or self.meaning.origin.IMPOSSIBLE_RANK
+
+        # Use pre-loaded schedule if provided, otherwise query (N+1 fallback)
+        from zeeguu.core.word_scheduling import ONE_DAY
+        from zeeguu.core.word_scheduling.basicSR.basicSR import _get_end_of_today
+
+        if schedule is None:
+            # Fallback: query schedule individually (slower for batch operations)
+            try:
+                scheduler = self.get_scheduler()
+                schedule = scheduler.query.filter(scheduler.user_word_id == self.id).one()
+            except sqlalchemy.exc.NoResultFound:
+                schedule = None
+
+        if schedule is not None:
+            cooling_interval_in_days = schedule.cooling_interval // ONE_DAY
+            next_practice_time = schedule.next_practice_time
+            can_update_schedule = next_practice_time &lt;= _get_end_of_today()
+            consecutive_correct_answers = schedule.consecutive_correct_answers
+            is_last_in_cycle = schedule.get_max_interval() == schedule.cooling_interval
+            is_about_to_be_learned = schedule.is_about_to_be_learned()
+        else:
+            cooling_interval_in_days = None
+            can_update_schedule = None
+            consecutive_correct_answers = None
+            is_last_in_cycle = None
+            is_about_to_be_learned = None
+            next_practice_time = None
+
+        exercise_info_dict = dict(
+            to=translation_word,
+            from_lang=self.meaning.origin.language.code,
+            to_lang=translation_language,
+            url=self.preferred_bookmark.text.url(),
+            origin_rank=word_rank if word_rank != 100000 else &quot;&quot;,
+            article_id=(
+                self.preferred_bookmark.text.article_id
+                if self.preferred_bookmark.text.article_id
+                else &quot;&quot;
+            ),
+            source_id=self.preferred_bookmark.source_id,
+            fit_for_study=self.fit_for_study == 1,
+            level=self.level,
+            cooling_interval=cooling_interval_in_days,
+            is_last_in_cycle=is_last_in_cycle,
+            is_about_to_be_learned=is_about_to_be_learned,
+            can_update_schedule=can_update_schedule,
+            user_preference=self.user_preference,
+            consecutive_correct_answers=consecutive_correct_answers,
+            context_in_content=self.preferred_bookmark.text.in_content,
+            left_ellipsis=self.preferred_bookmark.context.left_ellipsis,
+            right_ellipsis=self.preferred_bookmark.context.right_ellipsis,
+            next_practice_time=next_practice_time,
+        )
+
+        exercise_info_dict[&quot;from&quot;] = self.meaning.origin.content
+
+        # Determine scheduling reason and days info
+        scheduling_reason = None
+        days_until_practice = None
+
+        if self.is_user_added:
+            scheduling_reason = &quot;manually_added&quot;
+        elif next_practice_time:
+            from datetime import datetime
+            # Use naive datetime to match next_practice_time from database
+            now = datetime.now()
+
+            # Calculate days difference
+            time_diff = next_practice_time - now
+            days_diff = time_diff.days
+
+            if next_practice_time &lt;= now:
+                # Overdue or due today
+                if days_diff &lt; -1:
+                    scheduling_reason = &quot;overdue&quot;
+                    days_until_practice = abs(days_diff)
+                else:
+                    scheduling_reason = &quot;due_today&quot;
+            else:
+                # Future practice (early practice scenario)
+                scheduling_reason = &quot;early_practice&quot;
+                days_until_practice = days_diff
+
+        result = {
+            **self.preferred_bookmark.as_dictionary(
+                with_context_tokenized=with_context_tokenized,
+                pre_tokenized_context=pre_tokenized_context,
+                with_title=True
+            ),
+            **exercise_info_dict,
+            &quot;user_word_id&quot;: self.id,
+            &quot;meaning_id&quot;: self.meaning_id,
+            &quot;is_user_added&quot;: (
+                self.is_user_added if self.is_user_added is not None else False
+            ),
+            &quot;learned_datetime&quot;: (
+                self.learned_time.isoformat() if self.learned_time else None
+            ),
+            &quot;phrase_type&quot;: (
+                self.meaning.phrase_type.value if self.meaning.phrase_type else None
+            ),
+            &quot;meaning_frequency&quot;: (
+                self.meaning.frequency.value if self.meaning.frequency else None
+            ),
+            &quot;scheduling_reason&quot;: scheduling_reason,
+            &quot;days_until_practice&quot;: days_until_practice,
+        }
+
+        return result
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

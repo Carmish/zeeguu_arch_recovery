@@ -1,0 +1,120 @@
+<html>
+<head>
+    <title>def generate_labels()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def generate_labels()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/nlp_pipeline/automatic_gec_tagging.py [0:0]</i></p>
+<ul>
+    <li><b>89</b> lines of code</li>
+    <li><b>36</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+    def generate_labels(self, error_sentence, corr_sentence, merge_inserts=True, 
+                        include_o_start_end=False, return_tokens=False,
+                        return_err_pos=False, return_corr_pos=False,
+                        return_alignment = False, 
+                        return_corrections=False, verbose=False):
+        
+        def _include_start_end(operation, s_err, e_err, flag):
+            return (operation, (s_err,e_err)) if flag else operation
+        
+        doc_err = self.spacy_pipeline(error_sentence)
+        doc_corr = self.spacy_pipeline(corr_sentence)
+
+        alignment = ERRANT_Alignment(doc_err, doc_corr)
+
+        error = [token for token in doc_err]
+        ref = [token for token in doc_corr]
+        labels = []
+        corrections = []
+        alignment_map = {}
+        for (case, start_err, end_err, start_ref, end_ref) in alignment.align_seq:
+            alignment_map[(start_err, end_err)] = (start_ref, end_ref)
+            match_swap = SWAP_WORDS.match(case)
+            if case == 'M':
+                labels.append(_include_start_end(&quot;C&quot;, start_err, end_err, include_o_start_end))
+                corrections.append(str(ref[start_ref:end_ref][0]))
+            elif match_swap:
+                num_words = int(match_swap.group(1))
+                for _ in range(num_words):
+                    labels.append(_include_start_end(&quot;R:WO&quot;, start_err, end_err, include_o_start_end))
+                corrections += [str(word) for word in ref[start_ref:end_ref]]
+            elif case == &quot;D&quot;:
+                token_err = error[start_err:end_err][0]
+                err_pos_converted = DICTIONARY_UD_MAP.get(token_err.pos_, token_err.pos_)
+                labels.append(_include_start_end(f&quot;U:{err_pos_converted}&quot;, start_err, end_err, include_o_start_end))
+                corrections.append(&quot;&quot;)
+            elif case == &quot;I&quot;:
+                token_ref = ref[start_ref:end_ref][0]
+                ref_pos_converted = DICTIONARY_UD_MAP.get(token_ref.pos_, token_ref.pos_)
+                labels.append(_include_start_end(f&quot;M:{ref_pos_converted}&quot;, start_err, end_err, include_o_start_end))
+                corrections.append(str(token_ref))
+            elif case == &quot;S&quot;:
+                token_ref = ref[start_ref:end_ref][0]
+                token_err = error[start_err:end_err][0]
+                ref_pos_converted = DICTIONARY_UD_MAP.get(token_ref.pos_, token_ref.pos_)
+                corrections.append(str(token_ref))
+                if str(token_ref).lower() == str(token_err).lower():
+                    labels.append(_include_start_end(f&quot;R:SPELL/MORPH&quot;, start_err, end_err, include_o_start_end))
+                    continue
+                sim_weighted = self.word_lemma_token_sim(token_err, token_ref, verbose)
+                morph_ref = token_ref.morph.to_dict()
+                morph_err = token_err.morph.to_dict()
+                if verbose:
+                    print(&quot;REF Morph dict: &quot;, morph_ref)
+                    print(&quot;ERR Morph dict: &quot;, morph_err)
+                if ((token_ref.pos_ == token_err.pos_ and sim_weighted &gt; 0.85)
+                    or token_err.lemma_ == token_ref.lemma_):
+                    # Handle the different Cases:
+                    # Check the Tense and Number
+                    action_taken = False
+                    for property in PROPERTIES_TO_CHECK:
+                        # At first property stop
+                        if property not in morph_ref:
+                            continue
+                        elif ((property in morph_ref and property in morph_err)
+                            and morph_ref[property] != morph_err[property]):
+                            labels.append(_include_start_end(f&quot;R:{ref_pos_converted}:{property.upper()[:1]}&quot;, start_err, end_err, include_o_start_end))
+                            action_taken = True
+                            break
+                    if action_taken:
+                        continue
+                    
+                    if token_err.lemma_ == token_ref.lemma_:
+                        labels.append(_include_start_end(f&quot;R:{ref_pos_converted}:FORM/MORPH&quot;, start_err, end_err, include_o_start_end))
+                        continue
+
+                if sim_weighted &gt;= 0.6 and len(token_err) &gt; 2:
+                    labels.append(_include_start_end(f&quot;R:SPELL/MORPH&quot;, start_err, end_err, include_o_start_end))
+                else:
+                    token_err = error[start_err:end_err][0]
+                    ref_pos_converted = DICTIONARY_UD_MAP.get(token_ref.pos_, token_ref.pos_)
+                    labels.append(_include_start_end(f&quot;R:{ref_pos_converted}&quot;, start_err, end_err, include_o_start_end))
+        assert len(labels) == len(corrections), f&quot;{len(labels)} &lt;&gt; {len(corrections)}&quot;
+        results = {}
+        if merge_inserts:
+            if not return_corrections:
+                merge_labels = self._merge_missing(labels, include_o_start_end)  
+            else: 
+                merge_labels, corrections = self._merge_missing(labels, include_o_start_end, corrections)
+            assert len(error) == len(merge_labels), f&quot;Length of ERR tokens vs merge labels does not match. {len(error)} vs {len(merge_labels)}&quot;
+            results[&quot;unmerged_labels&quot;] = labels
+            labels = merge_labels
+        results[&quot;labels&quot;] = labels
+        if return_err_pos: results[&quot;err_s_tokens&quot;] = error
+        if return_corr_pos: results[&quot;corr_s_tokens&quot;] = ref
+        if return_alignment: results[&quot;alignment&quot;] = alignment_map
+        if return_tokens: results[&quot;return_tokens&quot;] = ([t_e.text + t_e.whitespace_ for t_e in error], [t_c.text + t_c.whitespace_  for t_c in ref])
+        if return_corrections: results[&quot;corrections&quot;] = corrections
+        return results
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

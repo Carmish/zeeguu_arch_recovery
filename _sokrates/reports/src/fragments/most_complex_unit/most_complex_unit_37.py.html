@@ -1,0 +1,127 @@
+<html>
+<head>
+    <title>def main()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def main()</h3>
+<p style="margin-top: 4px">in <i>tools/cleanup_broken_summaries.py [0:0]</i></p>
+<ul>
+    <li><b>80</b> lines of code</li>
+    <li><b>22</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def main():
+    parser = argparse.ArgumentParser(description=&quot;Clean up broken article summaries&quot;)
+    parser.add_argument(&quot;--dry-run&quot;, action=&quot;store_true&quot;, help=&quot;Show what would be changed without making changes&quot;)
+    parser.add_argument(&quot;--delete&quot;, action=&quot;store_true&quot;, help=&quot;Delete articles with no interactions instead of just clearing summary&quot;)
+    parser.add_argument(&quot;--limit&quot;, type=int, default=None, help=&quot;Limit number of articles to process&quot;)
+    args = parser.parse_args()
+
+    app = create_app()
+    app.app_context().push()
+
+    # Find articles with summaries
+    query = Article.query.filter(Article.summary.isnot(None))
+    if args.limit:
+        query = query.limit(args.limit)
+
+    articles_with_summaries = query.all()
+    print(f&quot;Checking {len(articles_with_summaries)} articles with summaries...&quot;)
+
+    broken_html = []
+    broken_nav = []
+
+    for article in articles_with_summaries:
+        if has_html_junk(article.summary):
+            broken_html.append(article)
+        elif has_navigation_junk(article.summary):
+            broken_nav.append(article)
+
+    print(f&quot;\nFound {len(broken_html)} articles with HTML junk in summaries&quot;)
+    print(f&quot;Found {len(broken_nav)} articles with navigation junk in summaries&quot;)
+
+    all_broken = broken_html + broken_nav
+
+    if not all_broken:
+        print(&quot;No broken summaries found!&quot;)
+        return
+
+    # Categorize by whether they have interactions
+    with_interactions = []
+    without_interactions = []
+
+    for article in all_broken:
+        if article_has_interactions(article.id):
+            with_interactions.append(article)
+        else:
+            without_interactions.append(article)
+
+    print(f&quot;\n  - {len(with_interactions)} have user interactions (will clear summary only)&quot;)
+    print(f&quot;  - {len(without_interactions)} have NO interactions&quot;, end=&quot;&quot;)
+    if args.delete:
+        print(&quot; (will DELETE)&quot;)
+    else:
+        print(&quot; (will clear summary)&quot;)
+
+    # Process articles with interactions - just clear summary
+    cleared_count = 0
+    for article in with_interactions:
+        print(f&quot;\n--- Article {article.id}: {article.title[:50]}...&quot;)
+        print(f&quot;  Summary (broken): {article.summary[:100]}...&quot;)
+        print(f&quot;  Action: Clear summary (has interactions)&quot;)
+
+        if not args.dry_run:
+            article.summary = None
+            db.session.add(article)
+
+            # Invalidate tokenization cache
+            cache = ArticleTokenizationCache.get_for_article(db.session, article.id)
+            if cache and cache.tokenized_summary:
+                cache.tokenized_summary = None
+                db.session.add(cache)
+
+            cleared_count += 1
+
+    # Process articles without interactions
+    deleted_count = 0
+    for article in without_interactions:
+        print(f&quot;\n--- Article {article.id}: {article.title[:50]}...&quot;)
+        print(f&quot;  Summary (broken): {article.summary[:100]}...&quot;)
+
+        if args.delete:
+            print(f&quot;  Action: DELETE (no interactions)&quot;)
+            if not args.dry_run:
+                db.session.delete(article)
+                deleted_count += 1
+        else:
+            print(f&quot;  Action: Clear summary (no interactions)&quot;)
+            if not args.dry_run:
+                article.summary = None
+                db.session.add(article)
+
+                cache = ArticleTokenizationCache.get_for_article(db.session, article.id)
+                if cache and cache.tokenized_summary:
+                    cache.tokenized_summary = None
+                    db.session.add(cache)
+
+                cleared_count += 1
+
+    if not args.dry_run:
+        db.session.commit()
+        print(f&quot;\n✓ Cleared {cleared_count} summaries&quot;)
+        if args.delete:
+            print(f&quot;✓ Deleted {deleted_count} articles&quot;)
+    else:
+        print(f&quot;\n[DRY RUN] Would clear {len(with_interactions) + (0 if args.delete else len(without_interactions))} summaries&quot;)
+        if args.delete:
+            print(f&quot;[DRY RUN] Would delete {len(without_interactions)} articles&quot;)
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

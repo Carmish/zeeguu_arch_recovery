@@ -1,0 +1,41 @@
+<html>
+<head>
+    <title>zeeguu/core/word_stats/__init__.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/word_stats/__init__.py (<b>7</b> lines of code) (<a href="__init__.py">raw</a>):</h3>
+<div id="editor">from wordstats import LanguageInfo
+
+lang_cache = {}
+
+
+def lang_info(lang_code):
+    if not lang_cache.get(lang_code):
+        print(f&quot;loading word stats for {lang_code}&quot;)
+        lang_cache[lang_code] = LanguageInfo.load(lang_code)
+    return lang_cache[lang_code]
+
+
+# lang_info(&quot;da&quot;)
+# lang_info(&quot;de&quot;)
+# lang_info(&quot;nl&quot;)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

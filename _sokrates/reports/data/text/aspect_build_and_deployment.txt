@@ -1,0 +1,15 @@
+Path	Lines of Code
+cleanup.sh	4
+docker-entrypoint.sh	14
+generate_configs.sh	3
+install.sh	70
+stanza_service/docker-entrypoint.sh	6
+tools/migrations/run.sh	2
+tools/sh/create_test_db.sh	10
+tools/sh/live-log.sh	1
+tools/sh/live_show_exercise_outcomes.sh	16
+tools/sh/update_dock.sh	2
+tools/stiri-simple/deploy_stiri.sh	36
+zeeguu/operations/crawler/crawl_all_in_parallel.sh	52
+zeeguu/operations/crawler/two_anthropic_crawl.sh	17
+zeeguu/operations/run_task.sh	16

@@ -1,0 +1,190 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/user_languages.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/user_languages.py (<b>91</b> lines of code) (<a href="user_languages.py">raw</a>):</h3>
+<div id="editor">import flask
+import zeeguu.core
+from flask import request
+from zeeguu.core.model.language import Language
+from zeeguu.core.model.user_language import UserLanguage
+from zeeguu.core.model import User
+
+
+from zeeguu.api.utils.route_wrappers import cross_domain, requires_session
+from zeeguu.api.utils.json_result import json_result
+from . import api
+
+db_session = zeeguu.core.model.db.session
+
+USER_LANGUAGES = &quot;user_languages&quot;
+MODIFY_USER_LANGUAGE = &quot;user_languages/modify&quot;
+DELETE_USER_LANGUAGE = &quot;user_languages/delete&quot;
+INTERESTING_LANGUAGES_FOR_READING = &quot;user_languages/interesting_for_reading&quot;
+READING_LANGUAGES = &quot;user_languages/reading&quot;
+
+
+# ---------------------------------------------------------------------------
+@api.route(f&quot;/{MODIFY_USER_LANGUAGE}&quot;, methods=(&quot;POST&quot;,))
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def modify_user_language():
+    &quot;&quot;&quot;
+    This endpoint is for modifying a user language.
+    It tries to find the user_language, and otherwise create it.
+    It then sets all the parameters given.
+
+    :return: &quot;OK&quot; in case of success
+    &quot;&quot;&quot;
+    language_code = request.form.get(&quot;language_id&quot;, &quot;&quot;)
+    try:
+        language_reading = int(request.form.get(&quot;language_reading&quot;, &quot;&quot;))
+    except:
+        language_reading = None
+    try:
+        language_exercises = int(request.form.get(&quot;language_exercises&quot;, &quot;&quot;))
+    except:
+        language_exercises = None
+    try:
+        language_level = int(request.form.get(&quot;language_level&quot;, &quot;&quot;))
+    except:
+        language_level = None
+    user = User.find_by_id(flask.g.user_id)
+    language_object = Language.find(language_code)
+    user_language = UserLanguage.find_or_create(db_session, user, language_object)
+    if language_reading is not None:
+        user_language.reading_news = language_reading
+    if language_exercises is not None:
+        user_language.doing_exercises = language_exercises
+    if language_level is not None:
+        user_language.cefr_level = language_level
+    db_session.add(user_language)
+    db_session.commit()
+
+    return &quot;OK&quot;
+
+
+# ---------------------------------------------------------------------------
+@api.route(f&quot;/{DELETE_USER_LANGUAGE}/&lt;language_id&gt;&quot;, methods=(&quot;GET&quot;,))
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def delete_user_language(language_id):
+    &quot;&quot;&quot;
+    A user can delete a language with a given ID.
+    With this endpoint the full user language with all the data is deleted.
+    At the moment not used but might be useful.
+
+    :return: &quot;OK&quot; in case of success
+    &quot;&quot;&quot;
+
+    try:
+        user = User.find_by_id(flask.g.user_id)
+        to_delete = UserLanguage.with_language_id(language_id, user)
+        db_session.delete(to_delete)
+        db_session.commit()
+    except Exception as e:
+        from sentry_sdk import capture_exception
+
+        capture_exception(e)
+        return &quot;OOPS. SEARCH AIN'T THERE IT SEEMS (&quot; + str(e) + &quot;)&quot;
+
+    return &quot;OK&quot;
+
+
+# ---------------------------------------------------------------------------
+@api.route(f&quot;/{USER_LANGUAGES}&quot;, methods=(&quot;GET&quot;,))
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def get_user_languages():
+    &quot;&quot;&quot;
+    A user might have multiple user languages, which can be for reading
+    and/or doing exercises.
+
+    :return: a json list with languages for which the user is registered;
+     every language in this list is a dictionary with the following info:
+                id = unique id of the language;
+                language = &lt;unicode string&gt;
+    &quot;&quot;&quot;
+    all_user_languages = []
+    user = User.find_by_id(flask.g.user_id)
+    user_languages = UserLanguage.all_languages_for_user(user)
+    for lan in user_languages:
+        all_user_languages.append(lan.as_dictionary())
+    return json_result(all_user_languages)
+
+
+# ---------------------------------------------------------------------------
+@api.route(f&quot;/{READING_LANGUAGES}&quot;, methods=(&quot;GET&quot;,))
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def get_reading_languages():
+    &quot;&quot;&quot;
+    A user might be subscribed to multiple languages at once.
+    This endpoint returns them as a list.
+
+    :return: a json list with languages for which the user is registered;
+     every language in this list is a dictionary with the following info:
+                id = unique id of the language;
+                language = &lt;unicode string&gt;
+    &quot;&quot;&quot;
+    all_user_languages = []
+    user = User.find_by_id(flask.g.user_id)
+    reading_languages = Language.all_reading_for_user(user)
+    for lan in reading_languages:
+        all_user_languages.append(lan.as_dictionary())
+    return json_result(all_user_languages)
+
+
+# ---------------------------------------------------------------------------
+@api.route(f&quot;/{INTERESTING_LANGUAGES_FOR_READING}&quot;, methods=(&quot;GET&quot;,))
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def get_interesting_reading_languages():
+    &quot;&quot;&quot;
+    'Interesting languages' are defined as languages the user
+    isn't subscribed to already and thus might subscribe to.
+
+    :return: a json list with languages the user isn't reading yet.
+    every language in this list is a dictionary with the following info:
+                id = unique id of the language;
+                language = &lt;unicode string&gt;
+    &quot;&quot;&quot;
+
+    all_languages = Language.available_languages()
+    all_languages.sort(key=lambda x: x.name)
+    user = User.find_by_id(flask.g.user_id)
+    learned_languages = Language.all_reading_for_user(user)
+
+    interesting_languages = []
+
+    for lan in all_languages:
+        if lan not in learned_languages:
+            interesting_languages.append(lan.as_dictionary())
+
+    return json_result(interesting_languages)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

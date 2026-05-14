@@ -1,0 +1,267 @@
+<html>
+<head>
+    <title>tools/user_word_integrity/_fix_multiword_bookmark_positions.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/user_word_integrity/_fix_multiword_bookmark_positions.py (<b>154</b> lines of code) (<a href="_fix_multiword_bookmark_positions.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python
+&quot;&quot;&quot;
+Fix multi-word bookmark positions.
+
+This script finds and fixes bookmarks where the token_i/sentence_i position
+is incorrect for multi-word phrases. This can cause highlighting issues in exercises.
+
+Example: Word &quot;ikke engang&quot; (2 tokens) at position token_i=12 when it should be token_i=11
+         Results in only &quot;engang&quot; being highlighted instead of &quot;ikke engang&quot;
+&quot;&quot;&quot;
+
+import sys
+import os
+
+# Add project root to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+# REQUIRED: Initialize Flask app context for database access
+from zeeguu.api.app import create_app
+from zeeguu.core.model import db
+
+app = create_app()
+app.app_context().push()
+
+from zeeguu.core.model import Bookmark
+from zeeguu.core.tokenization.word_position_finder import validate_single_occurrence
+import argparse
+
+
+def find_incorrect_positions(limit=None):
+    &quot;&quot;&quot;
+    Find all multi-word bookmarks with incorrect token positions.
+
+    Args:
+        limit: Optional limit on number of bookmarks to check
+
+    Returns:
+        List of dicts with bookmark info and correct positions
+    &quot;&quot;&quot;
+    # Get all bookmarks with multi-word phrases (total_tokens &gt; 1 or NULL)
+    # Note: NULL total_tokens might also be multi-word (before the feature was added)
+    query = Bookmark.query.filter(
+        (Bookmark.total_tokens &gt; 1) | (Bookmark.total_tokens == None)
+    )
+
+    if limit:
+        query = query.limit(limit)
+
+    bookmarks = query.all()
+
+    print(f&quot;Checking {len(bookmarks)} potentially multi-word bookmarks...&quot;)
+    print()
+
+    incorrect_bookmarks = []
+    checked = 0
+    errors = 0
+
+    for bookmark in bookmarks:
+        checked += 1
+        if checked % 100 == 0:
+            print(f&quot;Progress: {checked}/{len(bookmarks)} checked, {len(incorrect_bookmarks)} incorrect found&quot;)
+
+        try:
+            word = bookmark.user_word.meaning.origin.content
+            context = bookmark.context.get_content()
+            language = bookmark.user_word.meaning.origin.language
+
+            validation = validate_single_occurrence(word, context, language)
+
+            if not validation['valid']:
+                # Skip bookmarks where word doesn't appear in context or appears multiple times
+                continue
+
+            correct_token_i = validation['position_data']['token_i']
+            correct_sentence_i = validation['position_data']['sentence_i']
+            correct_total_tokens = validation['position_data']['total_tokens']
+
+            needs_fix = False
+            changes = []
+
+            if bookmark.token_i != correct_token_i:
+                needs_fix = True
+                changes.append(f&quot;token_i: {bookmark.token_i} &rarr; {correct_token_i}&quot;)
+
+            if bookmark.sentence_i != correct_sentence_i:
+                needs_fix = True
+                changes.append(f&quot;sentence_i: {bookmark.sentence_i} &rarr; {correct_sentence_i}&quot;)
+
+            if bookmark.total_tokens != correct_total_tokens:
+                needs_fix = True
+                changes.append(f&quot;total_tokens: {bookmark.total_tokens} &rarr; {correct_total_tokens}&quot;)
+
+            if needs_fix:
+                incorrect_bookmarks.append({
+                    'bookmark': bookmark,
+                    'word': word,
+                    'context': context[:80] + '...' if len(context) &gt; 80 else context,
+                    'changes': changes,
+                    'correct_sentence_i': correct_sentence_i,
+                    'correct_token_i': correct_token_i,
+                    'correct_total_tokens': correct_total_tokens,
+                })
+
+        except Exception as e:
+            errors += 1
+            if errors &lt;= 5:  # Only show first 5 errors
+                print(f&quot;  Error checking bookmark {bookmark.id}: {e}&quot;)
+            continue
+
+    print(f&quot;\nChecked {checked} bookmarks&quot;)
+    if errors &gt; 0:
+        print(f&quot;Errors encountered: {errors} (word not found in context or multiple occurrences)&quot;)
+    print()
+
+    return incorrect_bookmarks
+
+
+def print_incorrect_bookmarks(incorrect_bookmarks, limit=20):
+    &quot;&quot;&quot;Print information about incorrect bookmarks.&quot;&quot;&quot;
+    if not incorrect_bookmarks:
+        print(&quot;✓ No incorrect bookmark positions found!&quot;)
+        return
+
+    print(f&quot;=&quot;*80)
+    print(f&quot;Found {len(incorrect_bookmarks)} bookmarks with incorrect positions&quot;)
+    print(f&quot;=&quot;*80)
+    print()
+
+    for i, item in enumerate(incorrect_bookmarks[:limit]):
+        print(f&quot;Bookmark {item['bookmark'].id}: '{item['word']}'&quot;)
+        print(f&quot;  Context: {item['context']}&quot;)
+        print(f&quot;  Changes needed:&quot;)
+        for change in item['changes']:
+            print(f&quot;    - {change}&quot;)
+        print()
+
+    if len(incorrect_bookmarks) &gt; limit:
+        print(f&quot;... and {len(incorrect_bookmarks) - limit} more&quot;)
+        print()
+
+
+def fix_bookmark_positions(incorrect_bookmarks, dry_run=True):
+    &quot;&quot;&quot;
+    Fix incorrect bookmark positions.
+
+    Args:
+        incorrect_bookmarks: List of dicts from find_incorrect_positions()
+        dry_run: If True, only show what would be fixed
+
+    Returns:
+        Number of bookmarks fixed
+    &quot;&quot;&quot;
+    if not incorrect_bookmarks:
+        return 0
+
+    if dry_run:
+        print(f&quot;[DRY RUN] Would fix {len(incorrect_bookmarks)} bookmarks&quot;)
+        return 0
+
+    print(f&quot;Fixing {len(incorrect_bookmarks)} bookmarks...&quot;)
+    fixed = 0
+
+    for item in incorrect_bookmarks:
+        bookmark = item['bookmark']
+
+        try:
+            bookmark.sentence_i = item['correct_sentence_i']
+            bookmark.token_i = item['correct_token_i']
+            bookmark.total_tokens = item['correct_total_tokens']
+
+            db.session.add(bookmark)
+            fixed += 1
+
+            if fixed % 100 == 0:
+                print(f&quot;  Fixed {fixed}/{len(incorrect_bookmarks)}...&quot;)
+
+        except Exception as e:
+            print(f&quot;  ✗ Error fixing bookmark {bookmark.id}: {e}&quot;)
+            continue
+
+    try:
+        db.session.commit()
+        print(f&quot;\n✓ Successfully fixed {fixed} bookmarks&quot;)
+        return fixed
+    except Exception as e:
+        db.session.rollback()
+        print(f&quot;\n✗ Error committing fixes: {e}&quot;)
+        return 0
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description=&quot;Find and fix multi-word bookmarks with incorrect token positions&quot;
+    )
+    parser.add_argument(
+        &quot;--fix&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Actually fix the positions (default is dry-run)&quot;
+    )
+    parser.add_argument(
+        &quot;--limit&quot;,
+        type=int,
+        help=&quot;Limit number of bookmarks to check (for testing)&quot;
+    )
+    parser.add_argument(
+        &quot;--verbose&quot;,
+        &quot;-v&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Show all incorrect bookmarks (default: show first 20)&quot;
+    )
+
+    args = parser.parse_args()
+
+    # Find incorrect bookmarks
+    incorrect_bookmarks = find_incorrect_positions(limit=args.limit)
+
+    # Print results
+    if args.verbose:
+        print_incorrect_bookmarks(incorrect_bookmarks, limit=len(incorrect_bookmarks))
+    else:
+        print_incorrect_bookmarks(incorrect_bookmarks, limit=20)
+
+    # Fix if requested
+    if args.fix:
+        if not incorrect_bookmarks:
+            return
+
+        response = input(f&quot;\n⚠️  Fix {len(incorrect_bookmarks)} bookmarks? [y/N]: &quot;)
+        if response.lower() != 'y':
+            print(&quot;Fix cancelled.&quot;)
+            return
+
+        fix_bookmark_positions(incorrect_bookmarks, dry_run=False)
+    else:
+        if incorrect_bookmarks:
+            print(&quot;💡 Run with --fix to actually fix these bookmarks&quot;)
+            print(&quot;   Example: python -m tools.user_word_integrity._fix_multiword_bookmark_positions --fix&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

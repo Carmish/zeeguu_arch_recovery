@@ -1,0 +1,110 @@
+<html>
+<head>
+    <title>zeeguu/core/model/user_badge.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/user_badge.py (<b>56</b> lines of code) (<a href="user_badge.py">raw</a>):</h3>
+<div id="editor">from datetime import datetime
+
+from zeeguu.core.model.db import db
+
+
+class UserBadge(db.Model):
+    &quot;&quot;&quot;
+        Represents the association between a user and a badge they have achieved.
+        Tracks when the badge was achieved and whether it has been shown to the user.
+    &quot;&quot;&quot;
+    __tablename__ = &quot;user_badge&quot;
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(&quot;user.id&quot;), nullable=False)
+    badge_id = db.Column(db.Integer, db.ForeignKey(&quot;badge.id&quot;), nullable=False)
+    achieved_at = db.Column(db.DateTime, default=datetime.now)
+    is_shown = db.Column(db.Boolean, default=False)
+
+    __table_args__ = (
+        db.UniqueConstraint(&quot;user_id&quot;, &quot;badge_id&quot;),
+    )
+
+    badge = db.relationship(&quot;Badge&quot;, back_populates=&quot;user_badges&quot;)
+    user = db.relationship(&quot;User&quot;)
+
+    def __init__(
+            self,
+            user_id,
+            badge_id,
+            achieved_at=None,
+            is_shown=False
+    ):
+        self.user_id = user_id
+        self.badge_id = badge_id
+        self.is_shown = is_shown
+        self.achieved_at = achieved_at or datetime.now()
+
+    def __repr__(self):
+        return f&quot;&lt;UserBadge User:{self.user_id} Badge:{self.badge_id}&gt;&quot;
+
+    @classmethod
+    def find_all(cls, user_id: int) -&gt; list[&quot;UserBadge&quot;]:
+        &quot;&quot;&quot;Return all badges achieved by a user.&quot;&quot;&quot;
+        return cls.query.filter_by(user_id=user_id).all()
+
+    @classmethod
+    def count_user_not_shown(cls, user_id: int) -&gt; int:
+        &quot;&quot;&quot;Return the count of badges that the user has not seen yet.&quot;&quot;&quot;
+        return cls.query.filter_by(user_id=user_id, is_shown=False).count()
+
+    @classmethod
+    def find(cls, user_id: int, badge_ids: list[int]) -&gt; list[&quot;UserBadge&quot;]:
+        &quot;&quot;&quot;Return user badges for the specified badge_ids.&quot;&quot;&quot;
+        if not badge_ids:
+            return []
+        return cls.query.filter(cls.user_id == user_id, cls.badge_id.in_(badge_ids)).all()
+
+    @classmethod
+    def update_not_shown_for_user(cls, session, user_id: int):
+        &quot;&quot;&quot;
+            Mark all badges for a user as shown.
+            Does not commit.
+        &quot;&quot;&quot;
+        unseen = cls.query.filter_by(user_id=user_id, is_shown=False).all()
+        for badge in unseen:
+            badge.is_shown = True
+            session.add(badge)
+
+    @classmethod
+    def create(
+            cls,
+            session,
+            user_id: int,
+            badge_id: int,
+            achieved_at: datetime = None,
+            is_shown: bool = False,
+    ) -&gt; &quot;UserBadge&quot;:
+        &quot;&quot;&quot;
+           Create a new UserBadge record for a user and badge.
+           Does not commit.
+        &quot;&quot;&quot;
+        new = cls(user_id, badge_id, achieved_at, is_shown)
+        session.add(new)
+        return new
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

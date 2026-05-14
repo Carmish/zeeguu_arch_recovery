@@ -1,0 +1,50 @@
+<html>
+<head>
+    <title>zeeguu/core/language/strategies/default_difficulty_estimator.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/language/strategies/default_difficulty_estimator.py (<b>20</b> lines of code) (<a href="default_difficulty_estimator.py">raw</a>):</h3>
+<div id="editor">from zeeguu.core import model
+from zeeguu.core.language.difficulty_estimator_strategy import DifficultyEstimatorStrategy
+
+
+class DefaultDifficultyEstimator(DifficultyEstimatorStrategy):
+
+    # The default estimator always returns a difficulty of zero
+    @classmethod
+    def estimate_difficulty(cls, text: str, language: 'model.Language', user: 'model.User'):
+        '''
+        The default difficulty estimator. Used when no matching estimator was found by the factory.
+        :param text: See DifficultyEstimatorStrategy
+        :param language: See DifficultyEstimatorStrategy
+        :param user: See DifficultyEstimatorStrategy
+        :rtype: dict
+        :return: The dictionary contains the keys and return types
+                    normalized: float (0&lt;=normalized&lt;=1)
+                    discrete: string [EASY, MEDIUM, HARD]
+        '''
+        difficulty_scores = dict(
+            normalized=0.0,
+            discrete=&quot;EASY&quot;,
+        )
+        return difficulty_scores
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

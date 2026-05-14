@@ -1,0 +1,115 @@
+<html>
+<head>
+    <title>def main()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def main()</h3>
+<p style="margin-top: 4px">in <i>tools/fix_compound_examples.py [0:0]</i></p>
+<ul>
+    <li><b>77</b> lines of code</li>
+    <li><b>17</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def main():
+    parser = argparse.ArgumentParser(
+        description=&quot;Find and fix examples where words only appear in compounds&quot;
+    )
+    parser.add_argument(
+        &quot;--dry-run&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Only report bad examples, don't delete or regenerate&quot;,
+    )
+    parser.add_argument(
+        &quot;--delete&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Delete bad examples&quot;,
+    )
+    parser.add_argument(
+        &quot;--regenerate&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Regenerate examples for affected meanings (requires --delete)&quot;,
+    )
+    parser.add_argument(
+        &quot;--max-examples&quot;,
+        type=int,
+        help=&quot;Maximum number of examples to check (for testing)&quot;,
+    )
+    parser.add_argument(
+        &quot;--meaning-ids&quot;,
+        type=str,
+        help=&quot;Comma-separated list of meaning IDs to process&quot;,
+    )
+
+    args = parser.parse_args()
+
+    if args.regenerate and not args.delete:
+        print(&quot;Error: --regenerate requires --delete&quot;)
+        sys.exit(1)
+
+    meaning_ids = None
+    if args.meaning_ids:
+        meaning_ids = [int(x.strip()) for x in args.meaning_ids.split(&quot;,&quot;)]
+
+    print(&quot;=&quot; * 60)
+    print(&quot;Compound Word Example Fixer&quot;)
+    print(&quot;=&quot; * 60)
+
+    # Find bad examples
+    bad_examples = find_compound_only_examples(
+        max_examples=args.max_examples,
+        meaning_ids=meaning_ids,
+    )
+
+    if not bad_examples:
+        print(&quot;\nNo compound-only examples found!&quot;)
+        return
+
+    print(f&quot;\nFound {len(bad_examples)} examples where word only appears in compounds:\n&quot;)
+
+    # Group by meaning for clearer output
+    by_meaning = {}
+    for ex in bad_examples:
+        if ex['meaning_id'] not in by_meaning:
+            by_meaning[ex['meaning_id']] = []
+        by_meaning[ex['meaning_id']].append(ex)
+
+    for meaning_id, examples in by_meaning.items():
+        word = examples[0]['word']
+        print(f&quot;Word: '{word}' (meaning_id: {meaning_id})&quot;)
+        for ex in examples:
+            issue = ex.get('issue_type', 'unknown')
+            print(f&quot;  - ID {ex['id']} [{issue}]: \&quot;{ex['sentence']}\&quot;&quot;)
+            if ex.get('compounds'):
+                print(f&quot;    Compounds found: {ex['compounds']}&quot;)
+        print()
+
+    affected_meaning_ids = list(by_meaning.keys())
+
+    if args.dry_run:
+        print(&quot;Dry run complete. Use --delete to remove these examples.&quot;)
+        return
+
+    if args.delete:
+        print(&quot;\nDeleting bad examples...&quot;)
+        example_ids = [ex['id'] for ex in bad_examples]
+        deleted, linked = delete_examples(example_ids)
+        print(f&quot;  Deleted: {deleted} examples&quot;)
+        if linked:
+            print(f&quot;  Preserved (linked to bookmarks): {linked} examples&quot;)
+
+    if args.regenerate:
+        print(&quot;\nRegenerating examples for affected meanings...&quot;)
+        regenerated = regenerate_examples_for_meanings(affected_meaning_ids)
+        print(f&quot;\nRegenerated {regenerated} new examples&quot;)
+
+    print(&quot;\nDone!&quot;)
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

@@ -1,0 +1,343 @@
+<html>
+<head>
+    <title>tools/reclassify_unclassified_phrases.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/reclassify_unclassified_phrases.py (<b>206</b> lines of code) (<a href="reclassify_unclassified_phrases.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python
+&quot;&quot;&quot;
+Reclassify unclassified multi-word phrases for recently active users.
+
+This script:
+1. Finds users active in the last N days
+2. Gets their unclassified multi-word user_words (phrase_type = NULL)
+3. Classifies them using the LLM
+4. Updates meanings and automatically unschedules words marked as arbitrary_multi_word
+
+Usage:
+    python tools/reclassify_unclassified_phrases.py [--days 30] [--limit 100] [--dry-run]
+&quot;&quot;&quot;
+
+import sys
+import os
+from datetime import datetime, timedelta
+import argparse
+import time
+
+# Add project root to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# REQUIRED: Initialize Flask app context for database access
+from zeeguu.api.app import create_app
+from zeeguu.core.model import db
+
+app = create_app()
+app.app_context().push()
+
+# Now safe to import and use models
+from zeeguu.core.model import User, UserWord, Meaning, Phrase
+from zeeguu.core.model.meaning_frequency_classifier import MeaningFrequencyClassifier
+from zeeguu.logging import log
+
+
+def get_recently_active_users(days=30):
+    &quot;&quot;&quot;
+    Get users who have been active in the last N days.
+    Active = created user_words or exercise activity.
+
+    Args:
+        days: Number of days to look back
+
+    Returns:
+        List of User objects
+    &quot;&quot;&quot;
+    cutoff_date = datetime.now() - timedelta(days=days)
+
+    # Find users with recent user_words
+    users = (
+        db.session.query(User)
+        .join(UserWord, UserWord.user_id == User.id)
+        .filter(UserWord.time &gt;= cutoff_date)
+        .distinct()
+        .all()
+    )
+
+    return users
+
+
+def get_unclassified_multi_word_meanings(user):
+    &quot;&quot;&quot;
+    Get unclassified multi-word meanings for a user.
+
+    Args:
+        user: User object
+
+    Returns:
+        List of (UserWord, Meaning) tuples
+    &quot;&quot;&quot;
+    results = (
+        db.session.query(UserWord, Meaning)
+        .join(Meaning, UserWord.meaning_id == Meaning.id)
+        .join(Phrase, Meaning.origin_id == Phrase.id)
+        .filter(UserWord.user_id == user.id)
+        .filter(Meaning.phrase_type.is_(None))  # Unclassified
+        .filter(Phrase.content.like('% %'))  # Has spaces (multi-word)
+        .all()
+    )
+
+    return results
+
+
+def reclassify_for_users(users, limit=None, dry_run=False, batch_size=15, interactive=False):
+    &quot;&quot;&quot;
+    Reclassify unclassified phrases for given users using batch classification.
+
+    Args:
+        users: List of User objects
+        limit: Maximum number of meanings to classify (None = no limit)
+        dry_run: If True, don't actually update the database
+        batch_size: Number of meanings to classify per API call (default 15)
+        interactive: If True, ask for confirmation before unscheduling arbitrary_multi_word phrases
+
+    Returns:
+        Dict with statistics
+    &quot;&quot;&quot;
+    classifier = MeaningFrequencyClassifier()
+
+    stats = {
+        'users_processed': 0,
+        'meanings_found': 0,
+        'meanings_classified': 0,
+        'meanings_failed': 0,
+        'arbitrary_multi_word': 0,
+        'collocations': 0,
+        'idioms': 0,
+        'expressions': 0,
+        'single_word': 0,
+    }
+
+    total_classified = 0
+
+    for user in users:
+        stats['users_processed'] += 1
+        log(f&quot;\n{'='*80}&quot;)
+        log(f&quot;Processing user {user.id} ({user.name})&quot;)
+
+        # Get unclassified multi-word meanings for this user
+        user_word_meanings = get_unclassified_multi_word_meanings(user)
+        stats['meanings_found'] += len(user_word_meanings)
+
+        if not user_word_meanings:
+            log(f&quot;  No unclassified multi-word phrases found&quot;)
+            continue
+
+        log(f&quot;  Found {len(user_word_meanings)} unclassified multi-word phrases&quot;)
+
+        # Extract unique meanings (avoid duplicates)
+        seen_meaning_ids = set()
+        meanings_to_classify = []
+        for user_word, meaning in user_word_meanings:
+            if meaning.id not in seen_meaning_ids:
+                seen_meaning_ids.add(meaning.id)
+                meanings_to_classify.append(meaning)
+
+        log(f&quot;  Unique meanings to classify: {len(meanings_to_classify)}&quot;)
+
+        # Process in batches
+        for batch_start in range(0, len(meanings_to_classify), batch_size):
+            # Check limit
+            if limit and total_classified &gt;= limit:
+                log(f&quot;\nReached limit of {limit} classifications. Stopping.&quot;)
+                return stats
+
+            # Get current batch
+            batch_end = min(batch_start + batch_size, len(meanings_to_classify))
+            if limit:
+                batch_end = min(batch_end, batch_start + (limit - total_classified))
+
+            batch = meanings_to_classify[batch_start:batch_end]
+
+            log(f&quot;\n  Batch {batch_start//batch_size + 1}: Classifying {len(batch)} meanings...&quot;)
+
+            if dry_run:
+                for meaning in batch:
+                    log(f&quot;    [DRY RUN] Would classify: '{meaning.origin.content}' &rarr; '{meaning.translation.content}'&quot;)
+                    stats['meanings_classified'] += 1
+                    total_classified += 1
+                continue
+
+            # Classify batch
+            batch_stats = classifier.classify_and_update_meanings_batch(batch, db.session)
+
+            # Update stats
+            stats['meanings_classified'] += batch_stats['classified']
+            stats['meanings_failed'] += batch_stats['failed']
+            total_classified += batch_stats['classified']
+
+            # Log results and handle interactive confirmation for arbitrary_multi_word
+            from zeeguu.core.model.meaning import PhraseType
+
+            for meaning in batch:
+                if meaning.phrase_type:
+                    phrase_type_str = meaning.phrase_type.value
+                    stats[phrase_type_str] = stats.get(phrase_type_str, 0) + 1
+
+                    log(f&quot;    ✓ '{meaning.origin.content}': {meaning.frequency.value if meaning.frequency else 'unknown'}, {phrase_type_str}&quot;)
+
+                    # Handle arbitrary_multi_word interactively
+                    if meaning.phrase_type == PhraseType.ARBITRARY_MULTI_WORD:
+                        if interactive:
+                            log(f&quot;      ⚠️  Classified as arbitrary_multi_word (not a good unit of study)&quot;)
+                            log(f&quot;         Translation: '{meaning.translation.content}'&quot;)
+                            response = input(f&quot;         Unschedule this word? [Y/n/q(uit)]: &quot;).strip().lower()
+
+                            if response == 'q' or response == 'quit':
+                                log(&quot;\n[Interactive mode] User quit. Stopping.&quot;)
+                                return stats
+                            elif response == 'n' or response == 'no':
+                                log(f&quot;         Skipped - keeping as fit for study&quot;)
+                                # Revert the classification for this meaning
+                                meaning.phrase_type = None
+                                meaning.frequency = None
+                                db.session.add(meaning)
+                                db.session.commit()
+                                # Update fit_for_study back
+                                classifier._update_user_words_fit_for_study(meaning, db.session)
+                                stats['arbitrary_multi_word'] -= 1
+                                continue
+                            else:
+                                log(f&quot;         ✓ Unscheduling (marked as NOT fit for study)&quot;)
+                        else:
+                            log(f&quot;      ⚠️  Marked as NOT fit for study&quot;)
+                elif meaning.frequency:
+                    log(f&quot;    ✓ '{meaning.origin.content}': {meaning.frequency.value} (phrase_type classification failed)&quot;)
+                else:
+                    log(f&quot;    ✗ '{meaning.origin.content}': Classification failed&quot;)
+
+            # Small delay between batches
+            if batch_end &lt; len(meanings_to_classify):
+                time.sleep(0.5)
+
+    return stats
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='Reclassify unclassified multi-word phrases for recently active users'
+    )
+    parser.add_argument(
+        '--days',
+        type=int,
+        default=30,
+        help='Number of days to look back for active users (default: 30)'
+    )
+    parser.add_argument(
+        '--limit',
+        type=int,
+        default=None,
+        help='Maximum number of meanings to classify (default: no limit)'
+    )
+    parser.add_argument(
+        '--dry-run',
+        action='store_true',
+        help='Show what would be done without actually doing it'
+    )
+    parser.add_argument(
+        '--user-id',
+        type=int,
+        default=None,
+        help='Process only a specific user ID'
+    )
+    parser.add_argument(
+        '--batch-size',
+        type=int,
+        default=15,
+        help='Number of meanings to classify per API call (default: 15)'
+    )
+    parser.add_argument(
+        '--interactive',
+        action='store_true',
+        help='Ask for confirmation before unscheduling arbitrary_multi_word phrases'
+    )
+
+    args = parser.parse_args()
+
+    log(&quot;=&quot;*80)
+    log(&quot;Reclassifying Unclassified Multi-Word Phrases&quot;)
+    log(&quot;=&quot;*80)
+    log(f&quot;Configuration:&quot;)
+    log(f&quot;  Days lookback: {args.days}&quot;)
+    log(f&quot;  Limit: {args.limit if args.limit else 'No limit'}&quot;)
+    log(f&quot;  Batch size: {args.batch_size}&quot;)
+    log(f&quot;  Interactive: {args.interactive}&quot;)
+    log(f&quot;  Dry run: {args.dry_run}&quot;)
+    log(f&quot;  Specific user: {args.user_id if args.user_id else 'All recently active'}&quot;)
+    log(&quot;&quot;)
+
+    # Get users to process
+    if args.user_id:
+        users = [User.query.get(args.user_id)]
+        if not users[0]:
+            log(f&quot;Error: User {args.user_id} not found&quot;)
+            return
+        log(f&quot;Processing single user: {users[0].name}&quot;)
+    else:
+        log(f&quot;Finding users active in last {args.days} days...&quot;)
+        users = get_recently_active_users(args.days)
+        log(f&quot;Found {len(users)} recently active users&quot;)
+
+    if not users:
+        log(&quot;No users to process&quot;)
+        return
+
+    # Process users
+    stats = reclassify_for_users(
+        users,
+        limit=args.limit,
+        dry_run=args.dry_run,
+        batch_size=args.batch_size,
+        interactive=args.interactive
+    )
+
+    # Print summary
+    log(&quot;\n&quot; + &quot;=&quot;*80)
+    log(&quot;SUMMARY&quot;)
+    log(&quot;=&quot;*80)
+    log(f&quot;Users processed: {stats['users_processed']}&quot;)
+    log(f&quot;Unclassified meanings found: {stats['meanings_found']}&quot;)
+    log(f&quot;Meanings classified: {stats['meanings_classified']}&quot;)
+    log(f&quot;Meanings failed: {stats['meanings_failed']}&quot;)
+    log(&quot;&quot;)
+    log(&quot;Classification breakdown:&quot;)
+    log(f&quot;  - Arbitrary multi-word (unscheduled): {stats['arbitrary_multi_word']}&quot;)
+    log(f&quot;  - Collocations: {stats.get('collocation', 0)}&quot;)
+    log(f&quot;  - Idioms: {stats.get('idiom', 0)}&quot;)
+    log(f&quot;  - Expressions: {stats.get('expression', 0)}&quot;)
+    log(f&quot;  - Single word: {stats.get('single_word', 0)}&quot;)
+
+    if args.dry_run:
+        log(&quot;\n[DRY RUN] No changes were made to the database&quot;)
+
+
+if __name__ == '__main__':
+    main()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

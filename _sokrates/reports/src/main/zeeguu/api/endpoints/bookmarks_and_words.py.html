@@ -1,0 +1,1026 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/bookmarks_and_words.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/bookmarks_and_words.py (<b>578</b> lines of code) (<a href="bookmarks_and_words.py">raw</a>):</h3>
+<div id="editor">from datetime import datetime
+
+import flask
+from flask import request
+from sqlalchemy import or_
+from sqlalchemy.orm.exc import NoResultFound
+
+from zeeguu.core.model import User, Article, Bookmark, ExerciseSource, ExerciseOutcome
+from zeeguu.core.model.context_identifier import ContextIdentifier
+from zeeguu.core.model.bookmark_user_preference import UserWordExPreference
+from zeeguu.core.model.example_sentence_context import ExampleSentenceContext
+from . import api, db_session
+from zeeguu.api.utils.json_result import json_result
+from zeeguu.logging import log
+from zeeguu.api.utils.parse_json_boolean import parse_json_boolean
+from zeeguu.api.utils.route_wrappers import cross_domain, requires_session
+from zeeguu.core.word_scheduling import BasicSRSchedule
+from zeeguu.core.word_scheduling.basicSR.four_levels_per_word import FourLevelsPerWord
+
+
+def get_bookmark_if_owned(bookmark_id):
+    &quot;&quot;&quot;
+    Fetch a bookmark and verify the current user owns it.
+    Returns the bookmark if owned, otherwise aborts with 403.
+    &quot;&quot;&quot;
+    bookmark = Bookmark.find(bookmark_id)
+    if bookmark is None:
+        flask.abort(404)
+    if bookmark.user_word.user_id != flask.g.user_id:
+        log(f&quot;IDOR attempt: user {flask.g.user_id} tried to access bookmark {bookmark_id}&quot;)
+        flask.abort(403)
+    return bookmark
+
+
+@api.route(&quot;/user_words&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def studied_words():
+    &quot;&quot;&quot;
+    Returns a list of the words that the user is currently studying.
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    return json_result(user.user_words())
+
+
+@api.route(&quot;/learned_bookmarks/&lt;int:count&gt;&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def learned_bookmarks(count):
+    &quot;&quot;&quot;
+    Returns a list of the words that the user has learned.
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    top_bookmarks = user.learned_bookmarks(count)
+    json_bookmarks = [b.as_dictionary(with_exercise_info=True) for b in top_bookmarks]
+    return json_result(json_bookmarks)
+
+
+@api.route(&quot;/total_learned_bookmarks&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def total_learned_bookmarks():
+    &quot;&quot;&quot;
+    Returns a list of the words that the user has learned.
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    total_bookmarks_learned = user.total_learned_bookmarks()
+    return json_result(total_bookmarks_learned)
+
+
+@api.route(&quot;/learned_user_words/&lt;int:count&gt;&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def learned_user_words(count):
+    &quot;&quot;&quot;
+    Returns a list of the user words that the user has learned (deduplicated).
+    Unlike learned_bookmarks which can have duplicates for the same word from different contexts,
+    this endpoint returns unique learned user words.
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    learned_words = list(user.learned_user_words(count))
+
+    # Batch load schedules to avoid N+1 queries
+    # Use FourLevelsPerWord (concrete class) not BasicSRSchedule (abstract) for get_max_interval()
+    user_word_ids = [uw.id for uw in learned_words]
+    schedule_map = {}
+    if user_word_ids:
+        schedules = FourLevelsPerWord.query.filter(
+            FourLevelsPerWord.user_word_id.in_(user_word_ids)
+        ).all()
+        schedule_map = {s.user_word_id: s for s in schedules}
+
+    # Skip tokenization for list view - saves ~150ms per word (Stanza ML processing)
+    json_words = [
+        word.as_dictionary(
+            schedule=schedule_map.get(word.id),
+            with_context_tokenized=False
+        )
+        for word in learned_words
+    ]
+    return json_result(json_words)
+
+
+@api.route(&quot;/total_learned_user_words&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def total_learned_user_words():
+    &quot;&quot;&quot;
+    Returns the count of unique user words that the user has learned.
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    total_words_learned = user.total_learned_user_words()
+    return json_result(total_words_learned)
+
+
+@api.route(&quot;/starred_bookmarks/&lt;int:count&gt;&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def starred_bookmarks(count):
+    &quot;&quot;&quot;
+    Returns a list of the words that the user is currently studying.
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    top_bookmarks = user.starred_bookmarks(count)
+    json_bookmarks = [b.as_dictionary() for b in top_bookmarks]
+    return json_result(json_bookmarks)
+
+
+@api.route(&quot;/bookmarks_by_day&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def bookmarks_by_day():
+    &quot;&quot;&quot;
+    Returns the bookmarks of this user organized by date. Based on the
+    POST arguments, it can return also the context of the bookmark as
+    well as it can return only the bookmarks after a given date.
+
+    :param (POST) with_context: If this parameter is &quot;true&quot;, the endpoint
+    also returns the text where the bookmark was found.
+    &quot;&quot;&quot;
+
+    with_context = parse_json_boolean(request.form.get(&quot;with_context&quot;, &quot;false&quot;))
+    user = User.find_by_id(flask.g.user_id)
+    return json_result(user.bookmarks_by_day(with_context=with_context))
+
+
+@api.route(&quot;/bookmarks_for_article/&lt;int:article_id&gt;/&lt;int:user_id&gt;&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def bookmarks_for_article(article_id, user_id):
+    &quot;&quot;&quot;
+    Returns the bookmarks of this user organized by date. Based on the
+    POST arguments, it can return also the context of the bookmark as
+    well as it can return only the bookmarks after a given date.
+
+    :param (POST) with_context: If this parameter is &quot;true&quot;, the endpoint
+    also returns the text where the bookmark was found.
+
+    :param (POST) after_date: the date after which to start retrieving
+     the bookmarks. if no date is specified, all the bookmarks are returned.
+     The date format is: %Y-%m-%dT%H:%M:%S. E.g. 2001-01-01T01:55:00
+
+    &quot;&quot;&quot;
+    # Security: Ensure user can only access their own bookmarks
+    if user_id != flask.g.user_id:
+        log(f&quot;IDOR attempt: user {flask.g.user_id} tried to access bookmarks of user {user_id}&quot;)
+        flask.abort(403)
+
+    user = User.find_by_id(user_id)
+    article = Article.query.filter_by(id=article_id).one()
+
+    bookmarks = user.bookmarks_for_article(
+        article_id, with_exercise_info=True, with_title=True
+    )
+
+    return json_result(dict(bookmarks=bookmarks, article_title=article.title))
+
+
+@api.route(
+    &quot;/words_to_study_for_article/&lt;int:article_id&gt;&quot;,
+    methods=[&quot;POST&quot;, &quot;GET&quot;],
+)
+@cross_domain
+@requires_session
+def words_to_study_for_article(article_id):
+    user = User.find_by_id(flask.g.user_id)
+    with_tokens = parse_json_boolean(request.form.get(&quot;with_tokens&quot;, &quot;false&quot;))
+
+    # This approach works with UserWords (which have the scheduling logic)
+    # instead of Bookmarks (which were the old approach)
+    words_data = user.user_words_for_article(
+        article_id,
+        good_for_study=True,
+        json=True,
+    )
+
+    return json_result(words_data)
+
+
+@api.route(&quot;/bookmarks_for_article/&lt;int:article_id&gt;&quot;, methods=[&quot;POST&quot;, &quot;GET&quot;])
+@cross_domain
+@requires_session
+def bookmarks_for_article_2(article_id):
+    &quot;&quot;&quot;
+    Returns the bookmarks of this user organized by date. Based on the
+    POST arguments, it can return also the context of the bookmark as
+    well as it can return only the bookmarks after a given date.
+
+    :param (POST) with_context: If this parameter is &quot;true&quot;, the endpoint
+    also returns the text where the bookmark was found.
+
+    :param (POST) after_date: the date after which to start retrieving
+     the bookmarks. if no date is specified, all the bookmarks are returned.
+     The date format is: %Y-%m-%dT%H:%M:%S. E.g. 2001-01-01T01:55:00
+
+    &quot;&quot;&quot;
+    return bookmarks_for_article(article_id, flask.g.user_id)
+
+
+@api.route(&quot;/delete_bookmark/&lt;bookmark_id&gt;&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def delete_bookmark(bookmark_id):
+    try:
+        bookmark = get_bookmark_if_owned(bookmark_id)
+        user_word = bookmark.user_word
+
+        # Find all other bookmarks for this user_word
+        other_bookmarks_for_same_user_word = (
+            Bookmark.query.filter(Bookmark.user_word_id == user_word.id)
+            .filter(Bookmark.id != bookmark.id)
+            .all()
+        )
+
+        # Clear the preferred bookmark reference if it's pointing to the bookmark we're deleting
+        if user_word.preferred_bookmark_id == bookmark.id:
+            user_word.preferred_bookmark = None
+            db_session.add(user_word)
+            db_session.flush()  # Ensure the foreign key is cleared before deletion
+
+            # If there are other bookmarks, try to find a new preferred one
+            if other_bookmarks_for_same_user_word:
+                # Filter for quality bookmarks (fit_for_study)
+                from zeeguu.core.bookmark_quality.fit_for_study import fit_for_study
+
+                quality_bookmarks = [
+                    b
+                    for b in other_bookmarks_for_same_user_word
+                    if fit_for_study(b.user_word)
+                ]
+
+                if quality_bookmarks:
+                    # Set the most recent quality bookmark as preferred
+                    new_preferred = max(quality_bookmarks, key=lambda b: b.time)
+                    user_word.preferred_bookmark = new_preferred
+                    db_session.add(user_word)
+                else:
+                    # preserve UserWord but mark it as not fit for study
+                    # in the future we can generate an example for this user word with the help of the robots!
+                    user_word.set_unfit_for_study(db_session)
+            else:
+                # No other bookmarks exist - ALWAYS keep the user_word for historical data
+                user_word.set_unfit_for_study(db_session)
+
+        # Delete any ExampleSentenceContext records that reference this bookmark
+        ExampleSentenceContext.query.filter(
+            ExampleSentenceContext.bookmark_id == bookmark.id
+        ).delete()
+
+        db_session.delete(bookmark)
+        db_session.commit()
+    except NoResultFound:
+        return &quot;Inexistent&quot;
+
+    return &quot;OK&quot;
+
+
+@api.route(&quot;/report_correct_mini_exercise/&lt;bookmark_id&gt;&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def report_learned_bookmark(bookmark_id):
+    bookmark = get_bookmark_if_owned(bookmark_id)
+    bookmark.user_word.report_exercise_outcome(
+        db_session,
+        ExerciseSource.TOP_BOOKMARKS_MINI_EXERCISE,
+        ExerciseOutcome.CORRECT,
+        -1,
+        db_session,
+    )
+
+    return &quot;OK&quot;
+
+
+@api.route(&quot;/use_in_exercises/&lt;bookmark_id&gt;&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def set_user_word_exercise_preference(bookmark_id):
+    from zeeguu.core.word_scheduling.basicSR.four_levels_per_word import (
+        FourLevelsPerWord,
+    )
+
+    bookmark = get_bookmark_if_owned(bookmark_id)
+    user_word = bookmark.user_word
+
+    # Fix: set preference on UserWord, not Bookmark
+    user_word.user_preference = UserWordExPreference.USE_IN_EXERCISES
+    user_word.update_fit_for_study(db_session)
+
+    # Ensure a schedule exists for this UserWord
+    if user_word.fit_for_study:
+        FourLevelsPerWord.find_or_create(db_session, user_word)
+        print(f&quot;[USE_IN_EXERCISES] Created/found schedule for UserWord {user_word.id}&quot;)
+
+    db_session.commit()
+    return &quot;OK&quot;
+
+
+@api.route(&quot;/dont_use_in_exercises/&lt;bookmark_id&gt;&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def set_user_word_exercise_dislike(bookmark_id):
+    from zeeguu.core.model.user_word_interaction_history import UserWordInteractionHistory
+
+    bookmark = get_bookmark_if_owned(bookmark_id)
+    user_word = bookmark.user_word
+    reason = request.form.get(&quot;reason&quot;, &quot;&quot;)
+
+    if reason == &quot;declared_known&quot;:
+        user_word.user_preference = UserWordExPreference.DECLARED_KNOWN
+        UserWordInteractionHistory.log(
+            db_session, user_word,
+            UserWordInteractionHistory.DECLARED_KNOWN,
+        )
+    elif reason == &quot;bad_translation&quot;:
+        user_word.user_preference = UserWordExPreference.BAD_TRANSLATION
+        UserWordInteractionHistory.log(
+            db_session, user_word,
+            UserWordInteractionHistory.BAD_TRANSLATION,
+        )
+    else:
+        user_word.user_preference = UserWordExPreference.DONT_USE_IN_EXERCISES
+
+    user_word.update_fit_for_study(db_session)
+    BasicSRSchedule.clear_user_word_schedule(db_session, user_word)
+    db_session.commit()
+    return &quot;OK&quot;
+
+
+@api.route(&quot;/is_fit_for_study/&lt;bookmark_id&gt;&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def set_is_fit_for_study(bookmark_id):
+    bookmark = get_bookmark_if_owned(bookmark_id)
+    bookmark.fit_for_study = True
+    db_session.commit()
+    return &quot;OK&quot;
+
+
+@api.route(&quot;/not_fit_for_study/&lt;bookmark_id&gt;&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def set_not_fit_for_study(bookmark_id):
+    bookmark = get_bookmark_if_owned(bookmark_id)
+    bookmark.fit_for_study = False
+
+    BasicSRSchedule.clear_user_word_schedule(db_session, bookmark)
+    db_session.commit()
+    return &quot;OK&quot;
+
+
+@api.route(&quot;/star_bookmark/&lt;bookmark_id&gt;&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def star_bookmark(bookmark_id):
+    bookmark = get_bookmark_if_owned(bookmark_id)
+    bookmark.starred = True
+    bookmark.user_word.update_fit_for_study(db_session)
+    db_session.commit()
+    return &quot;OK&quot;
+
+
+@api.route(&quot;/unstar_bookmark/&lt;bookmark_id&gt;&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def unstar_bookmark(bookmark_id):
+    bookmark = get_bookmark_if_owned(bookmark_id)
+    bookmark.starred = False
+    bookmark.user_word.update_fit_for_study(db_session)
+    db_session.commit()
+    return &quot;OK&quot;
+
+
+@api.route(&quot;/practiced_user_word_count_this_week&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def practiced_user_word_count_this_week():
+    &quot;&quot;&quot;
+    Returns the number of user words that the user has practiced this week.
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    count = user.practiced_user_words_count_this_week()
+    return json_result(count)
+
+
+@api.route(&quot;/exercises_completed_this_week&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def exercises_completed_this_week():
+    &quot;&quot;&quot;
+    Returns the total number of exercises the user has completed this week.
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    count = user.exercises_completed_this_week()
+    return json_result(count)
+
+
+@api.route(&quot;/past_contexts/&lt;int:user_word_id&gt;&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_past_contexts(user_word_id):
+    &quot;&quot;&quot;
+    Returns only past encounter contexts (articles, videos, etc.) - excludes AI-generated examples.
+
+    Endpoint: GET /past_contexts/&lt;user_word_id&gt;
+
+    Success Response (200):
+    {
+        &quot;user_word_id&quot;: 123,
+        &quot;preferred_bookmark_id&quot;: 456,
+        &quot;total_past_contexts&quot;: 2,
+        &quot;past_contexts&quot;: [
+            {
+                &quot;bookmark_id&quot;: 456,
+                &quot;is_preferred&quot;: true,
+                &quot;context_type&quot;: &quot;ARTICLE_FRAGMENT&quot;,
+                &quot;context&quot;: &quot;The serendipity of finding this book was remarkable.&quot;,
+                &quot;title&quot;: &quot;Article Title&quot;,
+                &quot;sentence_i&quot;: 0,
+                &quot;token_i&quot;: 1,
+                &quot;c_sentence_i&quot;: 0,
+                &quot;c_token_i&quot;: 1
+            },
+            {
+                &quot;bookmark_id&quot;: 789,
+                &quot;is_preferred&quot;: false,
+                &quot;context_type&quot;: &quot;VIDEO_CAPTION&quot;,
+                &quot;context&quot;: &quot;It was pure serendipity that we met.&quot;,
+                &quot;title&quot;: &quot;Video Title&quot;,
+                &quot;sentence_i&quot;: 0,
+                &quot;token_i&quot;: 3,
+                &quot;c_sentence_i&quot;: 0,
+                &quot;c_token_i&quot;: 3
+            }
+        ]
+    }
+
+    Error Response (404):
+    {
+        &quot;error&quot;: &quot;UserWord not found or access denied&quot;
+    }
+    &quot;&quot;&quot;
+    from zeeguu.core.model import UserWord, Bookmark
+    from zeeguu.core.model.context_type import ContextType
+
+    user = User.find_by_id(flask.g.user_id)
+    user_word = UserWord.query.get(user_word_id)
+
+    if not user_word or user_word.user_id != user.id:
+        return flask.jsonify({&quot;error&quot;: &quot;UserWord not found or access denied&quot;}), 404
+
+    # Get only non-AI-generated bookmarks for this user_word
+    from zeeguu.core.model.bookmark_context import BookmarkContext
+
+    bookmarks = (
+        Bookmark.query.join(BookmarkContext, Bookmark.context_id == BookmarkContext.id)
+        .outerjoin(ContextType, BookmarkContext.context_type_id == ContextType.id)
+        .filter(Bookmark.user_word_id == user_word_id)
+        .filter(
+            or_(
+                ContextType.id == None,  # Legacy bookmarks without context_type
+                ContextType.type != ContextType.EXAMPLE_SENTENCE,
+            )
+        )
+        .order_by(Bookmark.id.asc())
+        .all()
+    )
+
+    # Get the current context to exclude duplicates
+    current_context = &quot;&quot;
+    if user_word.preferred_bookmark and user_word.preferred_bookmark.context:
+        current_context = user_word.preferred_bookmark.get_context().strip().lower()
+
+    past_contexts = []
+    for bookmark in bookmarks:
+        # Skip the preferred bookmark and any content duplicates of it
+        if bookmark.id == user_word.preferred_bookmark_id:
+            continue
+        if bookmark.get_context().strip().lower() == current_context:
+            continue
+
+        context_data = {
+            &quot;bookmark_id&quot;: bookmark.id,
+            &quot;context&quot;: bookmark.get_context(),
+            &quot;context_type&quot;: (
+                bookmark.context.context_type.type
+                if bookmark.context.context_type
+                else &quot;LEGACY&quot;
+            ),
+        }
+
+        # Try to get title if available
+        try:
+            title = bookmark.get_source_title()
+            if title:
+                context_data[&quot;title&quot;] = title
+        except:
+            pass
+
+        # Add sentence and token positions
+        context_data[&quot;sentence_i&quot;] = bookmark.sentence_i
+        context_data[&quot;token_i&quot;] = bookmark.token_i
+        context_data[&quot;c_sentence_i&quot;] = bookmark.context.sentence_i
+        context_data[&quot;c_token_i&quot;] = bookmark.context.token_i
+
+        # Include full bookmark dict so frontend can render instantly on swipe
+        try:
+            bookmark_dict = bookmark.as_dictionary(
+                with_context=True, with_context_tokenized=True
+            )
+            bookmark_dict[&quot;from_lang&quot;] = user_word.meaning.origin.language.code
+            bookmark_dict[&quot;to_lang&quot;] = user_word.meaning.translation.language.code
+            context_data[&quot;bookmark&quot;] = bookmark_dict
+        except Exception as e:
+            log(f&quot;Failed to build bookmark dict for past context {bookmark.id}: {e}&quot;)
+
+        past_contexts.append(context_data)
+
+    result = {
+        &quot;user_word_id&quot;: user_word_id,
+        &quot;preferred_bookmark_id&quot;: user_word.preferred_bookmark_id,
+        &quot;total_past_contexts&quot;: len(past_contexts),
+        &quot;past_contexts&quot;: past_contexts,
+    }
+
+    return json_result(result)
+
+
+@api.route(&quot;/all_contexts/&lt;int:user_word_id&gt;&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_all_contexts(user_word_id):
+    &quot;&quot;&quot;
+    Returns ALL contexts where a word has been encountered (past encounters + AI examples).
+
+    Endpoint: GET /all_contexts/&lt;user_word_id&gt;
+
+    Note: This includes both past encounters AND AI-generated examples.
+    Use /past_contexts if you only want past encounters (articles, videos, etc.)
+
+    Success Response (200):
+    {
+        &quot;user_word_id&quot;: 123,
+        &quot;preferred_bookmark_id&quot;: 456,
+        &quot;total_contexts&quot;: 3,
+        &quot;contexts&quot;: [
+            {
+                &quot;bookmark_id&quot;: 456,
+                &quot;is_preferred&quot;: true,
+                &quot;context_type&quot;: &quot;ARTICLE_FRAGMENT&quot;,
+                &quot;context&quot;: &quot;...&quot;,
+                &quot;title&quot;: &quot;Article Title&quot;,
+                &quot;created_at&quot;: &quot;2024-01-15T10:30:00&quot;
+            },
+            {
+                &quot;bookmark_id&quot;: 789,
+                &quot;is_preferred&quot;: false,
+                &quot;context_type&quot;: &quot;VIDEO_CAPTION&quot;,
+                &quot;context&quot;: &quot;...&quot;,
+                &quot;title&quot;: &quot;Video Title&quot;,
+                &quot;created_at&quot;: &quot;2024-01-20T14:20:00&quot;
+            },
+            {
+                &quot;bookmark_id&quot;: 101,
+                &quot;is_preferred&quot;: false,
+                &quot;context_type&quot;: &quot;EXAMPLE_SENTENCE&quot;,
+                &quot;context&quot;: &quot;...&quot;,
+                &quot;created_at&quot;: &quot;2024-02-01T09:15:00&quot;
+            }
+        ]
+    }
+
+    Error Response (404):
+    {
+        &quot;error&quot;: &quot;UserWord not found or access denied&quot;
+    }
+    &quot;&quot;&quot;
+    from zeeguu.core.model import UserWord, Bookmark
+
+    user = User.find_by_id(flask.g.user_id)
+    user_word = UserWord.query.get(user_word_id)
+
+    if not user_word or user_word.user_id != user.id:
+        return flask.jsonify({&quot;error&quot;: &quot;UserWord not found or access denied&quot;}), 404
+
+    # Get all bookmarks for this user_word
+    bookmarks = (
+        Bookmark.query.filter_by(user_word_id=user_word_id)
+        .order_by(Bookmark.id.asc())
+        .all()
+    )
+
+    contexts = []
+    for bookmark in bookmarks:
+        context_data = {
+            &quot;bookmark_id&quot;: bookmark.id,
+            &quot;is_preferred&quot;: bookmark.id == user_word.preferred_bookmark_id,
+            &quot;context&quot;: bookmark.get_context(),
+            &quot;context_type&quot;: (
+                bookmark.context.context_type.type
+                if bookmark.context.context_type
+                else &quot;UNKNOWN&quot;
+            ),
+        }
+
+        # Try to get title if available
+        try:
+            title = bookmark.get_source_title()
+            if title:
+                context_data[&quot;title&quot;] = title
+        except:
+            pass
+
+        # Add sentence and token positions
+        context_data[&quot;sentence_i&quot;] = bookmark.sentence_i
+        context_data[&quot;token_i&quot;] = bookmark.token_i
+        context_data[&quot;c_sentence_i&quot;] = bookmark.context.sentence_i
+        context_data[&quot;c_token_i&quot;] = bookmark.context.token_i
+
+        contexts.append(context_data)
+
+    result = {
+        &quot;user_word_id&quot;: user_word_id,
+        &quot;preferred_bookmark_id&quot;: user_word.preferred_bookmark_id,
+        &quot;total_contexts&quot;: len(contexts),
+        &quot;contexts&quot;: contexts,
+    }
+
+    return json_result(result)
+
+
+@api.route(&quot;/set_preferred_bookmark/&lt;int:user_word_id&gt;&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def set_preferred_bookmark(user_word_id):
+    &quot;&quot;&quot;
+    Set any bookmark as the preferred context for a user word.
+
+    Endpoint: POST /set_preferred_bookmark/&lt;user_word_id&gt;
+
+    Request body (JSON):
+    {
+        &quot;bookmark_id&quot;: 789  // ID of the bookmark to set as preferred
+    }
+
+    Success Response (200):
+    {
+        &quot;user_word_id&quot;: 123,
+        &quot;old_preferred_bookmark_id&quot;: 456,
+        &quot;new_preferred_bookmark_id&quot;: 789,
+        &quot;message&quot;: &quot;Preferred context updated successfully&quot;,
+        &quot;updated_bookmark&quot;: { ... }  // Full bookmark data
+    }
+
+    Error Response (400):
+    {
+        &quot;error&quot;: &quot;bookmark_id is required&quot;
+    }
+    OR
+    {
+        &quot;error&quot;: &quot;Bookmark does not belong to this user word&quot;
+    }
+
+    Error Response (404):
+    {
+        &quot;error&quot;: &quot;UserWord not found or access denied&quot;
+    }
+    OR
+    {
+        &quot;error&quot;: &quot;Bookmark not found&quot;
+    }
+    &quot;&quot;&quot;
+    from zeeguu.core.model import UserWord, Bookmark
+    from flask import request
+
+    user = User.find_by_id(flask.g.user_id)
+    user_word = UserWord.query.get(user_word_id)
+
+    if not user_word or user_word.user_id != user.id:
+        return flask.jsonify({&quot;error&quot;: &quot;UserWord not found or access denied&quot;}), 404
+
+    # Get bookmark ID from request
+    bookmark_id = request.json.get(&quot;bookmark_id&quot;)
+
+    if not bookmark_id:
+        return flask.jsonify({&quot;error&quot;: &quot;bookmark_id is required&quot;}), 400
+
+    # Look up the bookmark
+    bookmark = Bookmark.query.get(bookmark_id)
+
+    if not bookmark:
+        return flask.jsonify({&quot;error&quot;: &quot;Bookmark not found&quot;}), 404
+
+    # Verify this bookmark belongs to the user_word
+    if bookmark.user_word_id != user_word_id:
+        return (
+            flask.jsonify({&quot;error&quot;: &quot;Bookmark does not belong to this user word&quot;}),
+            400,
+        )
+
+    # Store old preferred bookmark ID for response
+    old_preferred_id = user_word.preferred_bookmark_id
+
+    # Update the preferred bookmark
+    user_word.preferred_bookmark = bookmark
+    db_session.add(user_word)
+    db_session.commit()
+
+    # Refresh to get updated data
+    db_session.refresh(user_word)
+
+    return json_result(
+        {
+            &quot;user_word_id&quot;: user_word_id,
+            &quot;old_preferred_bookmark_id&quot;: old_preferred_id,
+            &quot;new_preferred_bookmark_id&quot;: bookmark.id,
+            &quot;message&quot;: &quot;Preferred context updated successfully&quot;,
+            &quot;updated_bookmark&quot;: bookmark.as_dictionary(
+                with_context=True, with_context_tokenized=True
+            ),
+        }
+    )
+
+
+@api.route(&quot;/bookmark_with_context/&lt;int:bookmark_id&gt;&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def bookmark_with_context(bookmark_id):
+    &quot;&quot;&quot;
+    Returns a bookmark with its full context information and tokenized context.
+
+    This endpoint returns:
+    - id: bookmark ID
+    - from: origin word
+    - to: translation
+    - from_lang: source language
+    - context: the text context
+    - context_tokenized: tokenized version of context
+    - And other bookmark properties
+    &quot;&quot;&quot;
+    try:
+        bookmark = Bookmark.find(bookmark_id)
+
+        # Verify that this bookmark belongs to the current user
+        user = User.find_by_id(flask.g.user_id)
+        if bookmark.user_word.user_id != user.id:
+            return flask.jsonify({&quot;error&quot;: &quot;Bookmark not found or access denied&quot;}), 404
+
+        # Get bookmark data with context and tokenized context
+        bookmark_data = bookmark.as_dictionary(
+            with_context=True, with_context_tokenized=True, with_title=True
+        )
+
+        # Add language information
+        bookmark_data[&quot;from_lang&quot;] = bookmark.user_word.meaning.origin.language.code
+        bookmark_data[&quot;to_lang&quot;] = bookmark.user_word.meaning.translation.language.code
+
+        return json_result(bookmark_data)
+
+    except NoResultFound:
+        return flask.jsonify({&quot;error&quot;: &quot;Bookmark not found&quot;}), 404
+    except Exception as e:
+        return flask.jsonify({&quot;error&quot;: &quot;Internal server error&quot;}), 500
+
+
+@api.route(&quot;/add_custom_word&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def add_custom_word():
+    &quot;&quot;&quot;
+    Allows users to manually add a word/expression to their learning list.
+
+    The word is immediately scheduled for exercises using the spaced repetition algorithm.
+
+    Request body (JSON):
+    {
+        &quot;word&quot;: &quot;jo tidligere, jo bedre&quot;,  // The word/expression to learn
+        &quot;translation&quot;: &quot;the sooner, the better&quot;,  // Translation
+        &quot;from_lang&quot;: &quot;da&quot;,  // Source language code
+        &quot;to_lang&quot;: &quot;en&quot;,  // Target language code
+        &quot;context&quot;: &quot;Jo tidligere du starter, jo bedre blir resultatet&quot;  // Optional context
+    }
+
+    Success Response (200):
+    {
+        &quot;bookmark_id&quot;: 123,
+        &quot;user_word_id&quot;: 456,
+        &quot;scheduled&quot;: true,
+        &quot;level&quot;: 1
+    }
+    &quot;&quot;&quot;
+    from zeeguu.core.model import Language, Meaning, Bookmark
+    from zeeguu.core.model.bookmark_context import BookmarkContext
+    from zeeguu.core.model.context_type import ContextType
+    from zeeguu.core.model.user_word import UserWord
+    from zeeguu.core.word_scheduling.basicSR.four_levels_per_word import (
+        FourLevelsPerWord,
+    )
+
+    try:
+        data = request.get_json()
+
+        # Extract required fields
+        word = data.get(&quot;word&quot;, &quot;&quot;).strip()
+        translation = data.get(&quot;translation&quot;, &quot;&quot;).strip()
+        from_lang_code = data.get(&quot;from_lang&quot;, &quot;&quot;).strip()
+        to_lang_code = data.get(&quot;to_lang&quot;, &quot;&quot;).strip()
+        context = data.get(&quot;context&quot;, &quot;&quot;).strip()
+
+        # Validate required fields
+        if not word or not translation or not from_lang_code or not to_lang_code:
+            return (
+                flask.jsonify(
+                    {
+                        &quot;error&quot;: &quot;Missing required fields: word, translation, from_lang, to_lang&quot;
+                    }
+                ),
+                400,
+            )
+
+        # Get user and languages
+        user = User.find_by_id(flask.g.user_id)
+        from_lang = Language.find(from_lang_code)
+        to_lang = Language.find(to_lang_code)
+
+        if not from_lang or not to_lang:
+            return flask.jsonify({&quot;error&quot;: &quot;Invalid language codes&quot;}), 400
+
+        # Create or find the meaning
+        meaning = Meaning.find_or_create(
+            db_session, word, from_lang_code, translation, to_lang_code
+        )
+
+        # Create UserWord with is_user_added flag
+        user_word = UserWord.find_or_create(
+            db_session, user, meaning, is_user_added=True  # Mark as user-added
+        )
+
+        # User explicitly added this word &mdash; override quality checks
+        from zeeguu.core.model.user_word_interaction_history import UserWordInteractionHistory
+
+        UserWordInteractionHistory.log(
+            db_session, user_word,
+            UserWordInteractionHistory.MANUAL_ADDITION,
+        )
+
+        user_word.user_preference = UserWordExPreference.USE_IN_EXERCISES
+        user_word.update_fit_for_study(db_session)
+
+        # If no context provided, use the word itself as context
+        if not context:
+            context = word
+
+        # Get the USER_EDITED_TEXT context type
+        context_type = ContextType.find_or_create(
+            db_session, ContextType.USER_EDITED_TEXT, commit=False
+        )
+
+        # Create bookmark context
+        bookmark_context = BookmarkContext.find_or_create(
+            db_session,
+            context,
+            context_type.type,
+            from_lang,
+            None,  # c_sentence_i
+            None,  # c_token_i
+            False,  # left_ellipsis
+            False,  # right_ellipsis
+        )
+
+        # Create bookmark
+        from zeeguu.core.model.text import Text
+        from zeeguu.core.model.source import Source
+
+        # Validate and find position data using shared utility
+        from zeeguu.core.tokenization.word_position_finder import (
+            validate_single_occurrence,
+        )
+
+        validation_result = validate_single_occurrence(word, context, from_lang)
+
+        if not validation_result[&quot;valid&quot;]:
+            log(
+                f&quot;ERROR: Word validation failed for '{word}' in context '{context}': {validation_result['error_type']}&quot;
+            )
+
+            # Return appropriate error response based on error type
+            if validation_result[&quot;error_type&quot;] == &quot;multiple_occurrences&quot;:
+                return (
+                    flask.jsonify(
+                        {
+                            &quot;error&quot;: &quot;Ambiguous word placement&quot;,
+                            &quot;detail&quot;: validation_result[&quot;error_message&quot;],
+                            &quot;context&quot;: context,
+                        }
+                    ),
+                    400,
+                )
+            else:
+                return (
+                    flask.jsonify(
+                        {
+                            &quot;error&quot;: (
+                                &quot;Word not found in context&quot;
+                                if validation_result[&quot;error_type&quot;] == &quot;not_found&quot;
+                                else &quot;Processing failed&quot;
+                            ),
+                            &quot;detail&quot;: validation_result[&quot;error_message&quot;],
+                            &quot;word&quot;: word,
+                            &quot;context&quot;: context,
+                        }
+                    ),
+                    400,
+                )
+
+        # Extract position data from validation result
+        position_data = validation_result[&quot;position_data&quot;]
+        sentence_i = position_data[&quot;sentence_i&quot;]
+        token_i = position_data[&quot;token_i&quot;]
+        c_sentence_i = position_data[&quot;c_sentence_i&quot;]
+        c_token_i = position_data[&quot;c_token_i&quot;]
+        total_tokens_found = position_data[&quot;total_tokens&quot;]
+
+        log(
+            f&quot;Successfully found user word '{word}' at position sent_i={sentence_i}, token_i={token_i}, total_tokens={total_tokens_found}&quot;
+        )
+
+        # Create a simple context identifier for user-edited text
+        # Since USER_EDITED_TEXT doesn't have a specific table mapping,
+        # we just create the identifier to mark the context type
+        context_identifier = ContextIdentifier(
+            context_type=ContextType.USER_EDITED_TEXT
+        )
+
+        # Create bookmark using find_or_create with proper position data
+        bookmark = Bookmark.find_or_create(
+            db_session,
+            user,
+            word,
+            from_lang_code,
+            translation,
+            to_lang_code,
+            context,
+            None,  # article_id - None for user-added words
+            None,  # source_id - None for user-added words
+            sentence_i=sentence_i,
+            token_i=token_i,
+            total_tokens=total_tokens_found,
+            c_sentence_i=c_sentence_i,
+            c_token_i=c_token_i,
+            context_identifier=context_identifier,
+        )
+
+        # Set this bookmark as preferred for the user word
+        user_word.preferred_bookmark = bookmark
+
+        # Immediately schedule the word for learning
+        schedule = FourLevelsPerWord.find_or_create(db_session, user_word)
+
+        # Ensure the word is fit for study
+        user_word.fit_for_study = True
+        user_word.level = 1  # Start at level 1
+
+        # Commit the user_word changes
+        db_session.add(user_word)
+        db_session.commit()
+
+        return json_result(
+            {
+                &quot;bookmark_id&quot;: bookmark.id,
+                &quot;user_word_id&quot;: user_word.id,
+                &quot;scheduled&quot;: True,
+                &quot;level&quot;: user_word.level,
+                &quot;message&quot;: &quot;Word added successfully and scheduled for practice&quot;,
+            }
+        )
+
+    except Exception as e:
+        db_session.rollback()
+        log(f&quot;Error in add_custom_word: {str(e)}&quot;)
+        return flask.jsonify({&quot;error&quot;: &quot;Failed to add word&quot;}), 500
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

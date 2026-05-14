@@ -1,0 +1,245 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/leaderboards.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/leaderboards.py (<b>116</b> lines of code) (<a href="leaderboards.py">raw</a>):</h3>
+<div id="editor">from datetime import datetime
+from typing import Callable, Optional
+
+import flask
+from flask import request
+
+from zeeguu.core.leaderboards.leaderboards import cohort_leaderboard_user_ids_subquery
+from zeeguu.api.utils.abort_handling import make_error
+from zeeguu.api.utils.json_result import json_result
+from zeeguu.api.utils.route_wrappers import cross_domain, requires_session
+from zeeguu.core.leaderboards.leaderboards import exercise_time_leaderboard, exercises_done_leaderboard, \
+    read_articles_leaderboard, reading_time_leaderboard, listening_time_leaderboard, \
+    friend_leaderboard_user_ids_subquery
+from . import api
+
+LeaderboardMetric = Callable[[int, int, Optional[datetime], Optional[datetime]], list]
+
+LEADERBOARD_METRICS: dict[str, LeaderboardMetric] = {
+    &quot;exercise_time&quot;: exercise_time_leaderboard,
+    &quot;exercises_done&quot;: exercises_done_leaderboard,
+    &quot;read_articles&quot;: read_articles_leaderboard,
+    &quot;reading_time&quot;: reading_time_leaderboard,
+    &quot;listening_time&quot;: listening_time_leaderboard,
+}
+
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/friends_leaderboard&quot;, methods=[&quot;GET&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def friends_leaderboard():
+    &quot;&quot;&quot;
+        Retrieve the leaderboard for the authenticated user and their friends.
+
+        Query Parameters:
+            metric (str, required): The metric to rank users by. Must be a member of LEADERBOARD_METRICS.
+            limit (int, optional): Maximum number of leaderboard entries to return. Must be &gt; 0.
+            from_date (ISO datetime string, optional): Filter results starting from this date.
+            to_date (ISO datetime string, optional): Filter results up to this date.
+
+        Returns:
+            list[dict]: A list of leaderboard entries sorted descending by the metric. Each entry contains:
+                - user (dict):
+                    - name (str): Full name of the user.
+                    - username (str): User's username.
+                    - avatar (dict):
+                        - image_name (str or None): User's avatar image file name.
+                        - character_color (str or None): Color of avatar character.
+                        - background_color (str or None): Avatar background color.
+                - value (numeric): The leaderboard metric value for the user.
+
+        Errors:
+            400 Bad Request if:
+                - metric is invalid
+                - limit is not a positive integer
+                - from_date or to_date is invalid or from_date &gt; to_date
+    &quot;&quot;&quot;
+    params, error_response = _parse_leaderboard_query_params()
+    if error_response:
+        return error_response
+
+    metric = LEADERBOARD_METRICS.get(request.args.get(&quot;metric&quot;))
+
+    if not metric:
+        return make_error(400, &quot;Invalid leaderboard metric&quot;)
+
+    rows = metric(
+        friend_leaderboard_user_ids_subquery(flask.g.user_id, params[&quot;to_date&quot;]),
+        params[&quot;limit&quot;],
+        params[&quot;from_date&quot;],
+        params[&quot;to_date&quot;],
+    )
+
+    result = [
+        _serialize_leaderboard_row(row)
+        for row in rows
+    ]
+
+    return json_result(result)
+
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/cohort_leaderboard/&lt;cohort_id&gt;&quot;, methods=[&quot;GET&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def cohort_leaderboard(cohort_id: int):
+    &quot;&quot;&quot;
+        Retrieve the leaderboard for all users in a specific cohort,
+        if the caller is either a teacher or a student in the cohort.
+
+        Path Parameters:
+            cohort_id (int): ID of the cohort whose leaderboard is requested.
+
+        Query Parameters:
+            metric (str, required): The metric to rank users by. Must be a member of LEADERBOARD_METRICS.
+            limit (int, optional): Maximum number of leaderboard entries to return. Must be &gt; 0.
+            from_date (ISO datetime string, optional): Filter results starting from this date.
+            to_date (ISO datetime string, optional): Filter results up to this date.
+
+        Returns:
+            list[dict]: A list of leaderboard entries sorted descending by the metric. Each entry contains:
+                - user (dict):
+                    - name (str): Full name of the user.
+                    - username (str): User's username.
+                    - avatar (dict):
+                        - image_name (str or None): User's avatar image file name.
+                        - character_color (str or None): Color of avatar character.
+                        - background_color (str or None): Avatar background color.
+                - value (numeric): The leaderboard metric value for the user.
+
+        Errors:
+            400 Bad Request if:
+                - metric is invalid
+                - limit is not a positive integer
+                - from_date or to_date is invalid or from_date &gt; to_date
+    &quot;&quot;&quot;
+    from zeeguu.core.model import User
+    from zeeguu.core.model.teacher_cohort_map import TeacherCohortMap
+
+    params, error_response = _parse_leaderboard_query_params()
+    if error_response:
+        return error_response
+
+    metric = LEADERBOARD_METRICS.get(request.args.get(&quot;metric&quot;))
+
+    if not metric:
+        return make_error(400, &quot;Invalid leaderboard metric&quot;)
+
+    user = User.find_by_id(flask.g.user_id)
+    teacher_cohort_ids = {tcm.cohort_id for tcm in TeacherCohortMap.query.filter_by(user_id=user.id).all()}
+    if not user.is_member_of_cohort(cohort_id) and int(cohort_id) not in teacher_cohort_ids:
+        return make_error(403, &quot;You can only view leaderboards for cohorts you belong to or teach.&quot;)
+
+    rows = metric(
+        cohort_leaderboard_user_ids_subquery(cohort_id),
+        params[&quot;limit&quot;],
+        params[&quot;from_date&quot;],
+        params[&quot;to_date&quot;],
+    )
+
+    result = [
+        _serialize_leaderboard_row(row)
+        for row in rows
+    ]
+
+    return json_result(result)
+
+
+# ---------------------------------------------------------------------------
+# Helper functions below
+# ---------------------------------------------------------------------------
+
+def _parse_leaderboard_query_params():
+    &quot;&quot;&quot;
+    Parse common leaderboard query params:
+        limit: positive integer
+        from_date: ISO datetime string (optional)
+        to_date: ISO datetime string (optional)
+    &quot;&quot;&quot;
+    limit = None
+    limit_arg = request.args.get(&quot;limit&quot;)
+    if limit_arg is not None:
+        try:
+            limit = int(limit_arg)
+        except ValueError:
+            return None, make_error(400, &quot;limit must be an integer&quot;)
+
+        if limit &lt;= 0:
+            return None, make_error(400, &quot;limit must be greater than 0&quot;)
+
+    from_date_str = request.args.get(&quot;from_date&quot;)
+    to_date_str = request.args.get(&quot;to_date&quot;)
+
+    from_date = None
+    to_date = None
+
+    if from_date_str:
+        from_date, error = _parse_iso_datetime(from_date_str, &quot;from_date&quot;)
+        if error:
+            return None, error
+
+    if to_date_str:
+        to_date, error = _parse_iso_datetime(to_date_str, &quot;to_date&quot;)
+        if error:
+            return None, error
+
+    if from_date and to_date and from_date &gt; to_date:
+        return None, make_error(400, &quot;from_date must be before or equal to to_date&quot;)
+
+    return {
+        &quot;limit&quot;: limit,
+        &quot;from_date&quot;: from_date,
+        &quot;to_date&quot;: to_date,
+    }, None
+
+
+def _parse_iso_datetime(value: str, param_name: str):
+    try:
+        parsed = datetime.fromisoformat(value.replace(&quot;Z&quot;, &quot;+00:00&quot;)).replace(tzinfo=None)
+        return parsed, None
+    except ValueError:
+        return None, make_error(400, f&quot;{param_name} must be a valid ISO datetime&quot;)
+
+
+def _serialize_leaderboard_row(row):
+    return {
+        &quot;user&quot;: {
+            &quot;name&quot;: row.name,
+            &quot;username&quot;: row.username,
+            &quot;avatar&quot;: {
+                &quot;image_name&quot;: row.image_name,
+                &quot;character_color&quot;: row.character_color,
+                &quot;background_color&quot;: row.background_color,
+            }
+        },
+        &quot;value&quot;: row.value,
+    }
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

@@ -1,0 +1,51 @@
+graph G {
+    compound="true"
+    rankdir="TB"
+    bgcolor="white"
+    fontname="Tahoma"
+
+    node [
+        fixedsize="false"
+        fontname="Tahoma"
+        color="white"
+        fillcolor="grey"
+        fontcolor="black"
+        shape="box"
+        style="filled"
+        penwidth="1.0"
+    ]
+    edge [
+        fontname="Arial"
+        color="#00688b"
+        fontcolor="black"
+        fontsize="12"
+        arrowsize="0.5"
+        penwidth="1.0"
+    ]
+
+
+
+
+    "mircea.lungu@gmail.com" -- "gabortodor@gmail.com" [label=" 49 ", penwidth="10", color="#00688bFF"];
+    "mircea.lungu@gmail.com" -- "63254940+gabortodor@users.noreply.github.com" [label=" 42 ", penwidth="8", color="#00688bDB"];
+    "gabortodor@gmail.com" -- "63254940+gabortodor@users.noreply.github.com" [label=" 42 ", penwidth="8", color="#00688bDB"];
+    "mircea.lungu@gmail.com" -- "72095082+klnyzzz33@users.noreply.github.com" [label=" 23 ", penwidth="4", color="#00688b93"];
+    "mircea.lungu@gmail.com" -- "nickras2001@gmail.com" [label=" 23 ", penwidth="4", color="#00688b93"];
+    "63254940+gabortodor@users.noreply.github.com" -- "72095082+klnyzzz33@users.noreply.github.com" [label=" 23 ", penwidth="4", color="#00688b93"];
+    "63254940+gabortodor@users.noreply.github.com" -- "nickras2001@gmail.com" [label=" 23 ", penwidth="4", color="#00688b93"];
+    "gabortodor@gmail.com" -- "72095082+klnyzzz33@users.noreply.github.com" [label=" 22 ", penwidth="4", color="#00688b93"];
+    "gabortodor@gmail.com" -- "nickras2001@gmail.com" [label=" 21 ", penwidth="4", color="#00688b93"];
+    "63254940+gabortodor@users.noreply.github.com" -- "kalny.zalan7@gmail.com" [label=" 20 ", penwidth="4", color="#00688b93"];
+    "kalny.zalan7@gmail.com" -- "mircea.lungu@gmail.com" [label=" 20 ", penwidth="4", color="#00688b93"];
+    "72095082+klnyzzz33@users.noreply.github.com" -- "98952123+xxpinkmagicxx@users.noreply.github.com" [label=" 19 ", penwidth="3", color="#00688b82"];
+    "63254940+gabortodor@users.noreply.github.com" -- "98952123+xxpinkmagicxx@users.noreply.github.com" [label=" 18 ", penwidth="3", color="#00688b82"];
+    "72095082+klnyzzz33@users.noreply.github.com" -- "nickras2001@gmail.com" [label=" 18 ", penwidth="3", color="#00688b82"];
+    "mircea.lungu@gmail.com" -- "98952123+xxpinkmagicxx@users.noreply.github.com" [label=" 17 ", penwidth="3", color="#00688b82"];
+    "gabortodor@gmail.com" -- "98952123+xxpinkmagicxx@users.noreply.github.com" [label=" 17 ", penwidth="3", color="#00688b82"];
+    "gabortodor@gmail.com" -- "kalny.zalan7@gmail.com" [label=" 16 ", penwidth="3", color="#00688b82"];
+    "72095082+klnyzzz33@users.noreply.github.com" -- "kalny.zalan7@gmail.com" [label=" 16 ", penwidth="3", color="#00688b82"];
+    "nickras2001@gmail.com" -- "kalny.zalan7@gmail.com" [label=" 16 ", penwidth="3", color="#00688b82"];
+    "98952123+xxpinkmagicxx@users.noreply.github.com" -- "nickras2001@gmail.com" [label=" 14 ", penwidth="2", color="#00688b70"];
+    "kalny.zalan7@gmail.com" -- "98952123+xxpinkmagicxx@users.noreply.github.com" [label=" 12 ", penwidth="2", color="#00688b70"];
+
+}

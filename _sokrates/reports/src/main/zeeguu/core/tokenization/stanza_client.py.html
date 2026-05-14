@@ -1,0 +1,241 @@
+<html>
+<head>
+    <title>zeeguu/core/tokenization/stanza_client.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/tokenization/stanza_client.py (<b>146</b> lines of code) (<a href="stanza_client.py">raw</a>):</h3>
+<div id="editor">&quot;&quot;&quot;
+HTTP client for Stanza tokenization microservice.
+
+This client provides the same interface as StanzaTokenizer but delegates
+actual tokenization to the Stanza service via HTTP.
+
+If the service is unavailable, falls back to local StanzaTokenizer.
+&quot;&quot;&quot;
+
+import os
+import logging
+import requests
+from zeeguu.core.model.language import Language
+from zeeguu.core.tokenization.zeeguu_tokenizer import ZeeguuTokenizer, TokenizerModel
+from zeeguu.core.tokenization.token import Token
+
+logger = logging.getLogger(__name__)
+
+# Service URL from environment variable
+STANZA_SERVICE_URL = os.environ.get(&quot;STANZA_SERVICE_URL&quot;, &quot;&quot;)
+
+# Map TokenizerModel enum to service model strings
+MODEL_TYPE_MAP = {
+    TokenizerModel.STANZA_TOKEN_ONLY: &quot;token_only&quot;,
+    TokenizerModel.STANZA_TOKEN_POS: &quot;token_pos&quot;,
+    TokenizerModel.STANZA_TOKEN_POS_DEP: &quot;token_pos_dep&quot;,
+}
+
+# Request timeout - tokenization should be fast, but allow some buffer for long articles
+REQUEST_TIMEOUT = 30  # seconds
+
+
+def _get_local_tokenizer(language, model):
+    &quot;&quot;&quot;Get local StanzaTokenizer as fallback.&quot;&quot;&quot;
+    from .stanza_tokenizer import StanzaTokenizer
+
+    return StanzaTokenizer(language, model)
+
+
+class StanzaServiceClient(ZeeguuTokenizer):
+    &quot;&quot;&quot;
+    HTTP client for Stanza service.
+
+    Provides the same interface as StanzaTokenizer but makes HTTP calls
+    to the Stanza microservice instead of loading models locally.
+    &quot;&quot;&quot;
+
+    def __init__(self, language: Language, model: TokenizerModel):
+        super().__init__(language, model)
+        self.service_url = STANZA_SERVICE_URL
+        self.model_string = MODEL_TYPE_MAP.get(model, &quot;token_pos_dep&quot;)
+
+        if not self.service_url:
+            raise ValueError(
+                &quot;STANZA_SERVICE_URL environment variable not set. &quot;
+                &quot;Set it to the Stanza service URL (e.g., http://stanza:5001)&quot;
+            )
+
+    def is_language_supported(self, language: Language):
+        return language.code in Language.CODES_OF_LANGUAGES_THAT_CAN_BE_LEARNED
+
+    def tokenize_text(
+        self,
+        text: str,
+        as_serializable_dictionary: bool = True,
+        flatten: bool = True,
+        start_token_i: int = 0,
+        start_sentence_i: int = 0,
+        start_paragraph_i: int = 0,
+    ):
+        &quot;&quot;&quot;
+        Tokenize text via Stanza service.
+
+        Returns tokenized text as list of token dictionaries (if as_serializable_dictionary=True)
+        or Token objects. Structure depends on flatten parameter.
+
+        Falls back to local StanzaTokenizer if service is unavailable.
+        &quot;&quot;&quot;
+        if start_token_i is None:
+            start_token_i = 0
+        if start_sentence_i is None:
+            start_sentence_i = 0
+        if start_paragraph_i is None:
+            start_paragraph_i = 0
+
+        if not text:
+            return []
+
+        try:
+            response = requests.post(
+                f&quot;{self.service_url}/tokenize&quot;,
+                json={
+                    &quot;text&quot;: text,
+                    &quot;language&quot;: self.language.code,
+                    &quot;model&quot;: self.model_string,
+                    &quot;flatten&quot;: flatten,
+                    &quot;start_token_i&quot;: start_token_i,
+                    &quot;start_sentence_i&quot;: start_sentence_i,
+                    &quot;start_paragraph_i&quot;: start_paragraph_i,
+                },
+                timeout=REQUEST_TIMEOUT,
+            )
+            response.raise_for_status()
+            data = response.json()
+
+        except requests.RequestException as e:
+            logger.warning(f&quot;Stanza service failed, falling back to local: {e}&quot;)
+            local_tokenizer = _get_local_tokenizer(self.language, self.model_type)
+            return local_tokenizer.tokenize_text(
+                text,
+                as_serializable_dictionary,
+                flatten,
+                start_token_i,
+                start_sentence_i,
+                start_paragraph_i,
+            )
+
+        tokens_data = data.get(&quot;tokens&quot;, [])
+
+        if flatten:
+            # Flat list of tokens
+            if as_serializable_dictionary:
+                return tokens_data
+            else:
+                return [self._dict_to_token(t) for t in tokens_data]
+        else:
+            # Nested structure: paragraphs &gt; sentences &gt; tokens
+            if as_serializable_dictionary:
+                return tokens_data
+            else:
+                return [
+                    [[self._dict_to_token(t) for t in sent] for sent in para]
+                    for para in tokens_data
+                ]
+
+    def get_sentences(self, text: str):
+        &quot;&quot;&quot;Extract sentences from text via Stanza service.&quot;&quot;&quot;
+        if not text:
+            return []
+
+        try:
+            response = requests.post(
+                f&quot;{self.service_url}/sentences&quot;,
+                json={
+                    &quot;text&quot;: text,
+                    &quot;language&quot;: self.language.code,
+                    &quot;model&quot;: self.model_string,
+                },
+                timeout=REQUEST_TIMEOUT,
+            )
+            response.raise_for_status()
+            data = response.json()
+            return data.get(&quot;sentences&quot;, [])
+        except requests.RequestException as e:
+            logger.warning(
+                f&quot;Stanza service failed for get_sentences, falling back to local: {e}&quot;
+            )
+            local_tokenizer = _get_local_tokenizer(self.language, self.model_type)
+            return local_tokenizer.get_sentences(text)
+
+    def tokenize_batch(self, texts: list, flatten: bool = False):
+        &quot;&quot;&quot;
+        Tokenize multiple texts in a single HTTP request.
+
+        This is much more efficient than calling tokenize_text() multiple times
+        because it avoids HTTP overhead and request queuing.
+
+        Args:
+            texts: List of text strings to tokenize
+            flatten: If True, return flat token lists; if False, paragraph structure
+
+        Returns:
+            List of tokenized results (same order as input texts)
+        &quot;&quot;&quot;
+        if not texts:
+            return []
+
+        try:
+            response = requests.post(
+                f&quot;{self.service_url}/tokenize_batch&quot;,
+                json={
+                    &quot;texts&quot;: texts,
+                    &quot;language&quot;: self.language.code,
+                    &quot;model&quot;: self.model_string,
+                    &quot;flatten&quot;: flatten,
+                },
+                timeout=REQUEST_TIMEOUT * 2,  # Longer timeout for batch
+            )
+            response.raise_for_status()
+            data = response.json()
+            return [r.get(&quot;tokens&quot;, []) for r in data.get(&quot;results&quot;, [])]
+
+        except requests.RequestException as e:
+            logger.warning(f&quot;Stanza batch service failed, falling back to sequential: {e}&quot;)
+            # Fall back to sequential tokenization
+            results = []
+            local_tokenizer = _get_local_tokenizer(self.language, self.model_type)
+            for text in texts:
+                tokens = local_tokenizer.tokenize_text(text, flatten=flatten)
+                results.append(tokens)
+            return results
+
+    def _dict_to_token(self, token_dict):
+        &quot;&quot;&quot;Convert token dictionary from service to Token object.&quot;&quot;&quot;
+        return Token(
+            text=token_dict[&quot;text&quot;],
+            par_i=token_dict.get(&quot;par_i&quot;),
+            sent_i=token_dict.get(&quot;sent_i&quot;),
+            token_i=token_dict.get(&quot;token_i&quot;),
+            has_space=token_dict.get(&quot;has_space&quot;),
+            pos=token_dict.get(&quot;pos&quot;),
+            dep=token_dict.get(&quot;dep&quot;),
+            head=token_dict.get(&quot;head&quot;),
+            lemma=token_dict.get(&quot;lemma&quot;),
+        )
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

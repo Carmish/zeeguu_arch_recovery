@@ -1,0 +1,421 @@
+<head>
+    <style> body {
+        margin: 0;
+    } </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/3d-force-graph"></script>
+</head>
+
+<body>
+<div id="3d-graph"></div>
+
+<script>
+    const gData = {
+  "nodes" : [ {
+    "id" : "nickras2001@gmail.com",
+    "size" : 9
+  }, {
+    "id" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "size" : 8
+  }, {
+    "id" : "jolb“itu.dk",
+    "size" : 8
+  }, {
+    "id" : "72095082+klnyzzz33@users.noreply.github.com",
+    "size" : 8
+  }, {
+    "id" : "kalny.zalan7@gmail.com",
+    "size" : 10
+  }, {
+    "id" : "gabortodor@gmail.com",
+    "size" : 10
+  }, {
+    "id" : "mircea.lungu@gmail.com",
+    "size" : 10
+  }, {
+    "id" : "ada.lungu@gmail.com",
+    "size" : 3
+  }, {
+    "id" : "49699333+dependabot[bot]@users.noreply.github.com",
+    "size" : 5
+  }, {
+    "id" : "nicra@itu.dk",
+    "size" : 9
+  }, {
+    "id" : "63254940+gabortodor@users.noreply.github.com",
+    "size" : 8
+  } ],
+  "links" : [ {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "gabortodor@gmail.com",
+    "count" : 111
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 111
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "nicra@itu.dk",
+    "count" : 95
+  }, {
+    "source" : "nicra@itu.dk",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 95
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 74
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 74
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 73
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "gabortodor@gmail.com",
+    "count" : 73
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 60
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "gabortodor@gmail.com",
+    "count" : 60
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "gabortodor@gmail.com",
+    "count" : 60
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "nickras2001@gmail.com",
+    "count" : 60
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 59
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "nickras2001@gmail.com",
+    "count" : 59
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 58
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 58
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "nickras2001@gmail.com",
+    "count" : 55
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 55
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 54
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "nickras2001@gmail.com",
+    "count" : 54
+  }, {
+    "source" : "nicra@itu.dk",
+    "target" : "gabortodor@gmail.com",
+    "count" : 53
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "nicra@itu.dk",
+    "count" : 53
+  }, {
+    "source" : "nicra@itu.dk",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 50
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "nicra@itu.dk",
+    "count" : 50
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 50
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 50
+  }, {
+    "source" : "nicra@itu.dk",
+    "target" : "nickras2001@gmail.com",
+    "count" : 48
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "nicra@itu.dk",
+    "count" : 48
+  }, {
+    "source" : "nicra@itu.dk",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 44
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "nicra@itu.dk",
+    "count" : 44
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 34
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 34
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 33
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "gabortodor@gmail.com",
+    "count" : 33
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 30
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "gabortodor@gmail.com",
+    "count" : 30
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 30
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 30
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 28
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 28
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 27
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 27
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "nickras2001@gmail.com",
+    "count" : 27
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 27
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 27
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "nickras2001@gmail.com",
+    "count" : 27
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 26
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 26
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 24
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 24
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 23
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 23
+  }, {
+    "source" : "nicra@itu.dk",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 19
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "nicra@itu.dk",
+    "count" : 19
+  }, {
+    "source" : "nicra@itu.dk",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 19
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "nicra@itu.dk",
+    "count" : 19
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "ada.lungu@gmail.com",
+    "count" : 6
+  }, {
+    "source" : "ada.lungu@gmail.com",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 6
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "ada.lungu@gmail.com",
+    "count" : 5
+  }, {
+    "source" : "ada.lungu@gmail.com",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 5
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "ada.lungu@gmail.com",
+    "count" : 5
+  }, {
+    "source" : "ada.lungu@gmail.com",
+    "target" : "gabortodor@gmail.com",
+    "count" : 5
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "jolb“itu.dk",
+    "count" : 3
+  }, {
+    "source" : "jolb“itu.dk",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 3
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "49699333+dependabot[bot]@users.noreply.github.com",
+    "count" : 2
+  }, {
+    "source" : "49699333+dependabot[bot]@users.noreply.github.com",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "jolb“itu.dk",
+    "target" : "nicra@itu.dk",
+    "count" : 2
+  }, {
+    "source" : "nicra@itu.dk",
+    "target" : "jolb“itu.dk",
+    "count" : 2
+  }, {
+    "source" : "jolb“itu.dk",
+    "target" : "gabortodor@gmail.com",
+    "count" : 2
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "jolb“itu.dk",
+    "count" : 2
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "49699333+dependabot[bot]@users.noreply.github.com",
+    "count" : 1
+  }, {
+    "source" : "49699333+dependabot[bot]@users.noreply.github.com",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 1
+  }, {
+    "source" : "nicra@itu.dk",
+    "target" : "49699333+dependabot[bot]@users.noreply.github.com",
+    "count" : 1
+  }, {
+    "source" : "49699333+dependabot[bot]@users.noreply.github.com",
+    "target" : "nicra@itu.dk",
+    "count" : 1
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "49699333+dependabot[bot]@users.noreply.github.com",
+    "count" : 1
+  }, {
+    "source" : "49699333+dependabot[bot]@users.noreply.github.com",
+    "target" : "nickras2001@gmail.com",
+    "count" : 1
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "49699333+dependabot[bot]@users.noreply.github.com",
+    "count" : 1
+  }, {
+    "source" : "49699333+dependabot[bot]@users.noreply.github.com",
+    "target" : "gabortodor@gmail.com",
+    "count" : 1
+  }, {
+    "source" : "jolb“itu.dk",
+    "target" : "nickras2001@gmail.com",
+    "count" : 1
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "jolb“itu.dk",
+    "count" : 1
+  }, {
+    "source" : "jolb“itu.dk",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 1
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "jolb“itu.dk",
+    "count" : 1
+  }, {
+    "source" : "jolb“itu.dk",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 1
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "jolb“itu.dk",
+    "count" : 1
+  }, {
+    "source" : "jolb“itu.dk",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 1
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "jolb“itu.dk",
+    "count" : 1
+  }, {
+    "source" : "jolb“itu.dk",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 1
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "jolb“itu.dk",
+    "count" : 1
+  } ]
+}
+
+    const maxNodeSize = gData.nodes.map(n => n.size).reduce((a, b) => Math.max(a, b));
+    const maxCount = gData.links.map(l => l.count).reduce((a, b) => Math.max(a, b));
+
+    gData.links = gData.links.map(l => { return {source: l.target, target: l.source, count: l.count} });
+
+    const Graph = ForceGraph3D()
+    (document.getElementById('3d-graph'))
+        .graphData(gData)
+        .nodeRelSize(4)
+        .nodeVal(n => Math.max(20 * n.size / maxNodeSize, 0.001))
+        .nodeLabel(n => n.id + " (" + n.size + ")")
+        .nodeColor(n => n.id.startsWith("[") ? "skyblue" : "")
+        .linkDirectionalParticles(6)
+        .linkDirectionalParticleSpeed(d => d.count / maxCount * 0.01)
+        .linkOpacity(0.1)
+        .linkWidth(d => 3 * d.count / maxCount + 0.1);
+
+</script>
+</body>

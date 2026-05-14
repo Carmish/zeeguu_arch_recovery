@@ -1,0 +1,175 @@
+<html>
+<head>
+    <title>zeeguu/core/model/audio_lesson_generation_progress.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/audio_lesson_generation_progress.py (<b>117</b> lines of code) (<a href="audio_lesson_generation_progress.py">raw</a>):</h3>
+<div id="editor">from datetime import datetime
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Enum
+from sqlalchemy.orm import relationship
+
+from zeeguu.core.model.db import db
+from zeeguu.core.model.user import User
+
+
+class AudioLessonGenerationProgress(db.Model):
+    &quot;&quot;&quot;
+    Tracks the progress of audio lesson generation for real-time UI updates.
+    Records are temporary and should be cleaned up after completion.
+    Only one generation per user at a time is allowed.
+    &quot;&quot;&quot;
+
+    __tablename__ = &quot;audio_lesson_generation_progress&quot;
+    __table_args__ = {&quot;mysql_collate&quot;: &quot;utf8mb4_unicode_ci&quot;}
+
+    id = Column(Integer, primary_key=True)
+
+    user_id = Column(Integer, ForeignKey(User.id, ondelete=&quot;CASCADE&quot;), nullable=False)
+    user = relationship(User)
+
+    status = Column(
+        Enum(
+            &quot;pending&quot;,
+            &quot;generating_script&quot;,
+            &quot;synthesizing_audio&quot;,
+            &quot;combining_audio&quot;,
+            &quot;done&quot;,
+            &quot;error&quot;,
+            name=&quot;generation_status&quot;,
+        ),
+        default=&quot;pending&quot;,
+    )
+
+    current_step = Column(Integer, default=0)
+    total_steps = Column(Integer, default=0)
+    message = Column(String(255), nullable=True)
+
+    current_segment = Column(Integer, default=0)
+    total_segments = Column(Integer, default=0)
+
+    started_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def __init__(self, user, total_segments=1):
+        self.user = user
+        self.total_segments = total_segments
+        self.current_segment = 0
+        self.current_step = 0
+        self.total_steps = 0
+        self.status = &quot;pending&quot;
+
+    def __repr__(self):
+        return f&quot;&lt;AudioLessonGenerationProgress user={self.user_id} status={self.status}&gt;&quot;
+
+    def _segment_prefix(self):
+        name = getattr(self, '_current_segment_name', None)
+        if self.total_segments == 1 and name:
+            return name
+        if name:
+            return f&quot;Segment {self.current_segment}/{self.total_segments} ({name})&quot;
+        return f&quot;Segment {self.current_segment}/{self.total_segments}&quot;
+
+    def start_segment(self, segment_number, segment_name=None):
+        &quot;&quot;&quot;Called when starting to process a new segment.&quot;&quot;&quot;
+        self.current_segment = segment_number
+        self.current_step = 0
+        self.total_steps = 0
+        self.status = &quot;generating_script&quot;
+        self._current_segment_name = segment_name
+        self.message = f&quot;{self._segment_prefix()}: Generating script...&quot;
+        db.session.flush()
+
+    def update_generating_script(self):
+        self.status = &quot;generating_script&quot;
+        self.message = f&quot;{self._segment_prefix()}: Generating script...&quot;
+        db.session.flush()
+
+    def update_script_done(self):
+        self.status = &quot;synthesizing_audio&quot;
+        self.message = f&quot;{self._segment_prefix()}: Synthesizing audio...&quot;
+        db.session.flush()
+
+    def update_segment(self, step_number, total_steps, voice_type):
+        &quot;&quot;&quot;Called when synthesizing each audio segment.&quot;&quot;&quot;
+        self.current_step = step_number
+        self.total_steps = total_steps
+        self.message = f&quot;{self._segment_prefix()}: Synthesizing {voice_type} voice ({step_number}/{total_steps})&quot;
+        db.session.flush()
+
+    def update_combining(self):
+        self.status = &quot;combining_audio&quot;
+        self.message = f&quot;{self._segment_prefix()}: Combining audio...&quot;
+        db.session.flush()
+
+    def mark_done(self):
+        self.status = &quot;done&quot;
+        self.current_step = self.total_steps
+        self.message = &quot;Audio lesson ready!&quot;
+        db.session.flush()
+
+    def mark_error(self, error_message):
+        self.status = &quot;error&quot;
+        self.message = error_message[:255] if error_message else &quot;Unknown error&quot;
+        db.session.flush()
+
+    def to_dict(self):
+        return {
+            &quot;status&quot;: self.status,
+            &quot;current_step&quot;: self.current_step,
+            &quot;total_steps&quot;: self.total_steps,
+            &quot;current_segment&quot;: self.current_segment,
+            &quot;total_segments&quot;: self.total_segments,
+            &quot;message&quot;: self.message,
+            &quot;started_at&quot;: self.started_at.isoformat() if self.started_at else None,
+        }
+
+    @classmethod
+    def find_for_user(cls, user):
+        return (
+            cls.query.filter_by(user_id=user.id)
+            .order_by(cls.started_at.desc())
+            .first()
+        )
+
+    @classmethod
+    def find_active_for_user(cls, user):
+        return (
+            cls.query.filter_by(user_id=user.id)
+            .filter(cls.status.notin_([&quot;done&quot;, &quot;error&quot;]))
+            .first()
+        )
+
+    @classmethod
+    def create_for_user(cls, user, total_segments=1):
+        cls.query.filter_by(user_id=user.id).delete()
+        progress = cls(user=user, total_segments=total_segments)
+        db.session.add(progress)
+        db.session.flush()
+        return progress
+
+    @classmethod
+    def cleanup_old_records(cls, hours=1):
+        from datetime import timedelta
+        cutoff = datetime.utcnow() - timedelta(hours=hours)
+        cls.query.filter(cls.started_at &lt; cutoff).delete()
+        db.session.commit()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

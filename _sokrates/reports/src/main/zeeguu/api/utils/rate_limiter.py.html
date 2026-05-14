@@ -1,0 +1,105 @@
+<html>
+<head>
+    <title>zeeguu/api/utils/rate_limiter.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/utils/rate_limiter.py (<b>38</b> lines of code) (<a href="rate_limiter.py">raw</a>):</h3>
+<div id="editor"># Rate limiting utilities for security-sensitive endpoints
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
+# Global limiter instance - initialized in create_app()
+limiter = None
+
+# Rate limit definitions for security-sensitive endpoints
+RATE_LIMITS = {
+    # Login endpoints - prevent brute force attacks
+    &quot;api.get_session&quot;: &quot;5 per minute;20 per hour&quot;,
+    &quot;api.get_anon_session&quot;: &quot;5 per minute;20 per hour&quot;,
+
+    # Password reset endpoints - prevent abuse
+    &quot;api.send_code&quot;: &quot;3 per minute;10 per hour&quot;,
+    &quot;api.reset_password&quot;: &quot;5 per minute;20 per hour&quot;,
+
+    # Account creation - higher limits to allow classroom signups (shared IP via NAT)
+    # Invite codes provide the primary protection against mass bot registration
+    &quot;api.add_user&quot;: &quot;100 per hour&quot;,
+    &quot;api.add_basic_user&quot;: &quot;100 per hour&quot;,
+    &quot;api.add_anon_user&quot;: &quot;200 per hour&quot;,
+}
+
+
+def init_limiter(app):
+    &quot;&quot;&quot;
+    Initialize the rate limiter with the Flask app.
+    Call this from create_app() after app is created.
+
+    Rate limits are applied to specific security-sensitive endpoints:
+    - Login: 5 per minute, 20 per hour (prevent brute force)
+    - Password reset: 3 per minute, 10 per hour (prevent abuse)
+    - Account creation: 5 per hour (prevent mass registration)
+    &quot;&quot;&quot;
+    global limiter
+
+    # Use Redis if available (for distributed rate limiting), otherwise use in-memory storage
+    storage_uri = app.config.get(&quot;RATELIMIT_STORAGE_URI&quot;, &quot;memory://&quot;)
+
+    limiter = Limiter(
+        key_func=get_remote_address,
+        app=app,
+        storage_uri=storage_uri,
+        # No default limits - we'll apply specific limits to sensitive endpoints
+        default_limits=[],
+        # Return standard HTTP 429 for rate-limited requests
+        strategy=&quot;fixed-window&quot;,
+    )
+
+    # Configure headers to inform clients about rate limits
+    app.config.setdefault(&quot;RATELIMIT_HEADERS_ENABLED&quot;, True)
+
+    return limiter
+
+
+def apply_rate_limits_to_endpoints(app):
+    &quot;&quot;&quot;
+    Apply rate limits to security-sensitive endpoints after blueprint registration.
+    Call this from create_app() AFTER registering blueprints.
+    &quot;&quot;&quot;
+    global limiter
+    if limiter is None:
+        return
+
+    for endpoint, limit_string in RATE_LIMITS.items():
+        try:
+            limiter.limit(limit_string, key_func=get_remote_address)(
+                app.view_functions.get(endpoint)
+            )
+        except Exception as e:
+            # Don't fail startup if an endpoint doesn't exist (e.g., during testing)
+            pass
+
+
+def get_limiter():
+    &quot;&quot;&quot;Get the global limiter instance.&quot;&quot;&quot;
+    global limiter
+    return limiter
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

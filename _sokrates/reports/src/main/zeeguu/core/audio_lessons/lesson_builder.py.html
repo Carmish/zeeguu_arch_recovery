@@ -1,0 +1,440 @@
+<html>
+<head>
+    <title>zeeguu/core/audio_lessons/lesson_builder.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/audio_lessons/lesson_builder.py (<b>336</b> lines of code) (<a href="lesson_builder.py">raw</a>):</h3>
+<div id="editor">&quot;&quot;&quot;
+Lesson builder for combining individual audio lessons into daily lessons.
+&quot;&quot;&quot;
+
+import os
+import random
+from pydub import AudioSegment
+
+from zeeguu.config import ZEEGUU_DATA_FOLDER
+from zeeguu.core.model import DailyAudioLesson
+from zeeguu.logging import log
+
+# Transition phrases the teacher says between meaning segments, per language.
+TRANSITION_PHRASES = {
+    &quot;en&quot;: [
+        &quot;Now, let's listen to another dialogue.&quot;,
+        &quot;Let's move on to the next word.&quot;,
+        &quot;Time for another conversation.&quot;,
+        &quot;Let's continue with another word.&quot;,
+        &quot;Here's another dialogue for you.&quot;,
+        &quot;Let's practice another word now.&quot;,
+    ],
+    &quot;da&quot;: [
+        &quot;Lad os nu lytte til en anden dialog.&quot;,
+        &quot;Lad os g&aring; videre til det n&aelig;ste ord.&quot;,
+        &quot;Tid til en ny samtale.&quot;,
+        &quot;Lad os forts&aelig;tte med et nyt ord.&quot;,
+        &quot;Her er en ny dialog til dig.&quot;,
+        &quot;Lad os &oslash;ve et nyt ord nu.&quot;,
+    ],
+    &quot;de&quot;: [
+        &quot;H&ouml;ren wir uns nun einen anderen Dialog an.&quot;,
+        &quot;Gehen wir zum n&auml;chsten Wort &uuml;ber.&quot;,
+        &quot;Zeit f&uuml;r ein neues Gespr&auml;ch.&quot;,
+        &quot;Machen wir mit einem neuen Wort weiter.&quot;,
+        &quot;Hier ist ein weiterer Dialog f&uuml;r dich.&quot;,
+        &quot;&Uuml;ben wir jetzt ein neues Wort.&quot;,
+    ],
+    &quot;es&quot;: [
+        &quot;Ahora, escuchemos otro di&aacute;logo.&quot;,
+        &quot;Pasemos a la siguiente palabra.&quot;,
+        &quot;Es hora de otra conversaci&oacute;n.&quot;,
+        &quot;Continuemos con otra palabra.&quot;,
+        &quot;Aqu&iacute; tienes otro di&aacute;logo.&quot;,
+        &quot;Practiquemos otra palabra ahora.&quot;,
+    ],
+    &quot;fr&quot;: [
+        &quot;Maintenant, &eacute;coutons un autre dialogue.&quot;,
+        &quot;Passons au mot suivant.&quot;,
+        &quot;Place &agrave; une autre conversation.&quot;,
+        &quot;Continuons avec un autre mot.&quot;,
+        &quot;Voici un autre dialogue pour toi.&quot;,
+        &quot;Pratiquons un autre mot maintenant.&quot;,
+    ],
+    &quot;it&quot;: [
+        &quot;Ora, ascoltiamo un altro dialogo.&quot;,
+        &quot;Passiamo alla prossima parola.&quot;,
+        &quot;&Egrave; il momento di un'altra conversazione.&quot;,
+        &quot;Continuiamo con un'altra parola.&quot;,
+        &quot;Ecco un altro dialogo per te.&quot;,
+        &quot;Esercitiamoci con un'altra parola.&quot;,
+    ],
+    &quot;nl&quot;: [
+        &quot;Laten we nu naar een andere dialoog luisteren.&quot;,
+        &quot;Laten we verdergaan met het volgende woord.&quot;,
+        &quot;Tijd voor een nieuw gesprek.&quot;,
+        &quot;Laten we doorgaan met een ander woord.&quot;,
+        &quot;Hier is nog een dialoog voor je.&quot;,
+        &quot;Laten we nu een ander woord oefenen.&quot;,
+    ],
+    &quot;pt&quot;: [
+        &quot;Agora, vamos ouvir outro di&aacute;logo.&quot;,
+        &quot;Vamos passar para a pr&oacute;xima palavra.&quot;,
+        &quot;Hora de outra conversa.&quot;,
+        &quot;Vamos continuar com outra palavra.&quot;,
+        &quot;Aqui est&aacute; outro di&aacute;logo para ti.&quot;,
+        &quot;Vamos praticar outra palavra agora.&quot;,
+    ],
+    &quot;sv&quot;: [
+        &quot;Nu ska vi lyssna p&aring; en annan dialog.&quot;,
+        &quot;L&aring;t oss g&aring; vidare till n&auml;sta ord.&quot;,
+        &quot;Dags f&ouml;r ett nytt samtal.&quot;,
+        &quot;L&aring;t oss forts&auml;tta med ett nytt ord.&quot;,
+        &quot;H&auml;r &auml;r en till dialog &aring;t dig.&quot;,
+        &quot;L&aring;t oss &ouml;va p&aring; ett nytt ord nu.&quot;,
+    ],
+    &quot;pl&quot;: [
+        &quot;Teraz posłuchajmy kolejnego dialogu.&quot;,
+        &quot;Przejdźmy do następnego słowa.&quot;,
+        &quot;Czas na kolejną rozmowę.&quot;,
+        &quot;Kontynuujmy z kolejnym słowem.&quot;,
+        &quot;Oto kolejny dialog dla ciebie.&quot;,
+        &quot;Poćwiczmy teraz kolejne słowo.&quot;,
+    ],
+    &quot;ro&quot;: [
+        &quot;Acum, să ascultăm un alt dialog.&quot;,
+        &quot;Să trecem la următorul cuv&acirc;nt.&quot;,
+        &quot;E timpul pentru o altă conversație.&quot;,
+        &quot;Să continuăm cu un alt cuv&acirc;nt.&quot;,
+        &quot;Iată un alt dialog pentru tine.&quot;,
+        &quot;Să exersăm acum un alt cuv&acirc;nt.&quot;,
+    ],
+    &quot;el&quot;: [
+        &quot;&Tau;ώ&rho;&alpha;, &alpha;&sigmaf; &alpha;&kappa;&omicron;ύ&sigma;&omicron;&upsilon;&mu;&epsilon; έ&nu;&alpha;&nu; &alpha;&kappa;ό&mu;&alpha; &delta;&iota;ά&lambda;&omicron;&gamma;&omicron;.&quot;,
+        &quot;&Alpha;&sigmaf; &pi;&rho;&omicron;&chi;&omega;&rho;ή&sigma;&omicron;&upsilon;&mu;&epsilon; &sigma;&tau;&eta;&nu; &epsilon;&pi;ό&mu;&epsilon;&nu;&eta; &lambda;έ&xi;&eta;.&quot;,
+        &quot;Ώ&rho;&alpha; &gamma;&iota;&alpha; &mu;&iota;&alpha; &alpha;&kappa;ό&mu;&alpha; &sigma;&upsilon;&nu;&omicron;&mu;&iota;&lambda;ί&alpha;.&quot;,
+        &quot;&Alpha;&sigmaf; &sigma;&upsilon;&nu;&epsilon;&chi;ί&sigma;&omicron;&upsilon;&mu;&epsilon; &mu;&epsilon; &mu;&iota;&alpha; &alpha;&kappa;ό&mu;&alpha; &lambda;έ&xi;&eta;.&quot;,
+        &quot;&Omicron;&rho;ί&sigma;&tau;&epsilon; έ&nu;&alpha;&sigmaf; &alpha;&kappa;ό&mu;&alpha; &delta;&iota;ά&lambda;&omicron;&gamma;&omicron;&sigmaf; &gamma;&iota;&alpha; &sigma;έ&nu;&alpha;.&quot;,
+        &quot;&Alpha;&sigmaf; &epsilon;&xi;&alpha;&sigma;&kappa;ή&sigma;&omicron;&upsilon;&mu;&epsilon; &tau;ώ&rho;&alpha; &mu;&iota;&alpha; &alpha;&kappa;ό&mu;&alpha; &lambda;έ&xi;&eta;.&quot;,
+    ],
+    &quot;uk&quot;: [
+        &quot;А тепер послухаємо ще один діалог.&quot;,
+        &quot;Перейдемо до наступного слова.&quot;,
+        &quot;Час для ще однієї розмови.&quot;,
+        &quot;Продовжимо з іншим словом.&quot;,
+        &quot;Ось ще один діалог для тебе.&quot;,
+        &quot;Потренуймо ще одне слово.&quot;,
+    ],
+}
+
+
+# Dialogue outro: wrap-up in the teacher's language (no word list talk)
+DIALOGUE_OUTRO_PHRASES = {
+    &quot;en&quot;: [&quot;That's the end of today's lesson. Come back tomorrow for a new conversation!&quot;],
+    &quot;da&quot;: [&quot;Det var slutningen p&aring; dagens lektion. Kom tilbage i morgen til en ny samtale!&quot;],
+    &quot;de&quot;: [&quot;Das war das Ende der heutigen Lektion. Komm morgen f&uuml;r ein neues Gespr&auml;ch zur&uuml;ck!&quot;],
+    &quot;es&quot;: [&quot;Eso es todo por hoy. &iexcl;Vuelve ma&ntilde;ana para una nueva conversaci&oacute;n!&quot;],
+    &quot;fr&quot;: [&quot;C'est la fin de la le&ccedil;on d'aujourd'hui. Reviens demain pour une nouvelle conversation !&quot;],
+    &quot;it&quot;: [&quot;Questa &egrave; la fine della lezione di oggi. Torna domani per una nuova conversazione!&quot;],
+    &quot;nl&quot;: [&quot;Dat was het einde van de les van vandaag. Kom morgen terug voor een nieuw gesprek!&quot;],
+    &quot;pt&quot;: [&quot;Esta &eacute; a li&ccedil;&atilde;o de hoje. Volta amanh&atilde; para uma nova conversa!&quot;],
+    &quot;sv&quot;: [&quot;Det var slutet p&aring; dagens lektion. Kom tillbaka imorgon f&ouml;r ett nytt samtal!&quot;],
+    &quot;pl&quot;: [&quot;To koniec dzisiejszej lekcji. Wr&oacute;ć jutro na nową rozmowę!&quot;],
+    &quot;ro&quot;: [&quot;Aceasta a fost lecția de astăzi. Revino m&acirc;ine pentru o nouă conversație!&quot;],
+    &quot;el&quot;: [&quot;&Alpha;&upsilon;&tau;ό ή&tau;&alpha;&nu; &tau;&omicron; &tau;έ&lambda;&omicron;&sigmaf; &tau;&omicron;&upsilon; &sigma;&eta;&mu;&epsilon;&rho;&iota;&nu;&omicron;ύ &mu;&alpha;&theta;ή&mu;&alpha;&tau;&omicron;&sigmaf;. &Epsilon;&pi;έ&sigma;&tau;&rho;&epsilon;&psi;&epsilon; &alpha;ύ&rho;&iota;&omicron; &gamma;&iota;&alpha; &mu;&iota;&alpha; &nu;έ&alpha; &sigma;&upsilon;&zeta;ή&tau;&eta;&sigma;&eta;!&quot;],
+    &quot;uk&quot;: [&quot;Це кінець сьогоднішнього уроку. Повертайся завтра на нову розмову!&quot;],
+}
+
+# Outro phrases: congratulations + reminder about word list management.
+OUTRO_PHRASES = {
+    &quot;en&quot;: [
+        &quot;Great job today! Remember, these words come from your study list. If you already know a word, you can mark it as learned during exercises, or remove it from your word list.&quot;,
+        &quot;Well done! The words in this lesson are from your saved words. If a word is too easy or you don't want to practice a particular meaning, mark it as learned or remove it from your list.&quot;,
+        &quot;Congratulations on completing this lesson! These are words from your study list. You can always mark a word as learned or remove it if you don't need to practice it anymore.&quot;,
+    ],
+    &quot;da&quot;: [
+        &quot;Godt klaret i dag! Husk, at disse ord kommer fra din ordliste. Hvis du allerede kender et ord, kan du markere det som l&aelig;rt under &oslash;velserne, eller fjerne det fra din ordliste.&quot;,
+        &quot;Flot arbejde! Ordene i denne lektion er fra dine gemte ord. Hvis et ord er for nemt, eller du ikke vil &oslash;ve en bestemt betydning, kan du markere det som l&aelig;rt eller fjerne det fra din liste.&quot;,
+        &quot;Tillykke med at have gennemf&oslash;rt denne lektion! Disse ord er fra din ordliste. Du kan altid markere et ord som l&aelig;rt eller fjerne det, hvis du ikke beh&oslash;ver at &oslash;ve det mere.&quot;,
+    ],
+    &quot;de&quot;: [
+        &quot;Gut gemacht heute! Denk daran, diese W&ouml;rter stammen aus deiner Lernliste. Wenn du ein Wort schon kennst, kannst du es bei den &Uuml;bungen als gelernt markieren oder aus deiner Wortliste entfernen.&quot;,
+        &quot;Sehr gut! Die W&ouml;rter in dieser Lektion stammen aus deinen gespeicherten W&ouml;rtern. Wenn ein Wort zu einfach ist oder du eine bestimmte Bedeutung nicht &uuml;ben m&ouml;chtest, markiere es als gelernt oder entferne es aus deiner Liste.&quot;,
+        &quot;Herzlichen Gl&uuml;ckwunsch zu dieser Lektion! Diese W&ouml;rter stammen aus deiner Lernliste. Du kannst ein Wort jederzeit als gelernt markieren oder entfernen, wenn du es nicht mehr &uuml;ben musst.&quot;,
+    ],
+    &quot;es&quot;: [
+        &quot;&iexcl;Buen trabajo hoy! Recuerda, estas palabras vienen de tu lista de estudio. Si ya conoces una palabra, puedes marcarla como aprendida durante los ejercicios, o eliminarla de tu lista.&quot;,
+        &quot;&iexcl;Muy bien! Las palabras de esta lecci&oacute;n son de tus palabras guardadas. Si una palabra es demasiado f&aacute;cil o no quieres practicar un significado en particular, m&aacute;rcala como aprendida o elim&iacute;nala de tu lista.&quot;,
+        &quot;&iexcl;Felicidades por completar esta lecci&oacute;n! Estas palabras son de tu lista de estudio. Siempre puedes marcar una palabra como aprendida o eliminarla si ya no necesitas practicarla.&quot;,
+    ],
+    &quot;fr&quot;: [
+        &quot;Bon travail aujourd'hui ! N'oublie pas, ces mots viennent de ta liste d'&eacute;tude. Si tu connais d&eacute;j&agrave; un mot, tu peux le marquer comme appris pendant les exercices, ou le retirer de ta liste.&quot;,
+        &quot;Tr&egrave;s bien ! Les mots de cette le&ccedil;on viennent de tes mots sauvegard&eacute;s. Si un mot est trop facile ou si tu ne veux pas pratiquer un sens en particulier, marque-le comme appris ou retire-le de ta liste.&quot;,
+        &quot;F&eacute;licitations pour cette le&ccedil;on ! Ces mots viennent de ta liste d'&eacute;tude. Tu peux toujours marquer un mot comme appris ou le retirer si tu n'as plus besoin de le pratiquer.&quot;,
+    ],
+    &quot;it&quot;: [
+        &quot;Ottimo lavoro oggi! Ricorda, queste parole vengono dalla tua lista di studio. Se conosci gi&agrave; una parola, puoi segnarla come imparata durante gli esercizi, o rimuoverla dalla tua lista.&quot;,
+        &quot;Molto bene! Le parole di questa lezione vengono dalle tue parole salvate. Se una parola &egrave; troppo facile o non vuoi esercitarti su un significato specifico, segnala come imparata o rimuovila dalla tua lista.&quot;,
+        &quot;Complimenti per aver completato questa lezione! Queste parole vengono dalla tua lista di studio. Puoi sempre segnare una parola come imparata o rimuoverla se non hai pi&ugrave; bisogno di esercitarla.&quot;,
+    ],
+    &quot;nl&quot;: [
+        &quot;Goed gedaan vandaag! Onthoud dat deze woorden uit je woordenlijst komen. Als je een woord al kent, kun je het als geleerd markeren tijdens de oefeningen, of het uit je lijst verwijderen.&quot;,
+        &quot;Heel goed! De woorden in deze les komen uit je opgeslagen woorden. Als een woord te makkelijk is of je een bepaalde betekenis niet wilt oefenen, markeer het dan als geleerd of verwijder het uit je lijst.&quot;,
+        &quot;Gefeliciteerd met het afronden van deze les! Deze woorden komen uit je woordenlijst. Je kunt een woord altijd als geleerd markeren of verwijderen als je het niet meer hoeft te oefenen.&quot;,
+    ],
+    &quot;pt&quot;: [
+        &quot;Bom trabalho hoje! Lembra-te, estas palavras v&ecirc;m da tua lista de estudo. Se j&aacute; conheces uma palavra, podes marc&aacute;-la como aprendida durante os exerc&iacute;cios, ou remov&ecirc;-la da tua lista.&quot;,
+        &quot;Muito bem! As palavras desta li&ccedil;&atilde;o v&ecirc;m das tuas palavras guardadas. Se uma palavra &eacute; demasiado f&aacute;cil ou n&atilde;o queres praticar um significado em particular, marca-a como aprendida ou remove-a da tua lista.&quot;,
+        &quot;Parab&eacute;ns por completares esta li&ccedil;&atilde;o! Estas palavras v&ecirc;m da tua lista de estudo. Podes sempre marcar uma palavra como aprendida ou remov&ecirc;-la se j&aacute; n&atilde;o precisas de a praticar.&quot;,
+    ],
+    &quot;sv&quot;: [
+        &quot;Bra jobbat idag! Kom ih&aring;g att dessa ord kommer fr&aring;n din ordlista. Om du redan kan ett ord kan du markera det som l&auml;rt under &ouml;vningarna, eller ta bort det fr&aring;n din lista.&quot;,
+        &quot;Mycket bra! Orden i den h&auml;r lektionen kommer fr&aring;n dina sparade ord. Om ett ord &auml;r f&ouml;r l&auml;tt eller om du inte vill &ouml;va en viss betydelse, markera det som l&auml;rt eller ta bort det fr&aring;n din lista.&quot;,
+        &quot;Grattis till den h&auml;r lektionen! Dessa ord kommer fr&aring;n din ordlista. Du kan alltid markera ett ord som l&auml;rt eller ta bort det om du inte beh&ouml;ver &ouml;va det l&auml;ngre.&quot;,
+    ],
+    &quot;pl&quot;: [
+        &quot;Dobra robota! Pamiętaj, te słowa pochodzą z twojej listy do nauki. Jeśli znasz już jakieś słowo, możesz oznaczyć je jako nauczone podczas ćwiczeń, lub usunąć je ze swojej listy.&quot;,
+        &quot;Bardzo dobrze! Słowa w tej lekcji pochodzą z twoich zapisanych sł&oacute;w. Jeśli słowo jest zbyt łatwe lub nie chcesz ćwiczyć danego znaczenia, oznacz je jako nauczone lub usuń ze swojej listy.&quot;,
+        &quot;Gratulacje za ukończenie tej lekcji! Te słowa pochodzą z twojej listy do nauki. Zawsze możesz oznaczyć słowo jako nauczone lub usunąć je, jeśli nie musisz go już ćwiczyć.&quot;,
+    ],
+    &quot;ro&quot;: [
+        &quot;Bravo azi! Ține minte, aceste cuvinte vin din lista ta de studiu. Dacă știi deja un cuv&acirc;nt, &icirc;l poți marca ca &icirc;nvățat &icirc;n timpul exercițiilor, sau &icirc;l poți elimina din lista ta.&quot;,
+        &quot;Foarte bine! Cuvintele din această lecție sunt din cuvintele tale salvate. Dacă un cuv&acirc;nt este prea ușor sau nu vrei să exersezi un anumit sens, marchează-l ca &icirc;nvățat sau elimină-l din lista ta.&quot;,
+        &quot;Felicitări pentru completarea acestei lecții! Aceste cuvinte sunt din lista ta de studiu. Poți oric&acirc;nd marca un cuv&acirc;nt ca &icirc;nvățat sau &icirc;l poți elimina dacă nu mai ai nevoie să-l exersezi.&quot;,
+    ],
+    &quot;el&quot;: [
+        &quot;&Mu;&pi;&rho;ά&beta;&omicron; &sigma;ή&mu;&epsilon;&rho;&alpha;! &Theta;&upsilon;&mu;ή&sigma;&omicron;&upsilon;, &alpha;&upsilon;&tau;έ&sigmaf; &omicron;&iota; &lambda;έ&xi;&epsilon;&iota;&sigmaf; &pi;&rho;&omicron;έ&rho;&chi;&omicron;&nu;&tau;&alpha;&iota; &alpha;&pi;ό &tau;&eta; &lambda;ί&sigma;&tau;&alpha; &mu;&epsilon;&lambda;έ&tau;&eta;&sigmaf; &sigma;&omicron;&upsilon;. &Alpha;&nu; ή&delta;&eta; &xi;έ&rho;&epsilon;&iota;&sigmaf; &mu;&iota;&alpha; &lambda;έ&xi;&eta;, &mu;&pi;&omicron;&rho;&epsilon;ί&sigmaf; &nu;&alpha; &tau;&eta; &sigma;&eta;&mu;&epsilon;&iota;ώ&sigma;&epsilon;&iota;&sigmaf; &omega;&sigmaf; &mu;&alpha;&theta;&eta;&mu;έ&nu;&eta; &kappa;&alpha;&tau;ά &tau;&eta; &delta;&iota;ά&rho;&kappa;&epsilon;&iota;&alpha; &tau;&omega;&nu; &alpha;&sigma;&kappa;ή&sigma;&epsilon;&omega;&nu;, ή &nu;&alpha; &tau;&eta;&nu; &alpha;&phi;&alpha;&iota;&rho;έ&sigma;&epsilon;&iota;&sigmaf; &alpha;&pi;ό &tau;&eta; &lambda;ί&sigma;&tau;&alpha; &sigma;&omicron;&upsilon;.&quot;,
+        &quot;&Pi;&omicron;&lambda;ύ &kappa;&alpha;&lambda;ά! &Omicron;&iota; &lambda;έ&xi;&epsilon;&iota;&sigmaf; &sigma;&epsilon; &alpha;&upsilon;&tau;ό &tau;&omicron; &mu;ά&theta;&eta;&mu;&alpha; &pi;&rho;&omicron;έ&rho;&chi;&omicron;&nu;&tau;&alpha;&iota; &alpha;&pi;ό &tau;&iota;&sigmaf; &alpha;&pi;&omicron;&theta;&eta;&kappa;&epsilon;&upsilon;&mu;έ&nu;&epsilon;&sigmaf; &lambda;έ&xi;&epsilon;&iota;&sigmaf; &sigma;&omicron;&upsilon;. &Alpha;&nu; &mu;&iota;&alpha; &lambda;έ&xi;&eta; &epsilon;ί&nu;&alpha;&iota; &pi;&omicron;&lambda;ύ &epsilon;ύ&kappa;&omicron;&lambda;&eta; ή &delta;&epsilon;&nu; &theta;έ&lambda;&epsilon;&iota;&sigmaf; &nu;&alpha; &epsilon;&xi;&alpha;&sigma;&kappa;ή&sigma;&epsilon;&iota;&sigmaf; &mu;&iota;&alpha; &sigma;&upsilon;&gamma;&kappa;&epsilon;&kappa;&rho;&iota;&mu;έ&nu;&eta; &sigma;&eta;&mu;&alpha;&sigma;ί&alpha;, &sigma;&eta;&mu;&epsilon;ί&omega;&sigma;έ &tau;&eta;&nu; &omega;&sigmaf; &mu;&alpha;&theta;&eta;&mu;έ&nu;&eta; ή &alpha;&phi;&alpha;ί&rho;&epsilon;&sigma;έ &tau;&eta;&nu; &alpha;&pi;ό &tau;&eta; &lambda;ί&sigma;&tau;&alpha; &sigma;&omicron;&upsilon;.&quot;,
+        &quot;&Sigma;&upsilon;&gamma;&chi;&alpha;&rho;&eta;&tau;ή&rho;&iota;&alpha; &gamma;&iota;&alpha; &tau;&eta;&nu; &omicron;&lambda;&omicron;&kappa;&lambda;ή&rho;&omega;&sigma;&eta; &alpha;&upsilon;&tau;&omicron;ύ &tau;&omicron;&upsilon; &mu;&alpha;&theta;ή&mu;&alpha;&tau;&omicron;&sigmaf;! &Alpha;&upsilon;&tau;έ&sigmaf; &omicron;&iota; &lambda;έ&xi;&epsilon;&iota;&sigmaf; &pi;&rho;&omicron;έ&rho;&chi;&omicron;&nu;&tau;&alpha;&iota; &alpha;&pi;ό &tau;&eta; &lambda;ί&sigma;&tau;&alpha; &mu;&epsilon;&lambda;έ&tau;&eta;&sigmaf; &sigma;&omicron;&upsilon;. &Mu;&pi;&omicron;&rho;&epsilon;ί&sigmaf; &pi;ά&nu;&tau;&alpha; &nu;&alpha; &sigma;&eta;&mu;&epsilon;&iota;ώ&sigma;&epsilon;&iota;&sigmaf; &mu;&iota;&alpha; &lambda;έ&xi;&eta; &omega;&sigmaf; &mu;&alpha;&theta;&eta;&mu;έ&nu;&eta; ή &nu;&alpha; &tau;&eta;&nu; &alpha;&phi;&alpha;&iota;&rho;έ&sigma;&epsilon;&iota;&sigmaf; &alpha;&nu; &delta;&epsilon;&nu; &chi;&rho;&epsilon;&iota;ά&zeta;&epsilon;&tau;&alpha;&iota; &pi;&lambda;έ&omicron;&nu; &nu;&alpha; &tau;&eta;&nu; &epsilon;&xi;&alpha;&sigma;&kappa;&epsilon;ί&sigmaf;.&quot;,
+    ],
+    &quot;uk&quot;: [
+        &quot;Чудова робота сьогодні! Пам'ятай, ці слова з твого списку для вивчення. Якщо ти вже знаєш слово, можеш позначити його як вивчене під час вправ, або видалити зі свого списку.&quot;,
+        &quot;Дуже добре! Слова в цьому уроці з твоїх збережених слів. Якщо слово занадто легке або ти не хочеш вивчати певне значення, познач його як вивчене або видали зі свого списку.&quot;,
+        &quot;Вітаю з завершенням цього уроку! Ці слова з твого списку для вивчення. Ти завжди можеш позначити слово як вивчене або видалити його, якщо більше не потрібно його вивчати.&quot;,
+    ],
+}
+
+
+# Short positive closing IN THE LEARNED LANGUAGE &mdash; a bit of practice at the end!
+CLOSING_PHRASES = {
+    &quot;en&quot;: [&quot;Great job! See you next time.&quot;, &quot;Well done! See you soon!&quot;, &quot;You're doing great. See you next time!&quot;],
+    &quot;da&quot;: [&quot;Godt klaret! Vi ses n&aelig;ste gang.&quot;, &quot;Flot arbejde! Vi ses snart!&quot;, &quot;Du klarer det godt. Vi ses n&aelig;ste gang!&quot;],
+    &quot;de&quot;: [&quot;Gut gemacht! Bis zum n&auml;chsten Mal.&quot;, &quot;Sehr gut! Bis bald!&quot;, &quot;Du machst das toll. Bis zum n&auml;chsten Mal!&quot;],
+    &quot;es&quot;: [&quot;&iexcl;Buen trabajo! &iexcl;Nos vemos la pr&oacute;xima vez!&quot;, &quot;&iexcl;Muy bien! &iexcl;Nos vemos pronto!&quot;, &quot;&iexcl;Lo est&aacute;s haciendo genial! &iexcl;Hasta la pr&oacute;xima!&quot;],
+    &quot;fr&quot;: [&quot;Bon travail ! &Agrave; la prochaine.&quot;, &quot;Tr&egrave;s bien ! &Agrave; bient&ocirc;t !&quot;, &quot;Tu fais du super travail. &Agrave; la prochaine !&quot;],
+    &quot;it&quot;: [&quot;Ottimo lavoro! Ci vediamo la prossima volta.&quot;, &quot;Molto bene! A presto!&quot;, &quot;Stai andando alla grande. Alla prossima!&quot;],
+    &quot;nl&quot;: [&quot;Goed gedaan! Tot de volgende keer.&quot;, &quot;Heel goed! Tot snel!&quot;, &quot;Je doet het geweldig. Tot de volgende keer!&quot;],
+    &quot;pt&quot;: [&quot;Bom trabalho! At&eacute; &agrave; pr&oacute;xima.&quot;, &quot;Muito bem! At&eacute; breve!&quot;, &quot;Est&aacute;s a ir muito bem. At&eacute; &agrave; pr&oacute;xima!&quot;],
+    &quot;sv&quot;: [&quot;Bra jobbat! Vi ses n&auml;sta g&aring;ng.&quot;, &quot;Mycket bra! Vi ses snart!&quot;, &quot;Du g&ouml;r det j&auml;ttebra. Vi ses n&auml;sta g&aring;ng!&quot;],
+    &quot;pl&quot;: [&quot;Dobra robota! Do następnego razu.&quot;, &quot;Bardzo dobrze! Do zobaczenia wkr&oacute;tce!&quot;, &quot;Świetnie ci idzie. Do następnego razu!&quot;],
+    &quot;ro&quot;: [&quot;Bravo! Ne vedem data viitoare.&quot;, &quot;Foarte bine! Pe cur&acirc;nd!&quot;, &quot;Te descurci foarte bine. Pe data viitoare!&quot;],
+    &quot;el&quot;: [&quot;&Mu;&pi;&rho;ά&beta;&omicron;! &Tau;&alpha; &lambda;έ&mu;&epsilon; &tau;&eta;&nu; &epsilon;&pi;ό&mu;&epsilon;&nu;&eta; &phi;&omicron;&rho;ά.&quot;, &quot;&Pi;&omicron;&lambda;ύ &kappa;&alpha;&lambda;ά! &Tau;&alpha; &lambda;έ&mu;&epsilon; &sigma;ύ&nu;&tau;&omicron;&mu;&alpha;!&quot;, &quot;&Tau;&alpha; &pi;&alpha;&sigmaf; &upsilon;&pi;έ&rho;&omicron;&chi;&alpha;. &Tau;&alpha; &lambda;έ&mu;&epsilon; &tau;&eta;&nu; &epsilon;&pi;ό&mu;&epsilon;&nu;&eta; &phi;&omicron;&rho;ά!&quot;],
+    &quot;uk&quot;: [&quot;Чудова робота! До наступного разу.&quot;, &quot;Дуже добре! До зустрічі!&quot;, &quot;Ти чудово справляєшся. До наступного разу!&quot;],
+}
+
+
+# Dialogue intro: teacher explains the format before the dialogue plays
+DIALOGUE_INTRO_PHRASES = {
+    &quot;en&quot;: [&quot;First, listen to the whole conversation. Then, we'll practice the key phrases together.&quot;],
+    &quot;da&quot;: [&quot;F&oslash;rst skal du lytte til hele samtalen. Bagefter &oslash;ver vi de vigtigste s&aelig;tninger sammen.&quot;],
+    &quot;de&quot;: [&quot;Zuerst h&ouml;rst du das ganze Gespr&auml;ch. Danach &uuml;ben wir die wichtigsten S&auml;tze zusammen.&quot;],
+    &quot;es&quot;: [&quot;Primero, escucha toda la conversaci&oacute;n. Despu&eacute;s, practicaremos las frases clave juntos.&quot;],
+    &quot;fr&quot;: [&quot;D'abord, &eacute;coute toute la conversation. Ensuite, nous pratiquerons les phrases cl&eacute;s ensemble.&quot;],
+    &quot;it&quot;: [&quot;Prima, ascolta tutta la conversazione. Poi, praticheremo le frasi chiave insieme.&quot;],
+    &quot;nl&quot;: [&quot;Luister eerst naar het hele gesprek. Daarna oefenen we de belangrijkste zinnen samen.&quot;],
+    &quot;pt&quot;: [&quot;Primeiro, ouve toda a conversa. Depois, vamos praticar as frases-chave juntos.&quot;],
+    &quot;sv&quot;: [&quot;Lyssna f&ouml;rst p&aring; hela samtalet. Sedan &ouml;var vi de viktigaste fraserna tillsammans.&quot;],
+    &quot;pl&quot;: [&quot;Najpierw posłuchaj całej rozmowy. Potem przećwiczymy kluczowe zwroty razem.&quot;],
+    &quot;ro&quot;: [&quot;Mai &icirc;nt&acirc;i, ascultă toată conversația. Apoi, vom exersa &icirc;mpreună expresiile cheie.&quot;],
+    &quot;el&quot;: [&quot;&Pi;&rho;ώ&tau;&alpha;, ά&kappa;&omicron;&upsilon;&sigma;&epsilon; &omicron;&lambda;ό&kappa;&lambda;&eta;&rho;&eta; &tau;&eta; &sigma;&upsilon;&zeta;ή&tau;&eta;&sigma;&eta;. &Mu;&epsilon;&tau;ά, &theta;&alpha; &epsilon;&xi;&alpha;&sigma;&kappa;ή&sigma;&omicron;&upsilon;&mu;&epsilon; &tau;&iota;&sigmaf; &beta;&alpha;&sigma;&iota;&kappa;έ&sigmaf; &phi;&rho;ά&sigma;&epsilon;&iota;&sigmaf; &mu;&alpha;&zeta;ί.&quot;],
+    &quot;uk&quot;: [&quot;Спочатку послухай всю розмову. Потім ми разом попрактикуємо ключові фрази.&quot;],
+}
+
+
+class LessonBuilder:
+    &quot;&quot;&quot;Handles building complete daily lessons from individual segments.&quot;&quot;&quot;
+
+    def __init__(self):
+        self.audio_dir = ZEEGUU_DATA_FOLDER + &quot;/audio&quot;
+        self.daily_lessons_dir = os.path.join(self.audio_dir, &quot;daily_lessons&quot;)
+
+        # Create directory if it doesn't exist
+        os.makedirs(self.daily_lessons_dir, exist_ok=True)
+
+    def _synthesize_teacher_phrase(self, voice_synthesizer, teacher_language: str, text: str) -&gt; AudioSegment:
+        &quot;&quot;&quot;Synthesize a short teacher phrase.&quot;&quot;&quot;
+        audio_path = voice_synthesizer.synthesize_segment(
+            text=text,
+            voice_type=&quot;teacher&quot;,
+            language_code=teacher_language,
+            speaking_rate=1.0,
+            teacher_language=teacher_language,
+        )
+        return AudioSegment.from_mp3(audio_path)
+
+    def _synthesize_learned_language_phrase(self, voice_synthesizer, learned_language: str, text: str) -&gt; AudioSegment:
+        &quot;&quot;&quot;Synthesize a phrase in the learned language (using the woman voice).&quot;&quot;&quot;
+        audio_path = voice_synthesizer.synthesize_segment(
+            text=text,
+            voice_type=&quot;woman&quot;,
+            language_code=learned_language,
+            speaking_rate=0.9,
+            teacher_language=learned_language,
+        )
+        return AudioSegment.from_mp3(audio_path)
+
+    def _get_outro_segments(self, voice_synthesizer, teacher_language: str, learned_language: str = None, is_dialogue=False) -&gt; list:
+        &quot;&quot;&quot;Generate outro. Teacher wraps up, then closing in the learned language.&quot;&quot;&quot;
+        segments = []
+
+        if is_dialogue:
+            # Dialogue: &quot;That's the end of today's lesson. Come back tomorrow!&quot;
+            phrases = DIALOGUE_OUTRO_PHRASES.get(teacher_language, DIALOGUE_OUTRO_PHRASES[&quot;en&quot;])
+        else:
+            # Meaning lessons: word list reminder
+            phrases = OUTRO_PHRASES.get(teacher_language, OUTRO_PHRASES[&quot;en&quot;])
+
+        segments.append(self._synthesize_teacher_phrase(voice_synthesizer, teacher_language, random.choice(phrases)))
+        segments.append(AudioSegment.silent(duration=1500))
+
+        # Positive closing in the LEARNED language
+        closing_lang = learned_language or teacher_language
+        closings = CLOSING_PHRASES.get(closing_lang, CLOSING_PHRASES[&quot;en&quot;])
+        segments.append(self._synthesize_learned_language_phrase(voice_synthesizer, closing_lang, random.choice(closings)))
+
+        return segments
+
+    def _get_dialogue_intro_audio(self, voice_synthesizer, teacher_language: str) -&gt; AudioSegment:
+        &quot;&quot;&quot;Generate a short teacher intro before a dialogue segment.&quot;&quot;&quot;
+        phrases = DIALOGUE_INTRO_PHRASES.get(teacher_language, DIALOGUE_INTRO_PHRASES[&quot;en&quot;])
+        return self._synthesize_teacher_phrase(voice_synthesizer, teacher_language, random.choice(phrases))
+
+    def _get_transition_audio(self, voice_synthesizer, teacher_language: str) -&gt; AudioSegment:
+        &quot;&quot;&quot;Generate a short teacher transition phrase between segments.&quot;&quot;&quot;
+        phrases = TRANSITION_PHRASES.get(teacher_language, TRANSITION_PHRASES[&quot;en&quot;])
+        return self._synthesize_teacher_phrase(voice_synthesizer, teacher_language, random.choice(phrases))
+
+    def build_daily_lesson(self, daily_lesson: DailyAudioLesson, voice_synthesizer=None) -&gt; str:
+        &quot;&quot;&quot;
+        Build a complete daily lesson by concatenating all segment audio files.
+
+        Args:
+            daily_lesson: The DailyAudioLesson instance with segments
+
+        Returns:
+            Path to the generated daily lesson MP3 file
+        &quot;&quot;&quot;
+        audio_segments = []
+        content_segment_count = 0
+
+        # Determine languages for transitions and outro
+        teacher_language = None
+        learned_language = None
+        if daily_lesson.user:
+            if daily_lesson.user.native_language:
+                teacher_language = daily_lesson.user.native_language.code
+            if daily_lesson.user.learned_language:
+                learned_language = daily_lesson.user.learned_language.code
+
+        # Process segments in order
+        segments_list = list(daily_lesson.segments)
+
+        for idx, segment in enumerate(segments_list):
+
+            audio_path = None
+
+            if (
+                segment.segment_type == &quot;meaning_lesson&quot;
+                and segment.audio_lesson_meaning
+            ):
+                # Add transition before 2nd+ meaning segments
+                content_segment_count += 1
+                if content_segment_count &gt; 1 and voice_synthesizer and teacher_language:
+                    # Add silence then transition phrase
+                    audio_segments.append(AudioSegment.silent(duration=2000))
+                    transition = self._get_transition_audio(voice_synthesizer, teacher_language)
+                    audio_segments.append(transition)
+                    audio_segments.append(AudioSegment.silent(duration=1500))
+
+                # Use the individual meaning lesson audio
+                relative_path = segment.audio_lesson_meaning.audio_file_path
+                # Remove leading /audio/ since we're already in /$ZEEGUU_DATA_FOLDER/audio
+                if relative_path.startswith(&quot;/audio/&quot;):
+                    relative_path = relative_path[7:]  # Remove '/audio/'
+                audio_path = os.path.join(self.audio_dir, relative_path)
+
+            elif (
+                segment.segment_type == &quot;dialogue_lesson&quot;
+                and segment.audio_lesson_dialogue
+            ):
+                content_segment_count += 1
+                # Add teacher intro before dialogue
+                if voice_synthesizer and teacher_language:
+                    intro = self._get_dialogue_intro_audio(voice_synthesizer, teacher_language)
+                    audio_segments.append(intro)
+                    audio_segments.append(AudioSegment.silent(duration=1500))
+
+                relative_path = segment.audio_lesson_dialogue.audio_file_path
+                if relative_path.startswith(&quot;/audio/&quot;):
+                    relative_path = relative_path[7:]
+                audio_path = os.path.join(self.audio_dir, relative_path)
+
+            elif (
+                segment.segment_type in [&quot;intro&quot;, &quot;outro&quot;]
+                and segment.daily_audio_lesson_wrapper
+            ):
+                # Use the wrapper audio
+                relative_path = segment.daily_audio_lesson_wrapper.audio_file_path
+                audio_path = os.path.join(self.audio_dir, relative_path.lstrip(&quot;/&quot;))
+
+            else:
+                audio_path = None
+
+            if audio_path and os.path.exists(audio_path):
+                log(f&quot;Adding segment audio: {audio_path}&quot;)
+                audio_segment = AudioSegment.from_mp3(audio_path)
+                audio_segments.append(audio_segment)
+            else:
+                log(
+                    f&quot;Warning: Audio file not found for segment {segment.id}: {audio_path}&quot;
+                )
+
+        # Add outro after all segments
+        if voice_synthesizer and teacher_language and content_segment_count &gt; 0:
+            audio_segments.append(AudioSegment.silent(duration=2000))
+            has_dialogue = any(s.segment_type == &quot;dialogue_lesson&quot; for s in segments_list)
+            audio_segments.extend(self._get_outro_segments(voice_synthesizer, teacher_language, learned_language, is_dialogue=has_dialogue))
+
+        # Combine all audio segments
+        if audio_segments:
+            combined_audio = audio_segments[0]
+            for segment in audio_segments[1:]:
+                combined_audio += segment
+        else:
+            # Create a short silence if no audio segments
+            log(&quot;Warning: No audio segments found, creating empty lesson&quot;)
+            combined_audio = AudioSegment.silent(duration=1000)  # 1 second silence
+
+        # Save the final daily lesson audio
+        output_path = os.path.join(self.daily_lessons_dir, f&quot;{daily_lesson.id}.mp3&quot;)
+        combined_audio.export(output_path, format=&quot;mp3&quot;)
+
+        log(f&quot;Generated daily lesson audio: {output_path}&quot;)
+        return output_path
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

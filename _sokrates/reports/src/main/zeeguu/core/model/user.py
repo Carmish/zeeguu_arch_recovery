@@ -1,0 +1,1485 @@
+#
+import datetime
+import json
+import random
+import re
+
+import sqlalchemy.orm
+from sqlalchemy import Column, Boolean, func, select
+from sqlalchemy.orm import relationship, joinedload
+from sqlalchemy.orm.exc import NoResultFound
+
+import zeeguu.core
+from zeeguu.core.language.difficulty_estimator_factory import DifficultyEstimatorFactory
+from zeeguu.core.model.db import db
+from zeeguu.core.model.language import Language
+from zeeguu.core.util.hash import (
+    password_hash,
+    password_hash_bcrypt,
+    verify_password_bcrypt,
+    is_bcrypt_hash,
+)
+from zeeguu.logging import log
+from zeeguu.logging import warning
+
+# This mapping reflects splitting
+# the scale of 0 - 100 into 6 bands.
+# Rounded up (16.6666 ~ 17)
+CEFR_TO_DIFFICULTY_MAPPING = {
+    1: (0, 1.7),
+    2: (1.7, 3.4),
+    3: (3.4, 5.1),
+    4: (5.1, 6.8),
+    5: (6.8, 8.5),
+    6: (8.5, 10),
+}
+
+
+class User(db.Model):
+    __table_args__ = {"mysql_collate": "utf8_bin"}
+
+    EMAIL_VALIDATION_REGEX = r"(^[a-z0-9_.+-]+@[a-z0-9-]+\.[a-z0-9-.]+$)"
+    USERNAME_VALIDATION_REGEX = r"^[A-Za-z0-9_.\-]+$"
+    ANONYMOUS_EMAIL_DOMAIN = "@anon.zeeguu"
+    MAX_USERNAME_LENGTH = 50
+
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), unique=True)
+    name = db.Column(db.String(255))
+    username = db.Column(db.String(MAX_USERNAME_LENGTH), unique=True, index=True)
+    invitation_code = db.Column(db.String(255))
+    password = db.Column(db.String(255))
+    password_salt = db.Column(db.String(255))
+    learned_language_id = db.Column(db.Integer, db.ForeignKey(Language.id))
+    learned_language = relationship(Language, foreign_keys=[learned_language_id])
+    native_language_id = db.Column(db.Integer, db.ForeignKey(Language.id))
+    native_language = relationship(Language, foreign_keys=[native_language_id])
+
+    cohorts = relationship("UserCohortMap", back_populates="user")
+
+    is_dev = Column(Boolean)
+    is_admin = Column(Boolean, default=False)
+    email_verified = Column(Boolean, default=False)
+    created_at = db.Column(db.DateTime, nullable=True)
+    last_seen = db.Column(db.DateTime, nullable=True)
+    creation_platform = db.Column(db.SmallInteger, nullable=True)
+    daily_streak = db.Column(db.Integer, default=0)
+    timezone = db.Column(db.String(64), nullable=True)
+
+    def __init__(
+        self,
+        email,
+        name,
+        password,
+        username,
+        learned_language=None,
+        native_language=None,
+        invitation_code=None,
+        is_dev=0,
+        creation_platform=None,
+    ):
+        from datetime import datetime
+
+        self.email = email 
+        self.name = name # The name of the user
+        self.username = username # Username is custom name to display in UI
+        self.update_password(password)
+        self.learned_language = learned_language or Language.default_learned()
+        self.native_language = native_language or Language.default_native_language()
+        self.invitation_code = invitation_code
+        self.is_dev = is_dev
+        self.created_at = datetime.now()
+        self.creation_platform = creation_platform
+
+    ADJECTIVES = [
+        "brave", "clever", "curious", "silent", "rapid",
+        "happy", "bright", "playful", "bold", "calm",
+        "gentle", "keen", "witty", "daring", "serene",
+        "lively", "mighty", "patient", "vivid", "wise"
+    ]
+
+    ANIMALS = [
+        "elephant", "otter", "wolf", "fox", "owl", "panther",
+        "lion", "tiger", "bear", "eagle", "rabbit", "deer",
+        "leopard", "cheetah", "badger", "beaver", "lynx", "moose"
+    ]
+
+    # Legacy ceiling, retained for backwards compat with callers that still
+    # read it (e.g. tests). The tiered generator below uses its own per-tier
+    # suffix ranges rather than a single flat cap.
+    MAX_NUMBER_USERNAME = 9999
+
+    # Suffix-width tiers tried, in order, when prefer_no_digit=True.
+    # None means "no suffix at all". Each numeric value is the inclusive
+    # upper bound for random.randint(0, value).
+    _USERNAME_TIERS_PRETTY = (None, 9, 99, 999, 9999)
+    # When prefer_no_digit=False, we skip straight to 4 digits — used for
+    # backfilling inactive accounts so we don't consume the small no-digit
+    # pool (see generate_unique_username docstring).
+    _USERNAME_TIERS_FALLBACK = (9999,)
+
+    @classmethod
+    def generate_unique_username(cls, exclude: set = None, prefer_no_digit: bool = True):
+        """
+        Generate a random unique username in the format 'adjective_animal[digits]'.
+
+        We try tiers in order from most-readable to least-readable:
+            tier 0: no digit       (e.g. 'clever_otter')     — 20 x 18 = 360 combos
+            tier 1: 1 digit  0..9  (e.g. 'clever_otter7')    — 3,600 combos
+            tier 2: 2 digits 0..99 (e.g. 'clever_otter42')   — 36,000 combos
+            tier 3: 3 digits       (e.g. 'clever_otter500')  — 360,000 combos
+            tier 4: 4 digits       (e.g. 'clever_otter5678') — 3,600,000 combos
+
+        When `prefer_no_digit=True` (the default), we start at tier 0 and only
+        escalate when a tier can't find a free slot. This keeps usernames short
+        and memorable for users who will actually see them in the UI.
+
+        When `prefer_no_digit=False`, we jump straight to tier 4 (4-digit suffix).
+        The backfill migration uses this for inactive accounts so that the small
+        no-digit pool (360 names) is reserved for MAUs and future signups rather
+        than being consumed by dormant users who may never log in again.
+
+        Args:
+            exclude: optional set of usernames already reserved in the current
+                     session but not yet committed — e.g. the bulk migration
+                     assigns usernames before the UNIQUE constraint exists, so
+                     mid-run picks aren't visible to DB checks yet.
+            prefer_no_digit: start at tier 0 (default) or skip to tier 4.
+
+        Returns:
+            (username, animal) tuple. The animal is returned separately so
+            callers can pick the matching avatar SVG.
+        """
+        exclude = exclude or set()
+        tiers = cls._USERNAME_TIERS_PRETTY if prefer_no_digit else cls._USERNAME_TIERS_FALLBACK
+        pair_count = len(cls.ADJECTIVES) * len(cls.ANIMALS)
+
+        for suffix_max in tiers:
+            # 4x pair_count attempts is overkill for tiers 1..4 (they have
+            # 10x..10000x more slots than pair_count) and gives tier 0 a
+            # reasonable chance to surface a free name even when the tier is
+            # nearly full. If we still can't find one, we fall through to
+            # the next tier rather than loop forever.
+            for _ in range(pair_count * 4):
+                adjective = random.choice(cls.ADJECTIVES)
+                animal = random.choice(cls.ANIMALS)
+                if suffix_max is None:
+                    username = f"{adjective}_{animal}"
+                else:
+                    username = f"{adjective}_{animal}{random.randint(0, suffix_max)}"
+                if username in exclude:
+                    continue
+                if not cls.query.filter_by(username=username).first():
+                    return username, animal
+
+        raise RuntimeError(
+            "Username space exhausted across all tiers — expand ADJECTIVES/ANIMALS."
+        )
+
+    @classmethod
+    def create_anonymous(
+        cls,
+        uuid,
+        password,
+        username,
+        learned_language_code=None,
+        native_language_code=None,
+        creation_platform=None,
+    ):
+        """
+
+        :param uuid:
+        :param password:
+        :param username:
+        :param learned_language_code:
+        :param native_language_code:
+        :param creation_platform:
+        :return:
+        """
+
+        # since the DB must have an email we generate a fake one
+        fake_email = uuid + cls.ANONYMOUS_EMAIL_DOMAIN
+
+        if learned_language_code is not None:
+            try:
+                learned_language = Language.find_or_create(learned_language_code)
+            except NoResultFound as e:
+                learned_language = None
+        else:
+            learned_language = None
+
+        if native_language_code is not None:
+            try:
+                native_language = Language.find_or_create(native_language_code)
+            except NoResultFound as e:
+                native_language = None
+        else:
+            native_language = None
+
+        new_user = cls(
+            fake_email,
+            uuid,
+            password,
+            username,
+            learned_language=learned_language,
+            native_language=native_language,
+            creation_platform=creation_platform,
+        )
+        new_user.email_verified = False
+
+        return new_user
+
+    def __repr__(self):
+        return "<User %r>" % (self.email)
+
+    def is_anonymous(self):
+        """Check if this is an anonymous user based on email domain."""
+        return self.email.endswith(self.ANONYMOUS_EMAIL_DOMAIN)
+
+    def is_member_of_cohort(self, cohort_id):
+        cohort_id = int(cohort_id)
+        return any([c.cohort_id == cohort_id for c in self.cohorts])
+
+    def remove_from_cohort(self, cohort_id, session):
+        from zeeguu.core.model.user_cohort_map import UserCohortMap
+
+        cohort_id = int(cohort_id)
+        UserCohortMap.query.filter(UserCohortMap.user_id == self.id).filter(
+            UserCohortMap.cohort_id == cohort_id
+        ).delete()
+        session.add(self)
+        session.commit()
+
+    def details_as_dictionary(self):
+        from datetime import datetime
+        from zeeguu.core.model import UserLanguage
+        from zeeguu.core.model.bookmark import Bookmark
+        from zeeguu.core.model.user_avatar import UserAvatar
+        from zeeguu.core.model.user_word import UserWord
+
+        # Only require email verification for users created after this date
+        # Existing users before this date are grandfathered in
+        EMAIL_VERIFICATION_REQUIRED_AFTER = datetime(2026, 2, 17)
+
+        # Efficient count query - Bookmark links to UserWord which has user_id
+        bookmark_count = (
+            zeeguu.core.model.db.session.query(func.count(Bookmark.id))
+            .join(UserWord, Bookmark.user_word_id == UserWord.id)
+            .filter(UserWord.user_id == self.id)
+            .scalar()
+        )
+
+        # Compute whether this user requires email verification
+        # Skip for: anonymous users, users created before the feature was deployed
+        requires_email_verification = (
+            not self.is_anonymous()
+            and self.created_at
+            and self.created_at >= EMAIL_VERIFICATION_REQUIRED_AFTER
+            and not self.email_verified
+        )
+
+        # Get the corresponding avatar details
+        user_avatar = UserAvatar.find(self.id)
+        user_avatar_dict = (
+            dict(
+                image_name=user_avatar.image_name,
+                character_color=user_avatar.character_color,
+                background_color=user_avatar.background_color,
+            )
+            if user_avatar is not None
+            else None
+        )
+
+        result = dict(
+            email=self.email,
+            name=self.name,
+            username=self.username,
+            learned_language=self.learned_language.code,
+            native_language=self.native_language.code,
+            is_teacher=self.isTeacher(),
+            is_student=len(self.cohorts) > 0
+            and not any([c.cohort_id in [93, 459] for c in self.cohorts]),
+            is_anonymous=self.is_anonymous(),
+            email_verified=self.email_verified,
+            requires_email_verification=requires_email_verification,
+            bookmark_count=bookmark_count,
+            daily_audio_status=self.get_daily_audio_status(),
+            created_at=self.created_at.isoformat() if self.created_at else None,
+            user_avatar=user_avatar_dict,
+        )
+
+        for each in UserLanguage.query.filter_by(user=self):
+            result[each.language.code + "_min"] = each.declared_level_min
+            result[each.language.code + "_max"] = each.declared_level_max
+            result[each.language.code + "_reading"] = each.reading_news
+            result[each.language.code + "_exercises"] = each.doing_exercises
+            result[each.language.code + "_cefr_level"] = each.cefr_level
+
+        return result
+
+    def preferred_difficulty_estimator(self):
+        """
+        :return: Difficulty estimator from preferences,
+        otherwise the default one which is FrequencyDifficultyEstimator
+        """
+
+        from zeeguu.core.model.user_preference import UserPreference
+
+        # Must have this import here to avoid circular dependency
+
+        preference = (
+            UserPreference.get_difficulty_estimator(self)
+            or "FleschKincaidDifficultyEstimator"
+        )
+        log(f"Difficulty estimator for user {self.id}: {preference}")
+        return preference
+
+    def text_difficulty(self, text, language):
+
+        estimator = DifficultyEstimatorFactory.get_difficulty_estimator(
+            self.preferred_difficulty_estimator()
+        )
+        return estimator.estimate_difficulty(text, language, self)
+
+    def set_native_language(self, code):
+        self.native_language = Language.find(code)
+
+    def set_learned_language(
+        self, language_code: str, cefr_level: int = None, session=None
+    ):
+        self.learned_language = Language.find(language_code)
+
+        from zeeguu.core.model import UserLanguage
+
+        # disable the exercises and reading for all the other languages
+        all_other_languages = (
+            UserLanguage.query.filter(UserLanguage.user_id == self.id)
+            .filter(UserLanguage.doing_exercises == True)
+            .all()
+        )
+        for each in all_other_languages:
+            each.doing_exercises = False
+            each.reading_news = False
+            if session:
+                session.add(each)
+
+        language = UserLanguage.find_or_create(session, self, self.learned_language)
+        language.reading_news = True
+        language.doing_exercises = True
+        if cefr_level:
+            language.cefr_level = cefr_level
+
+        if session:
+            session.add(language)
+
+    def set_learned_language_level(
+        self, language_code: str, cefr_level: str, session=None
+    ):
+        learned_language = Language.find_or_create(language_code)
+        from zeeguu.core.model import UserLanguage
+
+        language = UserLanguage.find_or_create(session, self, learned_language)
+        language.cefr_level = int(cefr_level)
+        if session:
+            session.add(language)
+
+    @property
+    def last_practiced(self):
+        """Most recent practice across all this user's languages, or None."""
+        from zeeguu.core.model.user_language import UserLanguage
+        return db.session.scalar(
+            select(func.max(UserLanguage.last_practiced))
+            .where(UserLanguage.user_id == self.id)
+        )
+
+    # ************************************************************************
+    # -------------------------------------------------------------------------
+    #                                   Bookmarks
+    # -------------------------------------------------------------------------
+    # ************************************************************************
+
+    def has_bookmarks(self):
+        return self.bookmark_count() > 0
+
+    def bookmarks_to_learn_not_in_pipeline(self):
+        """
+        :return gets all bookmarks that are going to be shown in exercises
+        but haven't been scheduled yet.
+        """
+        from zeeguu.core.word_scheduling.basicSR.basicSR import BasicSRSchedule
+
+        words_not_started_learning = BasicSRSchedule.user_words_not_scheduled(
+            self, None
+        )
+        return words_not_started_learning
+
+    def date_of_last_bookmark(self):
+        """
+        Note: assumes that there are bookmarks!
+        """
+        if self.bookmarks_chronologically():
+            return self.bookmarks_chronologically()[0].time
+
+        return None
+
+    def get_new_bookmarks_to_study(self, bookmarks_count):
+        from zeeguu.core.sql.queries.query_loader import load_query
+        from zeeguu.core.sql.query_building import list_of_dicts_from_query
+        from zeeguu.core.model.bookmark import Bookmark
+
+        query = load_query("words_to_study")
+        result = list_of_dicts_from_query(
+            query,
+            {
+                "user_id": self.id,
+                "language_id": self.learned_language.id,
+                "required_count": bookmarks_count,
+            },
+        )
+        added_bookmarks = []
+        seen_bookmarks = set()
+        for b in result:
+
+            id = b["bookmark_id"]
+            b = Bookmark.find(id)
+
+            b_word = b.user_word.meaning.origin.content.lower()
+            # Avoid the same bookmark
+            if not (b_word in seen_bookmarks):
+                added_bookmarks.append(b)
+                seen_bookmarks.add(b_word)
+
+        return added_bookmarks
+
+    def practiced_user_words_count_this_week(self):
+        """
+        Returns the number of user words that were practiced this week.
+        """
+        from zeeguu.core.model.user_word import UserWord
+        from zeeguu.core.model.exercise import Exercise
+        from zeeguu.core.model.phrase import Phrase
+        from zeeguu.core.model.meaning import Meaning
+
+        today = datetime.date.today()
+        start_of_week = today - datetime.timedelta(days=today.weekday())
+
+        result = (
+            db.session.query(UserWord)
+            .join(Exercise, Exercise.user_word_id == UserWord.id)
+            .join(Meaning, UserWord.meaning_id == Meaning.id)
+            .join(Phrase, Meaning.origin_id == Phrase.id)
+            .filter(UserWord.user_id == self.id)
+            .filter(Exercise.time >= start_of_week)
+            .filter(Phrase.language_id == self.learned_language_id)
+            .distinct()
+            .count()
+        )
+
+        return result
+
+    def exercises_completed_this_week(self):
+        """
+        Returns the total number of exercises completed this week.
+        """
+        from zeeguu.core.model.user_word import UserWord
+        from zeeguu.core.model.exercise import Exercise
+        from zeeguu.core.model.phrase import Phrase
+        from zeeguu.core.model.meaning import Meaning
+
+        today = datetime.date.today()
+        start_of_week = today - datetime.timedelta(days=today.weekday())
+
+        result = (
+            db.session.query(Exercise)
+            .join(UserWord, Exercise.user_word_id == UserWord.id)
+            .join(Meaning, UserWord.meaning_id == Meaning.id)
+            .join(Phrase, Meaning.origin_id == Phrase.id)
+            .filter(UserWord.user_id == self.id)
+            .filter(Exercise.time >= start_of_week)
+            .filter(Phrase.language_id == self.learned_language_id)
+            .count()
+        )
+
+        return result
+
+    def liked_articles(self):
+        from zeeguu.core.model.user_article import UserArticle
+
+        return UserArticle.all_liked_articles_of_user(self)
+
+    def active_during_recent(self, days: int = 30):
+        if not self.has_bookmarks():
+            return False
+
+        import dateutil.relativedelta
+
+        now = datetime.datetime.now()
+        a_while_ago = now - dateutil.relativedelta.relativedelta(days=days)
+        return self.date_of_last_bookmark() > a_while_ago
+
+    def update_last_seen_if_needed(self, session=None):
+        """
+        Update last_seen timestamp, but only once per day to minimize database writes.
+        Also maintains the daily_streak counter.
+        """
+        now = datetime.datetime.now()
+
+        # Only update if last_seen is None or it's a different day
+        if not self.last_seen or self.last_seen.date() < now.date():
+            if not self.last_seen:
+                self.daily_streak = 1
+            elif self.last_seen.date() == now.date() - datetime.timedelta(days=1):
+                self.daily_streak = (self.daily_streak or 0) + 1
+            else:
+                self.daily_streak = 1
+
+            self.last_seen = now
+            if session:
+                session.add(self)
+                # Note: Don't commit here, let the caller decide when to commit
+
+    def add_user_to_cohort(self, cohort, session):
+        from zeeguu.core.model.user_cohort_map import UserCohortMap
+
+        new_cohort = UserCohortMap(user=self, cohort=cohort)
+        session.add(new_cohort)
+        session.commit()
+
+    def cohort_articles_for_user(self):
+        from zeeguu.core.model import Cohort, CohortArticleMap, UserArticle
+
+        all_articles = []
+        try:
+            for c in self.cohorts:
+                cohort = Cohort.find(c.cohort_id)
+                # Get all articles from this cohort
+                cohort_articles = CohortArticleMap.get_articles_for_cohort(cohort)
+
+                # Filter articles by the user's learned language
+                user_language_id = (
+                    self.learned_language_id if self.learned_language else None
+                )
+                for article in cohort_articles:
+                    if article.language_id == user_language_id:
+                        all_articles.append(article)
+
+            # Use the standard helper for proper cache handling
+            return UserArticle.article_infos(self, all_articles, select_appropriate=False)
+        except NoResultFound as e:
+            return []
+
+    def isTeacher(self):
+        from zeeguu.core.model import Teacher
+
+        try:
+            Teacher.query.filter_by(user_id=self.id).one()
+            return True
+        except NoResultFound:
+
+            return False
+
+    @classmethod
+    @sqlalchemy.orm.validates("email")
+    def validate_email(cls, col, email):
+        if any(x.isupper() for x in email):
+            raise ValueError("You should use only lowercase letters for email")
+        if not re.match(cls.EMAIL_VALIDATION_REGEX, email):
+            raise ValueError("Invalid email address")
+        return email
+
+    @classmethod
+    @sqlalchemy.orm.validates("password")
+    def validate_password(cls, col, password):
+        if password is None or len(password) == 0:
+            raise ValueError("Invalid password")
+        return password
+
+    @classmethod
+    @sqlalchemy.orm.validates("name")
+    def validate_name(cls, col, name):
+        if name is None or len(name) == 0:
+            raise ValueError("Invalid username")
+        return name
+
+    @sqlalchemy.orm.validates("username")
+    def validate_username(self, col, username):
+        if username is None:
+            return username
+
+        username = username.strip()
+
+        if len(username) == 0:
+            raise ValueError("Username cannot be empty")
+
+        if len(username) > self.MAX_USERNAME_LENGTH:
+            raise ValueError(
+                f"Username can be at most {self.MAX_USERNAME_LENGTH} characters"
+            )
+
+        if not re.fullmatch(self.USERNAME_VALIDATION_REGEX, username):
+            raise ValueError("Username can only contain letters, numbers, and underscores")
+
+        return username
+
+    def update_password(self, password: str):
+        """
+        Update the user's password using bcrypt (secure, modern algorithm).
+        The bcrypt hash includes the salt, so password_salt field is set to
+        a marker value to indicate bcrypt is being used.
+
+        :param password: str
+        :return:
+        """
+        from zeeguu.logging import log
+
+        log(
+            f"UPDATE_PASSWORD: user_id={self.id}, email='{self.email}' - Generating bcrypt password hash"
+        )
+
+        # Use bcrypt for secure password hashing (includes salt in the hash)
+        self.password = password_hash_bcrypt(password)
+        # Set salt to a marker value indicating bcrypt (salt is embedded in hash)
+        self.password_salt = "bcrypt"
+
+        log(
+            f"UPDATE_PASSWORD SUCCESS: user_id={self.id}, email='{self.email}' - Password updated with bcrypt"
+        )
+
+    def upgrade_to_full_account(self, email, username, password=None):
+        """
+        Upgrade an anonymous account to a full account with real email/username.
+
+        :param email: Real email address
+        :param username: Display name
+        :param password: Optional new password (keeps existing if not provided)
+        :raises ValueError: If user is not anonymous or email is invalid/taken
+        """
+        from zeeguu.logging import log
+
+        if not self.is_anonymous():
+            raise ValueError("Only anonymous accounts can be upgraded")
+
+        email = email.lower().strip()
+
+        # Validate email format
+        if not re.match(self.EMAIL_VALIDATION_REGEX, email):
+            raise ValueError("Invalid email format")
+
+        # Check email not already taken
+        if User.email_exists(email):
+            raise ValueError("Email already in use")
+
+        log(f"UPGRADE_ACCOUNT: user_id={self.id} - Upgrading from anonymous to {email}")
+
+        self.email = email
+        self.name = username
+
+        if password:
+            self.update_password(password)
+
+        log(f"UPGRADE_ACCOUNT SUCCESS: user_id={self.id} - Now {email}")
+
+    def all_reading_sessions(
+        self,
+        after_date=datetime.datetime(1970, 1, 1),
+        before_date=datetime.date.today() + datetime.timedelta(days=1),
+        language_id=None,
+    ):
+        from zeeguu.core.model.user_reading_session import UserReadingSession
+        from zeeguu.core.model.article import Article
+
+        query = zeeguu.core.model.db.session.query(UserReadingSession)
+        query = query.join(Article, Article.id == UserReadingSession.article_id)
+        # TODO: join with Article on language_id
+        # print(language_id)
+
+        query = query.filter(UserReadingSession.user_id == self.id)
+        query = query.filter(UserReadingSession.start_time >= after_date)
+        query = query.filter(UserReadingSession.start_time <= before_date)
+        query = query.order_by(UserReadingSession.start_time)
+
+        if language_id:
+            query = query.filter(Article.language_id == language_id)
+
+        all_sessions = query.all()
+
+        return all_sessions
+
+    def all_bookmarks(
+        self,
+        after_date=None,
+        before_date=None,
+        language_id=None,
+    ):
+        from zeeguu.core.model import Bookmark, Phrase, Meaning, UserWord
+
+        if after_date is None:
+            after_date = datetime.datetime(1970, 1, 1)
+        if before_date is None:
+            before_date = datetime.date.today() + datetime.timedelta(days=1)
+        query = zeeguu.core.model.db.session.query(Bookmark)
+
+        query = (
+            query.join(UserWord, Bookmark.user_word_id == UserWord.id)
+            .join(Meaning, UserWord.meaning_id == Meaning.id)
+            .join(Phrase, Meaning.origin_id == Phrase.id)
+        )
+
+        if language_id == None:
+            query = query.filter(Phrase.language_id == self.learned_language_id)
+        else:
+            query = query.filter(Phrase.language_id == language_id)
+
+        query = query.filter(UserWord.user_id == self.id)
+        query = query.filter(Bookmark.time >= after_date)
+        query = query.filter(Bookmark.time <= before_date)
+        # Include bookmarks that have a source_id OR are from article_preview OR are from exercises
+        query = query.filter(
+            (Bookmark.source_id != None)
+            | (Bookmark.translation_source == "article_preview")
+            | (Bookmark.translation_source == "exercise")
+        )
+        query = query.order_by(Bookmark.time)
+
+        return query.all()
+
+    def all_bookmarks_fit_for_study(self):
+        from zeeguu.core.model.bookmark import Bookmark
+
+        query = zeeguu.core.model.db.session.query(Bookmark)
+        return (query.filter_by(user_id=self.id).filter_by(fit_for_study=True)).all()
+
+    def bookmarks_chronologically(self):
+        from zeeguu.core.model.bookmark import Bookmark
+
+        query = zeeguu.core.model.db.session.query(Bookmark)
+        from zeeguu.core.model.user_word import UserWord
+
+        query.join(UserWord, Bookmark.user_word_id == UserWord.id)
+        return (
+            query.filter(UserWord.user_id == self.id).order_by(Bookmark.time.desc())
+        ).all()
+
+    def starred_bookmarks(self, count):
+        from zeeguu.core.model import Bookmark, Phrase, Meaning, UserWord
+
+        query = zeeguu.core.model.db.session.query(Bookmark)
+        return (
+            query.join(UserWord, Bookmark.user_word_id == UserWord.id)
+            .join(Meaning, UserWord.meaning_id == Meaning.id)
+            .join(Phrase, Meaning.origin_id == Phrase.id)
+            .filter(Phrase.language_id == self.learned_language_id)
+            .filter(UserWord.user_id == self.id)
+            .filter(Bookmark.starred is True)
+            .order_by(Bookmark.time.desc())
+            .limit(count)
+        )
+
+    def learned_bookmarks(self, count=50):
+        from zeeguu.core.model import Bookmark, Phrase, Meaning, UserWord
+
+        query = zeeguu.core.model.db.session.query(Bookmark)
+        learned = (
+            query.join(UserWord, Bookmark.user_word_id == UserWord.id)
+            .join(Meaning, UserWord.meaning_id == Meaning.id)
+            .join(Phrase, Meaning.origin_id == Phrase.id)
+            .filter(Phrase.language_id == self.learned_language_id)
+            .filter(UserWord.user_id == self.id)
+            .filter(UserWord.learned_time != None)
+            .order_by(UserWord.learned_time.desc())
+            .limit(count)
+        )
+
+        return learned
+
+    def total_learned_bookmarks(self):
+        from zeeguu.core.model import Phrase, Meaning, UserWord
+
+        return (
+            zeeguu.core.model.db.session.query(UserWord)
+            .join(Meaning, UserWord.meaning_id == Meaning.id)
+            .join(Phrase, Meaning.origin_id == Phrase.id)
+            .filter(Phrase.language_id == self.learned_language_id)
+            .filter(UserWord.user_id == self.id)
+            .filter(UserWord.learned_time != None)
+            .count()
+        )
+
+    def learned_user_words(self, count=50):
+        """
+        Returns unique learned user words (deduplicated).
+        Unlike learned_bookmarks which can have duplicates for the same word from different contexts,
+        this returns unique user words that have been learned.
+        """
+        from sqlalchemy.orm import joinedload
+        from zeeguu.core.model import Phrase, Meaning, UserWord
+        from zeeguu.core.model.bookmark import Bookmark
+
+        query = zeeguu.core.model.db.session.query(UserWord)
+        learned = (
+            query.join(Meaning, UserWord.meaning_id == Meaning.id)
+            .join(Phrase, Meaning.origin_id == Phrase.id)
+            .options(
+                # Eager load meaning and its relations
+                joinedload(UserWord.meaning)
+                .joinedload(Meaning.origin)
+                .joinedload(Phrase.language),
+                joinedload(UserWord.meaning)
+                .joinedload(Meaning.translation)
+                .joinedload(Phrase.language),
+                # Eager load preferred_bookmark and its relations
+                joinedload(UserWord.preferred_bookmark)
+                .joinedload(Bookmark.text),
+                joinedload(UserWord.preferred_bookmark)
+                .joinedload(Bookmark.context),
+            )
+            .filter(Phrase.language_id == self.learned_language_id)
+            .filter(UserWord.user_id == self.id)
+            .filter(UserWord.learned_time != None)
+            .order_by(UserWord.learned_time.desc())
+            .limit(count)
+        )
+        return learned
+
+    def total_learned_user_words(self):
+        """
+        Returns the count of unique user words that have been learned.
+        """
+        from zeeguu.core.model import Phrase, Meaning, UserWord
+
+        return (
+            zeeguu.core.model.db.session.query(UserWord)
+            .join(Meaning, UserWord.meaning_id == Meaning.id)
+            .join(Phrase, Meaning.origin_id == Phrase.id)
+            .filter(Phrase.language_id == self.learned_language_id)
+            .filter(UserWord.user_id == self.id)
+            .filter(UserWord.learned_time != None)
+            .count()
+        )
+
+    def _datetime_to_date(self, date_time):
+        """
+        we define datetime as being any datetime object,
+        and date as being a datetime object with only the year, month and day part
+        """
+        return date_time.replace(
+            date_time.year, date_time.month, date_time.day, 0, 0, 0, 0
+        )
+
+    def _to_date_dict(self, dict_list, date_key):
+        """
+        :param dict_list: a list of dictionaries
+        :param date_key: the key that maps to the datetime object in the dictionary
+        :return: dictionary with dates mapping to a list of dictionaries
+        """
+        date_dict = dict()
+        for dictionary in dict_list:
+            date = self._datetime_to_date(getattr(dictionary, date_key))
+            date_dict.setdefault(date, []).append(dictionary)
+
+        return date_dict
+
+    def _group_by_date_and_serialize(self, tuple_list, key_name, to_json_func):
+        """
+        :param tuple_list: a list of tuples with
+            1. position: date
+            2. position: list of objects with 'to_json()' method
+        :param key_name: the key name of the final serialized objects in the result list
+        :param kargs: the list of key arguments that should be passed down to the 'to_json()' method
+        :return:
+        """
+        result = []
+
+        for date, object_list in tuple_list:
+            serialized_objects = []
+            for obj in object_list:
+                serialized_objects.append(to_json_func(obj))
+            date_entry = dict(
+                date=date.strftime("%A, %d %B %Y"),
+            )
+            date_entry[key_name] = serialized_objects
+            result.append(date_entry)
+
+        return result
+
+    def reading_sessions_by_day(
+        self, after_date=datetime.datetime(2010, 1, 1), max=42, language_id=None
+    ):
+        """
+        :param after_date: The date from which the reading sessions will be queried
+        :return: a serializable list of of objects containing a date and all the reading sessions belonging to that date
+        """
+
+        reading_sessions = self.all_reading_sessions(
+            after_date, language_id=language_id
+        )
+        date_reading_sessions_dict = self._to_date_dict(
+            dict_list=reading_sessions, date_key="start_time"
+        )
+        sorted_date_reading_sessions_tuples = sorted(
+            date_reading_sessions_dict.items(), reverse=True, key=lambda tup: tup[0]
+        )
+
+        if len(sorted_date_reading_sessions_tuples) > max:
+            sorted_date_reading_sessions_tuples = sorted_date_reading_sessions_tuples[
+                :max
+            ]
+
+        result = self._group_by_date_and_serialize(
+            sorted_date_reading_sessions_tuples,
+            key_name="reading_sessions",
+            to_json_func=lambda rs: rs.to_json(),
+        )
+
+        return result
+
+    def bookmarks_by_date(self, after_date=datetime.datetime(1970, 1, 1)):
+        """
+        :param after_date:
+        :return: a pair of 1. a dict with date-> bookmarks and 2. a sorted list of dates
+        """
+
+        def extract_day_from_date(bookmark):
+            return bookmark, bookmark.time.replace(
+                bookmark.time.year, bookmark.time.month, bookmark.time.day, 0, 0, 0, 0
+            )
+
+        bookmarks = self.all_bookmarks(after_date)
+        bookmarks_by_date = dict()
+
+        for elem in map(extract_day_from_date, bookmarks):
+            bookmarks_by_date.setdefault(elem[1], []).append(elem[0])
+
+        sorted_dates = list(bookmarks_by_date.keys())
+        sorted_dates.sort(reverse=True)
+        return bookmarks_by_date, sorted_dates
+
+    def bookmarks_by_day(
+        self,
+        after_date=None,
+        max=42,
+        with_title=True,
+        with_context=False,
+        language_id=None,
+    ):
+        if after_date is None:
+            after_date = datetime.datetime(2010, 1, 1)
+
+        bookmarks = self.all_bookmarks(after_date, language_id=language_id)
+        date_bookmarks_dict = self._to_date_dict(dict_list=bookmarks, date_key="time")
+        sorted_date_bookmarks = sorted(
+            date_bookmarks_dict.items(), reverse=True, key=lambda tup: tup[0]
+        )
+
+        if len(sorted_date_bookmarks) > max:
+            sorted_date_bookmarks = sorted_date_bookmarks[:max]
+
+        result = self._group_by_date_and_serialize(
+            sorted_date_bookmarks,
+            "bookmarks",
+            lambda bookmark: bookmark.to_json(
+                with_context,
+                with_title=with_title,
+                with_exercise_info=True,
+            ),
+        )
+        return result
+
+    def bookmarks_for_article(
+        self,
+        article_id,
+        with_exercise_info=False,
+        with_title=False,
+        with_tokens=False,
+        good_for_study=False,
+        json=True,
+    ):
+
+        from zeeguu.core.model import Bookmark, Article, UserWord
+
+        json_bookmarks = []
+
+        query = zeeguu.core.model.db.session.query(Bookmark)
+        bookmarks = (
+            query.join(Article, Bookmark.source_id == Article.source_id)
+            .join(UserWord, Bookmark.user_word_id == UserWord.id)
+            .filter(Article.id == article_id)
+            .filter(UserWord.user_id == self.id)
+            .order_by(Bookmark.id.asc())
+            .all()
+        )
+
+        if good_for_study:
+            bookmarks = [each for each in bookmarks if each.should_be_studied()]
+
+        if not json:
+            return bookmarks
+
+        for each in bookmarks:
+            json_bookmarks.append(
+                each.as_dictionary(
+                    with_exercise_info=with_exercise_info,
+                    with_title=with_title,
+                    with_context_tokenized=with_tokens,
+                )
+            )
+
+        return json_bookmarks
+
+    def user_words_for_article(
+        self,
+        article_id,
+        good_for_study=False,
+        json=True,
+    ):
+        from zeeguu.core.model import Bookmark, Article, UserWord, Meaning, Phrase
+        from zeeguu.core.model.text import Text
+        from zeeguu.core.model.bookmark_context import BookmarkContext
+
+        # Get UserWords for this article through bookmarks
+        # Use eager loading to avoid N+1 queries when converting to JSON
+        query = zeeguu.core.model.db.session.query(UserWord)
+        user_words = (
+            query
+            .options(
+                # Eager load meaning and its relations
+                joinedload(UserWord.meaning)
+                .joinedload(Meaning.origin)
+                .joinedload(Phrase.language),
+                joinedload(UserWord.meaning)
+                .joinedload(Meaning.translation)
+                .joinedload(Phrase.language),
+                # Eager load preferred_bookmark and its relations
+                joinedload(UserWord.preferred_bookmark)
+                .joinedload(Bookmark.text),
+                joinedload(UserWord.preferred_bookmark)
+                .joinedload(Bookmark.context),
+                joinedload(UserWord.preferred_bookmark)
+                .joinedload(Bookmark.source),
+            )
+            .join(Bookmark, UserWord.id == Bookmark.user_word_id)
+            .join(Article, Bookmark.source_id == Article.source_id)
+            .filter(Article.id == article_id)
+            .filter(UserWord.user_id == self.id)
+            .distinct()  # Avoid duplicates if multiple bookmarks exist for same word
+            .order_by(UserWord.id.asc())
+            .all()
+        )
+
+        if good_for_study:
+            user_words = [word for word in user_words if word.should_be_studied()]
+
+        if not json:
+            return user_words
+
+        # Batch-load all schedules in ONE query to avoid N+1 problem
+        # Use FourLevelsPerWord (the actual subclass) to get proper polymorphic behavior
+        from zeeguu.core.word_scheduling.basicSR.four_levels_per_word import FourLevelsPerWord
+
+        user_word_ids = [uw.id for uw in user_words]
+        if user_word_ids:
+            schedules = FourLevelsPerWord.query.filter(
+                FourLevelsPerWord.user_word_id.in_(user_word_ids)
+            ).all()
+            schedule_map = {s.user_word_id: s for s in schedules}
+        else:
+            schedule_map = {}
+
+        # Get cached tokenized contexts
+        context_map = {}
+        for word in user_words:
+            try:
+                bm = word.preferred_bookmark
+                if bm and bm.context:
+                    tokenized = bm.context.get_tokenized(session=zeeguu.core.model.db.session)
+                    if tokenized:
+                        context_map[word.id] = tokenized
+            except Exception:
+                pass
+
+        # Convert to JSON format with pre-loaded schedules and tokenized contexts
+        json_words = []
+        for word in user_words:
+            schedule = schedule_map.get(word.id)
+            tokenized = context_map.get(word.id)
+            json_words.append(word.as_dictionary(
+                schedule=schedule,
+                pre_tokenized_context=tokenized
+            ))
+
+        return json_words
+
+    def bookmarks_by_url_by_date(self, n_days=365):
+        bookmarks_list, dates = self.bookmarks_by_date()
+
+        most_recent_n_days = dates[0:n_days]
+
+        urls_by_date = {}
+        texts_by_url = {}
+        for date in most_recent_n_days:
+            for bookmark in bookmarks_list[date]:
+                urls_by_date.setdefault(date, set()).add(bookmark.text.url)
+                texts_by_url.setdefault(bookmark.text.url, set()).add(bookmark.text)
+        return most_recent_n_days, urls_by_date, texts_by_url
+
+    def bookmark_counts_by_date(self):
+        """returns array with added bookmark amount per each date for the last year
+        this function is for the activity_graph, generates data
+        """
+
+        # compute bookmark_counts_by_date
+        year = datetime.date.today().year - 1
+        month = datetime.date.today().month
+        bookmarks_dict, dates = self.bookmarks_by_date(
+            datetime.datetime(year, month, 1)
+        )
+
+        counts = []
+        for date in dates:
+            the_date = date.strftime("%Y-%m-%d")
+            the_count = len(bookmarks_dict[date])
+            counts.append(dict(date=the_date, count=the_count))
+
+        bookmark_counts_by_date = json.dumps(counts)
+        return bookmark_counts_by_date
+
+    def learner_stats_data(self):
+        """returns array with learned and learning words count per each month for the last year
+        this function is for the line_graph, generates data
+        """
+
+        # compute learner_stats_data
+        from tools import compute_learner_stats
+
+        learner_stats_data = compute_learner_stats(self)
+
+        return learner_stats_data
+
+    def user_words(self):
+        return [b.user_word.meaning.origin.content for b in self.all_bookmarks()]
+
+    def bookmark_count(self):
+        return len(self.all_bookmarks())
+
+    def word_count(self):
+        return len(self.user_words())
+
+    def cefr_level_for_learned_language(self):
+        from zeeguu.core.model import UserLanguage
+
+        lang_info = UserLanguage.with_language_id(self.learned_language_id, self)
+        return ["A1", "A2", "B1", "B2", "C1", "C2"][lang_info.cefr_level - 1]
+
+    def get_all_languages(self):
+        """Get all languages that this user has words in."""
+        from zeeguu.core.model import Language, Phrase, Meaning, UserWord
+
+        languages = (
+            zeeguu.core.model.db.session.query(Language)
+            .join(Phrase, Phrase.language_id == Language.id)
+            .join(Meaning, Meaning.origin_id == Phrase.id)
+            .join(UserWord, UserWord.meaning_id == Meaning.id)
+            .filter(UserWord.user_id == self.id)
+            .distinct()
+            .all()
+        )
+
+        return languages
+
+    def levels_for(self, language: Language):
+        """
+
+            the level that the system considers for this user
+
+            TODO: must think better about this...
+
+        :param language:
+
+        :return: pair of level_min and level_max for this user
+
+        """
+        from zeeguu.core.model import UserLanguage
+
+        lang_info = UserLanguage.with_language_id(language.id, self)
+
+        # default values, for when there's no corresponding setting
+        declared_level_min = -1
+        declared_level_max = 11
+
+        # start from user's levels if they exist
+        if lang_info.declared_level_min:
+            if lang_info.declared_level_min > 0:
+                declared_level_min = lang_info.declared_level_min
+
+        if lang_info.declared_level_max:
+            if lang_info.declared_level_max < 10:
+                declared_level_max = lang_info.declared_level_max
+
+        if lang_info.cefr_level and lang_info.cefr_level > 0:
+            declared_level_min, declared_level_max = CEFR_TO_DIFFICULTY_MAPPING[
+                lang_info.cefr_level
+            ]
+
+        # ML, Sept 12, 2024
+        # This is too complicated stuff for something that I don't even remmeber anybody asking for
+        # The teacher overriding the difficulty levels of the student with micro granularity seems
+        # like more trouble than necessary.
+        # Commenting it out for now and I expect that we'll remove it eventually completely
+        # # If there's cohort info, consider it
+        # for cohortMap in self.cohorts:
+        #     each_cohort = cohortMap.cohort
+        #     if each_cohort.language and each_cohort.language == language:
+        #         if each_cohort.declared_level_min:
+        #             # min will be the max between the teacher's min and the student's min
+        #             # this means that if the teacher says 5 is min, the student can't reduce it...
+        #             # otoh, if the teacher says 5 is the min but the student wants 7 that will work
+        #             declared_level_min = max(
+        #                 declared_level_min, each_cohort.declared_level_min
+        #             )
+        #         if each_cohort.declared_level_max:
+        #             # a student is limited to the upper limit of his cohort
+        #             declared_level_max = min(
+        #                 declared_level_max, each_cohort.declared_level_max
+        #             )
+
+        return max(declared_level_min, 0), min(declared_level_max, 10)
+
+    def has_feature(self, feature_name):
+        from zeeguu.core.user_feature_toggles import is_feature_enabled_for_user
+
+        return is_feature_enabled_for_user(feature_name, self)
+
+    def get_daily_audio_status(self):
+        """
+        Get the status of daily audio lesson for this user.
+        Returns: None (unfeasible), "available", "generating", "ready", "in_progress", "completed"
+        """
+        from zeeguu.core.model import AudioLessonGenerationProgress, DailyAudioLesson
+        from datetime import datetime, timezone, timedelta
+
+        # Check if generation is in progress
+        active_progress = AudioLessonGenerationProgress.find_active_for_user(self)
+        if active_progress:
+            return "generating"
+
+        # Check for today's lesson (using UTC for simplicity)
+        today_start = datetime.now(timezone.utc).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        ).replace(tzinfo=None)
+        today_end = today_start + timedelta(days=1)
+
+        lesson = (
+            DailyAudioLesson.query.filter_by(
+                user_id=self.id, language_id=self.learned_language_id
+            )
+            .filter(DailyAudioLesson.created_at >= today_start)
+            .filter(DailyAudioLesson.created_at < today_end)
+            .first()
+        )
+
+        if not lesson:
+            # Check if generation is feasible before showing "available"
+            if not self._is_audio_lesson_feasible():
+                return None  # Unfeasible - don't show any dot
+            return "available"  # No lesson yet, user can generate one
+
+        if lesson.is_completed:
+            return "completed"
+        elif lesson.is_paused or (lesson.pause_position_seconds or 0) > 0:
+            return "in_progress"
+        else:
+            return "ready"
+
+    def _is_audio_lesson_feasible(self):
+        """Check if audio lesson generation is feasible for this user."""
+        from zeeguu.core.audio_lessons.voice_config import is_language_supported_for_audio
+        from zeeguu.core.audio_lessons.word_selector import select_words_for_audio_lesson
+
+        # Check language support
+        if not self.learned_language or not self.native_language:
+            return False
+
+        if not is_language_supported_for_audio(self.learned_language.code):
+            return False
+
+        if not is_language_supported_for_audio(self.native_language.code):
+            return False
+
+        # Check if enough words available
+        try:
+            selected_words, _ = select_words_for_audio_lesson(
+                self, 3, return_unscheduled_info=True
+            )
+            return len(selected_words) >= 2
+        except Exception:
+            return False
+
+    @classmethod
+    def find_all(cls):
+        query = zeeguu.core.model.db.session.query(User)
+        return query.all()
+
+    @classmethod
+    def find(cls, email):
+        query = zeeguu.core.model.db.session.query(User)
+        # NOTE: email is stored in lowercase and the collation is utf8mb4_unicode_ci
+        # This means that the database will handle case-insensitivity
+        return query.filter(User.email == email).one()
+
+    @classmethod
+    def email_exists(cls, email):
+        query = zeeguu.core.model.db.session.query(User)
+        try:
+            # NOTE: email is stored in lowercase and the collation is utf8mb4_unicode_ci
+            # This means that the database will handle case-insensitivity
+            query.filter(User.email == email).one()
+            return True
+        except sqlalchemy.orm.exc.NoResultFound:
+            return False
+
+    @classmethod
+    def find_by_id(cls, id):
+        return User.query.filter(User.id == id).one()
+
+    @classmethod
+    def find_by_username(cls, username):
+        try:
+            return User.query.filter(User.username == username).one()
+        except NoResultFound:
+            return None
+
+    @classmethod
+    def search(cls, current_user_id: int, term: str, limit: int = 20):
+        """
+        Search users by username (partial match) or exact name.
+        Returns a list of (User, UserAvatar) tuples. Callers are responsible
+        for annotating results with friendship / friend-request data.
+        """
+        from sqlalchemy import or_
+        from zeeguu.core.model.user_avatar import UserAvatar
+
+        term = term.lower()
+        if not term:
+            return []
+
+        # The 'like()' acts just as 'ilike()' here due to the utf8mb4_unicode_ci collation.
+        # '%' and '_' are special in SQL LIKE patterns, so they are escaped first.
+        # '\' is escaped first to avoid double-escaping.
+        escaped = term.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+        filters = [
+            cls.username.like(f"%{escaped}%", escape="\\"),  # partial match for username
+            cls.name == term,                                  # exact match for name
+        ]
+
+        return (
+            db.session.query(cls, UserAvatar)
+            .select_from(cls)
+            .filter(or_(*filters), cls.id != current_user_id, ~cls.email.endswith(cls.ANONYMOUS_EMAIL_DOMAIN))
+            .outerjoin(UserAvatar, UserAvatar.user_id == cls.id)
+            .limit(limit)
+            .all()
+        )
+
+    @classmethod
+    def username_exists(cls, username: str):
+        try:
+            # Username are using utf8mb4_unicode_ci collation, so the database will handle case-insensitivity
+            cls.query.filter(cls.username == username).one()
+            return True
+        except NoResultFound:
+            return False
+
+    @classmethod
+    def all_recent_user_ids(cls, days=90):
+        from zeeguu.core.model import UserActivityData
+
+        sometime_ago = datetime.datetime.now() - datetime.timedelta(days=days)
+
+        query = zeeguu.core.model.db.session.query(UserActivityData)
+        recent_activities = query.filter(UserActivityData.time > sometime_ago).all()
+        user_ids = set([each.user_id for each in recent_activities])
+        return user_ids
+
+    @classmethod
+    def exists(cls, user):
+
+        query = zeeguu.core.model.db.session.query(User)
+        try:
+            query.filter_by(email=user.email, id=user.id).one()
+            return True
+        except NoResultFound:
+            return False
+
+    @classmethod
+    def authorize(cls, email, password):
+        from zeeguu.logging import log
+
+        try:
+            log(f"AUTHORIZE: Looking up user with email '{email}'")
+            user = cls.find(email)
+            log(f"AUTHORIZE: Found user {user.id} for email '{email}'")
+
+            stored_hash = user.password
+
+            # Check if user has bcrypt hash (modern) or legacy SHA1 hash
+            if is_bcrypt_hash(stored_hash):
+                # Modern bcrypt verification
+                log(f"AUTHORIZE: user_id={user.id} - Using bcrypt verification")
+                if verify_password_bcrypt(password, stored_hash):
+                    log(
+                        f"AUTHORIZE SUCCESS: user_id={user.id}, email '{email}' - bcrypt verification passed"
+                    )
+                    return user
+                else:
+                    log(
+                        f"AUTHORIZE FAILED: user_id={user.id}, email '{email}' - bcrypt verification failed"
+                    )
+                    return None
+            else:
+                # Legacy SHA1 hash - verify and migrate to bcrypt
+                log(f"AUTHORIZE: user_id={user.id} - Using legacy SHA1 verification (will migrate to bcrypt)")
+                # Get salt bytes - handle both old format (raw string) and new format (hex)
+                try:
+                    salt_bytes = bytes.fromhex(user.password_salt)
+                except ValueError:
+                    # Old format: salt stored as raw string, encode it
+                    salt_bytes = user.password_salt.encode("utf-8")
+
+                provided_password_hash = password_hash(password, salt_bytes)
+
+                if provided_password_hash == stored_hash:
+                    log(
+                        f"AUTHORIZE SUCCESS: user_id={user.id}, email '{email}' - Legacy hash matches, migrating to bcrypt"
+                    )
+                    # Migrate to bcrypt on successful login
+                    user.update_password(password)
+                    db.session.commit()
+                    log(f"AUTHORIZE: user_id={user.id} - Successfully migrated to bcrypt")
+                    return user
+                else:
+                    log(
+                        f"AUTHORIZE FAILED: user_id={user.id}, email '{email}' - Legacy hash mismatch"
+                    )
+                    return None
+
+        except sqlalchemy.orm.exc.NoResultFound:
+            log(f"AUTHORIZE FAILED: No user found with email '{email}'")
+            warning(f"Login attempt with wrong email: {email}")
+            return None
+        except Exception as e:
+            log(
+                f"AUTHORIZE ERROR: Exception during authorization for email '{email}': {str(e)}"
+            )
+            return None
+
+    @classmethod
+    def authorize_anonymous(cls, uuid, password):
+        email = uuid + cls.ANONYMOUS_EMAIL_DOMAIN
+        return cls.authorize(email, password)
+
+    def create_default_user_preference(self):
+        from zeeguu.core.model.user_preference import UserPreference
+
+        UserPreference.find_or_create(
+            db.session, self, UserPreference.PRODUCTIVE_EXERCISES, "true"
+        )

@@ -1,0 +1,262 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/article_upload.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/article_upload.py (<b>185</b> lines of code) (<a href="article_upload.py">raw</a>):</h3>
+<div id="editor">&quot;&quot;&quot;Endpoints for ArticleUpload &mdash; lightweight per-user ingestion entity.&quot;&quot;&quot;
+import flask
+from flask import request
+from sqlalchemy.orm.exc import NoResultFound
+
+from zeeguu.core.model import Article, ArticleUpload, User
+from zeeguu.core.model.personal_copy import PersonalCopy
+from zeeguu.core.model.user_article import UserArticle
+from zeeguu.api.utils.json_result import json_result
+from zeeguu.api.utils.route_wrappers import cross_domain, requires_session
+
+from . import api, db_session
+
+_DEFAULT_CEFR_LEVEL = &quot;A2&quot;
+
+
+def _find_upload_or_404(upload_id, user):
+    upload = ArticleUpload.find_by_id(upload_id)
+    if not upload:
+        flask.abort(404, &quot;Upload not found&quot;)
+    if upload.user_id != user.id:
+        flask.abort(403, &quot;Upload belongs to another user&quot;)
+    return upload
+
+
+def _promote_upload_or_abort(upload):
+    from zeeguu.core.content_retriever.crawler_exceptions import (
+        FailedToParseWithReadabilityServer,
+    )
+
+    try:
+        return Article.find_or_create(
+            db_session,
+            upload.url.as_string(),
+            html_content=upload.raw_html,
+            text_content=upload.text_content,
+            title=upload.title,
+            author=upload.author,
+            image_url=upload.image_url,
+            source_upload_id=upload.id,
+        )
+    except NoResultFound:
+        flask.abort(406, &quot;Language not supported&quot;)
+    except FailedToParseWithReadabilityServer:
+        flask.abort(422, &quot;Could not parse article content&quot;)
+
+
+def _user_cefr_level(user):
+    try:
+        return user.cefr_level_for_learned_language()
+    except Exception:
+        return _DEFAULT_CEFR_LEVEL
+
+
+def _ensure_personal_copy(user, article):
+    if not PersonalCopy.exists_for(user, article):
+        PersonalCopy.make_for(user, article, db_session)
+
+
+@api.route(&quot;/article_upload/create&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def article_upload_create():
+    from zeeguu.core.model.url import Url
+
+    url = request.form.get(&quot;url&quot;, &quot;&quot;).strip()
+    if not url:
+        flask.abort(400, &quot;url required&quot;)
+
+    raw_html = request.form.get(&quot;raw_html&quot;) or None
+    text_content = request.form.get(&quot;text_content&quot;) or None
+    title = request.form.get(&quot;title&quot;) or None
+    image_url = request.form.get(&quot;image_url&quot;) or None
+    author = request.form.get(&quot;author&quot;) or None
+
+    if not raw_html and not text_content:
+        flask.abort(400, &quot;raw_html or text_content required&quot;)
+
+    user = User.find_by_id(flask.g.user_id)
+
+    # Short-circuit re-sends of the same URL.
+    url_obj = Url.find_or_create(db_session, url, title=title or &quot;&quot;)
+    existing = ArticleUpload.query.filter_by(user_id=user.id, url_id=url_obj.id).first()
+    if existing:
+        return json_result(existing.as_dictionary())
+
+    upload = ArticleUpload.find_or_create(
+        db_session,
+        user=user,
+        url_string=url,
+        raw_html=raw_html,
+        text_content=text_content,
+        title=title,
+        image_url=image_url,
+        author=author,
+    )
+    return json_result(upload.as_dictionary())
+
+
+@api.route(&quot;/article_upload/&lt;int:upload_id&gt;&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def article_upload_get(upload_id):
+    user = User.find_by_id(flask.g.user_id)
+    upload = _find_upload_or_404(upload_id, user)
+    return json_result(upload.as_dictionary())
+
+
+@api.route(&quot;/article_upload/&lt;int:upload_id&gt;/promote_to_article&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def article_upload_promote(upload_id):
+    user = User.find_by_id(flask.g.user_id)
+    upload = _find_upload_or_404(upload_id, user)
+
+    article = _promote_upload_or_abort(upload)
+    if not article.cefr_assessment or not article.cefr_assessment.llm_cefr_level:
+        article.assess_cefr_level(db_session)
+
+    _ensure_personal_copy(user, article)
+
+    return json_result(UserArticle.user_article_info(user, article, with_content=True))
+
+
+@api.route(&quot;/article_upload/&lt;int:upload_id&gt;/simplify&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def article_upload_simplify(upload_id):
+    from zeeguu.core.llm_services.simplification_and_classification import (
+        create_simplified_version_from_upload,
+    )
+
+    user = User.find_by_id(flask.g.user_id)
+    upload = _find_upload_or_404(upload_id, user)
+
+    user_level = _user_cefr_level(user)
+
+    existing = Article.query.filter_by(
+        source_upload_id=upload.id, cefr_level=user_level
+    ).first()
+    simplified = existing or create_simplified_version_from_upload(
+        db_session, upload, user_level
+    )
+    if simplified is None:
+        flask.abort(500, &quot;Could not simplify this upload&quot;)
+
+    _ensure_personal_copy(user, simplified)
+
+    return json_result(
+        UserArticle.user_article_info(user, simplified, with_content=True)
+    )
+
+
+@api.route(&quot;/article_upload/&lt;int:upload_id&gt;/translate_and_adapt&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def article_upload_translate_and_adapt(upload_id):
+    from zeeguu.core.llm_services.simplification_service import SimplificationService
+    from zeeguu.core.model import Language
+    from zeeguu.core.model.url import Url
+    from zeeguu.core.model.source import Source
+    from zeeguu.core.model.source_type import SourceType
+    from datetime import datetime
+
+    user = User.find_by_id(flask.g.user_id)
+    upload = _find_upload_or_404(upload_id, user)
+
+    user_level = _user_cefr_level(user)
+    target_language = user.learned_language.code
+    source_language = upload.language.code if upload.language else &quot;unknown&quot;
+
+    translated_url_key = (
+        f&quot;{upload.url.as_string()}&quot;
+        f&quot;#translated-from-{source_language}-to-{target_language}-{user_level}&quot;
+    )
+
+    existing_article = Article.find(translated_url_key)
+    if existing_article:
+        _ensure_personal_copy(user, existing_article)
+        uai = UserArticle.user_article_info(user, existing_article, with_content=True)
+        uai[&quot;is_translated&quot;] = True
+        uai[&quot;source_language&quot;] = source_language
+        return json_result(uai)
+
+    content = upload.text_content or upload.raw_html or &quot;&quot;
+    title = upload.title or &quot;&quot;
+
+    service = SimplificationService()
+    result = service.translate_and_adapt(
+        title=title,
+        content=content,
+        source_language=source_language,
+        target_language=target_language,
+        target_level=user_level,
+    )
+    if not result:
+        flask.abort(500, &quot;Translation failed&quot;)
+
+    translated_url = Url.find_or_create(db_session, translated_url_key)
+    target_lang_obj = Language.find(target_language)
+    source_type = SourceType.find_by_type(SourceType.ARTICLE)
+    source_obj = Source.find_or_create(
+        db_session, result[&quot;content&quot;], source_type, target_lang_obj, 0
+    )
+
+    clean_summary = result.get(&quot;summary&quot;) or (result[&quot;content&quot;][:200] + &quot;...&quot;)
+
+    translated_article = Article(
+        translated_url,
+        result[&quot;title&quot;],
+        None,
+        source_obj,
+        clean_summary,
+        datetime.now(),
+        None,
+        target_lang_obj,
+        result[&quot;content&quot;],
+        None,
+    )
+    translated_article.cefr_level = user_level
+    translated_article.source_upload_id = upload.id
+    if upload.image_url:
+        translated_article.img_url = Url.find_or_create(db_session, upload.image_url)
+
+    db_session.add(translated_article)
+    db_session.commit()
+
+    translated_article.create_article_fragments(db_session)
+    db_session.commit()
+
+    _ensure_personal_copy(user, translated_article)
+
+    uai = UserArticle.user_article_info(user, translated_article, with_content=True)
+    uai[&quot;is_translated&quot;] = True
+    uai[&quot;source_language&quot;] = source_language
+    return json_result(uai)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

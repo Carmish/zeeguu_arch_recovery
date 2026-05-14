@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+    .node {
+        cursor: pointer;
+    }
+
+    .node:hover {
+        stroke: #000;
+        stroke-width: 1.5px;
+    }
+
+    .node--leaf {
+        fill: white;
+    }
+
+    .label {
+        font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+        text-anchor: middle;
+        text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+    }
+
+    .label,
+    .node--root,
+    .node--leaf {
+        pointer-events: none;
+    }
+
+</style>
+<svg width="960" height="960"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+    var svg = d3.select("svg"),
+        margin = 20,
+        diameter = +svg.attr("width"),
+        g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+    var color = d3.scaleLinear()
+        .domain([-1, 5])
+        .range(["hsl(152,80%,100%)", "hsl(228,30%,40%)"])
+        .interpolate(d3.interpolateHcl);
+
+    var pack = d3.pack()
+        .size([diameter - margin, diameter - margin])
+        .padding(2);
+
+
+    var root = {
+        "name": "cluster",
+        "children": [ {
+  "name" : "stanza_service",
+  "color" : "",
+  "size" : 0,
+  "children" : [ {
+    "name" : "requirements.txt",
+    "color" : "",
+    "size" : 7,
+    "children" : [ ]
+  } ]
+}, {
+  "name" : "zeeguu",
+  "color" : "",
+  "size" : 0,
+  "children" : [ {
+    "name" : "core",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "word_filter",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "data",
+        "color" : "",
+        "size" : 0,
+        "children" : [ {
+          "name" : "README.md",
+          "color" : "",
+          "size" : 3,
+          "children" : [ ]
+        }, {
+          "name" : "bad-words",
+          "color" : "",
+          "size" : 0,
+          "children" : [ {
+            "name" : "README.md",
+            "color" : "",
+            "size" : 45,
+            "children" : [ ]
+          }, {
+            "name" : "USERS.md",
+            "color" : "",
+            "size" : 24,
+            "children" : [ ]
+          } ]
+        } ]
+      } ]
+    }, {
+      "name" : "test",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "test_data",
+        "color" : "",
+        "size" : 0,
+        "children" : [ {
+          "name" : "spiegel_nancy.txt",
+          "color" : "",
+          "size" : 8,
+          "children" : [ ]
+        }, {
+          "name" : "verdensbedste_jorde.txt",
+          "color" : "",
+          "size" : 35,
+          "children" : [ ]
+        }, {
+          "name" : "der_kleine_prinz.txt",
+          "color" : "",
+          "size" : 38,
+          "children" : [ ]
+        }, {
+          "name" : "random_emails.txt",
+          "color" : "",
+          "size" : 51,
+          "children" : [ ]
+        }, {
+          "name" : "spiegel_venezuela.txt",
+          "color" : "",
+          "size" : 14,
+          "children" : [ ]
+        }, {
+          "name" : "random_urls.txt",
+          "color" : "",
+          "size" : 60,
+          "children" : [ ]
+        }, {
+          "name" : "jp_article_example.txt",
+          "color" : "",
+          "size" : 8,
+          "children" : [ ]
+        }, {
+          "name" : "faz_leichtathletik.txt",
+          "color" : "",
+          "size" : 30,
+          "children" : [ ]
+        }, {
+          "name" : "cnn_kathmandu.txt",
+          "color" : "",
+          "size" : 20,
+          "children" : [ ]
+        }, {
+          "name" : "verdensbedste_indonesien.txt",
+          "color" : "",
+          "size" : 25,
+          "children" : [ ]
+        } ]
+      } ]
+    }, {
+      "name" : "elastic",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "elastic_queries.md",
+        "color" : "",
+        "size" : 172,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "audio_lessons",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "prompts",
+        "color" : "",
+        "size" : 0,
+        "children" : [ {
+          "name" : "prompt_teacher_challenges_dialogue_only.txt",
+          "color" : "",
+          "size" : 42,
+          "children" : [ ]
+        }, {
+          "name" : "lesson_generation_prompt_v0.txt",
+          "color" : "",
+          "size" : 29,
+          "children" : [ ]
+        }, {
+          "name" : "meaning_lesson--teacher_challenges_both_dialogue_and_beyond.txt",
+          "color" : "",
+          "size" : 42,
+          "children" : [ ]
+        }, {
+          "name" : "dialogue_lesson--situation-v1.txt",
+          "color" : "",
+          "size" : 38,
+          "children" : [ ]
+        }, {
+          "name" : "meaning_lesson--teacher_challenges_both_dialogue_and_beyond-v2.txt",
+          "color" : "",
+          "size" : 40,
+          "children" : [ ]
+        }, {
+          "name" : "dialogue_lesson--topic-v1.txt",
+          "color" : "",
+          "size" : 36,
+          "children" : [ ]
+        } ]
+      } ]
+    }, {
+      "name" : "diagrams",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "reading_sessions.svg",
+        "color" : "",
+        "size" : 63,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "language",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "ML_CLASSIFIER_README.md",
+        "color" : "",
+        "size" : 105,
+        "children" : [ ]
+      }, {
+        "name" : "PHASE_1_IMPLEMENTATION_COMPLETE.md",
+        "color" : "",
+        "size" : 178,
+        "children" : [ ]
+      }, {
+        "name" : "RECOMMENDATION_ML_AS_PRIMARY.md",
+        "color" : "",
+        "size" : 238,
+        "children" : [ ]
+      }, {
+        "name" : "IMPLEMENTATION_DECISIONS.md",
+        "color" : "",
+        "size" : 511,
+        "children" : [ ]
+      }, {
+        "name" : "README_ML_DIFFICULTY_EVALUATION.md",
+        "color" : "",
+        "size" : 198,
+        "children" : [ ]
+      }, {
+        "name" : "ML_VS_LLM_ANALYSIS.md",
+        "color" : "",
+        "size" : 100,
+        "children" : [ ]
+      }, {
+        "name" : "TEACHER_CEFR_OVERRIDE_FEATURE.md",
+        "color" : "",
+        "size" : 164,
+        "children" : [ ]
+      }, {
+        "name" : "EVALUATION_SUMMARY.md",
+        "color" : "",
+        "size" : 106,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "model",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "BLOCKQUOTE_IMPLEMENTATION.md",
+        "color" : "",
+        "size" : 209,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "content_cleaning",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "data",
+        "color" : "",
+        "size" : 0,
+        "children" : [ {
+          "name" : "junk_patterns_found.json",
+          "color" : "",
+          "size" : 1082,
+          "children" : [ ]
+        } ]
+      } ]
+    }, {
+      "name" : "ml_models",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "binary",
+        "color" : "",
+        "size" : 0,
+        "children" : [ {
+          "name" : "tfidf_multi_paywall_detect_metadata.json",
+          "color" : "",
+          "size" : 9,
+          "children" : [ ]
+        } ]
+      } ]
+    } ]
+  } ]
+}, {
+  "name" : "archlens-new.json",
+  "color" : "",
+  "size" : 127,
+  "children" : [ ]
+}, {
+  "name" : "tools",
+  "color" : "",
+  "size" : 0,
+  "children" : [ {
+    "name" : "migrations",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "README.md",
+      "color" : "",
+      "size" : 9,
+      "children" : [ ]
+    } ]
+  }, {
+    "name" : "audio-engleza",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "README.md",
+      "color" : "",
+      "size" : 158,
+      "children" : [ ]
+    }, {
+      "name" : "basic_english_for_elderly_romanian.txt",
+      "color" : "",
+      "size" : 105,
+      "children" : [ ]
+    } ]
+  }, {
+    "name" : "user_word_integrity",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "README_INTEGRITY_CHECKS.md",
+      "color" : "",
+      "size" : 202,
+      "children" : [ ]
+    } ]
+  } ]
+}, {
+  "name" : "WORDSTATS_1.1.0_DEPLOYED.md",
+  "color" : "",
+  "size" : 96,
+  "children" : [ ]
+}, {
+  "name" : "requirements.txt",
+  "color" : "",
+  "size" : 84,
+  "children" : [ ]
+}, {
+  "name" : "WORDSTATS_UPDATE.md",
+  "color" : "",
+  "size" : 69,
+  "children" : [ ]
+}, {
+  "name" : "diagrams",
+  "color" : "",
+  "size" : 0,
+  "children" : [ {
+    "name" : "old",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "zeeguu-api-top-level-view-depth-1.json",
+      "color" : "",
+      "size" : 1541,
+      "children" : [ ]
+    }, {
+      "name" : "zeeguu-api-content-retrieval.json",
+      "color" : "",
+      "size" : 171,
+      "children" : [ ]
+    }, {
+      "name" : "zeeguu-api-inside-core.json",
+      "color" : "",
+      "size" : 423,
+      "children" : [ ]
+    }, {
+      "name" : "zeeguu-api-inside-api.json",
+      "color" : "",
+      "size" : 641,
+      "children" : [ ]
+    } ]
+  } ]
+}, {
+  "name" : "test_durations.txt",
+  "color" : "",
+  "size" : 33,
+  "children" : [ ]
+}, {
+  "name" : "REFACTORINGS-TODO.md",
+  "color" : "",
+  "size" : 26,
+  "children" : [ ]
+}, {
+  "name" : "FAQ.md",
+  "color" : "",
+  "size" : 11,
+  "children" : [ ]
+}, {
+  "name" : "truckconfig.json",
+  "color" : "",
+  "size" : 6,
+  "children" : [ ]
+}, {
+  "name" : "README.md",
+  "color" : "",
+  "size" : 44,
+  "children" : [ ]
+}, {
+  "name" : "NICE-DECISIONS.md",
+  "color" : "",
+  "size" : 27,
+  "children" : [ ]
+}, {
+  "name" : "archlens.json",
+  "color" : "",
+  "size" : 148,
+  "children" : [ ]
+}, {
+  "name" : "UpdateToTopics.md",
+  "color" : "",
+  "size" : 34,
+  "children" : [ ]
+}, {
+  "name" : "inprogress.md",
+  "color" : "",
+  "size" : 70,
+  "children" : [ ]
+}, {
+  "name" : "CODING-GUIDELINES.md",
+  "color" : "",
+  "size" : 3,
+  "children" : [ ]
+}, {
+  "name" : "CHANGES-2025-11-04.md",
+  "color" : "",
+  "size" : 360,
+  "children" : [ ]
+}, {
+  "name" : "CONTEXT_ARCHITECTURE.md",
+  "color" : "",
+  "size" : 78,
+  "children" : [ ]
+}, {
+  "name" : "CLAUDE.md",
+  "color" : "",
+  "size" : 117,
+  "children" : [ ]
+}, {
+  "name" : "TopicAssignments.md",
+  "color" : "",
+  "size" : 56,
+  "children" : [ ]
+} ]
+    }
+
+    root = d3.hierarchy(root)
+        .sum(function (d) {
+            return d.size;
+        })
+        .sort(function (a, b) {
+            return b.value - a.value;
+        });
+
+    var focus = root,
+        nodes = pack(root).descendants(),
+        view;
+
+    var circle = g.selectAll("circle")
+        .data(nodes)
+        .enter().append("circle")
+        .attr("class", function (d) {
+            return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root";
+        })
+        .style("fill", function (d) {
+            return d.children ? color(d.depth) : (d.data.color ? d.data.color : null);
+        })
+        .on("click", function (d) {
+            if (focus !== d) zoom(d), d3.event.stopPropagation();
+        });
+
+    var text = g.selectAll("text")
+        .data(nodes)
+        .enter().append("text")
+        .attr("class", "label")
+        .style("fill-opacity", function (d) {
+            return d.parent === root ? 1 : 0;
+        })
+        .style("display", function (d) {
+            return d.parent === root ? "inline" : "none";
+        })
+        .text(function (d) {
+            return d.data.name.length > 33 ? (d.data.name.substr(0, 14) + "..." + d.data.name.substr(d.data.name.length - 14))  : d.data.name;
+        });
+
+    var node = g.selectAll("circle,text");
+
+    svg
+        .style("background", color(-1))
+        .on("click", function () {
+            zoom(root);
+        });
+
+    zoomTo([root.x, root.y, root.r * 2 + margin]);
+
+    function zoom(d) {
+        var focus0 = focus;
+        focus = d;
+
+        var transition = d3.transition()
+            .duration(d3.event.altKey ? 7500 : 750)
+            .tween("zoom", function (d) {
+                var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
+                return function (t) {
+                    zoomTo(i(t));
+                };
+            });
+
+        transition.selectAll("text")
+            .filter(function (d) {
+                return d.parent === focus || this.style.display === "inline";
+            })
+            .style("fill-opacity", function (d) {
+                return d.parent === focus ? 1 : 0;
+            })
+            .on("start", function (d) {
+                if (d.parent === focus) this.style.display = "inline";
+            })
+            .on("end", function (d) {
+                if (d.parent !== focus) this.style.display = "none";
+            });
+    }
+
+    function zoomTo(v) {
+        var k = diameter / v[2];
+        view = v;
+        node.attr("transform", function (d) {
+            return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")";
+        });
+        circle.attr("r", function (d) {
+            return d.r * k;
+        });
+    }
+
+</script>

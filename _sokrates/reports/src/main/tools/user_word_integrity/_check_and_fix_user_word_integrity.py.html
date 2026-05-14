@@ -1,0 +1,297 @@
+<html>
+<head>
+    <title>tools/user_word_integrity/_check_and_fix_user_word_integrity.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/user_word_integrity/_check_and_fix_user_word_integrity.py (<b>167</b> lines of code) (<a href="_check_and_fix_user_word_integrity.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python
+&quot;&quot;&quot;
+Check and fix data integrity issues in the Zeeguu database.
+
+This script checks for:
+1. UserWords with preferred_bookmark_id pointing to bookmarks that don't belong to them
+2. UserWords with no bookmarks at all (orphaned)
+3. UserWords with preferred_bookmark_id = NULL but having bookmarks
+4. Bookmarks with invalid user_word_id references
+&quot;&quot;&quot;
+
+import sys
+import os
+
+# Add project root to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# REQUIRED: Initialize Flask app context for database access
+from zeeguu.api.app import create_app
+from zeeguu.core.model import db
+
+app = create_app()
+app.app_context().push()
+
+from zeeguu.core.model import UserWord, Bookmark
+from sqlalchemy import func
+import argparse
+
+
+def check_preferred_bookmark_integrity():
+    &quot;&quot;&quot;
+    Check if UserWords have preferred_bookmark_id pointing to bookmarks that belong to them.
+    Returns list of (user_word, wrong_bookmark_id, correct_bookmarks).
+    &quot;&quot;&quot;
+    print(&quot;\n&quot; + &quot;=&quot;*80)
+    print(&quot;Checking preferred_bookmark integrity...&quot;)
+    print(&quot;=&quot;*80)
+
+    issues = []
+
+    # Get all UserWords with a preferred_bookmark set
+    user_words = UserWord.query.filter(UserWord.preferred_bookmark_id != None).all()
+
+    for uw in user_words:
+        # Get all bookmarks that actually belong to this UserWord
+        actual_bookmarks = [b.id for b in uw.bookmarks()]
+
+        if uw.preferred_bookmark_id not in actual_bookmarks:
+            issues.append({
+                'user_word': uw,
+                'wrong_bookmark_id': uw.preferred_bookmark_id,
+                'correct_bookmarks': actual_bookmarks
+            })
+
+    return issues
+
+
+def check_null_preferred_bookmarks():
+    &quot;&quot;&quot;
+    Check for UserWords that have bookmarks but preferred_bookmark_id is NULL.
+    &quot;&quot;&quot;
+    print(&quot;\n&quot; + &quot;=&quot;*80)
+    print(&quot;Checking for UserWords with NULL preferred_bookmark but having bookmarks...&quot;)
+    print(&quot;=&quot;*80)
+
+    issues = []
+
+    # Get UserWords with NULL preferred_bookmark
+    user_words = UserWord.query.filter(UserWord.preferred_bookmark_id == None).all()
+
+    for uw in user_words:
+        bookmarks = uw.bookmarks()
+        if len(bookmarks) &gt; 0:
+            issues.append({
+                'user_word': uw,
+                'bookmarks': [b.id for b in bookmarks]
+            })
+
+    return issues
+
+
+def check_orphaned_user_words():
+    &quot;&quot;&quot;
+    Check for UserWords with no bookmarks at all.
+    &quot;&quot;&quot;
+    print(&quot;\n&quot; + &quot;=&quot;*80)
+    print(&quot;Checking for orphaned UserWords (no bookmarks)...&quot;)
+    print(&quot;=&quot;*80)
+
+    orphaned = (
+        db.session.query(UserWord)
+        .outerjoin(Bookmark, Bookmark.user_word_id == UserWord.id)
+        .group_by(UserWord.id)
+        .having(func.count(Bookmark.id) == 0)
+        .all()
+    )
+
+    return orphaned
+
+
+def fix_preferred_bookmark_issues(issues, dry_run=True):
+    &quot;&quot;&quot;
+    Fix UserWords with wrong preferred_bookmark_id.
+    &quot;&quot;&quot;
+    if not issues:
+        print(&quot;\n✓ No preferred_bookmark integrity issues found!&quot;)
+        return 0
+
+    print(f&quot;\nFound {len(issues)} UserWords with wrong preferred_bookmark_id:&quot;)
+
+    for issue in issues:
+        uw = issue['user_word']
+        wrong_id = issue['wrong_bookmark_id']
+        correct_ids = issue['correct_bookmarks']
+
+        print(f&quot;\n  UserWord {uw.id}: \&quot;{uw.meaning.origin.content}\&quot; -&gt; \&quot;{uw.meaning.translation.content}\&quot;&quot;)
+        print(f&quot;    ✗ preferred_bookmark_id: {wrong_id} (doesn't belong to this UserWord)&quot;)
+        print(f&quot;    ✓ actual bookmarks: {correct_ids}&quot;)
+
+        if len(correct_ids) &gt; 0:
+            new_preferred = correct_ids[0]  # Use first bookmark
+            print(f&quot;    &rarr; Will set preferred_bookmark_id to: {new_preferred}&quot;)
+
+            if not dry_run:
+                uw.preferred_bookmark_id = new_preferred
+                db.session.add(uw)
+        else:
+            print(f&quot;    &rarr; No bookmarks available, will set to NULL&quot;)
+            if not dry_run:
+                uw.preferred_bookmark_id = None
+                db.session.add(uw)
+
+    if not dry_run:
+        db.session.commit()
+        print(f&quot;\n✓ Fixed {len(issues)} preferred_bookmark issues&quot;)
+    else:
+        print(f&quot;\n[DRY RUN] Would fix {len(issues)} issues&quot;)
+
+    return len(issues)
+
+
+def fix_null_preferred_bookmarks(issues, dry_run=True):
+    &quot;&quot;&quot;
+    Fix UserWords with NULL preferred_bookmark but having bookmarks.
+    &quot;&quot;&quot;
+    if not issues:
+        print(&quot;\n✓ No NULL preferred_bookmark issues found!&quot;)
+        return 0
+
+    print(f&quot;\nFound {len(issues)} UserWords with NULL preferred_bookmark but having bookmarks:&quot;)
+
+    for issue in issues:
+        uw = issue['user_word']
+        bookmark_ids = issue['bookmarks']
+
+        print(f&quot;\n  UserWord {uw.id}: \&quot;{uw.meaning.origin.content}\&quot; -&gt; \&quot;{uw.meaning.translation.content}\&quot;&quot;)
+        print(f&quot;    Bookmarks: {bookmark_ids}&quot;)
+        print(f&quot;    &rarr; Will set preferred_bookmark_id to: {bookmark_ids[0]}&quot;)
+
+        if not dry_run:
+            uw.preferred_bookmark_id = bookmark_ids[0]
+            db.session.add(uw)
+
+    if not dry_run:
+        db.session.commit()
+        print(f&quot;\n✓ Fixed {len(issues)} NULL preferred_bookmark issues&quot;)
+    else:
+        print(f&quot;\n[DRY RUN] Would fix {len(issues)} issues&quot;)
+
+    return len(issues)
+
+
+def fix_orphaned_user_words(orphaned, dry_run=True):
+    &quot;&quot;&quot;
+    Delete orphaned UserWords.
+    &quot;&quot;&quot;
+    if not orphaned:
+        print(&quot;\n✓ No orphaned UserWords found!&quot;)
+        return 0
+
+    print(f&quot;\nFound {len(orphaned)} orphaned UserWords (no bookmarks):&quot;)
+
+    for uw in orphaned[:10]:  # Show first 10
+        print(f&quot;  UserWord {uw.id}: \&quot;{uw.meaning.origin.content}\&quot; -&gt; \&quot;{uw.meaning.translation.content}\&quot;&quot;)
+
+    if len(orphaned) &gt; 10:
+        print(f&quot;  ... and {len(orphaned) - 10} more&quot;)
+
+    if not dry_run:
+        # Delete associated data first (schedules and exercises)
+        from zeeguu.core.word_scheduling.basicSR.basicSR import BasicSRSchedule
+        from zeeguu.core.model import Exercise
+
+        for uw in orphaned:
+            # Delete schedule
+            schedule = BasicSRSchedule.find_by_user_word(uw)
+            if schedule:
+                db.session.delete(schedule)
+
+            # Delete exercises (must be deleted before UserWord due to NOT NULL constraint)
+            exercises = Exercise.query.filter_by(user_word_id=uw.id).all()
+            for ex in exercises:
+                db.session.delete(ex)
+
+            db.session.delete(uw)
+
+        db.session.commit()
+        print(f&quot;\n✓ Deleted {len(orphaned)} orphaned UserWords&quot;)
+    else:
+        print(f&quot;\n[DRY RUN] Would delete {len(orphaned)} orphaned UserWords&quot;)
+
+    return len(orphaned)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description=&quot;Check and fix data integrity issues in Zeeguu database&quot;
+    )
+    parser.add_argument(
+        &quot;--fix&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Actually fix the issues (default is dry-run)&quot;
+    )
+    parser.add_argument(
+        &quot;--skip-orphaned&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Skip checking for orphaned UserWords (can be slow)&quot;
+    )
+
+    args = parser.parse_args()
+
+    dry_run = not args.fix
+
+    if dry_run:
+        print(&quot;\n&quot; + &quot;=&quot;*80)
+        print(&quot;DRY RUN MODE - No changes will be made&quot;)
+        print(&quot;Run with --fix to actually fix the issues&quot;)
+        print(&quot;=&quot;*80)
+
+    total_issues = 0
+
+    # Check 1: Wrong preferred_bookmark_id
+    wrong_preferred = check_preferred_bookmark_integrity()
+    total_issues += fix_preferred_bookmark_issues(wrong_preferred, dry_run)
+
+    # Check 2: NULL preferred_bookmark with bookmarks
+    null_preferred = check_null_preferred_bookmarks()
+    total_issues += fix_null_preferred_bookmarks(null_preferred, dry_run)
+
+    # Check 3: Orphaned UserWords (optional, can be slow)
+    if not args.skip_orphaned:
+        orphaned = check_orphaned_user_words()
+        total_issues += fix_orphaned_user_words(orphaned, dry_run)
+
+    # Summary
+    print(&quot;\n&quot; + &quot;=&quot;*80)
+    print(&quot;SUMMARY&quot;)
+    print(&quot;=&quot;*80)
+    print(f&quot;Total issues found: {total_issues}&quot;)
+
+    if dry_run and total_issues &gt; 0:
+        print(&quot;\n💡 Run with --fix to actually fix these issues&quot;)
+        print(&quot;   Example: python -m tools._check_and_fix_data_integrity --fix&quot;)
+    elif total_issues == 0:
+        print(&quot;\n✓ Database integrity looks good!&quot;)
+    else:
+        print(f&quot;\n✓ Fixed {total_issues} issues!&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

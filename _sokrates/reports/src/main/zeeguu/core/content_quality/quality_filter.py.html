@@ -1,0 +1,170 @@
+<html>
+<head>
+    <title>zeeguu/core/content_quality/quality_filter.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/content_quality/quality_filter.py (<b>115</b> lines of code) (<a href="quality_filter.py">raw</a>):</h3>
+<div id="editor">import newspaper
+from langdetect import detect
+from zeeguu.core.model import Article, LowQualityTypes
+from zeeguu.core.ml_models import is_paywalled, ID_TO_LABEL_PAYWALL
+
+HTML_READ_MORE_PATTERNS = [
+    &quot;To continue reading this premium&quot;,  # New Scientist
+    &quot;Cet article est r&eacute;serv&eacute; aux abonn&eacute;s&quot;,  # Le Figaro
+    &quot;L&rsquo;acc&egrave;s &agrave; la totalit&eacute; de l&rsquo;article est prot&eacute;g&eacute;&quot;,  # Le Monde
+    &quot;Ces informations sont destin&eacute;es au groupe Bayard&quot;,  # 1jour1actu
+    &quot;Article r&eacute;serv&eacute; aux abonn&eacute;s&quot;
+    # der spiegel
+    ,
+    &quot;Sie haben keinen Zugang? Jetzt gratis testen!.&quot;,
+    &quot;Jetzt Gratismonat beginnen&quot;,
+]
+
+PLAIN_TEXT_PAYWALL_PATTERNS = [
+    &quot;Create an account for free access to:&quot;,  # New Scientist
+    &quot;&eacute;dition abonn&eacute;&quot;,  # /www.lemonde.fr
+    # Politiken, JP, Danish media
+    &quot;Allerede abonnent?&quot;,
+    &quot;Er du abonnent?&quot;,
+    &quot;Velkommen tilbage. Log ind&quot;,
+    &quot;Bliv abonnent&quot;,
+    &quot;f&aring; adgang til hele artiklen&quot;,
+    &quot;Du er godt i gang&quot;,
+    &quot;Ingen binding&quot;,
+    &quot;forts&aelig;t med at l&aelig;se&quot;,
+    &quot;FOR ABONNENTER&quot;,
+    # Ing
+    &quot;Alternativt kan du k&oslash;be et abonnement&quot;,
+    &quot;Zugang zu allen F+ Artikeln&quot;,
+    # JP
+    &quot;For abonnenter&quot;,
+    &quot;article abonn&eacute;&quot;,
+    # Danish media paywalls
+    &quot;L&aelig;s videre for 1 kr.&quot;,
+    # Portuguese paywalls
+    &quot;artigo exclusivo para assinantes&quot;,
+    &quot;j&aacute; &eacute; assinante? fa&ccedil;a login aqui&quot;,
+    # Spanish paywalls
+    &quot;suscr&iacute;bete para seguir leyendo&quot;,
+    # French paywalls
+    &quot;pour acc&eacute;der gratuitement au site (hors contenus exclusifs abonn&eacute;s)&quot;,
+    &quot;en vous abonnant, vous acc&eacute;dez&quot;,
+    &quot;Votre abonnement n'autorise pas la lecture de cet article&quot;,
+    &quot;Lecture restreinte&quot;,
+    # Swedish/Danish paywalls
+    &quot;som inloggad kan du ta del av flera smarta funktioner&quot;,
+    &quot;er du allerede prenumerant, logga in f&ouml;r att forts&auml;tta l&auml;sa&quot;,
+    &quot;&auml;r du redan prenumerant, logga in&quot;,
+    &quot;passa p&aring; &ndash; 0 kr fram till 1 feb, sedan endast 85 kr/m&aring;n&quot;,
+    &quot;ingen bindningstid, s&auml;g upp enkelt n&auml;r du vill&quot;,
+    &quot;❌der opstod en fejl&quot;,
+    # English paywalls
+    &quot;power up with unlimited access to wired&quot;,
+    &quot;subscribe today&quot;,
+]
+
+incomplete_suggesting_terminations = &quot;Read More&quot;
+
+LIVE_BLOG_KIND_OF_PATTERNS = [
+    &quot;Lees hier het hele verhaal&quot;,
+    &quot;Lees&nbsp;hier&nbsp;het hele verhaal&quot;,
+]
+
+
+def sufficient_quality_html(html):
+    for each in HTML_READ_MORE_PATTERNS:
+        if html.find(each) &gt; 0:
+            return (
+                False,
+                f&quot;Incomplete Article (based on HTML analysis). Contains: {each}&quot;,
+                LowQualityTypes.HTML_PATTERN,
+            )
+    return True, &quot;&quot;, &quot;&quot;
+
+
+def sufficient_quality_plain_text(text, lang_code=None):
+    word_count = len(text.split())
+    if word_count &lt; Article.MINIMUM_WORD_COUNT:
+        return (
+            False,
+            f&quot;Too Short ({word_count} words) {text}&quot;,
+            LowQualityTypes.TOO_SHORT,
+        )
+    
+    if word_count &gt; Article.MAXIMUM_WORD_COUNT:
+        return (
+            False,
+            f&quot;Too Long ({word_count} words) - likely extraction error or excessive content&quot;,
+            LowQualityTypes.TOO_LONG,
+        )
+
+    for each in PLAIN_TEXT_PAYWALL_PATTERNS:
+        if text.find(each) &gt;= 0:
+            return (
+                False,
+                f&quot;Incomplete pattern in text: {each}&quot;,
+                LowQualityTypes.TEXT_PAYWALL_PATTERN,
+            )
+
+    if text.endswith(incomplete_suggesting_terminations):
+        return (
+            False,
+            'Ends with &quot;Read More&quot; or similar',
+            LowQualityTypes.INCOMPLETE_PATTERN,
+        )
+
+    art_lang = detect(text)
+    if lang_code is not None and art_lang != lang_code:
+        return (
+            False,
+            f&quot;Article language '{art_lang}', does not match feed language: '{lang_code}'.&quot;,
+            LowQualityTypes.LANGUAGE_DOES_NOT_MATCH_FEED,
+        )
+
+    for each in LIVE_BLOG_KIND_OF_PATTERNS:
+        if text.find(each) &gt;= 0:
+            return False, &quot;Live blog kind of article&quot;, LowQualityTypes.LIVE_BLOG
+
+    paywall_pred = is_paywalled(text)
+    if paywall_pred &gt; 0:
+        # 0 is Normal Text
+        label_found = ID_TO_LABEL_PAYWALL[paywall_pred]
+        return (
+            False,
+            f&quot;ML Prediction was '{label_found}'.&quot;,
+            LowQualityTypes.ML_PREDICTION,
+        )
+
+    return True, &quot;&quot;, &quot;&quot;
+
+
+def sufficient_quality(art: newspaper.Article, lang_code=None) -&gt; tuple[bool, str, str]:
+    res, reason, code = sufficient_quality_html(art.html)
+    if not res:
+        return False, reason, code
+    res, reason, code = sufficient_quality_plain_text(art.text, lang_code)
+    if not res:
+        return False, reason, code
+
+    return True, &quot;&quot;, &quot;&quot;
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

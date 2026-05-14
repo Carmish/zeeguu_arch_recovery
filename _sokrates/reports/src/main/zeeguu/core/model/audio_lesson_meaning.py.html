@@ -1,0 +1,97 @@
+<html>
+<head>
+    <title>zeeguu/core/model/audio_lesson_meaning.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/audio_lesson_meaning.py (<b>52</b> lines of code) (<a href="audio_lesson_meaning.py">raw</a>):</h3>
+<div id="editor">from sqlalchemy import Column, Integer, String, Text, JSON, Enum, ForeignKey
+from sqlalchemy.orm import relationship
+
+from zeeguu.core.model.db import db
+from zeeguu.core.model.meaning import Meaning
+from zeeguu.core.model.language import Language
+
+
+class AudioLessonMeaning(db.Model):
+    &quot;&quot;&quot;
+    Individual audio lesson for a specific meaning (word/phrase translation pair).
+    MP3 files are stored on disk with filename pattern: {meaning_id}-{language_code}.mp3
+    &quot;&quot;&quot;
+
+    __tablename__ = &quot;audio_lesson_meaning&quot;
+    __table_args__ = {&quot;mysql_collate&quot;: &quot;utf8mb4_unicode_ci&quot;}
+
+    id = Column(Integer, primary_key=True)
+
+    meaning_id = Column(
+        Integer, ForeignKey(Meaning.id, ondelete=&quot;CASCADE&quot;), nullable=False
+    )
+    meaning = relationship(Meaning, backref=&quot;audio_lessons&quot;)
+
+    script = Column(Text, nullable=False)
+    voice_config = Column(JSON)
+
+    teacher_language_id = Column(Integer, ForeignKey(Language.id), nullable=True)
+    teacher_language = relationship(Language)
+
+    difficulty_level = Column(
+        Enum(&quot;A1&quot;, &quot;A2&quot;, &quot;B1&quot;, &quot;B2&quot;, &quot;C1&quot;, &quot;C2&quot;, name=&quot;cefr_level&quot;)
+    )
+    duration_seconds = Column(Integer)
+    created_by = Column(String(255), nullable=False)  # e.g. Claude-v2-Opus-Promopt1
+
+    def __init__(
+        self,
+        meaning,
+        script,
+        created_by,
+        difficulty_level=None,
+        voice_config=None,
+        duration_seconds=None,
+        teacher_language=None,
+    ):
+        self.meaning_id = meaning.id
+        self.script = script
+        self.created_by = created_by
+        self.difficulty_level = difficulty_level
+        self.voice_config = voice_config
+        self.duration_seconds = duration_seconds
+        if teacher_language:
+            self.teacher_language_id = teacher_language.id
+
+    def __repr__(self):
+        return f&quot;&lt;AudioLessonMeaning {self.id} for meaning {self.meaning_id}&gt;&quot;
+
+    @property
+    def audio_file_path(self):
+        &quot;&quot;&quot;Returns the expected path for the audio file based on meaning ID and teacher language&quot;&quot;&quot;
+        lang_code = self.teacher_language.code if self.teacher_language else &quot;en&quot;
+        return f&quot;/audio/lessons/meaning-{self.meaning_id}-{lang_code}.mp3&quot;
+
+    @classmethod
+    def find(cls, meaning, teacher_language=None):
+        &quot;&quot;&quot;Find audio lesson for a specific meaning and teacher language.&quot;&quot;&quot;
+        query = cls.query.filter_by(meaning=meaning)
+        if teacher_language:
+            query = query.filter_by(teacher_language_id=teacher_language.id)
+        return query.first()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

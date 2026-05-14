@@ -1,0 +1,131 @@
+<html>
+<head>
+    <title>def collect_user_activity()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def collect_user_activity()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/api/endpoints/user_stats.py [0:0]</i></p>
+<ul>
+    <li><b>85</b> lines of code</li>
+    <li><b>10</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def collect_user_activity(start, end):
+    &quot;&quot;&quot;Collect activity stats for all users in the given period.&quot;&quot;&quot;
+
+    # Find all users with exercise sessions in this period
+    exercise_user_ids = (
+        db_session.query(UserExerciseSession.user_id)
+        .filter(UserExerciseSession.start_time &gt;= start)
+        .filter(UserExerciseSession.start_time &lt; end)
+        .distinct()
+        .all()
+    )
+
+    # Find all users with reading sessions in this period
+    reading_user_ids = (
+        db_session.query(UserReadingSession.user_id)
+        .filter(UserReadingSession.start_time &gt;= start)
+        .filter(UserReadingSession.start_time &lt; end)
+        .distinct()
+        .all()
+    )
+
+    # Find all users with translations/bookmarks in this period
+    bookmark_user_ids = (
+        db_session.query(UserWord.user_id)
+        .join(Bookmark, Bookmark.user_word_id == UserWord.id)
+        .filter(Bookmark.time &gt;= start)
+        .filter(Bookmark.time &lt; end)
+        .distinct()
+        .all()
+    )
+
+    # Find all users with completed audio lessons in this period
+    audio_lesson_user_ids = (
+        db_session.query(DailyAudioLesson.user_id)
+        .filter(DailyAudioLesson.completed_at &gt;= start)
+        .filter(DailyAudioLesson.completed_at &lt; end)
+        .distinct()
+        .all()
+    )
+
+    # Find all users with browsing sessions in this period
+    browsing_user_ids = (
+        db_session.query(UserBrowsingSession.user_id)
+        .filter(UserBrowsingSession.start_time &gt;= start)
+        .filter(UserBrowsingSession.start_time &lt; end)
+        .distinct()
+        .all()
+    )
+
+    # Combine unique user IDs from all activity types
+    active_user_ids = (
+        set(uid for (uid,) in exercise_user_ids)
+        | set(uid for (uid,) in reading_user_ids)
+        | set(uid for (uid,) in bookmark_user_ids)
+        | set(uid for (uid,) in audio_lesson_user_ids)
+        | set(uid for (uid,) in browsing_user_ids)
+    )
+
+    # Collect stats per user, grouped by language
+    users_by_language = defaultdict(list)
+
+    for user_id in active_user_ids:
+        user = User.find_by_id(user_id)
+        if not user:
+            continue
+
+        cohort_name, cohort_id = get_user_cohort_info(user)
+        exercise_stats = get_exercise_stats_for_user(user_id, start, end)
+        reading_stats = get_reading_stats_for_user(user_id, start, end)
+        browsing_stats = get_browsing_stats_for_user(user_id, start, end)
+        translation_stats = get_translations_for_user(user_id, start, end)
+        audio_stats = get_audio_lesson_stats_for_user(user_id, start, end)
+
+        # Determine languages from activity
+        active_languages = set()
+        active_languages.update(exercise_stats[&quot;words_by_language&quot;].keys())
+        active_languages.update(reading_stats[&quot;articles_by_language&quot;].keys())
+        active_languages.update(browsing_stats[&quot;words_by_language&quot;].keys())
+        active_languages.update(translation_stats[&quot;by_language&quot;].keys())
+        active_languages.update(audio_stats[&quot;lessons_by_language&quot;].keys())
+
+        if not active_languages:
+            active_languages = {&quot;unknown&quot;}
+
+        user_data = {
+            &quot;id&quot;: user.id,
+            &quot;name&quot;: user.name,
+            &quot;email&quot;: user.email,
+            &quot;cohort_name&quot;: cohort_name,
+            &quot;cohort_id&quot;: cohort_id,
+            &quot;exercise_duration_min&quot;: exercise_stats[&quot;duration_min&quot;],
+            &quot;exercise_sessions&quot;: exercise_stats[&quot;session_count&quot;],
+            &quot;exercise_words&quot;: exercise_stats[&quot;words_by_language&quot;],
+            &quot;reading_duration_min&quot;: reading_stats[&quot;duration_min&quot;],
+            &quot;articles_read&quot;: reading_stats[&quot;articles_by_language&quot;],
+            &quot;browsing_duration_min&quot;: browsing_stats[&quot;duration_min&quot;],
+            &quot;browsing_words&quot;: browsing_stats[&quot;words_by_language&quot;],
+            &quot;translations&quot;: translation_stats[&quot;by_language&quot;],
+            &quot;audio_lessons&quot;: audio_stats[&quot;lessons_by_language&quot;],
+            &quot;audio_duration_min&quot;: audio_stats[&quot;duration_min&quot;],
+            &quot;audio_duration_by_language&quot;: audio_stats[&quot;duration_by_language&quot;],
+            &quot;languages&quot;: list(active_languages),
+        }
+
+        # Add user to each language they were active in
+        for lang in active_languages:
+            users_by_language[lang].append(user_data)
+
+    return users_by_language
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

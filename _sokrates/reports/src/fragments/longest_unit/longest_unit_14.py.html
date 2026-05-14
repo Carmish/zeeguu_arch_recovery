@@ -1,0 +1,199 @@
+<html>
+<head>
+    <title>def backfill_assessments()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def backfill_assessments()</h3>
+<p style="margin-top: 4px">in <i>tools/backfill_cefr_assessments.py [0:0]</i></p>
+<ul>
+    <li><b>120</b> lines of code</li>
+    <li><b>13</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def backfill_assessments(dry_run=False, limit=None):
+    &quot;&quot;&quot;
+    Migrate existing CEFR assessments from article table to article_cefr_assessment table.
+
+    Args:
+        dry_run: If True, don't commit changes - just report what would be done
+        limit: Maximum number of articles to process (for testing)
+
+    Returns:
+        Dict with statistics
+    &quot;&quot;&quot;
+    log(&quot;=&quot; * 80)
+    log(&quot;CEFR Assessment Backfill Script (1:1 Architecture)&quot;)
+    log(&quot;=&quot; * 80)
+    log(
+        f&quot;Mode: {'DRY RUN (no changes will be saved)' if dry_run else 'LIVE (changes will be saved)'}&quot;
+    )
+    log(&quot;&quot;)
+
+    # Query all articles with CEFR levels
+    query = db_session.query(Article).filter(Article.cefr_level.isnot(None))
+
+    if limit:
+        query = query.limit(limit)
+        log(f&quot;Limiting to {limit} articles for testing&quot;)
+        log(&quot;&quot;)
+
+    articles = query.all()
+    log(f&quot;Found {len(articles)} articles with CEFR levels to migrate&quot;)
+    log(&quot;&quot;)
+
+    stats = {
+        &quot;total_articles&quot;: len(articles),
+        &quot;assessments_created&quot;: 0,
+        &quot;articles_with_source&quot;: 0,
+        &quot;llm_assessments&quot;: 0,
+        &quot;teacher_assessments&quot;: 0,
+        &quot;unknown_assessments&quot;: 0,
+        &quot;errors&quot;: 0,
+    }
+
+    for idx, article in enumerate(articles):
+        if idx % 100 == 0 and idx &gt; 0:
+            log(f&quot;  Processed {idx}/{len(articles)} articles...&quot;)
+
+        try:
+            # Check if assessment already exists (in case script is run multiple times)
+            existing_assessment = (
+                db_session.query(ArticleCefrAssessment)
+                .filter_by(article_id=article.id)
+                .first()
+            )
+            if existing_assessment:
+                # Already migrated, skip
+                continue
+
+            # Determine assessment method from article data
+            # We're only processing articles with cefr_level.isnot(None), so all have been assessed
+
+            if article.parent_article_id:
+                # Simplified article - level is the TARGET level (what we asked LLM to simplify TO)
+                # Store in simplification_target_level, NOT llm_cefr_level
+                assessment_method = &quot;simplification_target&quot;
+                stats[&quot;articles_with_source&quot;] += 1
+            else:
+                # Original article with CEFR level - was assessed by LLM during crawling
+                # Try to determine which LLM was used
+                if article.simplification_ai_generator_id:
+                    # Query AIGenerator table to check model name
+                    from zeeguu.core.model.ai_generator import AIGenerator
+
+                    ai_gen = (
+                        db_session.query(AIGenerator)
+                        .filter_by(id=article.simplification_ai_generator_id)
+                        .first()
+                    )
+
+                    if ai_gen and &quot;anthropic&quot; in ai_gen.model_name.lower():
+                        assessment_method = &quot;llm_assessed_anthropic&quot;
+                    else:
+                        assessment_method = &quot;llm_assessed_deepseek&quot;
+                else:
+                    # No AI generator info - default to deepseek (most common)
+                    assessment_method = &quot;llm_assessed_deepseek&quot;
+
+                stats[&quot;articles_with_source&quot;] += 1
+
+            assessed_by_user_id = (
+                article.cefr_assessed_by_user_id
+                if hasattr(article, &quot;cefr_assessed_by_user_id&quot;)
+                else None
+            )
+
+            # Categorize assessments
+            is_llm = assessment_method in [
+                &quot;llm_assessed_deepseek&quot;,
+                &quot;llm_assessed_anthropic&quot;,
+            ]
+            is_teacher = assessment_method in [&quot;teacher_resolution&quot;, &quot;teacher_manual&quot;]
+            is_simplification_target = assessment_method == &quot;simplification_target&quot;
+
+            if is_llm:
+                stats[&quot;llm_assessments&quot;] += 1
+            elif is_teacher:
+                stats[&quot;teacher_assessments&quot;] += 1
+            elif is_simplification_target:
+                stats[&quot;llm_assessments&quot;] += 1  # Count as processed
+            else:
+                # Should not happen since we only query articles with cefr_level
+                stats[&quot;unknown_assessments&quot;] += 1
+
+            if not dry_run:
+                # Create assessment record
+                assessment = ArticleCefrAssessment(article_id=article.id)
+
+                # Store in appropriate column based on method
+                if is_llm:
+                    assessment.set_llm_assessment(article.cefr_level, assessment_method)
+                elif is_teacher:
+                    assessment.set_teacher_assessment(
+                        article.cefr_level, assessment_method, assessed_by_user_id
+                    )
+                elif is_simplification_target:
+                    # For simplified articles, store ONLY the target level
+                    # (not as an LLM assessment - that would be conflating target with measurement)
+                    assessment.simplification_target_level = article.cefr_level
+                    # Don't set llm_cefr_level or ml_cefr_level here
+                    # Those should be measured assessments, not targets
+
+                    # Compute effective_cefr_level (will be just simplification_target_level since no ML yet)
+                    assessment.update_effective_cefr_level()
+
+                db_session.add(assessment)
+
+            stats[&quot;assessments_created&quot;] += 1
+
+        except Exception as e:
+            log(f&quot;  ERROR processing article {article.id}: {str(e)}&quot;)
+            stats[&quot;errors&quot;] += 1
+            continue
+
+    # Commit all changes at once (if not dry run)
+    if not dry_run and stats[&quot;assessments_created&quot;] &gt; 0:
+        log(&quot;&quot;)
+        log(f&quot;Committing {stats['assessments_created']} new assessments to database...&quot;)
+        db_session.commit()
+        log(&quot;✓ Committed successfully&quot;)
+    elif dry_run:
+        log(&quot;&quot;)
+        log(&quot;DRY RUN - Rolling back (no changes saved)&quot;)
+        db_session.rollback()
+
+    # Print statistics
+    log(&quot;&quot;)
+    log(&quot;=&quot; * 80)
+    log(&quot;MIGRATION STATISTICS&quot;)
+    log(&quot;=&quot; * 80)
+    log(f&quot;Total articles with CEFR levels: {stats['total_articles']}&quot;)
+    log(f&quot;  - With AI generator tracking: {stats['articles_with_source']}&quot;)
+    log(&quot;&quot;)
+    log(f&quot;Assessments created: {stats['assessments_created']}&quot;)
+    log(f&quot;  - LLM assessments: {stats['llm_assessments']}&quot;)
+    log(f&quot;  - Teacher assessments: {stats['teacher_assessments']}&quot;)
+    log(f&quot;  - Unknown source: {stats['unknown_assessments']}&quot;)
+    log(&quot;&quot;)
+    log(f&quot;Errors: {stats['errors']}&quot;)
+    log(&quot;&quot;)
+
+    if dry_run:
+        log(&quot;✓ DRY RUN COMPLETE - No changes were saved&quot;)
+        log(&quot;  Run without --dry-run to apply changes&quot;)
+    else:
+        log(&quot;✓ MIGRATION COMPLETE&quot;)
+
+    log(&quot;=&quot; * 80)
+
+    return stats
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

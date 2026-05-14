@@ -1,0 +1,39 @@
+<html>
+<head>
+    <title>zeeguu/core/events/__init__.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/events/__init__.py (<b>9</b> lines of code) (<a href="__init__.py">raw</a>):</h3>
+<div id="editor">from blinker import signal
+
+# Events related to the badges module
+word_translated = signal(&quot;word_translated&quot;)
+exercise_correct = signal(&quot;exercise_correct&quot;)
+audio_lesson_completed = signal(&quot;audio_lesson_completed&quot;)
+streak_changed = signal(&quot;streak_changed&quot;)
+word_learned = signal(&quot;word_learned&quot;)
+article_read = signal(&quot;article_read&quot;)
+friendship_changed = signal(&quot;friendship_changed&quot;)
+
+# Events related to the friendship module
+friend_streak_changed = signal(&quot;friend_streak_changed&quot;)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

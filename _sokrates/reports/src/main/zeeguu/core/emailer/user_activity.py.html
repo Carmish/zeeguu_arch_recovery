@@ -1,0 +1,125 @@
+<html>
+<head>
+    <title>zeeguu/core/emailer/user_activity.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/emailer/user_activity.py (<b>70</b> lines of code) (<a href="user_activity.py">raw</a>):</h3>
+<div id="editor">from zeeguu.core.model import User
+from zeeguu.core.emailer.zeeguu_mailer import ZeeguuMailer
+from zeeguu.core.model.user_activitiy_data import UserActivityData
+import human_readable
+import datetime
+
+cheers_your_server = &quot;\n\rCheers,\n\rYour Zeeguu Server ;)&quot;
+
+
+def send_new_user_account_email(username, invite_code=&quot;&quot;, cohort=&quot;&quot;):
+    ZeeguuMailer.send_mail(
+        f&quot;New Account: {username}&quot;,
+        [f&quot;Code: {invite_code} Class: {cohort}&quot;, cheers_your_server],
+    )
+
+
+def send_user_finished_exercise_session(exercise_session):
+    from zeeguu.core.sql.learner.exercises_history import exercises_in_session
+
+    details = exercise_session.exercises_in_session_string()
+    user = exercise_session.user
+
+    # Calculate duration in a short format (e.g., &quot;2min&quot;)
+    duration_seconds = exercise_session.duration / 1000
+    if duration_seconds &lt; 60:
+        duration_str = f&quot;{int(duration_seconds)}sec&quot;
+    else:
+        duration_minutes = int(duration_seconds / 60)
+        duration_str = f&quot;{duration_minutes}min&quot;
+
+    # Count unique words in the session
+    exercises = exercises_in_session(exercise_session.id)
+    unique_words = len(set(ex['user_word_id'] for ex in exercises))
+
+    # Human readable duration for the body
+    hr_duration = human_readable.precise_delta(
+        datetime.timedelta(seconds=duration_seconds),
+        minimum_unit=&quot;microseconds&quot;,
+    )
+
+    main_body = f&quot;User: {user.name} ({user.id}, {user.invitation_code}) Duration: {hr_duration}  \n\n&quot;
+    main_body += f&quot;&lt;html&gt;&lt;body&gt;&lt;pre&gt;{details}&lt;/pre&gt;&lt;/body&gt;&lt;/html&gt;&quot;
+
+    # Format: &quot;Julia: 2min, 14words&quot;
+    ZeeguuMailer.send_mail(
+        f&quot;{user.name}: {duration_str}, {unique_words}words&quot;,
+        [main_body, cheers_your_server],
+    )
+
+
+def send_notification_article_feedback(
+    feedback, user: User, article_title, article_url, article_id
+):
+    from datetime import datetime as dt
+
+    def detailed_article_info(stream, user, article_id):
+
+        bookmarks = user.bookmarks_for_article(
+            article_id, with_context=True, with_title=True, json=False
+        )
+
+        stream.append(f&quot;\n\n{len(bookmarks)} Translations:\n&quot;)
+
+        for each in bookmarks:
+            stream.append(
+                f&quot;- {each.user_word.meaning.origin.content} =&gt; {each.user_word.meaning.translation.content}&quot;
+            )
+
+        # user activity data
+        stream.append(&quot;\n\nUser Interactions:\n&quot;)
+        events = UserActivityData.find(article_id=article_id)
+        prev_short_time = &quot;&quot;
+        for event in events:
+            short_time = dt.strftime(event.time, &quot;%H:%M&quot;)
+            event_name = event.event.replace(&quot;UMR - &quot;, &quot;&quot;)
+            event_name = event_name.lower()
+            event_name = event_name.replace(&quot;translate text&quot;, &quot;tr: &quot;)
+            event_name = event_name.replace(&quot;speak text&quot;, &quot;s: &quot;)
+            event_name = event_name.replace(&quot;send suggestion&quot;, &quot;suggest: &quot;)
+            if short_time != prev_short_time:
+                stream.append(f&quot;  {short_time}&quot;)
+            stream.append(f&quot;       {event_name} {event.value}&quot;)
+
+            if event_name == &quot;ARTICLE LOST FOCUS&quot;:
+                stream.append(&quot;&quot;)
+
+            prev_short_time = short_time
+
+        stream.append(&quot;\n\n&quot;)
+
+    content_lines = [feedback]
+    detailed_article_info(content_lines, user, article_id)
+
+    content_lines.append(
+        f&quot;\n\nDetailed User Translations: https://www.zeeguu.org/bookmarks_for_article/{article_id}/{user.id}&quot;
+    )
+    content_lines.append(cheers_your_server)
+
+    ZeeguuMailer.send_mail(f&quot;{user.name} - {article_title}&quot;, content_lines)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

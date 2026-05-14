@@ -1,0 +1,95 @@
+<html>
+<head>
+    <title>def _conf_generate_confusion_words()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def _conf_generate_confusion_words()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/nlp_pipeline/confusion_generator.py [0:0]</i></p>
+<ul>
+    <li><b>64</b> lines of code</li>
+    <li><b>31</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+    def _conf_generate_confusion_words(self, sentence, number_of_words, student_words, verbose):
+        og_split_sentence = self.spacy_pipe(sentence)
+        # Get the probabilities 
+        d_pos_map = dict()
+        pos_prob_mask = np.zeros(len(MAP_NOISE_PROB), dtype=bool)
+        # 
+        for i, token in enumerate(og_split_sentence):
+            if token.pos_ == &quot;PROPN&quot;: continue # Do not consider PNOUNs
+            pos_token = DICTIONARY_UD_MAP.get(token.pos_,token.pos_)
+            if pos_token not in self.noise_probabilities: continue # Do not consider PUNCT for example.
+            d_pos_map[pos_token] = d_pos_map.get(pos_token, []) + [i]
+            pos_prob_mask[MAP_NOISE_PROB[pos_token]] = True
+    
+        # Available POS to pick
+        pos_avl = POS_ARRAY[pos_prob_mask]
+        # Adjusted probability based on the POS that are not present.
+        list_noise_p_vals = np.array(list(self.noise_probabilities.values()))
+        pos_probs = list_noise_p_vals[pos_prob_mask] + (list_noise_p_vals[~pos_prob_mask].sum()/pos_prob_mask.sum())
+        if verbose: print(f&quot;POS Probabilities: &quot;, pos_probs)
+        if len(pos_avl) == 0:
+            if verbose: print(f&quot;No POS were available, random word.&quot;)
+            random_word = np.random.choice(len(og_split_sentence))
+            random_word_pos = og_split_sentence[random_word].pos_
+            pos_pick = DICTIONARY_UD_MAP.get(random_word_pos,random_word_pos)
+            confusion_set = self._get_random_word(student_words, number_of_words)
+            return list(confusion_set), pos_pick, random_word
+        else: 
+            pos_pick = np.random.choice(pos_avl, p=pos_probs)
+            id_to_add = np.random.choice(d_pos_map[pos_pick])
+        
+        if verbose: print(f&quot;POS picked: '{pos_pick}'&quot;)
+            
+        confusion_set = []
+        # Updated it to the un-mapped POS
+        t_confusion = og_split_sentence[id_to_add]
+        if verbose: print(f&quot;WORD picked: '{t_confusion}'&quot;)
+        pos_pick = t_confusion.pos_
+        if pos_pick in self.lemma_set:
+            confusion_set = self.pos_confusion_set.get(pos_pick).get(t_confusion.lemma_, [])
+            confusion_set = [conf_word for conf_word in confusion_set if not self._compare_string(conf_word, str(t_confusion))]
+            if verbose: print(f&quot;Confusion set: '{confusion_set}', in while.&quot;)
+            if len(confusion_set) &gt;= number_of_words:
+                confusion_set = np.random.choice(confusion_set, number_of_words, replace=False)
+            if confusion_set is None or len(confusion_set) &lt; number_of_words:
+                heap = self._select_words_based_on_sim(t_confusion, pos_pick, is_lemma=True)
+                if verbose: print(heap)
+                while len(confusion_set) &lt; number_of_words:
+                    word_to_add = heapq.heappop(heap)[-1]
+                    if self._compare_string(word_to_add, str(t_confusion)): continue
+                    if verbose: print(f&quot;Word to add: '{word_to_add}', in while.&quot;)
+                    confusion_extra_words = list(self.pos_confusion_set.get(pos_pick).get(word_to_add, []))
+                    if word_to_add not in confusion_extra_words: confusion_extra_words += [word_to_add]
+                    if verbose: print(f&quot;Candidate Set: '{confusion_extra_words}', in while.&quot;)
+                    confusion_extra_words = np.random.choice(confusion_extra_words, min(number_of_words-len(confusion_set), len(confusion_extra_words)), replace=False)
+                    if verbose: print(f&quot;words to add from: {confusion_extra_words}&quot;)
+                    for c_word in confusion_extra_words:
+                        if c_word not in confusion_set:
+                            if verbose: print(f&quot;Word added: {c_word}&quot;)
+                            confusion_set.append(c_word)
+        else:
+            heap = self._select_words_based_on_sim(t_confusion, pos_pick, is_lemma=False)
+            if verbose: print(f&quot;Heap found for 't_confusion' : {heap}&quot;)
+            while len(confusion_set) &lt; number_of_words and len(heap) &gt; 0:
+                word_to_add = heapq.heappop(heap)[1]
+                if word_to_add.lower() not in confusion_set:
+                    confusion_set.append(word_to_add)
+        
+        result = {
+            &quot;confusion_words&quot;: list(confusion_set),
+            &quot;pos_picked&quot; : pos_pick,
+            &quot;word_used&quot; : str(t_confusion)
+        }
+        return result
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

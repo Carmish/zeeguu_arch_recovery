@@ -1,0 +1,225 @@
+<head>
+    <style> body {
+        margin: 0;
+    } </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/3d-force-graph"></script>
+</head>
+
+<body>
+<div id="3d-graph"></div>
+
+<script>
+    const gData = {
+  "nodes" : [ {
+    "id" : "nickras2001@gmail.com",
+    "size" : 6
+  }, {
+    "id" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "size" : 6
+  }, {
+    "id" : "72095082+klnyzzz33@users.noreply.github.com",
+    "size" : 6
+  }, {
+    "id" : "kalny.zalan7@gmail.com",
+    "size" : 6
+  }, {
+    "id" : "gabortodor@gmail.com",
+    "size" : 6
+  }, {
+    "id" : "mircea.lungu@gmail.com",
+    "size" : 6
+  }, {
+    "id" : "63254940+gabortodor@users.noreply.github.com",
+    "size" : 6
+  } ],
+  "links" : [ {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "gabortodor@gmail.com",
+    "count" : 49
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 49
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 42
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 42
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 42
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "gabortodor@gmail.com",
+    "count" : 42
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 23
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 23
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "nickras2001@gmail.com",
+    "count" : 23
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 23
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 23
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 23
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "nickras2001@gmail.com",
+    "count" : 23
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 23
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 22
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "gabortodor@gmail.com",
+    "count" : 22
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "nickras2001@gmail.com",
+    "count" : 21
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "gabortodor@gmail.com",
+    "count" : 21
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 20
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 20
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 20
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 20
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 19
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 19
+  }, {
+    "source" : "63254940+gabortodor@users.noreply.github.com",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 18
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "63254940+gabortodor@users.noreply.github.com",
+    "count" : 18
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "nickras2001@gmail.com",
+    "count" : 18
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 18
+  }, {
+    "source" : "mircea.lungu@gmail.com",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 17
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "mircea.lungu@gmail.com",
+    "count" : 17
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 17
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "gabortodor@gmail.com",
+    "count" : 17
+  }, {
+    "source" : "gabortodor@gmail.com",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 16
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "gabortodor@gmail.com",
+    "count" : 16
+  }, {
+    "source" : "72095082+klnyzzz33@users.noreply.github.com",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 16
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "72095082+klnyzzz33@users.noreply.github.com",
+    "count" : 16
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 16
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "nickras2001@gmail.com",
+    "count" : 16
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "nickras2001@gmail.com",
+    "count" : 14
+  }, {
+    "source" : "nickras2001@gmail.com",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 14
+  }, {
+    "source" : "kalny.zalan7@gmail.com",
+    "target" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "count" : 12
+  }, {
+    "source" : "98952123+xxpinkmagicxx@users.noreply.github.com",
+    "target" : "kalny.zalan7@gmail.com",
+    "count" : 12
+  } ]
+}
+
+    const maxNodeSize = gData.nodes.map(n => n.size).reduce((a, b) => Math.max(a, b));
+    const maxCount = gData.links.map(l => l.count).reduce((a, b) => Math.max(a, b));
+
+    gData.links = gData.links.map(l => { return {source: l.target, target: l.source, count: l.count} });
+
+    const Graph = ForceGraph3D()
+    (document.getElementById('3d-graph'))
+        .graphData(gData)
+        .nodeRelSize(4)
+        .nodeVal(n => Math.max(20 * n.size / maxNodeSize, 0.001))
+        .nodeLabel(n => n.id + " (" + n.size + ")")
+        .nodeColor(n => n.id.startsWith("[") ? "skyblue" : "")
+        .linkDirectionalParticles(6)
+        .linkDirectionalParticleSpeed(d => d.count / maxCount * 0.01)
+        .linkOpacity(0.1)
+        .linkWidth(d => 3 * d.count / maxCount + 0.1);
+
+</script>
+</body>

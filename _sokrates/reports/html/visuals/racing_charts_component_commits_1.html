@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+        text {
+            font-size: 16px;
+            font-family: Open Sans, sans-serif;
+        }
+
+        text.title {
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        text.subTitle {
+            font-weight: 500;
+            fill: #777777;
+        }
+
+        text.caption {
+            font-weight: 400;
+            font-size: 14px;
+            fill: #777777;
+        }
+
+        text.label {
+            font-weight: 600;
+        }
+
+        text.valueLabel {
+            font-weight: 300;
+        }
+
+        text.yearText {
+            font-size: 64px;
+            font-weight: 700;
+            opacity: 0.25;
+        }
+
+        .tick text {
+            fill: #777777;
+        }
+
+        .xAxis .tick:nth-child(2) text {
+            text-anchor: start;
+        }
+
+        .tick line {
+            shape-rendering: CrispEdges;
+            stroke: #dddddd;
+        }
+
+        .tick line.origin {
+            stroke: #aaaaaa;
+        }
+
+        path.domain {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+<script>
+    var height = 3000;
+    var width = 1200;
+
+    var svg = d3.select("body").append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+
+    function findGetParameter(parameterName) {
+        var result = null, tmp = [];
+        location.search.substr(1).split("&").forEach(function (item) {
+            tmp = item.split("=");
+            if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+        });
+        return result;
+    }
+
+    var tickDuration = 1200;
+    var durationParam = findGetParameter('tickDuration');
+    if (durationParam) {
+        tickDuration = parseInt(durationParam);
+    }
+
+    var factor = 1;
+    var factorParam = findGetParameter('valueFactor');
+    if (factorParam) {
+        factor = parseFloat(factorParam);
+    }
+
+    var start = 0;
+    var startParam = findGetParameter('start');
+    if (startParam) {
+        start = parseInt(startParam);
+    }
+
+    var top_n = 50;
+
+    const margin = {
+        top: 80,
+        right: 0,
+        bottom: 5,
+        left: 0
+    };
+
+    let barPadding = (height - (margin.bottom + margin.top)) / (top_n * 5);
+
+    let title = svg.append('text')
+        .attr('class', 'title')
+        .attr('y', 24)
+        .html('Commits per component since 2017 (cumulative)');
+
+    let subTitle = svg.append("text")
+        .attr("class", "subTitle")
+        .attr("y", 55)
+        .html("");
+
+    let caption = svg.append('text')
+        .attr('class', 'caption')
+        .attr('x', width)
+        .attr('y', height - 5)
+        .style('text-anchor', 'end');
+
+    let year = start > 0 ? start : 2017;
+
+
+    const data = [{"name":"zeeguu","year":2021.0,"value":11.0},{"name":"zeeguu","year":2021.1,"value":22.0},{"name":"zeeguu","year":2021.2,"value":33.0},{"name":"zeeguu","year":2021.3,"value":44.0},{"name":"zeeguu","year":2021.4,"value":55.0},{"name":"zeeguu","year":2021.5,"value":66.0},{"name":"zeeguu","year":2021.6,"value":77.0},{"name":"zeeguu","year":2021.7,"value":88.0},{"name":"zeeguu","year":2021.8,"value":99.0},{"name":"zeeguu","year":2021.9,"value":110.0},{"name":"zeeguu","year":2022.0,"value":133.5},{"name":"zeeguu","year":2022.1,"value":157.0},{"name":"zeeguu","year":2022.2,"value":180.5},{"name":"zeeguu","year":2022.3,"value":204.0},{"name":"zeeguu","year":2022.4,"value":227.5},{"name":"zeeguu","year":2022.5,"value":251.0},{"name":"zeeguu","year":2022.6,"value":274.5},{"name":"zeeguu","year":2022.7,"value":298.0},{"name":"zeeguu","year":2022.8,"value":321.5},{"name":"zeeguu","year":2022.9,"value":345.0},{"name":"zeeguu","year":2023.0,"value":399.1},{"name":"zeeguu","year":2023.1,"value":453.20000000000005},{"name":"zeeguu","year":2023.2,"value":507.30000000000007},{"name":"zeeguu","year":2023.3,"value":561.4000000000001},{"name":"zeeguu","year":2023.4,"value":615.5000000000001},{"name":"zeeguu","year":2023.5,"value":669.6000000000001},{"name":"zeeguu","year":2023.6,"value":723.7000000000002},{"name":"zeeguu","year":2023.7,"value":777.8000000000002},{"name":"zeeguu","year":2023.8,"value":831.9000000000002},{"name":"zeeguu","year":2023.9,"value":886.0000000000002},{"name":"zeeguu","year":2024.0,"value":995.6000000000003},{"name":"zeeguu","year":2024.1,"value":1105.2000000000003},{"name":"zeeguu","year":2024.2,"value":1214.8000000000002},{"name":"zeeguu","year":2024.3,"value":1324.4},{"name":"zeeguu","year":2024.4,"value":1434.0},{"name":"zeeguu","year":2024.5,"value":1543.6},{"name":"zeeguu","year":2024.6,"value":1653.1999999999998},{"name":"zeeguu","year":2024.7,"value":1762.7999999999997},{"name":"zeeguu","year":2024.8,"value":1872.3999999999996},{"name":"zeeguu","year":2024.9,"value":1981.9999999999995},{"name":"zeeguu","year":2025.0,"value":2200.7999999999997},{"name":"zeeguu","year":2025.1,"value":2419.6},{"name":"zeeguu","year":2025.2,"value":2638.4},{"name":"zeeguu","year":2025.3,"value":2857.2000000000003},{"name":"zeeguu","year":2025.4,"value":3076.0000000000005},{"name":"zeeguu","year":2025.5,"value":3294.8000000000006},{"name":"zeeguu","year":2025.6,"value":3513.600000000001},{"name":"zeeguu","year":2025.7,"value":3732.400000000001},{"name":"zeeguu","year":2025.8,"value":3951.200000000001},{"name":"zeeguu","year":2025.9,"value":4170.000000000001},{"name":"zeeguu","year":2026.0,"value":4349.900000000001},{"name":"zeeguu","year":2026.1,"value":4529.8},{"name":"zeeguu","year":2026.2,"value":4709.7},{"name":"zeeguu","year":2026.3,"value":4889.599999999999},{"name":"zeeguu","year":2026.4,"value":5069.499999999999},{"name":"zeeguu","year":2026.5,"value":5249.399999999999},{"name":"zeeguu","year":2026.6,"value":5429.299999999998},{"name":"zeeguu","year":2026.7,"value":5609.199999999998},{"name":"zeeguu","year":2026.8,"value":5789.099999999998},{"name":"zeeguu","year":2026.9,"value":5968.999999999997},{"name":"ROOT","year":2017.0,"value":2.2},{"name":"ROOT","year":2017.1,"value":4.4},{"name":"ROOT","year":2017.2,"value":6.6000000000000005},{"name":"ROOT","year":2017.3,"value":8.8},{"name":"ROOT","year":2017.4,"value":11.0},{"name":"ROOT","year":2017.5,"value":13.2},{"name":"ROOT","year":2017.6,"value":15.399999999999999},{"name":"ROOT","year":2017.7,"value":17.599999999999998},{"name":"ROOT","year":2017.8,"value":19.799999999999997},{"name":"ROOT","year":2017.9,"value":21.999999999999996},{"name":"ROOT","year":2018.0,"value":24.999999999999996},{"name":"ROOT","year":2018.1,"value":27.999999999999996},{"name":"ROOT","year":2018.2,"value":30.999999999999996},{"name":"ROOT","year":2018.3,"value":34.0},{"name":"ROOT","year":2018.4,"value":37.0},{"name":"ROOT","year":2018.5,"value":40.0},{"name":"ROOT","year":2018.6,"value":43.0},{"name":"ROOT","year":2018.7,"value":46.0},{"name":"ROOT","year":2018.8,"value":49.0},{"name":"ROOT","year":2018.9,"value":52.0},{"name":"ROOT","year":2019.0,"value":52.1},{"name":"ROOT","year":2019.1,"value":52.2},{"name":"ROOT","year":2019.2,"value":52.300000000000004},{"name":"ROOT","year":2019.3,"value":52.400000000000006},{"name":"ROOT","year":2019.4,"value":52.50000000000001},{"name":"ROOT","year":2019.5,"value":52.60000000000001},{"name":"ROOT","year":2019.6,"value":52.70000000000001},{"name":"ROOT","year":2019.7,"value":52.80000000000001},{"name":"ROOT","year":2019.8,"value":52.90000000000001},{"name":"ROOT","year":2019.9,"value":53.000000000000014},{"name":"ROOT","year":2020.0,"value":53.30000000000001},{"name":"ROOT","year":2020.1,"value":53.60000000000001},{"name":"ROOT","year":2020.2,"value":53.900000000000006},{"name":"ROOT","year":2020.3,"value":54.2},{"name":"ROOT","year":2020.4,"value":54.5},{"name":"ROOT","year":2020.5,"value":54.8},{"name":"ROOT","year":2020.6,"value":55.099999999999994},{"name":"ROOT","year":2020.7,"value":55.39999999999999},{"name":"ROOT","year":2020.8,"value":55.69999999999999},{"name":"ROOT","year":2020.9,"value":55.999999999999986},{"name":"ROOT","year":2021.0,"value":56.69999999999999},{"name":"ROOT","year":2021.1,"value":57.39999999999999},{"name":"ROOT","year":2021.2,"value":58.099999999999994},{"name":"ROOT","year":2021.3,"value":58.8},{"name":"ROOT","year":2021.4,"value":59.5},{"name":"ROOT","year":2021.5,"value":60.2},{"name":"ROOT","year":2021.6,"value":60.900000000000006},{"name":"ROOT","year":2021.7,"value":61.60000000000001},{"name":"ROOT","year":2021.8,"value":62.30000000000001},{"name":"ROOT","year":2021.9,"value":63.000000000000014},{"name":"ROOT","year":2022.0,"value":64.00000000000001},{"name":"ROOT","year":2022.1,"value":65.00000000000001},{"name":"ROOT","year":2022.2,"value":66.00000000000001},{"name":"ROOT","year":2022.3,"value":67.00000000000001},{"name":"ROOT","year":2022.4,"value":68.00000000000001},{"name":"ROOT","year":2022.5,"value":69.00000000000001},{"name":"ROOT","year":2022.6,"value":70.00000000000001},{"name":"ROOT","year":2022.7,"value":71.00000000000001},{"name":"ROOT","year":2022.8,"value":72.00000000000001},{"name":"ROOT","year":2022.9,"value":73.00000000000001},{"name":"ROOT","year":2023.0,"value":73.50000000000001},{"name":"ROOT","year":2023.1,"value":74.00000000000001},{"name":"ROOT","year":2023.2,"value":74.50000000000001},{"name":"ROOT","year":2023.3,"value":75.00000000000001},{"name":"ROOT","year":2023.4,"value":75.50000000000001},{"name":"ROOT","year":2023.5,"value":76.00000000000001},{"name":"ROOT","year":2023.6,"value":76.50000000000001},{"name":"ROOT","year":2023.7,"value":77.00000000000001},{"name":"ROOT","year":2023.8,"value":77.50000000000001},{"name":"ROOT","year":2023.9,"value":78.00000000000001},{"name":"ROOT","year":2024.0,"value":80.20000000000002},{"name":"ROOT","year":2024.1,"value":82.40000000000002},{"name":"ROOT","year":2024.2,"value":84.60000000000002},{"name":"ROOT","year":2024.3,"value":86.80000000000003},{"name":"ROOT","year":2024.4,"value":89.00000000000003},{"name":"ROOT","year":2024.5,"value":91.20000000000003},{"name":"ROOT","year":2024.6,"value":93.40000000000003},{"name":"ROOT","year":2024.7,"value":95.60000000000004},{"name":"ROOT","year":2024.8,"value":97.80000000000004},{"name":"ROOT","year":2024.9,"value":100.00000000000004},{"name":"ROOT","year":2025.0,"value":102.70000000000005},{"name":"ROOT","year":2025.1,"value":105.40000000000005},{"name":"ROOT","year":2025.2,"value":108.10000000000005},{"name":"ROOT","year":2025.3,"value":110.80000000000005},{"name":"ROOT","year":2025.4,"value":113.50000000000006},{"name":"ROOT","year":2025.5,"value":116.20000000000006},{"name":"ROOT","year":2025.6,"value":118.90000000000006},{"name":"ROOT","year":2025.7,"value":121.60000000000007},{"name":"ROOT","year":2025.8,"value":124.30000000000007},{"name":"ROOT","year":2025.9,"value":127.00000000000007},{"name":"ROOT","year":2026.0,"value":127.50000000000007},{"name":"ROOT","year":2026.1,"value":128.00000000000006},{"name":"ROOT","year":2026.2,"value":128.50000000000006},{"name":"ROOT","year":2026.3,"value":129.00000000000006},{"name":"ROOT","year":2026.4,"value":129.50000000000006},{"name":"ROOT","year":2026.5,"value":130.00000000000006},{"name":"ROOT","year":2026.6,"value":130.50000000000006},{"name":"ROOT","year":2026.7,"value":131.00000000000006},{"name":"ROOT","year":2026.8,"value":131.50000000000006},{"name":"ROOT","year":2026.9,"value":132.00000000000006},{"name":"stanza_service","year":2026.0,"value":1.1},{"name":"stanza_service","year":2026.1,"value":2.2},{"name":"stanza_service","year":2026.2,"value":3.3000000000000003},{"name":"stanza_service","year":2026.3,"value":4.4},{"name":"stanza_service","year":2026.4,"value":5.5},{"name":"stanza_service","year":2026.5,"value":6.6},{"name":"stanza_service","year":2026.6,"value":7.699999999999999},{"name":"stanza_service","year":2026.7,"value":8.799999999999999},{"name":"stanza_service","year":2026.8,"value":9.899999999999999},{"name":"stanza_service","year":2026.9,"value":10.999999999999998},{"name":"tools","year":2017.0,"value":0.4},{"name":"tools","year":2017.1,"value":0.8},{"name":"tools","year":2017.2,"value":1.2000000000000002},{"name":"tools","year":2017.3,"value":1.6},{"name":"tools","year":2017.4,"value":2.0},{"name":"tools","year":2017.5,"value":2.4},{"name":"tools","year":2017.6,"value":2.8},{"name":"tools","year":2017.7,"value":3.1999999999999997},{"name":"tools","year":2017.8,"value":3.5999999999999996},{"name":"tools","year":2017.9,"value":3.9999999999999996},{"name":"tools","year":2019.0,"value":4.1},{"name":"tools","year":2019.1,"value":4.199999999999999},{"name":"tools","year":2019.2,"value":4.299999999999999},{"name":"tools","year":2019.3,"value":4.399999999999999},{"name":"tools","year":2019.4,"value":4.499999999999998},{"name":"tools","year":2019.5,"value":4.599999999999998},{"name":"tools","year":2019.6,"value":4.6999999999999975},{"name":"tools","year":2019.7,"value":4.799999999999997},{"name":"tools","year":2019.8,"value":4.899999999999997},{"name":"tools","year":2019.9,"value":4.9999999999999964},{"name":"tools","year":2021.0,"value":7.199999999999997},{"name":"tools","year":2021.1,"value":9.399999999999997},{"name":"tools","year":2021.2,"value":11.599999999999998},{"name":"tools","year":2021.3,"value":13.799999999999997},{"name":"tools","year":2021.4,"value":15.999999999999996},{"name":"tools","year":2021.5,"value":18.199999999999996},{"name":"tools","year":2021.6,"value":20.399999999999995},{"name":"tools","year":2021.7,"value":22.599999999999994},{"name":"tools","year":2021.8,"value":24.799999999999994},{"name":"tools","year":2021.9,"value":26.999999999999993},{"name":"tools","year":2022.0,"value":29.499999999999993},{"name":"tools","year":2022.1,"value":31.999999999999993},{"name":"tools","year":2022.2,"value":34.49999999999999},{"name":"tools","year":2022.3,"value":36.99999999999999},{"name":"tools","year":2022.4,"value":39.49999999999999},{"name":"tools","year":2022.5,"value":41.99999999999999},{"name":"tools","year":2022.6,"value":44.49999999999999},{"name":"tools","year":2022.7,"value":46.99999999999999},{"name":"tools","year":2022.8,"value":49.49999999999999},{"name":"tools","year":2022.9,"value":51.99999999999999},{"name":"tools","year":2023.0,"value":62.19999999999999},{"name":"tools","year":2023.1,"value":72.39999999999999},{"name":"tools","year":2023.2,"value":82.6},{"name":"tools","year":2023.3,"value":92.8},{"name":"tools","year":2023.4,"value":103.0},{"name":"tools","year":2023.5,"value":113.2},{"name":"tools","year":2023.6,"value":123.4},{"name":"tools","year":2023.7,"value":133.6},{"name":"tools","year":2023.8,"value":143.79999999999998},{"name":"tools","year":2023.9,"value":153.99999999999997},{"name":"tools","year":2024.0,"value":184.29999999999998},{"name":"tools","year":2024.1,"value":214.6},{"name":"tools","year":2024.2,"value":244.9},{"name":"tools","year":2024.3,"value":275.2},{"name":"tools","year":2024.4,"value":305.5},{"name":"tools","year":2024.5,"value":335.8},{"name":"tools","year":2024.6,"value":366.1},{"name":"tools","year":2024.7,"value":396.40000000000003},{"name":"tools","year":2024.8,"value":426.70000000000005},{"name":"tools","year":2024.9,"value":457.00000000000006},{"name":"tools","year":2025.0,"value":508.80000000000007},{"name":"tools","year":2025.1,"value":560.6},{"name":"tools","year":2025.2,"value":612.4},{"name":"tools","year":2025.3,"value":664.1999999999999},{"name":"tools","year":2025.4,"value":715.9999999999999},{"name":"tools","year":2025.5,"value":767.7999999999998},{"name":"tools","year":2025.6,"value":819.5999999999998},{"name":"tools","year":2025.7,"value":871.3999999999997},{"name":"tools","year":2025.8,"value":923.1999999999997},{"name":"tools","year":2025.9,"value":974.9999999999997},{"name":"tools","year":2026.0,"value":1000.4999999999997},{"name":"tools","year":2026.1,"value":1025.9999999999995},{"name":"tools","year":2026.2,"value":1051.4999999999995},{"name":"tools","year":2026.3,"value":1076.9999999999995},{"name":"tools","year":2026.4,"value":1102.4999999999995},{"name":"tools","year":2026.5,"value":1127.9999999999995},{"name":"tools","year":2026.6,"value":1153.4999999999995},{"name":"tools","year":2026.7,"value":1178.9999999999995},{"name":"tools","year":2026.8,"value":1204.4999999999995},{"name":"tools","year":2026.9,"value":1229.9999999999995}];
+
+    let prevItem = null;
+
+    data.forEach(item => {
+        if (prevItem != null) {
+            if (prevItem.name == item.name) {
+                item.lastValue = prevItem.value;
+            } else {
+                item.lastValue = 0.0;
+            }
+        } else {
+            item.lastValue = 0.0;
+        }
+        prevItem = item;
+    });
+
+    data.sort((a, b) => a.name.localeCompare(b.name)).forEach(d => {
+        d.value = +d.value,
+            d.lastValue = +d.lastValue,
+            d.year = +d.year,
+            d.colour = d3.hsl(Math.random() * 360, 0.75, 0.75)
+    });
+
+
+    const halo = function (text, strokeWidth) {
+        text.select(function () {
+            return this.parentNode.insertBefore(this.cloneNode(true), this);
+        })
+            .style('fill', '#ffffff')
+            .style('stroke', '#ffffff')
+            .style('stroke-width', strokeWidth)
+            .style('stroke-linejoin', 'round')
+            .style('opacity', 1);
+
+    }
+
+    let yearSlice = data.filter(d => d.year == year && !isNaN(d.value))
+        .sort((a, b) => b.value - a.value)
+        .slice(0, top_n);
+
+    yearSlice.forEach((d, i) => d.rank = i);
+
+    console.log('yearSlice: ', yearSlice)
+
+    let x = d3.scaleLinear()
+        .domain([0, d3.max(yearSlice, d => d.value)])
+        .range([margin.left, width - margin.right - 65]);
+
+    let y = d3.scaleLinear()
+        .domain([top_n, 0])
+        .range([height - margin.bottom, margin.top]);
+
+    let xAxis = d3.axisTop()
+        .scale(x)
+        .ticks(width > 500 ? 5 : 2)
+        .tickSize(-(height - margin.top - margin.bottom))
+        .tickFormat(d => d3.format(',')(d));
+
+    svg.append('g')
+        .attr('class', 'axis xAxis')
+        .attr('transform', `translate(0, ${margin.top})`)
+        .call(xAxis)
+        .selectAll('.tick line')
+        .classed('origin', d => d == 0);
+
+    svg.selectAll('rect.bar')
+        .data(yearSlice, d => d.name)
+        .enter()
+        .append('rect')
+        .attr('class', 'bar')
+        .attr('x', x(0) + 1)
+        .attr('width', d => Math.max(0, x(d.value) - x(0) - 1))
+        .attr('y', d => y(d.rank) + 5)
+        .attr('height', y(1) - y(0) - barPadding)
+        .style('fill', d => d.colour);
+
+    svg.selectAll('text.label')
+        .data(yearSlice, d => d.name)
+        .enter()
+        .append('text')
+        .attr('class', 'label')
+        .attr('x', d => x(d.value) - 8)
+        .attr('y', d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1)
+        .style('text-anchor', 'end')
+        .html(d => d.name);
+
+    svg.selectAll('text.valueLabel')
+        .data(yearSlice, d => d.name)
+        .enter()
+        .append('text')
+        .attr('class', 'valueLabel')
+        .attr('x', d => x(d.value) + 5)
+        .attr('y', d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1)
+        .text(d => d3.format(',.0f')(d.lastValue));
+
+    let yearText = svg.append('text')
+        .attr('class', 'yearText')
+        .attr('x', width - margin.right)
+        .attr('y', 500)
+        .style('text-anchor', 'end')
+        .html(~~year)
+        .call(halo, 10);
+
+    let ticker = d3.interval(e => {
+
+        yearSlice = data.filter(d => d.year == year && !isNaN(d.value))
+            .sort((a, b) => b.value - a.value)
+            .slice(0, top_n);
+
+        yearSlice.forEach((d, i) => d.rank = i);
+
+        //console.log('IntervalYear: ', yearSlice);
+
+        x.domain([0, d3.max(yearSlice, d => d.value)]);
+
+        svg.select('.xAxis')
+            .transition()
+            .duration(tickDuration)
+            .ease(d3.easeLinear)
+            .call(xAxis);
+
+        let bars = svg.selectAll('.bar').data(yearSlice, d => d.name);
+
+        bars
+            .enter()
+            .append('rect')
+            .attr('class', d => `bar ${d.name.replace(/\s/g, '_')}`)
+            .attr('x', x(0) + 1)
+            .attr('width', d => Math.max(0, x(d.value) - x(0) - 1))
+            .attr('y', d => y(top_n + 1) + 5)
+            .attr('height', y(1) - y(0) - barPadding)
+            .style('fill', d => d.colour)
+            .transition()
+            .duration(tickDuration)
+            .ease(d3.easeLinear)
+            .attr('y', d => y(d.rank) + 5);
+
+        bars
+            .transition()
+            .duration(tickDuration)
+            .ease(d3.easeLinear)
+            .attr('width', d => Math.max(0, x(d.value) - x(0) - 1))
+            .attr('y', d => y(d.rank) + 5);
+
+        bars
+            .exit()
+            .transition()
+            .duration(tickDuration)
+            .ease(d3.easeLinear)
+            .attr('width', d => Math.max(0, x(d.value) - x(0) - 1))
+            .attr('y', d => y(top_n + 1) + 5)
+            .remove();
+
+        let labels = svg.selectAll('.label')
+            .data(yearSlice, d => d.name);
+
+        labels
+            .enter()
+            .append('text')
+            .attr('class', 'label')
+            .attr('x', d => Math.max(0, x(d.value) - 8))
+            .attr('y', d => y(top_n + 1) + 5 + ((y(1) - y(0)) / 2))
+            .style('text-anchor', 'end')
+            .html(d => d.name)
+            .transition()
+            .duration(tickDuration)
+            .ease(d3.easeLinear)
+            .attr('y', d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1);
+
+
+        labels
+            .transition()
+            .duration(tickDuration)
+            .ease(d3.easeLinear)
+            .attr('x', d => x(d.value) - 8)
+            .attr('y', d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1);
+
+        labels
+            .exit()
+            .transition()
+            .duration(tickDuration)
+            .ease(d3.easeLinear)
+            .attr('x', d => x(d.value) - 8)
+            .attr('y', d => y(top_n + 1) + 5)
+            .remove();
+
+
+        let valueLabels = svg.selectAll('.valueLabel').data(yearSlice, d => d.name);
+
+        valueLabels
+            .enter()
+            .append('text')
+            .attr('class', 'valueLabel')
+            .attr('x', d => x(d.value) + 5)
+            .attr('y', d => y(top_n + 1) + 5)
+            .text(d => d3.format(',.0f')(d.lastValue))
+            .transition()
+            .duration(tickDuration)
+            .ease(d3.easeLinear)
+            .attr('y', d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1);
+
+        valueLabels
+            .transition()
+            .duration(tickDuration)
+            .ease(d3.easeLinear)
+            .attr('x', d => x(d.value) + 5)
+            .attr('y', d => y(d.rank) + 5 + ((y(1) - y(0)) / 2) + 1)
+            .tween("text", function (d) {
+                let i = d3.interpolateRound(d.lastValue, d.value);
+                return function (t) {
+                    this.textContent = d3.format(',')(i(t));
+                };
+            });
+
+
+        valueLabels
+            .exit()
+            .transition()
+            .duration(tickDuration)
+            .ease(d3.easeLinear)
+            .attr('x', d => x(d.value) + 5)
+            .attr('y', d => y(top_n + 1) + 5)
+            .remove();
+
+        yearText.html(~~year);
+
+        if (year == new Date().getFullYear()) ticker.stop();
+        year = d3.format('.1f')((+year) + 0.1);
+    }, tickDuration);
+
+
+</script>
+</body>

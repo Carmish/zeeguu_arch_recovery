@@ -1,0 +1,38 @@
+<html>
+<head>
+    <title>zeeguu/api/custom_fmd_graphs.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/custom_fmd_graphs.py (<b>9</b> lines of code) (<a href="custom_fmd_graphs.py">raw</a>):</h3>
+<div id="editor">def daily_visitors(dashboard):
+    def active_users_today():
+        from zeeguu.core.model import User
+
+        return len(User.all_recent_user_ids(days=1))
+
+    schedule = {
+        &quot;hours&quot;: 23,
+        &quot;minutes&quot;: 58,
+        # 'seconds': 1
+    }
+    dashboard.add_graph(&quot;Daily Visitors&quot;, lambda: active_users_today(), **schedule)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

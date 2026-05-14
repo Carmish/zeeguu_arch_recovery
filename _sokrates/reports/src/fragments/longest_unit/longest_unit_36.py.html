@@ -1,0 +1,115 @@
+<html>
+<head>
+    <title>def main()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def main()</h3>
+<p style="margin-top: 4px">in <i>tools/prefetch_example_sentences_for_users.py [0:0]</i></p>
+<ul>
+    <li><b>82</b> lines of code</li>
+    <li><b>10</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def main():
+    from zeeguu.api.app import create_app
+
+    app = create_app()
+    app.app_context().push()
+
+    parser = argparse.ArgumentParser(description=&quot;Batch generate example sentences&quot;)
+    parser.add_argument(&quot;--all&quot;, action=&quot;store_true&quot;, help=&quot;Generate for all users&quot;)
+    parser.add_argument(&quot;--user-id&quot;, type=int, help=&quot;Generate for specific user ID&quot;)
+    parser.add_argument(
+        &quot;--missing-only&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Only generate for words with no existing examples&quot;,
+    )
+    parser.add_argument(
+        &quot;--target-examples&quot;,
+        type=int,
+        default=5,
+        help=&quot;Target total number of examples per word (will generate enough to reach this)&quot;,
+    )
+    parser.add_argument(
+        &quot;--batch-size&quot;,
+        type=int,
+        default=100,
+        help=&quot;Number of words to process before committing&quot;,
+    )
+    parser.add_argument(
+        &quot;--max-words&quot;, type=int, help=&quot;Maximum number of words to process (for testing)&quot;
+    )
+    parser.add_argument(
+        &quot;--dry-run&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Show what would be done without actually generating&quot;,
+    )
+    parser.add_argument(
+        &quot;--all-words&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Include all user words, not just scheduled ones&quot;,
+    )
+    parser.add_argument(
+        &quot;--send-email&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Send completion notification email when finished&quot;,
+    )
+
+    args = parser.parse_args()
+
+    if not args.all and not args.user_id:
+        print(&quot;Error: Must specify either --all or --user-id&quot;)
+        sys.exit(1)
+
+    user = None
+    if args.user_id:
+        user = User.find_by_id(args.user_id)
+        if not user:
+            print(f&quot;Error: User with ID {args.user_id} not found&quot;)
+            sys.exit(1)
+
+    # By default, only process scheduled words unless --all-words is specified
+    scheduled_only = not args.all_words
+
+    if args.dry_run:
+        user_words = get_user_words_needing_examples(
+            user, args.missing_only, args.target_examples, scheduled_only, True, 30
+        )
+        if args.max_words:
+            user_words = user_words[: args.max_words]
+
+        scope = &quot;scheduled&quot; if scheduled_only else &quot;all&quot;
+        print(f&quot;Would process {len(user_words)} {scope} user words&quot;)
+        for uw in user_words[:10]:  # Show first 10
+            print(f&quot;  - {uw.meaning.origin.content} ({uw.user.name})&quot;)
+        if len(user_words) &gt; 10:
+            print(f&quot;  ... and {len(user_words) - 10} more&quot;)
+        return
+
+    stats = batch_generate_examples(
+        user=user,
+        missing_only=args.missing_only,
+        target_examples_per_word=args.target_examples,
+        batch_size=args.batch_size,
+        max_words=args.max_words,
+        scheduled_only=scheduled_only,
+        active_users_only=True,
+        days_active_threshold=30,
+        send_email=args.send_email,
+    )
+
+    print(f&quot;Generation completed:&quot;)
+    print(f&quot;  Words processed: {stats['processed']}/{stats['total_words']}&quot;)
+    print(f&quot;  Examples created: {stats['examples_created']}&quot;)
+    print(f&quot;  Errors: {stats['errors']}&quot;)
+    print(f&quot;  Duration: {stats['duration_seconds']:.1f} seconds&quot;)
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

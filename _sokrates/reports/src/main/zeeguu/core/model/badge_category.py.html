@@ -1,0 +1,79 @@
+<html>
+<head>
+    <title>zeeguu/core/model/badge_category.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/badge_category.py (<b>29</b> lines of code) (<a href="badge_category.py">raw</a>):</h3>
+<div id="editor">import enum
+
+from zeeguu.core.model.db import db
+
+
+class ActivityMetric(enum.Enum):
+    &quot;&quot;&quot;Enum representing all available activity metrics in the system.&quot;&quot;&quot;
+    TRANSLATED_WORDS = 'TRANSLATED_WORDS'
+    CORRECT_EXERCISES = 'CORRECT_EXERCISES'
+    COMPLETED_AUDIO_LESSONS = 'COMPLETED_AUDIO_LESSONS'
+    STREAK_DAYS = 'STREAK_DAYS'
+    LEARNED_WORDS = 'LEARNED_WORDS'
+    READ_ARTICLES = 'READ_ARTICLES'
+    FRIENDS = 'FRIENDS'
+
+
+class AwardMechanism(enum.Enum):
+    &quot;&quot;&quot;Enum representing all available badge award mechanisms in the system.&quot;&quot;&quot;
+    COUNTER = 'COUNTER'  # Progress value can only go up, incrementally
+    GAUGE = 'GAUGE'  # Progress value always reflects current state and might reset to 0
+    ONE_TIME = 'ONE_TIME'  # These badges only have 1 level, and are either achieved once or not
+
+
+class BadgeCategory(db.Model):
+    &quot;&quot;&quot;
+       Represents a category of badge that can be earned.
+       Each category can have multiple badge levels defined in Badge.
+    &quot;&quot;&quot;
+    __tablename__ = &quot;badge_category&quot;
+
+    id = db.Column(db.Integer, primary_key=True)
+    metric = db.Column(db.Enum(ActivityMetric), nullable=False, unique=True)
+    name = db.Column(db.String(100), nullable=False)
+    award_mechanism = db.Column(db.Enum(AwardMechanism), nullable=False)
+
+    __table_args__ = (
+        db.UniqueConstraint(&quot;metric&quot;),
+    )
+
+    badges = db.relationship(&quot;Badge&quot;, back_populates=&quot;badge_category&quot;, cascade=&quot;all, delete-orphan&quot;)
+
+    def __repr__(self):
+        return f&quot;&lt;BadgeCategory {self.name}&gt;&quot;
+
+    @classmethod
+    def find(cls, metric: ActivityMetric) -&gt; &quot;BadgeCategory&quot;:
+        &quot;&quot;&quot;
+        Find a badge category by its ActivityMetric enum value.
+
+        Returns:
+            BadgeCategory object if found, else None.
+        &quot;&quot;&quot;
+        return cls.query.filter_by(metric=metric).first()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

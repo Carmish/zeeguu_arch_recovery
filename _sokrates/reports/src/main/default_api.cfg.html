@@ -1,0 +1,63 @@
+<html>
+<head>
+    <title>default_api.cfg</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">default_api.cfg (<b>13</b> lines of code) (<a href="default_api.cfg">raw</a>):</h3>
+<div id="editor"># Required by core
+MAX_SESSION=99999999
+# SECURITY: Change credentials for production! Use environment variables:
+# export ZEEGUU_MYSQL_USER_PASSWORD=your_secure_password
+SQLALCHEMY_DATABASE_URI = (&quot;mysql+pymysql://zeeguu_test:zeeguu_test@localhost:3306/zeeguu_test&quot;)
+SQLALCHEMY_TRACK_MODIFICATIONS=False
+
+
+# Required by API
+# SECURITY: Set DEBUG=False in production!
+DEBUG=True
+HOST=&quot;0.0.0.0&quot;
+API_PORT=9001
+# SECURITY: Generate a secure key with: python -c &quot;import secrets; print(secrets.token_hex(32))&quot;
+SECRET_KEY=&quot;CHANGE_ME_IN_PRODUCTION&quot;
+
+## The SMTP config information below is used for
+## sending password reset requests.
+SMTP_EMAIL = ''
+
+# SECURITY: Use strong, random invitation codes in production
+INVITATION_CODES=['test']
+
+SEND_NOTIFICATION_EMAILS=False
+
+# Wordstats preloading
+# Set to True in production to preload all language dictionaries at startup
+# Set to False in development to use lazy loading (faster startup)
+PRELOAD_WORDSTATS=False
+
+# Stanza model preloading
+# Set to True in production to preload all language tokenizers at startup (~30s)
+# Set to False in development for lazy loading (models load on first use per language)
+PRELOAD_STANZA=False
+
+# Flask Monitoring Dashboard
+# Set to False in development to save ~3s on startup
+ENABLE_MONITORING_DASHBOARD=False</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/cfg");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

@@ -1,0 +1,226 @@
+<html>
+<head>
+    <title>tools/cleanup_broken_summaries.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/cleanup_broken_summaries.py (<b>139</b> lines of code) (<a href="cleanup_broken_summaries.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python
+&quot;&quot;&quot;
+Tool to detect and clean up broken article summaries (HTML junk, navigation elements).
+
+Articles with broken summaries can either:
+1. Have their summary cleared (set to None)
+2. Be marked as broken if they have no user interactions
+3. Be deleted if they have no user interactions (with --delete flag)
+
+Usage:
+    python -m tools.cleanup_broken_summaries [--dry-run] [--delete]
+&quot;&quot;&quot;
+
+import sys
+import re
+import argparse
+
+sys.path.insert(0, &quot;/Users/gh/zeeguu/api&quot;)
+
+from zeeguu.api.app import create_app
+from zeeguu.core.model import db
+from zeeguu.core.model.article import Article
+from zeeguu.core.model.user_article import UserArticle
+from zeeguu.core.model.article_tokenization_cache import ArticleTokenizationCache
+
+
+def has_html_junk(text):
+    &quot;&quot;&quot;Check if summary contains HTML tags that indicate broken parsing.&quot;&quot;&quot;
+    if not text:
+        return False
+
+    # Patterns that indicate broken/junk summaries
+    junk_patterns = [
+        r'&lt;div\s+class=',          # HTML div with class
+        r'&lt;figure&gt;',               # figure tags
+        r'&lt;img\s',                 # img tags
+        r'&lt;a\s+href=',             # links
+        r'field-name-field',       # Drupal field junk
+        r'feedflare',              # RSS feed junk
+        r'class=&quot;field',           # HTML class attributes
+        r'&lt;h[1-6]&gt;',               # Header tags in summary
+        r'&lt;p&gt;',                    # Paragraph tags
+        r'&lt;em&gt;',                   # Emphasis tags
+        r'&lt;/div&gt;',                 # Closing divs
+        r'src=&quot;http',              # Image sources
+    ]
+
+    for pattern in junk_patterns:
+        if re.search(pattern, text, re.IGNORECASE):
+            return True
+    return False
+
+
+def has_navigation_junk(text):
+    &quot;&quot;&quot;Check if summary contains navigation/UI junk text.&quot;&quot;&quot;
+    if not text:
+        return False
+
+    # Text patterns that indicate navigation or UI elements
+    junk_texts = [
+        'cookie',
+        'subscribe',
+        'sign up',
+        'log in',
+        'read more',
+        'click here',
+        'javascript',
+        'advertisement',
+        'skip to content',
+        'menu',
+        'search',
+        'share this',
+        'follow us',
+    ]
+
+    text_lower = text.lower()
+    # Only flag if these appear at the start (first 100 chars) suggesting it's junk
+    start_text = text_lower[:100]
+    for junk in junk_texts:
+        if junk in start_text:
+            return True
+    return False
+
+
+def article_has_interactions(article_id):
+    &quot;&quot;&quot;Check if article has any user interactions (user_article entries).&quot;&quot;&quot;
+    # Check for user_article entries - this is the main indicator of user interaction
+    user_article_count = UserArticle.query.filter_by(article_id=article_id).count()
+    return user_article_count &gt; 0
+
+
+def main():
+    parser = argparse.ArgumentParser(description=&quot;Clean up broken article summaries&quot;)
+    parser.add_argument(&quot;--dry-run&quot;, action=&quot;store_true&quot;, help=&quot;Show what would be changed without making changes&quot;)
+    parser.add_argument(&quot;--delete&quot;, action=&quot;store_true&quot;, help=&quot;Delete articles with no interactions instead of just clearing summary&quot;)
+    parser.add_argument(&quot;--limit&quot;, type=int, default=None, help=&quot;Limit number of articles to process&quot;)
+    args = parser.parse_args()
+
+    app = create_app()
+    app.app_context().push()
+
+    # Find articles with summaries
+    query = Article.query.filter(Article.summary.isnot(None))
+    if args.limit:
+        query = query.limit(args.limit)
+
+    articles_with_summaries = query.all()
+    print(f&quot;Checking {len(articles_with_summaries)} articles with summaries...&quot;)
+
+    broken_html = []
+    broken_nav = []
+
+    for article in articles_with_summaries:
+        if has_html_junk(article.summary):
+            broken_html.append(article)
+        elif has_navigation_junk(article.summary):
+            broken_nav.append(article)
+
+    print(f&quot;\nFound {len(broken_html)} articles with HTML junk in summaries&quot;)
+    print(f&quot;Found {len(broken_nav)} articles with navigation junk in summaries&quot;)
+
+    all_broken = broken_html + broken_nav
+
+    if not all_broken:
+        print(&quot;No broken summaries found!&quot;)
+        return
+
+    # Categorize by whether they have interactions
+    with_interactions = []
+    without_interactions = []
+
+    for article in all_broken:
+        if article_has_interactions(article.id):
+            with_interactions.append(article)
+        else:
+            without_interactions.append(article)
+
+    print(f&quot;\n  - {len(with_interactions)} have user interactions (will clear summary only)&quot;)
+    print(f&quot;  - {len(without_interactions)} have NO interactions&quot;, end=&quot;&quot;)
+    if args.delete:
+        print(&quot; (will DELETE)&quot;)
+    else:
+        print(&quot; (will clear summary)&quot;)
+
+    # Process articles with interactions - just clear summary
+    cleared_count = 0
+    for article in with_interactions:
+        print(f&quot;\n--- Article {article.id}: {article.title[:50]}...&quot;)
+        print(f&quot;  Summary (broken): {article.summary[:100]}...&quot;)
+        print(f&quot;  Action: Clear summary (has interactions)&quot;)
+
+        if not args.dry_run:
+            article.summary = None
+            db.session.add(article)
+
+            # Invalidate tokenization cache
+            cache = ArticleTokenizationCache.get_for_article(db.session, article.id)
+            if cache and cache.tokenized_summary:
+                cache.tokenized_summary = None
+                db.session.add(cache)
+
+            cleared_count += 1
+
+    # Process articles without interactions
+    deleted_count = 0
+    for article in without_interactions:
+        print(f&quot;\n--- Article {article.id}: {article.title[:50]}...&quot;)
+        print(f&quot;  Summary (broken): {article.summary[:100]}...&quot;)
+
+        if args.delete:
+            print(f&quot;  Action: DELETE (no interactions)&quot;)
+            if not args.dry_run:
+                db.session.delete(article)
+                deleted_count += 1
+        else:
+            print(f&quot;  Action: Clear summary (no interactions)&quot;)
+            if not args.dry_run:
+                article.summary = None
+                db.session.add(article)
+
+                cache = ArticleTokenizationCache.get_for_article(db.session, article.id)
+                if cache and cache.tokenized_summary:
+                    cache.tokenized_summary = None
+                    db.session.add(cache)
+
+                cleared_count += 1
+
+    if not args.dry_run:
+        db.session.commit()
+        print(f&quot;\n✓ Cleared {cleared_count} summaries&quot;)
+        if args.delete:
+            print(f&quot;✓ Deleted {deleted_count} articles&quot;)
+    else:
+        print(f&quot;\n[DRY RUN] Would clear {len(with_interactions) + (0 if args.delete else len(without_interactions))} summaries&quot;)
+        if args.delete:
+            print(f&quot;[DRY RUN] Would delete {len(without_interactions)} articles&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

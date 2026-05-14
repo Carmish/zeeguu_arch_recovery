@@ -1,0 +1,2680 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/user_stats.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/user_stats.py (<b>1,081</b> lines of code) (<a href="user_stats.py">raw</a>):</h3>
+<div id="editor">&quot;&quot;&quot;
+User activity statistics endpoint for monitoring daily user engagement.
+Shows exercise sessions, reading sessions, and word progress grouped by language.
+Replaces frequent email notifications with a consolidated dashboard view.
+&quot;&quot;&quot;
+
+from collections import defaultdict
+from datetime import datetime, timedelta
+
+from flask import request, Response, make_response, redirect
+
+from zeeguu.api.utils.route_wrappers import cross_domain, requires_session, only_admins
+from zeeguu.core.model import User, Language, Session
+from zeeguu.core.model.bookmark import Bookmark
+from zeeguu.core.model.cohort import Cohort
+from zeeguu.core.model.daily_audio_lesson import DailyAudioLesson
+from zeeguu.core.model.exercise import Exercise
+from zeeguu.core.model.user_browsing_session import UserBrowsingSession
+from zeeguu.core.model.user_cohort_map import UserCohortMap
+from zeeguu.core.model.user_exercise_session import UserExerciseSession
+from zeeguu.core.model.user_reading_session import UserReadingSession
+from zeeguu.core.model.user_word import UserWord
+from zeeguu.core.model.user_activitiy_data import UserActivityData
+from zeeguu.core.constants import PLATFORM_NAMES
+from . import api, db_session
+
+
+def get_period_range(period: str):
+    &quot;&quot;&quot;Get start and end datetime for the given period.&quot;&quot;&quot;
+    now = datetime.now()
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+    if period == &quot;today&quot;:
+        start = today_start
+        end = now
+        label = &quot;Today&quot;
+    elif period == &quot;week&quot;:
+        start = today_start - timedelta(days=7)
+        end = today_start
+        label = &quot;Last 7 days&quot;
+    elif period == &quot;month&quot;:
+        start = today_start - timedelta(days=30)
+        end = today_start
+        label = &quot;Last 30 days&quot;
+    elif period == &quot;2days&quot;:
+        start = today_start - timedelta(days=2)
+        end = today_start - timedelta(days=1)
+        label = &quot;Two days ago&quot;
+    else:  # yesterday (default)
+        start = today_start - timedelta(days=1)
+        end = today_start
+        label = &quot;Yesterday&quot;
+
+    return start, end, label
+
+
+def get_platform_stats(start, end):
+    &quot;&quot;&quot;Get platform usage statistics from user_activity_data for the given period.&quot;&quot;&quot;
+    from sqlalchemy import func
+
+    # Query activity counts grouped by platform
+    platform_counts = (
+        db_session.query(
+            UserActivityData.platform,
+            func.count(func.distinct(UserActivityData.user_id)).label('user_count'),
+            func.count(UserActivityData.id).label('event_count')
+        )
+        .filter(UserActivityData.time &gt;= start)
+        .filter(UserActivityData.time &lt; end)
+        .group_by(UserActivityData.platform)
+        .all()
+    )
+
+    # Get distinct user IDs for each platform
+    platform_users = {}
+    for platform_id, _, _ in platform_counts:
+        user_ids = (
+            db_session.query(func.distinct(UserActivityData.user_id))
+            .filter(UserActivityData.time &gt;= start)
+            .filter(UserActivityData.time &lt; end)
+            .filter(UserActivityData.platform == platform_id)
+            .all()
+        )
+        platform_users[platform_id] = [uid[0] for uid in user_ids]
+
+    stats = {}
+    for platform_id, user_count, event_count in platform_counts:
+        platform_name = PLATFORM_NAMES.get(platform_id, f&quot;unknown ({platform_id})&quot;)
+        stats[platform_name] = {
+            'users': user_count,
+            'events': event_count,
+            'platform_id': platform_id,
+            'user_ids': platform_users.get(platform_id, [])
+        }
+
+    return stats
+
+
+def get_user_cohort_info(user):
+    &quot;&quot;&quot;Get cohort name or invite code for a user.&quot;&quot;&quot;
+    # First check UserCohortMap
+    cohort_map = UserCohortMap.query.filter_by(user_id=user.id).first()
+    if cohort_map and cohort_map.cohort:
+        return cohort_map.cohort.name, cohort_map.cohort.id
+
+    # Fall back to invite code
+    if user.invitation_code:
+        # Check if this invite code belongs to a cohort
+        cohort = Cohort.query.filter_by(inv_code=user.invitation_code).first()
+        if cohort:
+            return cohort.name, cohort.id
+        return user.invitation_code, None
+
+    return None, None
+
+
+def get_exercise_stats_for_user(user_id, start, end):
+    &quot;&quot;&quot;Get exercise session stats for a user in the given period.&quot;&quot;&quot;
+    sessions = (
+        UserExerciseSession.query.filter(UserExerciseSession.user_id == user_id)
+        .filter(UserExerciseSession.start_time &gt;= start)
+        .filter(UserExerciseSession.start_time &lt; end)
+        .all()
+    )
+
+    total_duration_ms = sum(s.duration or 0 for s in sessions)
+    session_count = len(sessions)
+
+    # Get unique words practiced and language info
+    words_by_language = defaultdict(set)
+
+    for session in sessions:
+        exercises = Exercise.query.filter(Exercise.session_id == session.id).all()
+        for ex in exercises:
+            if ex.user_word and ex.user_word.meaning and ex.user_word.meaning.origin:
+                lang = ex.user_word.meaning.origin.language
+                if lang:
+                    words_by_language[lang.code].add(ex.user_word_id)
+
+    return {
+        &quot;session_count&quot;: session_count,
+        &quot;duration_ms&quot;: total_duration_ms,
+        &quot;duration_min&quot;: round(total_duration_ms / 60000, 1),
+        &quot;words_by_language&quot;: {
+            lang: len(words) for lang, words in words_by_language.items()
+        },
+        &quot;sessions&quot;: sessions,
+    }
+
+
+def get_reading_stats_for_user(user_id, start, end):
+    &quot;&quot;&quot;Get reading session stats for a user in the given period.&quot;&quot;&quot;
+    sessions = (
+        UserReadingSession.query.filter(UserReadingSession.user_id == user_id)
+        .filter(UserReadingSession.start_time &gt;= start)
+        .filter(UserReadingSession.start_time &lt; end)
+        .all()
+    )
+
+    total_duration_ms = sum(s.duration or 0 for s in sessions)
+
+    # Group by article and language
+    articles_by_language = defaultdict(set)
+
+    for session in sessions:
+        if session.article and session.article.language:
+            lang_code = session.article.language.code
+            articles_by_language[lang_code].add(session.article_id)
+
+    return {
+        &quot;session_count&quot;: len(sessions),
+        &quot;duration_ms&quot;: total_duration_ms,
+        &quot;duration_min&quot;: round(total_duration_ms / 60000, 1),
+        &quot;articles_by_language&quot;: {
+            lang: len(arts) for lang, arts in articles_by_language.items()
+        },
+        &quot;sessions&quot;: sessions,
+    }
+
+
+def get_browsing_stats_for_user(user_id, start, end):
+    &quot;&quot;&quot;Get browsing session stats for a user in the given period.&quot;&quot;&quot;
+    sessions = (
+        UserBrowsingSession.query.filter(UserBrowsingSession.user_id == user_id)
+        .filter(UserBrowsingSession.start_time &gt;= start)
+        .filter(UserBrowsingSession.start_time &lt; end)
+        .all()
+    )
+
+    total_duration_ms = sum(s.duration or 0 for s in sessions)
+
+    # Get translations made during browsing sessions
+    words_by_language = defaultdict(int)
+    session_ids = [s.id for s in sessions]
+
+    if session_ids:
+        browsing_bookmarks = (
+            Bookmark.query.join(UserWord, Bookmark.user_word_id == UserWord.id)
+            .filter(UserWord.user_id == user_id)
+            .filter(Bookmark.browsing_session_id.in_(session_ids))
+            .all()
+        )
+        for bm in browsing_bookmarks:
+            if bm.user_word and bm.user_word.meaning and bm.user_word.meaning.origin:
+                lang = bm.user_word.meaning.origin.language
+                if lang:
+                    words_by_language[lang.code] += 1
+
+    return {
+        &quot;session_count&quot;: len(sessions),
+        &quot;duration_ms&quot;: total_duration_ms,
+        &quot;duration_min&quot;: round(total_duration_ms / 60000, 1),
+        &quot;words_by_language&quot;: dict(words_by_language),
+        &quot;sessions&quot;: sessions,
+    }
+
+
+def get_translations_for_user(user_id, start, end):
+    &quot;&quot;&quot;Get translations/bookmarks made by user in the given period.&quot;&quot;&quot;
+    from zeeguu.core.model.bookmark import Bookmark
+
+    bookmarks = (
+        Bookmark.query.join(UserWord, Bookmark.user_word_id == UserWord.id)
+        .filter(UserWord.user_id == user_id)
+        .filter(Bookmark.time &gt;= start)
+        .filter(Bookmark.time &lt; end)
+        .all()
+    )
+
+    translations_by_language = defaultdict(int)
+    for bm in bookmarks:
+        if bm.user_word and bm.user_word.meaning and bm.user_word.meaning.origin:
+            lang = bm.user_word.meaning.origin.language
+            if lang:
+                translations_by_language[lang.code] += 1
+
+    return {
+        &quot;total&quot;: len(bookmarks),
+        &quot;by_language&quot;: dict(translations_by_language),
+    }
+
+
+def get_audio_lesson_stats_for_user(user_id, start, end):
+    &quot;&quot;&quot;Get audio lesson stats for a user in the given period.&quot;&quot;&quot;
+    # Get lessons completed in this period
+    lessons = (
+        DailyAudioLesson.query.filter(DailyAudioLesson.user_id == user_id)
+        .filter(DailyAudioLesson.completed_at &gt;= start)
+        .filter(DailyAudioLesson.completed_at &lt; end)
+        .all()
+    )
+
+    total_duration_sec = sum(l.duration_seconds or 0 for l in lessons)
+
+    # Group by language
+    lessons_by_language = defaultdict(int)
+    duration_by_language = defaultdict(int)
+
+    for lesson in lessons:
+        if lesson.language:
+            lang_code = lesson.language.code
+            lessons_by_language[lang_code] += 1
+            duration_by_language[lang_code] += lesson.duration_seconds or 0
+
+    return {
+        &quot;lesson_count&quot;: len(lessons),
+        &quot;duration_sec&quot;: total_duration_sec,
+        &quot;duration_min&quot;: round(total_duration_sec / 60, 1),
+        &quot;lessons_by_language&quot;: dict(lessons_by_language),
+        &quot;duration_by_language&quot;: {
+            lang: round(sec / 60, 1) for lang, sec in duration_by_language.items()
+        },
+        &quot;lessons&quot;: lessons,
+    }
+
+
+def collect_user_activity(start, end):
+    &quot;&quot;&quot;Collect activity stats for all users in the given period.&quot;&quot;&quot;
+
+    # Find all users with exercise sessions in this period
+    exercise_user_ids = (
+        db_session.query(UserExerciseSession.user_id)
+        .filter(UserExerciseSession.start_time &gt;= start)
+        .filter(UserExerciseSession.start_time &lt; end)
+        .distinct()
+        .all()
+    )
+
+    # Find all users with reading sessions in this period
+    reading_user_ids = (
+        db_session.query(UserReadingSession.user_id)
+        .filter(UserReadingSession.start_time &gt;= start)
+        .filter(UserReadingSession.start_time &lt; end)
+        .distinct()
+        .all()
+    )
+
+    # Find all users with translations/bookmarks in this period
+    bookmark_user_ids = (
+        db_session.query(UserWord.user_id)
+        .join(Bookmark, Bookmark.user_word_id == UserWord.id)
+        .filter(Bookmark.time &gt;= start)
+        .filter(Bookmark.time &lt; end)
+        .distinct()
+        .all()
+    )
+
+    # Find all users with completed audio lessons in this period
+    audio_lesson_user_ids = (
+        db_session.query(DailyAudioLesson.user_id)
+        .filter(DailyAudioLesson.completed_at &gt;= start)
+        .filter(DailyAudioLesson.completed_at &lt; end)
+        .distinct()
+        .all()
+    )
+
+    # Find all users with browsing sessions in this period
+    browsing_user_ids = (
+        db_session.query(UserBrowsingSession.user_id)
+        .filter(UserBrowsingSession.start_time &gt;= start)
+        .filter(UserBrowsingSession.start_time &lt; end)
+        .distinct()
+        .all()
+    )
+
+    # Combine unique user IDs from all activity types
+    active_user_ids = (
+        set(uid for (uid,) in exercise_user_ids)
+        | set(uid for (uid,) in reading_user_ids)
+        | set(uid for (uid,) in bookmark_user_ids)
+        | set(uid for (uid,) in audio_lesson_user_ids)
+        | set(uid for (uid,) in browsing_user_ids)
+    )
+
+    # Collect stats per user, grouped by language
+    users_by_language = defaultdict(list)
+
+    for user_id in active_user_ids:
+        user = User.find_by_id(user_id)
+        if not user:
+            continue
+
+        cohort_name, cohort_id = get_user_cohort_info(user)
+        exercise_stats = get_exercise_stats_for_user(user_id, start, end)
+        reading_stats = get_reading_stats_for_user(user_id, start, end)
+        browsing_stats = get_browsing_stats_for_user(user_id, start, end)
+        translation_stats = get_translations_for_user(user_id, start, end)
+        audio_stats = get_audio_lesson_stats_for_user(user_id, start, end)
+
+        # Determine languages from activity
+        active_languages = set()
+        active_languages.update(exercise_stats[&quot;words_by_language&quot;].keys())
+        active_languages.update(reading_stats[&quot;articles_by_language&quot;].keys())
+        active_languages.update(browsing_stats[&quot;words_by_language&quot;].keys())
+        active_languages.update(translation_stats[&quot;by_language&quot;].keys())
+        active_languages.update(audio_stats[&quot;lessons_by_language&quot;].keys())
+
+        if not active_languages:
+            active_languages = {&quot;unknown&quot;}
+
+        user_data = {
+            &quot;id&quot;: user.id,
+            &quot;name&quot;: user.name,
+            &quot;email&quot;: user.email,
+            &quot;cohort_name&quot;: cohort_name,
+            &quot;cohort_id&quot;: cohort_id,
+            &quot;exercise_duration_min&quot;: exercise_stats[&quot;duration_min&quot;],
+            &quot;exercise_sessions&quot;: exercise_stats[&quot;session_count&quot;],
+            &quot;exercise_words&quot;: exercise_stats[&quot;words_by_language&quot;],
+            &quot;reading_duration_min&quot;: reading_stats[&quot;duration_min&quot;],
+            &quot;articles_read&quot;: reading_stats[&quot;articles_by_language&quot;],
+            &quot;browsing_duration_min&quot;: browsing_stats[&quot;duration_min&quot;],
+            &quot;browsing_words&quot;: browsing_stats[&quot;words_by_language&quot;],
+            &quot;translations&quot;: translation_stats[&quot;by_language&quot;],
+            &quot;audio_lessons&quot;: audio_stats[&quot;lessons_by_language&quot;],
+            &quot;audio_duration_min&quot;: audio_stats[&quot;duration_min&quot;],
+            &quot;audio_duration_by_language&quot;: audio_stats[&quot;duration_by_language&quot;],
+            &quot;languages&quot;: list(active_languages),
+        }
+
+        # Add user to each language they were active in
+        for lang in active_languages:
+            users_by_language[lang].append(user_data)
+
+    return users_by_language
+
+
+@api.route(&quot;/user_stats&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+@only_admins
+def user_stats():
+    &quot;&quot;&quot;
+    Get user activity statistics for yesterday or last week.
+
+    Query params:
+        period: &quot;yesterday&quot; (default) or &quot;week&quot;
+
+    Returns JSON with users grouped by activity language.
+    &quot;&quot;&quot;
+    period = request.args.get(&quot;period&quot;, &quot;yesterday&quot;)
+    start, end, period_label = get_period_range(period)
+
+    users_by_language = collect_user_activity(start, end)
+
+    # Calculate totals per language
+    result = {
+        &quot;period&quot;: {
+            &quot;name&quot;: period,
+            &quot;label&quot;: period_label,
+            &quot;start&quot;: start.isoformat(),
+            &quot;end&quot;: end.isoformat(),
+        },
+        &quot;by_language&quot;: {},
+        &quot;summary&quot;: {
+            &quot;total_active_users&quot;: 0,
+            &quot;total_exercise_minutes&quot;: 0,
+            &quot;total_reading_minutes&quot;: 0,
+        },
+    }
+
+    seen_users = set()
+
+    for lang_code, users in users_by_language.items():
+        lang_exercise_min = sum(u[&quot;exercise_duration_min&quot;] for u in users)
+        lang_reading_min = sum(u[&quot;reading_duration_min&quot;] for u in users)
+
+        result[&quot;by_language&quot;][lang_code] = {
+            &quot;user_count&quot;: len(users),
+            &quot;exercise_minutes&quot;: round(lang_exercise_min, 1),
+            &quot;reading_minutes&quot;: round(lang_reading_min, 1),
+            &quot;users&quot;: sorted(
+                users, key=lambda u: u[&quot;exercise_duration_min&quot;], reverse=True
+            ),
+        }
+
+        result[&quot;summary&quot;][&quot;total_exercise_minutes&quot;] += lang_exercise_min
+        result[&quot;summary&quot;][&quot;total_reading_minutes&quot;] += lang_reading_min
+
+        for u in users:
+            seen_users.add(u[&quot;id&quot;])
+
+    result[&quot;summary&quot;][&quot;total_active_users&quot;] = len(seen_users)
+    result[&quot;summary&quot;][&quot;total_exercise_minutes&quot;] = round(
+        result[&quot;summary&quot;][&quot;total_exercise_minutes&quot;], 1
+    )
+    result[&quot;summary&quot;][&quot;total_reading_minutes&quot;] = round(
+        result[&quot;summary&quot;][&quot;total_reading_minutes&quot;], 1
+    )
+
+    return result
+
+
+@api.route(&quot;/user_stats/user/&lt;int:user_id&gt;&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+@only_admins
+def user_stats_individual(user_id):
+    &quot;&quot;&quot;
+    Get detailed activity statistics for a specific user.
+
+    Query params:
+        period: &quot;yesterday&quot; (default) or &quot;week&quot;
+    &quot;&quot;&quot;
+    period = request.args.get(&quot;period&quot;, &quot;yesterday&quot;)
+    start, end, period_label = get_period_range(period)
+
+    user = User.find_by_id(user_id)
+    if not user:
+        return {&quot;error&quot;: &quot;User not found&quot;}, 404
+
+    cohort_name, cohort_id = get_user_cohort_info(user)
+
+    # Get exercise sessions with details
+    exercise_sessions = (
+        UserExerciseSession.query.filter(UserExerciseSession.user_id == user_id)
+        .filter(UserExerciseSession.start_time &gt;= start)
+        .filter(UserExerciseSession.start_time &lt; end)
+        .order_by(UserExerciseSession.start_time.desc())
+        .all()
+    )
+
+    exercise_session_details = []
+    for session in exercise_sessions:
+        exercises = Exercise.query.filter(Exercise.session_id == session.id).all()
+
+        words = []
+        session_lang = None
+        for ex in exercises:
+            if ex.user_word and ex.user_word.meaning:
+                origin = ex.user_word.meaning.origin
+                translation = ex.user_word.meaning.translation
+                if origin:
+                    if origin.language and not session_lang:
+                        session_lang = origin.language.code
+                    words.append(
+                        {
+                            &quot;word&quot;: origin.content if origin else &quot;?&quot;,
+                            &quot;translation&quot;: translation.content if translation else &quot;?&quot;,
+                            &quot;outcome&quot;: ex.outcome.outcome if ex.outcome else &quot;?&quot;,
+                            &quot;solving_speed_ms&quot;: ex.solving_speed,
+                        }
+                    )
+
+        exercise_session_details.append(
+            {
+                &quot;id&quot;: session.id,
+                &quot;start_time&quot;: session.start_time.isoformat(),
+                &quot;duration_min&quot;: round((session.duration or 0) / 60000, 1),
+                &quot;language&quot;: session_lang,
+                &quot;word_count&quot;: len(words),
+                &quot;words&quot;: words,
+            }
+        )
+
+    # Get reading sessions with details
+    reading_sessions = (
+        UserReadingSession.query.filter(UserReadingSession.user_id == user_id)
+        .filter(UserReadingSession.start_time &gt;= start)
+        .filter(UserReadingSession.start_time &lt; end)
+        .order_by(UserReadingSession.start_time.desc())
+        .all()
+    )
+
+    reading_session_details = []
+    for session in reading_sessions:
+        article = session.article
+        reading_session_details.append(
+            {
+                &quot;id&quot;: session.id,
+                &quot;start_time&quot;: session.start_time.isoformat(),
+                &quot;duration_min&quot;: round((session.duration or 0) / 60000, 1),
+                &quot;article_id&quot;: session.article_id,
+                &quot;article_title&quot;: article.title if article else &quot;Unknown&quot;,
+                &quot;article_language&quot;: (
+                    article.language.code if article and article.language else None
+                ),
+            }
+        )
+
+    # Get translations/bookmarks
+    bookmarks = (
+        Bookmark.query.join(UserWord, Bookmark.user_word_id == UserWord.id)
+        .filter(UserWord.user_id == user_id)
+        .filter(Bookmark.time &gt;= start)
+        .filter(Bookmark.time &lt; end)
+        .order_by(Bookmark.time.desc())
+        .all()
+    )
+
+    translation_details = []
+    for bm in bookmarks:
+        if bm.user_word and bm.user_word.meaning:
+            origin = bm.user_word.meaning.origin
+            translation = bm.user_word.meaning.translation
+            translation_details.append(
+                {
+                    &quot;word&quot;: origin.content if origin else &quot;?&quot;,
+                    &quot;translation&quot;: translation.content if translation else &quot;?&quot;,
+                    &quot;time&quot;: bm.time.isoformat() if bm.time else None,
+                    &quot;language&quot;: (
+                        origin.language.code if origin and origin.language else None
+                    ),
+                }
+            )
+
+    return {
+        &quot;period&quot;: {
+            &quot;name&quot;: period,
+            &quot;label&quot;: period_label,
+            &quot;start&quot;: start.isoformat(),
+            &quot;end&quot;: end.isoformat(),
+        },
+        &quot;user&quot;: {
+            &quot;id&quot;: user.id,
+            &quot;name&quot;: user.name,
+            &quot;email&quot;: user.email,
+            &quot;cohort_name&quot;: cohort_name,
+            &quot;cohort_id&quot;: cohort_id,
+        },
+        &quot;exercise_sessions&quot;: exercise_session_details,
+        &quot;reading_sessions&quot;: reading_session_details,
+        &quot;translations&quot;: translation_details,
+        &quot;summary&quot;: {
+            &quot;exercise_session_count&quot;: len(exercise_session_details),
+            &quot;exercise_minutes&quot;: round(
+                sum(s[&quot;duration_min&quot;] for s in exercise_session_details), 1
+            ),
+            &quot;reading_session_count&quot;: len(reading_session_details),
+            &quot;reading_minutes&quot;: round(
+                sum(s[&quot;duration_min&quot;] for s in reading_session_details), 1
+            ),
+            &quot;translation_count&quot;: len(translation_details),
+        },
+    }
+
+
+@api.route(&quot;/user_stats/dashboard&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+@only_admins
+def user_stats_dashboard():
+    &quot;&quot;&quot;HTML dashboard showing user activity statistics.&quot;&quot;&quot;
+    period = request.args.get(&quot;period&quot;, &quot;yesterday&quot;)
+    start, end, period_label = get_period_range(period)
+
+    users_by_language = collect_user_activity(start, end)
+    platform_stats = get_platform_stats(start, end)
+
+    # Calculate totals
+    total_users = set()
+    total_exercise_min = 0
+    total_reading_min = 0
+    total_browsing_min = 0
+    total_audio_min = 0
+
+    for lang_code, users in users_by_language.items():
+        for u in users:
+            total_users.add(u[&quot;id&quot;])
+            total_exercise_min += u[&quot;exercise_duration_min&quot;]
+            total_reading_min += u[&quot;reading_duration_min&quot;]
+            total_browsing_min += u[&quot;browsing_duration_min&quot;]
+            total_audio_min += u[&quot;audio_duration_by_language&quot;].get(lang_code, 0)
+
+    # Get language names
+    languages = {l.code: l.name for l in Language.available_languages()}
+
+    # Sort languages by activity
+    sorted_languages = sorted(
+        users_by_language.items(),
+        key=lambda x: sum(
+            u[&quot;exercise_duration_min&quot;] + u[&quot;reading_duration_min&quot;] for u in x[1]
+        ),
+        reverse=True,
+    )
+
+    html = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Zeeguu User Stats&lt;/title&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;style&gt;
+        * {{ box-sizing: border-box; }}
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0; padding: 20px;
+            background: #f5f5f5;
+            color: #333;
+        }}
+        .container {{ max-width: 1400px; margin: 0 auto; }}
+        h1 {{ color: #2c3e50; margin-bottom: 5px; }}
+        .subtitle {{ color: #7f8c8d; margin-bottom: 20px; }}
+        .summary {{
+            display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap;
+        }}
+        .stat-card {{
+            background: white; padding: 20px; border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-width: 150px;
+        }}
+        .stat-card .number {{ font-size: 2em; font-weight: bold; color: #3498db; }}
+        .stat-card .label {{ color: #7f8c8d; font-size: 0.9em; }}
+        .section {{
+            background: white; padding: 20px; border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }}
+        .section h2 {{ margin-top: 0; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }}
+        .section h3 {{ margin-top: 20px; color: #34495e; }}
+        table {{ width: 100%; border-collapse: collapse; }}
+        th, td {{ padding: 8px 10px; text-align: left; border-bottom: 1px solid #eee; }}
+        th {{ background: #f8f9fa; font-weight: 600; }}
+        th.group-header {{
+            text-align: center;
+            background: #e8f4f8;
+            border-bottom: 2px solid #3498db;
+            font-size: 0.95em;
+        }}
+        th.sub-header {{
+            font-size: 0.85em;
+            color: #666;
+            font-weight: 500;
+        }}
+        tr:hover {{ background: #f8f9fa; }}
+        .lang-code {{
+            display: inline-block; padding: 2px 8px;
+            background: #3498db; color: white; border-radius: 4px;
+            font-weight: bold; font-size: 0.9em;
+        }}
+        .cohort-badge {{
+            display: inline-block; padding: 2px 6px;
+            background: #ecf0f1; color: #7f8c8d; border-radius: 4px;
+            font-size: 0.85em;
+        }}
+        .nav {{ margin-bottom: 20px; }}
+        .nav a {{
+            display: inline-block; padding: 8px 16px; margin-right: 10px;
+            background: #3498db; color: white; text-decoration: none;
+            border-radius: 4px;
+        }}
+        .nav a:hover {{ background: #2980b9; }}
+        .nav a.active {{ background: #2c3e50; }}
+        .user-link {{ color: #3498db; text-decoration: none; }}
+        .user-link:hover {{ text-decoration: underline; }}
+        .cohort-link {{
+            display: inline-block; padding: 2px 6px;
+            background: #3498db; color: white; border-radius: 4px;
+            font-size: 0.85em; text-decoration: none;
+        }}
+        .cohort-link:hover {{ background: #2980b9; }}
+        .no-activity {{ color: #bdc3c7; }}
+        .duration {{ font-family: monospace; }}
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;h1&gt;User Activity Stats&lt;/h1&gt;
+        &lt;p class=&quot;subtitle&quot;&gt;
+            {period_label} ({start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')})
+        &lt;/p&gt;
+
+        &lt;div class=&quot;nav&quot;&gt;
+            &lt;a href=&quot;?period=today&quot; {&quot;class='active'&quot; if period == &quot;today&quot; else &quot;&quot;}&gt;Today&lt;/a&gt;
+            &lt;a href=&quot;?period=yesterday&quot; {&quot;class='active'&quot; if period == &quot;yesterday&quot; else &quot;&quot;}&gt;Yesterday&lt;/a&gt;
+            &lt;a href=&quot;?period=2days&quot; {&quot;class='active'&quot; if period == &quot;2days&quot; else &quot;&quot;}&gt;2 days ago&lt;/a&gt;
+            &lt;a href=&quot;?period=week&quot; {&quot;class='active'&quot; if period == &quot;week&quot; else &quot;&quot;}&gt;Last 7 days&lt;/a&gt;
+            &lt;a href=&quot;?period=month&quot; {&quot;class='active'&quot; if period == &quot;month&quot; else &quot;&quot;}&gt;Last 30 days&lt;/a&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;summary&quot;&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{len(total_users)}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Active Users&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{round(total_exercise_min, 0):.0f}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Exercise Minutes&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{round(total_reading_min, 0):.0f}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Reading Minutes&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{round(total_browsing_min, 0):.0f}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Browsing Minutes&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{round(total_audio_min, 0):.0f}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Audio Minutes&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{len(users_by_language)}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Languages&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;section&quot;&gt;
+            &lt;h2&gt;Platform Usage&lt;/h2&gt;
+            &lt;table&gt;
+                &lt;tr&gt;
+                    &lt;th&gt;Platform&lt;/th&gt;
+                    &lt;th&gt;Active Users&lt;/th&gt;
+                    &lt;th&gt;Events&lt;/th&gt;
+                &lt;/tr&gt;
+&quot;&quot;&quot;
+
+    # Sort platforms by user count
+    sorted_platforms = sorted(platform_stats.items(), key=lambda x: x[1]['users'], reverse=True)
+    for platform_name, stats in sorted_platforms:
+        platform_id = stats['platform_id']
+        user_link = f'&lt;a href=&quot;/user_stats/platform/{platform_id}/dashboard?period={period}&quot;&gt;{stats[&quot;users&quot;]}&lt;/a&gt;'
+        html += f&quot;&quot;&quot;
+                &lt;tr&gt;
+                    &lt;td&gt;{platform_name}&lt;/td&gt;
+                    &lt;td&gt;{user_link}&lt;/td&gt;
+                    &lt;td&gt;{stats['events']}&lt;/td&gt;
+                &lt;/tr&gt;
+&quot;&quot;&quot;
+
+    if not platform_stats:
+        html += &quot;&quot;&quot;
+                &lt;tr&gt;
+                    &lt;td colspan=&quot;3&quot; style=&quot;text-align:center; color:#7f8c8d;&quot;&gt;No platform data available&lt;/td&gt;
+                &lt;/tr&gt;
+&quot;&quot;&quot;
+
+    html += &quot;&quot;&quot;
+            &lt;/table&gt;
+        &lt;/div&gt;
+&quot;&quot;&quot;
+
+    for lang_code, users in sorted_languages:
+        lang_name = languages.get(lang_code, lang_code.upper())
+        lang_exercise_min = sum(u[&quot;exercise_duration_min&quot;] for u in users)
+        lang_reading_min = sum(u[&quot;reading_duration_min&quot;] for u in users)
+        lang_browsing_min = sum(u[&quot;browsing_duration_min&quot;] for u in users)
+
+        # Sort users by total activity
+        sorted_users = sorted(
+            users,
+            key=lambda u: u[&quot;exercise_duration_min&quot;]
+            + u[&quot;reading_duration_min&quot;]
+            + u[&quot;browsing_duration_min&quot;],
+            reverse=True,
+        )
+
+        html += f&quot;&quot;&quot;
+        &lt;div class=&quot;section&quot;&gt;
+            &lt;h2&gt;&lt;span class=&quot;lang-code&quot;&gt;{lang_code.upper()}&lt;/span&gt; {lang_name}&lt;/h2&gt;
+            &lt;p style=&quot;color:#7f8c8d; margin-bottom:15px;&quot;&gt;
+                {len(users)} active users |
+                {round(lang_exercise_min, 0):.0f} min exercises |
+                {round(lang_reading_min, 0):.0f} min reading |
+                {round(lang_browsing_min, 0):.0f} min browsing
+            &lt;/p&gt;
+            &lt;table&gt;
+                &lt;tr&gt;
+                    &lt;th rowspan=&quot;2&quot;&gt;User&lt;/th&gt;
+                    &lt;th rowspan=&quot;2&quot;&gt;Cohort / Code&lt;/th&gt;
+                    &lt;th colspan=&quot;2&quot; class=&quot;group-header&quot;&gt;Exercises&lt;/th&gt;
+                    &lt;th colspan=&quot;2&quot; class=&quot;group-header&quot;&gt;Reading&lt;/th&gt;
+                    &lt;th colspan=&quot;2&quot; class=&quot;group-header&quot;&gt;Browsing&lt;/th&gt;
+                    &lt;th colspan=&quot;2&quot; class=&quot;group-header&quot;&gt;Audio&lt;/th&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Time&lt;/th&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Words&lt;/th&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Time&lt;/th&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Articles&lt;/th&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Time&lt;/th&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Words&lt;/th&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Count&lt;/th&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Time&lt;/th&gt;
+                &lt;/tr&gt;
+&quot;&quot;&quot;
+
+        for user in sorted_users:
+            cohort_display = user[&quot;cohort_name&quot;] or &quot;&mdash;&quot;
+            exercise_words = user[&quot;exercise_words&quot;].get(lang_code, 0)
+            articles = user[&quot;articles_read&quot;].get(lang_code, 0)
+            browsing_words = user[&quot;browsing_words&quot;].get(lang_code, 0)
+
+            exercise_class = &quot;&quot; if user[&quot;exercise_duration_min&quot;] &gt; 0 else &quot;no-activity&quot;
+            reading_class = &quot;&quot; if user[&quot;reading_duration_min&quot;] &gt; 0 else &quot;no-activity&quot;
+            browsing_class = &quot;&quot; if user[&quot;browsing_duration_min&quot;] &gt; 0 else &quot;no-activity&quot;
+
+            audio_lessons = user[&quot;audio_lessons&quot;].get(lang_code, 0)
+            audio_duration = user[&quot;audio_duration_by_language&quot;].get(lang_code, 0)
+            audio_class = &quot;&quot; if audio_lessons &gt; 0 else &quot;no-activity&quot;
+
+            # Make cohort clickable if it has an ID
+            if user[&quot;cohort_id&quot;]:
+                cohort_html = f'&lt;a href=&quot;/user_stats/cohort/{user[&quot;cohort_id&quot;]}/dashboard?period={period}&quot; class=&quot;cohort-link&quot;&gt;{cohort_display}&lt;/a&gt;'
+            else:
+                cohort_html = f'&lt;span class=&quot;cohort-badge&quot;&gt;{cohort_display}&lt;/span&gt;'
+
+            html += f&quot;&quot;&quot;
+                &lt;tr&gt;
+                    &lt;td&gt;&lt;a href=&quot;/user_stats/user/{user['id']}/dashboard?period={period}&quot; class=&quot;user-link&quot;&gt;{user['name']}&lt;/a&gt;&lt;/td&gt;
+                    &lt;td&gt;{cohort_html}&lt;/td&gt;
+                    &lt;td class=&quot;{exercise_class} duration&quot;&gt;{user['exercise_duration_min']:.1f} min&lt;/td&gt;
+                    &lt;td class=&quot;{exercise_class}&quot;&gt;{exercise_words}&lt;/td&gt;
+                    &lt;td class=&quot;{reading_class} duration&quot;&gt;{user['reading_duration_min']:.1f} min&lt;/td&gt;
+                    &lt;td class=&quot;{reading_class}&quot;&gt;{articles}&lt;/td&gt;
+                    &lt;td class=&quot;{browsing_class} duration&quot;&gt;{user['browsing_duration_min']:.1f} min&lt;/td&gt;
+                    &lt;td class=&quot;{browsing_class}&quot;&gt;{browsing_words}&lt;/td&gt;
+                    &lt;td class=&quot;{audio_class}&quot;&gt;{audio_lessons}&lt;/td&gt;
+                    &lt;td class=&quot;{audio_class} duration&quot;&gt;{audio_duration:.1f} min&lt;/td&gt;
+                &lt;/tr&gt;
+&quot;&quot;&quot;
+
+        html += &quot;&quot;&quot;
+            &lt;/table&gt;
+        &lt;/div&gt;
+&quot;&quot;&quot;
+
+    if not users_by_language:
+        html += &quot;&quot;&quot;
+        &lt;div class=&quot;section&quot;&gt;
+            &lt;p style=&quot;text-align:center; color:#7f8c8d; padding: 40px;&quot;&gt;
+                No user activity in this period.
+            &lt;/p&gt;
+        &lt;/div&gt;
+&quot;&quot;&quot;
+
+    html += f&quot;&quot;&quot;
+        &lt;p style=&quot;color:#7f8c8d; font-size:0.9em; margin-top:30px;&quot;&gt;
+            Generated at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} |
+            &lt;a href=&quot;/user_stats?period={period}&quot;&gt;JSON API&lt;/a&gt;
+        &lt;/p&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;&quot;&quot;&quot;
+
+    return Response(html, mimetype=&quot;text/html&quot;)
+
+
+@api.route(&quot;/user_stats/user/&lt;int:user_id&gt;/dashboard&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+@only_admins
+def user_stats_individual_dashboard(user_id):
+    &quot;&quot;&quot;HTML dashboard for individual user activity.&quot;&quot;&quot;
+    period = request.args.get(&quot;period&quot;, &quot;yesterday&quot;)
+    start, end, period_label = get_period_range(period)
+
+    user = User.find_by_id(user_id)
+    if not user:
+        return Response(&quot;&lt;h1&gt;User not found&lt;/h1&gt;&quot;, status=404, mimetype=&quot;text/html&quot;)
+
+    cohort_name, cohort_id = get_user_cohort_info(user)
+
+    # Get exercise sessions with details
+    exercise_sessions = (
+        UserExerciseSession.query.filter(UserExerciseSession.user_id == user_id)
+        .filter(UserExerciseSession.start_time &gt;= start)
+        .filter(UserExerciseSession.start_time &lt; end)
+        .order_by(UserExerciseSession.start_time.desc())
+        .all()
+    )
+
+    # Get reading sessions with details
+    reading_sessions = (
+        UserReadingSession.query.filter(UserReadingSession.user_id == user_id)
+        .filter(UserReadingSession.start_time &gt;= start)
+        .filter(UserReadingSession.start_time &lt; end)
+        .order_by(UserReadingSession.start_time.desc())
+        .all()
+    )
+
+    # Get translations/bookmarks
+    bookmarks = (
+        Bookmark.query.join(UserWord, Bookmark.user_word_id == UserWord.id)
+        .filter(UserWord.user_id == user_id)
+        .filter(Bookmark.time &gt;= start)
+        .filter(Bookmark.time &lt; end)
+        .order_by(Bookmark.time.desc())
+        .all()
+    )
+
+    # Get audio lessons
+    audio_lessons = (
+        DailyAudioLesson.query.filter(DailyAudioLesson.user_id == user_id)
+        .filter(DailyAudioLesson.completed_at &gt;= start)
+        .filter(DailyAudioLesson.completed_at &lt; end)
+        .order_by(DailyAudioLesson.completed_at.desc())
+        .all()
+    )
+
+    # Calculate totals
+    total_exercise_min = sum((s.duration or 0) / 60000 for s in exercise_sessions)
+    total_reading_min = sum((s.duration or 0) / 60000 for s in reading_sessions)
+    total_audio_min = sum((l.duration_seconds or 0) / 60 for l in audio_lessons)
+
+    html = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;{user.name} - User Stats&lt;/title&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;style&gt;
+        * {{ box-sizing: border-box; }}
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0; padding: 20px;
+            background: #f5f5f5;
+            color: #333;
+        }}
+        .container {{ max-width: 1200px; margin: 0 auto; }}
+        h1 {{ color: #2c3e50; margin-bottom: 5px; }}
+        .subtitle {{ color: #7f8c8d; margin-bottom: 20px; }}
+        .back-link {{ color: #3498db; text-decoration: none; margin-bottom: 15px; display: inline-block; }}
+        .back-link:hover {{ text-decoration: underline; }}
+        .summary {{
+            display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap;
+        }}
+        .stat-card {{
+            background: white; padding: 20px; border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-width: 150px;
+        }}
+        .stat-card .number {{ font-size: 2em; font-weight: bold; color: #3498db; }}
+        .stat-card .label {{ color: #7f8c8d; font-size: 0.9em; }}
+        .section {{
+            background: white; padding: 20px; border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }}
+        .section h2 {{ margin-top: 0; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }}
+        .session-card {{
+            background: #f8f9fa; padding: 15px; border-radius: 6px;
+            margin-bottom: 15px; border-left: 4px solid #3498db;
+        }}
+        .session-header {{
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px;
+        }}
+        .session-time {{ font-weight: bold; color: #2c3e50; }}
+        .session-duration {{ color: #7f8c8d; font-family: monospace; }}
+        .session-lang {{
+            background: #3498db; color: white; padding: 2px 6px;
+            border-radius: 4px; font-size: 0.8em;
+        }}
+        .word-list {{ margin: 0; padding-left: 20px; }}
+        .word-list li {{ margin: 3px 0; font-size: 0.95em; }}
+        .word-correct {{ color: #27ae60; }}
+        .word-incorrect {{ color: #e74c3c; }}
+        .nav {{ margin-bottom: 20px; }}
+        .nav a {{
+            display: inline-block; padding: 8px 16px; margin-right: 10px;
+            background: #3498db; color: white; text-decoration: none;
+            border-radius: 4px;
+        }}
+        .nav a:hover {{ background: #2980b9; }}
+        .nav a.active {{ background: #2c3e50; }}
+        .cohort-badge {{
+            background: #ecf0f1; color: #7f8c8d; padding: 4px 8px;
+            border-radius: 4px; font-size: 0.9em;
+        }}
+        .article-link {{ color: #3498db; text-decoration: none; }}
+        .article-link:hover {{ text-decoration: underline; }}
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;a href=&quot;/user_stats/dashboard?period={period}&quot; class=&quot;back-link&quot;&gt;&amp;larr; Back to overview&lt;/a&gt;
+        &lt;h1&gt;{user.name}&lt;/h1&gt;
+        &lt;p class=&quot;subtitle&quot;&gt;
+            {user.email} |
+            &lt;span class=&quot;cohort-badge&quot;&gt;{cohort_name or &quot;No cohort&quot;}&lt;/span&gt; |
+            {period_label}
+        &lt;/p&gt;
+
+        &lt;div class=&quot;nav&quot;&gt;
+            &lt;a href=&quot;?period=today&quot; {&quot;class='active'&quot; if period == &quot;today&quot; else &quot;&quot;}&gt;Today&lt;/a&gt;
+            &lt;a href=&quot;?period=yesterday&quot; {&quot;class='active'&quot; if period == &quot;yesterday&quot; else &quot;&quot;}&gt;Yesterday&lt;/a&gt;
+            &lt;a href=&quot;?period=2days&quot; {&quot;class='active'&quot; if period == &quot;2days&quot; else &quot;&quot;}&gt;2 days ago&lt;/a&gt;
+            &lt;a href=&quot;?period=week&quot; {&quot;class='active'&quot; if period == &quot;week&quot; else &quot;&quot;}&gt;Last 7 days&lt;/a&gt;
+            &lt;a href=&quot;?period=month&quot; {&quot;class='active'&quot; if period == &quot;month&quot; else &quot;&quot;}&gt;Last 30 days&lt;/a&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;summary&quot;&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{len(exercise_sessions)}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Exercise Sessions&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{total_exercise_min:.0f}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Exercise Minutes&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{len(reading_sessions)}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Reading Sessions&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{total_reading_min:.0f}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Reading Minutes&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{len(audio_lessons)}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Audio Lessons&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{total_audio_min:.0f}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Audio Minutes&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{len(bookmarks)}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Translations&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;section&quot;&gt;
+            &lt;h2&gt;Exercise Sessions&lt;/h2&gt;
+&quot;&quot;&quot;
+
+    if exercise_sessions:
+        for session in exercise_sessions:
+            exercises = Exercise.query.filter(Exercise.session_id == session.id).all()
+            duration_min = (session.duration or 0) / 60000
+
+            # Determine language from exercises
+            session_lang = None
+            words_html = &quot;&quot;
+            for ex in exercises:
+                if ex.user_word and ex.user_word.meaning:
+                    origin = ex.user_word.meaning.origin
+                    translation = ex.user_word.meaning.translation
+                    if origin and origin.language and not session_lang:
+                        session_lang = origin.language.code.upper()
+
+                    outcome = ex.outcome.outcome if ex.outcome else &quot;?&quot;
+                    outcome_class = (
+                        &quot;word-correct&quot;
+                        if outcome == &quot;C&quot;
+                        else &quot;word-incorrect&quot; if outcome == &quot;W&quot; else &quot;&quot;
+                    )
+                    word = origin.content if origin else &quot;?&quot;
+                    trans = translation.content if translation else &quot;?&quot;
+                    speed_sec = (ex.solving_speed or 0) / 1000
+
+                    words_html += f'&lt;li class=&quot;{outcome_class}&quot;&gt;{word} &rarr; {trans} &lt;span style=&quot;color:#999&quot;&gt;({speed_sec:.1f}s, {outcome})&lt;/span&gt;&lt;/li&gt;'
+
+            html += f&quot;&quot;&quot;
+            &lt;div class=&quot;session-card&quot;&gt;
+                &lt;div class=&quot;session-header&quot;&gt;
+                    &lt;span class=&quot;session-time&quot;&gt;{session.start_time.strftime('%H:%M')}&lt;/span&gt;
+                    &lt;span class=&quot;session-lang&quot;&gt;{session_lang or &quot;?&quot;}&lt;/span&gt;
+                    &lt;span class=&quot;session-duration&quot;&gt;{duration_min:.1f} min | {len(exercises)} words&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;ul class=&quot;word-list&quot;&gt;
+                    {words_html}
+                &lt;/ul&gt;
+            &lt;/div&gt;
+&quot;&quot;&quot;
+    else:
+        html += '&lt;p style=&quot;color:#7f8c8d; text-align:center;&quot;&gt;No exercise sessions in this period.&lt;/p&gt;'
+
+    html += &quot;&quot;&quot;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;section&quot;&gt;
+            &lt;h2&gt;Reading Sessions&lt;/h2&gt;
+&quot;&quot;&quot;
+
+    if reading_sessions:
+        for session in reading_sessions:
+            duration_min = (session.duration or 0) / 60000
+            article = session.article
+            article_title = article.title if article else &quot;Unknown article&quot;
+            article_lang = (
+                article.language.code.upper() if article and article.language else &quot;?&quot;
+            )
+
+            # Get translations made for this article
+            article_translations = []
+            if article and article.source_id:
+                article_bookmarks = (
+                    Bookmark.query.join(UserWord, Bookmark.user_word_id == UserWord.id)
+                    .filter(UserWord.user_id == user_id)
+                    .filter(Bookmark.source_id == article.source_id)
+                    .filter(Bookmark.time &gt;= start)
+                    .filter(Bookmark.time &lt; end)
+                    .all()
+                )
+                for bm in article_bookmarks:
+                    if bm.user_word and bm.user_word.meaning:
+                        origin = bm.user_word.meaning.origin
+                        translation = bm.user_word.meaning.translation
+                        article_translations.append(
+                            {
+                                &quot;word&quot;: origin.content if origin else &quot;?&quot;,
+                                &quot;translation&quot;: (
+                                    translation.content if translation else &quot;?&quot;
+                                ),
+                            }
+                        )
+
+            words_html = &quot;&quot;
+            if article_translations:
+                words_html = '&lt;ul class=&quot;word-list&quot; style=&quot;margin-top:10px;&quot;&gt;'
+                for t in article_translations:
+                    words_html += f'&lt;li&gt;{t[&quot;word&quot;]} &rarr; {t[&quot;translation&quot;]}&lt;/li&gt;'
+                words_html += &quot;&lt;/ul&gt;&quot;
+
+            translation_count = (
+                f&quot; | {len(article_translations)} words&quot; if article_translations else &quot;&quot;
+            )
+
+            html += f&quot;&quot;&quot;
+            &lt;div class=&quot;session-card&quot;&gt;
+                &lt;div class=&quot;session-header&quot;&gt;
+                    &lt;span class=&quot;session-time&quot;&gt;{session.start_time.strftime('%H:%M')}&lt;/span&gt;
+                    &lt;span class=&quot;session-lang&quot;&gt;{article_lang}&lt;/span&gt;
+                    &lt;span class=&quot;session-duration&quot;&gt;{duration_min:.1f} min{translation_count}&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;p style=&quot;margin:0;&quot;&gt;&lt;strong&gt;{article_title}&lt;/strong&gt;&lt;/p&gt;
+                {words_html}
+            &lt;/div&gt;
+&quot;&quot;&quot;
+    else:
+        html += '&lt;p style=&quot;color:#7f8c8d; text-align:center;&quot;&gt;No reading sessions in this period.&lt;/p&gt;'
+
+    html += &quot;&quot;&quot;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;section&quot;&gt;
+            &lt;h2&gt;Audio Lessons&lt;/h2&gt;
+&quot;&quot;&quot;
+
+    if audio_lessons:
+        for lesson in audio_lessons:
+            duration_min = (lesson.duration_seconds or 0) / 60
+            lesson_lang = lesson.language.code.upper() if lesson.language else &quot;?&quot;
+            completed_time = (
+                lesson.completed_at.strftime(&quot;%H:%M&quot;) if lesson.completed_at else &quot;?&quot;
+            )
+
+            html += f&quot;&quot;&quot;
+            &lt;div class=&quot;session-card&quot;&gt;
+                &lt;div class=&quot;session-header&quot;&gt;
+                    &lt;span class=&quot;session-time&quot;&gt;{completed_time}&lt;/span&gt;
+                    &lt;span class=&quot;session-lang&quot;&gt;{lesson_lang}&lt;/span&gt;
+                    &lt;span class=&quot;session-duration&quot;&gt;{duration_min:.1f} min&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;p style=&quot;margin:0;&quot;&gt;&lt;strong&gt;Daily Lesson ({lesson.meaning_count} words)&lt;/strong&gt;&lt;/p&gt;
+            &lt;/div&gt;
+&quot;&quot;&quot;
+    else:
+        html += '&lt;p style=&quot;color:#7f8c8d; text-align:center;&quot;&gt;No audio lessons in this period.&lt;/p&gt;'
+
+    html += &quot;&quot;&quot;
+        &lt;/div&gt;
+&quot;&quot;&quot;
+
+    # Filter bookmarks to only show those NOT associated with any reading session article
+    # (those without a source_id, i.e., translations made outside of articles)
+    other_bookmarks = [bm for bm in bookmarks if not bm.source_id]
+
+    if other_bookmarks:
+        html += &quot;&quot;&quot;
+        &lt;div class=&quot;section&quot;&gt;
+            &lt;h2&gt;Other Translations&lt;/h2&gt;
+&quot;&quot;&quot;
+        # Group translations by language
+        translations_by_lang = defaultdict(list)
+        for bm in other_bookmarks:
+            if bm.user_word and bm.user_word.meaning:
+                origin = bm.user_word.meaning.origin
+                translation = bm.user_word.meaning.translation
+                lang_code = (
+                    origin.language.code.upper() if origin and origin.language else &quot;?&quot;
+                )
+                translations_by_lang[lang_code].append(
+                    {
+                        &quot;word&quot;: origin.content if origin else &quot;?&quot;,
+                        &quot;translation&quot;: translation.content if translation else &quot;?&quot;,
+                        &quot;time&quot;: bm.time,
+                    }
+                )
+
+        for lang_code, translations in sorted(translations_by_lang.items()):
+            html += f&quot;&quot;&quot;
+            &lt;div class=&quot;session-card&quot;&gt;
+                &lt;div class=&quot;session-header&quot;&gt;
+                    &lt;span class=&quot;session-lang&quot;&gt;{lang_code}&lt;/span&gt;
+                    &lt;span class=&quot;session-duration&quot;&gt;{len(translations)} words&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;ul class=&quot;word-list&quot;&gt;
+&quot;&quot;&quot;
+            for t in translations:
+                time_str = t[&quot;time&quot;].strftime(&quot;%H:%M&quot;) if t[&quot;time&quot;] else &quot;&quot;
+                html += f'&lt;li&gt;{t[&quot;word&quot;]} &rarr; {t[&quot;translation&quot;]} &lt;span style=&quot;color:#999&quot;&gt;({time_str})&lt;/span&gt;&lt;/li&gt;'
+            html += &quot;&quot;&quot;
+                &lt;/ul&gt;
+            &lt;/div&gt;
+&quot;&quot;&quot;
+        html += &quot;&quot;&quot;
+        &lt;/div&gt;
+&quot;&quot;&quot;
+
+    html += f&quot;&quot;&quot;
+
+        &lt;p style=&quot;color:#7f8c8d; font-size:0.9em; margin-top:30px;&quot;&gt;
+            Generated at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} |
+            &lt;a href=&quot;/user_stats/user/{user_id}?period={period}&quot;&gt;JSON API&lt;/a&gt;
+        &lt;/p&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;&quot;&quot;&quot;
+
+    return Response(html, mimetype=&quot;text/html&quot;)
+
+
+@api.route(&quot;/user_stats/cohort/&lt;int:cohort_id&gt;/dashboard&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+@only_admins
+def user_stats_cohort_dashboard(cohort_id):
+    &quot;&quot;&quot;HTML dashboard for cohort activity with teacher info.&quot;&quot;&quot;
+    period = request.args.get(&quot;period&quot;, &quot;yesterday&quot;)
+    start, end, period_label = get_period_range(period)
+
+    cohort = Cohort.query.get(cohort_id)
+    if not cohort:
+        return Response(&quot;&lt;h1&gt;Cohort not found&lt;/h1&gt;&quot;, status=404, mimetype=&quot;text/html&quot;)
+
+    # Get teachers for this cohort
+    teachers = cohort.get_teachers()
+    teacher_names = (
+        &quot;, &quot;.join(t.name for t in teachers) if teachers else &quot;No teacher assigned&quot;
+    )
+    teacher_emails = &quot;, &quot;.join(t.email for t in teachers) if teachers else &quot;&quot;
+
+    # Get all students in the cohort
+    students = cohort.get_students()
+    student_ids = {s.id for s in students}
+
+    # Collect activity for cohort members only
+    users_by_language = defaultdict(list)
+
+    for user in students:
+        user_id = user.id
+        exercise_stats = get_exercise_stats_for_user(user_id, start, end)
+        reading_stats = get_reading_stats_for_user(user_id, start, end)
+        browsing_stats = get_browsing_stats_for_user(user_id, start, end)
+        translation_stats = get_translations_for_user(user_id, start, end)
+        audio_stats = get_audio_lesson_stats_for_user(user_id, start, end)
+
+        # Determine languages from activity
+        active_languages = set()
+        active_languages.update(exercise_stats[&quot;words_by_language&quot;].keys())
+        active_languages.update(reading_stats[&quot;articles_by_language&quot;].keys())
+        active_languages.update(browsing_stats[&quot;words_by_language&quot;].keys())
+        active_languages.update(translation_stats[&quot;by_language&quot;].keys())
+        active_languages.update(audio_stats[&quot;lessons_by_language&quot;].keys())
+
+        # If no activity, still show under cohort's default language
+        if not active_languages:
+            if cohort.language:
+                active_languages = {cohort.language.code}
+            else:
+                active_languages = {&quot;unknown&quot;}
+
+        user_data = {
+            &quot;id&quot;: user.id,
+            &quot;name&quot;: user.name,
+            &quot;email&quot;: user.email,
+            &quot;exercise_duration_min&quot;: exercise_stats[&quot;duration_min&quot;],
+            &quot;exercise_sessions&quot;: exercise_stats[&quot;session_count&quot;],
+            &quot;exercise_words&quot;: exercise_stats[&quot;words_by_language&quot;],
+            &quot;reading_duration_min&quot;: reading_stats[&quot;duration_min&quot;],
+            &quot;articles_read&quot;: reading_stats[&quot;articles_by_language&quot;],
+            &quot;browsing_duration_min&quot;: browsing_stats[&quot;duration_min&quot;],
+            &quot;browsing_words&quot;: browsing_stats[&quot;words_by_language&quot;],
+            &quot;translations&quot;: translation_stats[&quot;by_language&quot;],
+            &quot;audio_lessons&quot;: audio_stats[&quot;lessons_by_language&quot;],
+            &quot;audio_duration_min&quot;: audio_stats[&quot;duration_min&quot;],
+            &quot;audio_duration_by_language&quot;: audio_stats[&quot;duration_by_language&quot;],
+            &quot;languages&quot;: list(active_languages),
+            &quot;has_activity&quot;: (
+                exercise_stats[&quot;session_count&quot;] &gt; 0
+                or reading_stats[&quot;session_count&quot;] &gt; 0
+                or browsing_stats[&quot;session_count&quot;] &gt; 0
+                or translation_stats[&quot;total&quot;] &gt; 0
+                or audio_stats[&quot;lesson_count&quot;] &gt; 0
+            ),
+        }
+
+        for lang in active_languages:
+            users_by_language[lang].append(user_data)
+
+    # Calculate totals
+    total_exercise_min = 0
+    total_reading_min = 0
+    total_browsing_min = 0
+    total_audio_min = 0
+    active_users = set()
+
+    for lang_code, users in users_by_language.items():
+        for u in users:
+            if u[&quot;has_activity&quot;]:
+                active_users.add(u[&quot;id&quot;])
+            total_exercise_min += u[&quot;exercise_duration_min&quot;]
+            total_reading_min += u[&quot;reading_duration_min&quot;]
+            total_browsing_min += u[&quot;browsing_duration_min&quot;]
+            total_audio_min += u[&quot;audio_duration_by_language&quot;].get(lang_code, 0)
+
+    # Get language names
+    languages = {l.code: l.name for l in Language.available_languages()}
+
+    # Sort languages by activity
+    sorted_languages = sorted(
+        users_by_language.items(),
+        key=lambda x: sum(
+            u[&quot;exercise_duration_min&quot;]
+            + u[&quot;reading_duration_min&quot;]
+            + u[&quot;browsing_duration_min&quot;]
+            for u in x[1]
+        ),
+        reverse=True,
+    )
+
+    html = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;{cohort.name} - Cohort Stats&lt;/title&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;style&gt;
+        * {{ box-sizing: border-box; }}
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0; padding: 20px;
+            background: #f5f5f5;
+            color: #333;
+        }}
+        .container {{ max-width: 1400px; margin: 0 auto; }}
+        h1 {{ color: #2c3e50; margin-bottom: 5px; }}
+        .subtitle {{ color: #7f8c8d; margin-bottom: 20px; }}
+        .back-link {{ color: #3498db; text-decoration: none; margin-bottom: 15px; display: inline-block; }}
+        .back-link:hover {{ text-decoration: underline; }}
+        .teacher-info {{
+            background: #e8f4f8; padding: 15px; border-radius: 8px;
+            margin-bottom: 20px; border-left: 4px solid #3498db;
+        }}
+        .teacher-info h3 {{ margin: 0 0 5px 0; color: #2c3e50; }}
+        .teacher-info p {{ margin: 0; color: #555; }}
+        .summary {{
+            display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap;
+        }}
+        .stat-card {{
+            background: white; padding: 20px; border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            min-width: 150px;
+        }}
+        .stat-card .number {{ font-size: 2em; font-weight: bold; color: #3498db; }}
+        .stat-card .label {{ color: #7f8c8d; font-size: 0.9em; }}
+        .section {{
+            background: white; padding: 20px; border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }}
+        .section h2 {{ margin-top: 0; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }}
+        table {{ width: 100%; border-collapse: collapse; }}
+        th, td {{ padding: 8px 10px; text-align: left; border-bottom: 1px solid #eee; }}
+        th {{ background: #f8f9fa; font-weight: 600; }}
+        th.group-header {{
+            text-align: center;
+            background: #e8f4f8;
+            border-bottom: 2px solid #3498db;
+            font-size: 0.95em;
+        }}
+        th.sub-header {{
+            font-size: 0.85em;
+            color: #666;
+            font-weight: 500;
+        }}
+        tr:hover {{ background: #f8f9fa; }}
+        .lang-code {{
+            display: inline-block; padding: 2px 8px;
+            background: #3498db; color: white; border-radius: 4px;
+            font-weight: bold; font-size: 0.9em;
+        }}
+        .nav {{ margin-bottom: 20px; }}
+        .nav a {{
+            display: inline-block; padding: 8px 16px; margin-right: 10px;
+            background: #3498db; color: white; text-decoration: none;
+            border-radius: 4px;
+        }}
+        .nav a:hover {{ background: #2980b9; }}
+        .nav a.active {{ background: #2c3e50; }}
+        .user-link {{ color: #3498db; text-decoration: none; }}
+        .user-link:hover {{ text-decoration: underline; }}
+        .no-activity {{ color: #bdc3c7; }}
+        .duration {{ font-family: monospace; }}
+        .inactive-row {{ background: #fafafa; }}
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;a href=&quot;/user_stats/dashboard?period={period}&quot; class=&quot;back-link&quot;&gt;&amp;larr; Back to overview&lt;/a&gt;
+        &lt;h1&gt;{cohort.name}&lt;/h1&gt;
+        &lt;p class=&quot;subtitle&quot;&gt;
+            Invite code: &lt;strong&gt;{cohort.inv_code}&lt;/strong&gt; |
+            {period_label} ({start.strftime('%Y-%m-%d')} to {end.strftime('%Y-%m-%d')})
+        &lt;/p&gt;
+
+        &lt;div class=&quot;teacher-info&quot;&gt;
+            &lt;h3&gt;Teacher&lt;/h3&gt;
+            &lt;p&gt;&lt;strong&gt;{teacher_names}&lt;/strong&gt;&lt;/p&gt;
+            {f'&lt;p style=&quot;font-size:0.9em; color:#666;&quot;&gt;{teacher_emails}&lt;/p&gt;' if teacher_emails else ''}
+        &lt;/div&gt;
+
+        &lt;div class=&quot;nav&quot;&gt;
+            &lt;a href=&quot;?period=today&quot; {&quot;class='active'&quot; if period == &quot;today&quot; else &quot;&quot;}&gt;Today&lt;/a&gt;
+            &lt;a href=&quot;?period=yesterday&quot; {&quot;class='active'&quot; if period == &quot;yesterday&quot; else &quot;&quot;}&gt;Yesterday&lt;/a&gt;
+            &lt;a href=&quot;?period=2days&quot; {&quot;class='active'&quot; if period == &quot;2days&quot; else &quot;&quot;}&gt;2 days ago&lt;/a&gt;
+            &lt;a href=&quot;?period=week&quot; {&quot;class='active'&quot; if period == &quot;week&quot; else &quot;&quot;}&gt;Last 7 days&lt;/a&gt;
+            &lt;a href=&quot;?period=month&quot; {&quot;class='active'&quot; if period == &quot;month&quot; else &quot;&quot;}&gt;Last 30 days&lt;/a&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;summary&quot;&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{len(students)}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Total Students&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{len(active_users)}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Active Students&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{round(total_exercise_min, 0):.0f}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Exercise Minutes&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{round(total_reading_min, 0):.0f}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Reading Minutes&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{round(total_browsing_min, 0):.0f}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Browsing Minutes&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;stat-card&quot;&gt;
+                &lt;div class=&quot;number&quot;&gt;{round(total_audio_min, 0):.0f}&lt;/div&gt;
+                &lt;div class=&quot;label&quot;&gt;Audio Minutes&lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+&quot;&quot;&quot;
+
+    for lang_code, users in sorted_languages:
+        lang_name = languages.get(lang_code, lang_code.upper())
+
+        # Sort users: active first, then by total activity
+        sorted_users = sorted(
+            users,
+            key=lambda u: (
+                u[&quot;has_activity&quot;],
+                u[&quot;exercise_duration_min&quot;]
+                + u[&quot;reading_duration_min&quot;]
+                + u[&quot;browsing_duration_min&quot;],
+            ),
+            reverse=True,
+        )
+
+        html += f&quot;&quot;&quot;
+        &lt;div class=&quot;section&quot;&gt;
+            &lt;h2&gt;&lt;span class=&quot;lang-code&quot;&gt;{lang_code.upper()}&lt;/span&gt; {lang_name}&lt;/h2&gt;
+            &lt;table&gt;
+                &lt;tr&gt;
+                    &lt;th rowspan=&quot;2&quot;&gt;Student&lt;/th&gt;
+                    &lt;th colspan=&quot;2&quot; class=&quot;group-header&quot;&gt;Exercises&lt;/th&gt;
+                    &lt;th colspan=&quot;2&quot; class=&quot;group-header&quot;&gt;Reading&lt;/th&gt;
+                    &lt;th colspan=&quot;2&quot; class=&quot;group-header&quot;&gt;Browsing&lt;/th&gt;
+                    &lt;th colspan=&quot;2&quot; class=&quot;group-header&quot;&gt;Audio&lt;/th&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Time&lt;/th&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Words&lt;/th&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Time&lt;/th&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Articles&lt;/th&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Time&lt;/th&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Words&lt;/th&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Count&lt;/th&gt;
+                    &lt;th class=&quot;sub-header&quot;&gt;Time&lt;/th&gt;
+                &lt;/tr&gt;
+&quot;&quot;&quot;
+
+        for user in sorted_users:
+            exercise_words = user[&quot;exercise_words&quot;].get(lang_code, 0)
+            articles = user[&quot;articles_read&quot;].get(lang_code, 0)
+            browsing_words = user[&quot;browsing_words&quot;].get(lang_code, 0)
+            audio_lessons = user[&quot;audio_lessons&quot;].get(lang_code, 0)
+            audio_duration = user[&quot;audio_duration_by_language&quot;].get(lang_code, 0)
+
+            row_class = &quot;&quot; if user[&quot;has_activity&quot;] else &quot;inactive-row&quot;
+            exercise_class = &quot;&quot; if user[&quot;exercise_duration_min&quot;] &gt; 0 else &quot;no-activity&quot;
+            reading_class = &quot;&quot; if user[&quot;reading_duration_min&quot;] &gt; 0 else &quot;no-activity&quot;
+            browsing_class = &quot;&quot; if user[&quot;browsing_duration_min&quot;] &gt; 0 else &quot;no-activity&quot;
+            audio_class = &quot;&quot; if audio_lessons &gt; 0 else &quot;no-activity&quot;
+
+            html += f&quot;&quot;&quot;
+                &lt;tr class=&quot;{row_class}&quot;&gt;
+                    &lt;td&gt;&lt;a href=&quot;/user_stats/user/{user['id']}/dashboard?period={period}&quot; class=&quot;user-link&quot;&gt;{user['name']}&lt;/a&gt;&lt;/td&gt;
+                    &lt;td class=&quot;{exercise_class} duration&quot;&gt;{user['exercise_duration_min']:.1f} min&lt;/td&gt;
+                    &lt;td class=&quot;{exercise_class}&quot;&gt;{exercise_words}&lt;/td&gt;
+                    &lt;td class=&quot;{reading_class} duration&quot;&gt;{user['reading_duration_min']:.1f} min&lt;/td&gt;
+                    &lt;td class=&quot;{reading_class}&quot;&gt;{articles}&lt;/td&gt;
+                    &lt;td class=&quot;{browsing_class} duration&quot;&gt;{user['browsing_duration_min']:.1f} min&lt;/td&gt;
+                    &lt;td class=&quot;{browsing_class}&quot;&gt;{browsing_words}&lt;/td&gt;
+                    &lt;td class=&quot;{audio_class}&quot;&gt;{audio_lessons}&lt;/td&gt;
+                    &lt;td class=&quot;{audio_class} duration&quot;&gt;{audio_duration:.1f} min&lt;/td&gt;
+                &lt;/tr&gt;
+&quot;&quot;&quot;
+
+        html += &quot;&quot;&quot;
+            &lt;/table&gt;
+        &lt;/div&gt;
+&quot;&quot;&quot;
+
+    if not users_by_language:
+        html += &quot;&quot;&quot;
+        &lt;div class=&quot;section&quot;&gt;
+            &lt;p style=&quot;text-align:center; color:#7f8c8d; padding: 40px;&quot;&gt;
+                No students in this cohort.
+            &lt;/p&gt;
+        &lt;/div&gt;
+&quot;&quot;&quot;
+
+    html += f&quot;&quot;&quot;
+        &lt;p style=&quot;color:#7f8c8d; font-size:0.9em; margin-top:30px;&quot;&gt;
+            Generated at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        &lt;/p&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;&quot;&quot;&quot;
+
+    return Response(html, mimetype=&quot;text/html&quot;)
+
+
+@api.route(&quot;/admin&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+def admin_index():
+    &quot;&quot;&quot;
+    Main admin entry point.
+    Redirects to dashboard if logged in as admin, otherwise to login page.
+    &quot;&quot;&quot;
+    session_uuid = request.cookies.get(&quot;chocolatechip&quot;)
+    if session_uuid:
+        session_object = Session.find(session_uuid)
+        if session_object:
+            user = User.find_by_id(session_object.user_id)
+            if user and user.is_admin:
+                return redirect(&quot;/user_stats/dashboard&quot;)
+
+    return redirect(&quot;/admin/login&quot;)
+
+
+@api.route(&quot;/admin/login&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+def admin_login_form():
+    &quot;&quot;&quot;Show admin login form.&quot;&quot;&quot;
+    error = request.args.get(&quot;error&quot;, &quot;&quot;)
+    error_html = (
+        f'&lt;p style=&quot;color:#e74c3c; margin-bottom:15px;&quot;&gt;{error}&lt;/p&gt;' if error else &quot;&quot;
+    )
+
+    html = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Admin Login - Zeeguu&lt;/title&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;style&gt;
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }}
+        .login-box {{
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }}
+        h1 {{
+            margin: 0 0 20px 0;
+            color: #2c3e50;
+            font-size: 1.5em;
+        }}
+        label {{
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }}
+        input[type=&quot;email&quot;], input[type=&quot;password&quot;] {{
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }}
+        input:focus {{
+            outline: none;
+            border-color: #3498db;
+        }}
+        button {{
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            cursor: pointer;
+        }}
+        button:hover {{
+            background: #2980b9;
+        }}
+        .subtitle {{
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }}
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;login-box&quot;&gt;
+        &lt;h1&gt;Admin Dashboard&lt;/h1&gt;
+        &lt;p class=&quot;subtitle&quot;&gt;Sign in to access admin dashboards&lt;/p&gt;
+        {error_html}
+        &lt;form method=&quot;POST&quot; action=&quot;/admin/login&quot;&gt;
+            &lt;label for=&quot;email&quot;&gt;Email&lt;/label&gt;
+            &lt;input type=&quot;email&quot; id=&quot;email&quot; name=&quot;email&quot; required autofocus&gt;
+
+            &lt;label for=&quot;password&quot;&gt;Password&lt;/label&gt;
+            &lt;input type=&quot;password&quot; id=&quot;password&quot; name=&quot;password&quot; required&gt;
+
+            &lt;button type=&quot;submit&quot;&gt;Sign In&lt;/button&gt;
+        &lt;/form&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;&quot;&quot;&quot;
+    return Response(html, mimetype=&quot;text/html&quot;)
+
+
+@api.route(&quot;/admin/login&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+def admin_login_submit():
+    &quot;&quot;&quot;Process admin login and redirect to dashboard.&quot;&quot;&quot;
+    email = request.form.get(&quot;email&quot;, &quot;&quot;)
+    password = request.form.get(&quot;password&quot;, &quot;&quot;)
+
+    # Authenticate user
+    user = User.authorize(email, password)
+
+    if not user:
+        return redirect(&quot;/admin/login?error=Invalid+credentials&quot;)
+
+    if not user.is_admin:
+        return redirect(&quot;/admin/login?error=Not+authorized+as+admin&quot;)
+
+    # Create session
+    session = Session.create_for_user(user)
+    db_session.add(session)
+    db_session.commit()
+
+    # Set cookie and redirect to dashboard
+    response = make_response(redirect(&quot;/user_stats/dashboard&quot;))
+    response.set_cookie(&quot;chocolatechip&quot;, str(session.uuid))
+    return response
+
+
+@api.route(&quot;/user_stats/platform/&lt;int:platform_id&gt;/dashboard&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+@only_admins
+def user_stats_platform_dashboard(platform_id):
+    &quot;&quot;&quot;HTML dashboard showing users who used a specific platform.&quot;&quot;&quot;
+    period = request.args.get(&quot;period&quot;, &quot;week&quot;)
+    start, end, label = get_period_range(period)
+
+    platform_name = PLATFORM_NAMES.get(platform_id, f&quot;Platform {platform_id}&quot;)
+
+    # Get users for this platform
+    from sqlalchemy import func
+    user_ids = (
+        db_session.query(func.distinct(UserActivityData.user_id))
+        .filter(UserActivityData.time &gt;= start)
+        .filter(UserActivityData.time &lt; end)
+        .filter(UserActivityData.platform == platform_id)
+        .all()
+    )
+    user_ids = [uid[0] for uid in user_ids]
+
+    users = User.query.filter(User.id.in_(user_ids)).all() if user_ids else []
+
+    html = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;{platform_name} Users - {label}&lt;/title&gt;
+    &lt;style&gt;
+        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 20px; background: #f5f5f5; }}
+        .container {{ max-width: 1000px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
+        h1 {{ color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }}
+        .back-link {{ margin-bottom: 20px; }}
+        .back-link a {{ color: #3498db; text-decoration: none; }}
+        .back-link a:hover {{ text-decoration: underline; }}
+        table {{ width: 100%; border-collapse: collapse; margin-top: 20px; }}
+        th, td {{ padding: 12px; text-align: left; border-bottom: 1px solid #ecf0f1; }}
+        th {{ background: #f8f9fa; font-weight: 600; color: #2c3e50; }}
+        tr:hover {{ background: #f8f9fa; }}
+        a {{ color: #3498db; text-decoration: none; }}
+        a:hover {{ text-decoration: underline; }}
+        .count {{ color: #7f8c8d; font-size: 14px; }}
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;div class=&quot;back-link&quot;&gt;&lt;a href=&quot;/user_stats/dashboard?period={period}&quot;&gt;&amp;larr; Back to Dashboard&lt;/a&gt;&lt;/div&gt;
+        &lt;h1&gt;{platform_name} Users&lt;/h1&gt;
+        &lt;p class=&quot;count&quot;&gt;{len(users)} users active on {platform_name} during {label}&lt;/p&gt;
+        &lt;table&gt;
+            &lt;tr&gt;
+                &lt;th&gt;Name&lt;/th&gt;
+                &lt;th&gt;Email&lt;/th&gt;
+                &lt;th&gt;Cohort&lt;/th&gt;
+            &lt;/tr&gt;
+&quot;&quot;&quot;
+
+    for user in sorted(users, key=lambda u: u.name.lower() if u.name else &quot;&quot;):
+        cohort_name, cohort_id = get_user_cohort_info(user)
+        cohort_link = f'&lt;a href=&quot;/user_stats/cohort/{cohort_id}/dashboard?period={period}&quot;&gt;{cohort_name}&lt;/a&gt;' if cohort_id else cohort_name
+
+        html += f&quot;&quot;&quot;
+            &lt;tr&gt;
+                &lt;td&gt;&lt;a href=&quot;/user_stats/user/{user.id}/dashboard?period={period}&quot;&gt;{user.name or 'N/A'}&lt;/a&gt;&lt;/td&gt;
+                &lt;td&gt;{user.email}&lt;/td&gt;
+                &lt;td&gt;{cohort_link}&lt;/td&gt;
+            &lt;/tr&gt;
+&quot;&quot;&quot;
+
+    html += &quot;&quot;&quot;
+        &lt;/table&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;&quot;&quot;&quot;
+
+    return Response(html, content_type=&quot;text/html&quot;)
+
+
+def _compute_active_users_for_month(month_start, month_end):
+    &quot;&quot;&quot;Compute active user count for a specific month range.&quot;&quot;&quot;
+    from sqlalchemy import func, distinct, union_all
+
+    exercise_users = (
+        db_session.query(distinct(UserExerciseSession.user_id))
+        .filter(UserExerciseSession.start_time &gt;= month_start)
+        .filter(UserExerciseSession.start_time &lt; month_end)
+    )
+
+    reading_users = (
+        db_session.query(distinct(UserReadingSession.user_id))
+        .filter(UserReadingSession.start_time &gt;= month_start)
+        .filter(UserReadingSession.start_time &lt; month_end)
+    )
+
+    browsing_users = (
+        db_session.query(distinct(UserBrowsingSession.user_id))
+        .filter(UserBrowsingSession.start_time &gt;= month_start)
+        .filter(UserBrowsingSession.start_time &lt; month_end)
+    )
+
+    audio_users = (
+        db_session.query(distinct(DailyAudioLesson.user_id))
+        .filter(DailyAudioLesson.completed_at &gt;= month_start)
+        .filter(DailyAudioLesson.completed_at &lt; month_end)
+    )
+
+    bookmark_users = (
+        db_session.query(distinct(UserWord.user_id))
+        .join(Bookmark, Bookmark.user_word_id == UserWord.id)
+        .filter(Bookmark.time &gt;= month_start)
+        .filter(Bookmark.time &lt; month_end)
+    )
+
+    all_users = union_all(
+        exercise_users, reading_users, browsing_users, audio_users, bookmark_users
+    ).subquery()
+
+    from sqlalchemy import func, distinct
+    return db_session.query(func.count(distinct(all_users.c[0]))).scalar() or 0
+
+
+def get_monthly_active_users(months=12):
+    &quot;&quot;&quot;
+    Get active user counts per month for the last N months.
+    Uses caching: historical months are cached permanently,
+    current month is refreshed every 6 hours.
+    &quot;&quot;&quot;
+    from zeeguu.core.model import MonthlyActiveUsersCache
+
+    now = datetime.now()
+    current_year_month = now.strftime(&quot;%Y-%m&quot;)
+    monthly_data = []
+
+    # Get all cached data in one query
+    cache = MonthlyActiveUsersCache.get_all_cached()
+
+    for i in range(months):
+        # Calculate month boundaries
+        if i == 0:
+            month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            month_end = now
+        else:
+            # Go back i months
+            year = now.year
+            month = now.month - i
+            while month &lt;= 0:
+                month += 12
+                year -= 1
+            month_start = datetime(year, month, 1)
+            # End is start of next month
+            next_month = month + 1
+            next_year = year
+            if next_month &gt; 12:
+                next_month = 1
+                next_year += 1
+            month_end = datetime(next_year, next_month, 1)
+
+        year_month = month_start.strftime(&quot;%Y-%m&quot;)
+        is_current_month = (year_month == current_year_month)
+
+        # Check cache
+        cached = cache.get(year_month)
+        use_cache = False
+
+        if cached:
+            if is_current_month:
+                # For current month, use cache if less than 6 hours old
+                cache_age = now - cached.computed_at
+                if cache_age.total_seconds() &lt; 6 * 3600:
+                    use_cache = True
+            else:
+                # Historical months: always use cache
+                use_cache = True
+
+        if use_cache:
+            active_users = cached.active_users
+        else:
+            # Compute and cache
+            active_users = _compute_active_users_for_month(month_start, month_end)
+            MonthlyActiveUsersCache.set_cached(db_session, year_month, active_users)
+
+        monthly_data.append({
+            &quot;month&quot;: year_month,
+            &quot;month_label&quot;: month_start.strftime(&quot;%b %Y&quot;),
+            &quot;active_users&quot;: active_users,
+        })
+
+    # Reverse to show oldest first
+    return list(reversed(monthly_data))
+
+
+@api.route(&quot;/stats/monthly_active_users&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+def monthly_active_users_page():
+    &quot;&quot;&quot;
+    Public page showing monthly active users.
+    Embeddable on the homepage.
+    &quot;&quot;&quot;
+    months = min(int(request.args.get(&quot;months&quot;, 12)), 24)
+    monthly_data = get_monthly_active_users(months)
+
+    # Calculate max for chart scaling
+    max_users = max((m[&quot;active_users&quot;] for m in monthly_data), default=1)
+    max_bar_height = 160  # pixels, leaving room for labels
+
+    # Generate chart bars
+    chart_bars = &quot;&quot;
+    for m in monthly_data:
+        height_px = int((m[&quot;active_users&quot;] / max_users * max_bar_height) if max_users &gt; 0 else 0)
+        chart_bars += f&quot;&quot;&quot;
+            &lt;div class=&quot;bar-container&quot;&gt;
+                &lt;div class=&quot;bar&quot; style=&quot;height: {height_px}px;&quot;&gt;
+                    &lt;span class=&quot;bar-value&quot;&gt;{m['active_users']}&lt;/span&gt;
+                &lt;/div&gt;
+                &lt;span class=&quot;bar-label&quot;&gt;{m['month_label'][:3]}&lt;/span&gt;
+            &lt;/div&gt;
+&quot;&quot;&quot;
+
+    # Generate table rows
+    table_rows = &quot;&quot;
+    for m in reversed(monthly_data):  # Most recent first in table
+        table_rows += f&quot;&quot;&quot;
+            &lt;tr&gt;
+                &lt;td&gt;{m['month_label']}&lt;/td&gt;
+                &lt;td class=&quot;count&quot;&gt;{m['active_users']}&lt;/td&gt;
+            &lt;/tr&gt;
+&quot;&quot;&quot;
+
+    html = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Monthly Active Users - Zeeguu&lt;/title&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;style&gt;
+        * {{ box-sizing: border-box; }}
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #333;
+        }}
+        .container {{
+            max-width: 800px;
+            margin: 0 auto;
+        }}
+        h1 {{
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 1.5em;
+        }}
+        .subtitle {{
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            font-size: 0.95em;
+        }}
+        .chart-section {{
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }}
+        .chart {{
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 200px;
+            padding: 10px 0;
+            border-bottom: 2px solid #ecf0f1;
+        }}
+        .bar-container {{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 1;
+            height: 100%;
+        }}
+        .bar {{
+            width: 70%;
+            max-width: 40px;
+            background: linear-gradient(180deg, #3498db 0%, #2980b9 100%);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            min-height: 2px;
+            display: flex;
+            justify-content: center;
+            transition: height 0.3s ease;
+        }}
+        .bar:hover {{
+            background: linear-gradient(180deg, #5dade2 0%, #3498db 100%);
+        }}
+        .bar-value {{
+            position: absolute;
+            top: -22px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #2c3e50;
+        }}
+        .bar-label {{
+            margin-top: 8px;
+            font-size: 11px;
+            color: #7f8c8d;
+        }}
+        .table-section {{
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }}
+        .table-section h2 {{
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+        }}
+        th, td {{
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }}
+        th {{
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }}
+        td.count {{
+            font-weight: 600;
+            color: #3498db;
+        }}
+        tr:hover {{
+            background: #f8f9fa;
+        }}
+        .footer {{
+            margin-top: 20px;
+            text-align: center;
+            color: #95a5a6;
+            font-size: 0.85em;
+        }}
+        .footer a {{
+            color: #3498db;
+            text-decoration: none;
+        }}
+        .breadcrumb {{
+            display: inline-block;
+            color: #3498db;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }}
+        .breadcrumb:hover {{
+            text-decoration: underline;
+        }}
+
+        /* Embed mode - minimal styling */
+        body.embed {{
+            background: transparent;
+            padding: 10px;
+        }}
+        body.embed h1, body.embed .subtitle, body.embed .footer, body.embed .breadcrumb {{
+            display: none;
+        }}
+        body.embed .chart-section, body.embed .table-section {{
+            box-shadow: none;
+            border: 1px solid #ecf0f1;
+        }}
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body{&quot;class='embed'&quot; if request.args.get('embed') else ''}&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;a href=&quot;/stats&quot; class=&quot;breadcrumb&quot;&gt;&amp;larr; All Stats&lt;/a&gt;
+        &lt;h1&gt;Monthly Active Users&lt;/h1&gt;
+        &lt;p class=&quot;subtitle&quot;&gt;Users with any learning activity (exercises, reading, browsing, audio lessons, or translations)&lt;/p&gt;
+
+        &lt;div class=&quot;chart-section&quot;&gt;
+            &lt;div class=&quot;chart&quot;&gt;
+{chart_bars}
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;table-section&quot;&gt;
+            &lt;h2&gt;Details&lt;/h2&gt;
+            &lt;table&gt;
+                &lt;thead&gt;
+                    &lt;tr&gt;
+                        &lt;th&gt;Month&lt;/th&gt;
+                        &lt;th&gt;Active Users&lt;/th&gt;
+                    &lt;/tr&gt;
+                &lt;/thead&gt;
+                &lt;tbody&gt;
+{table_rows}
+                &lt;/tbody&gt;
+            &lt;/table&gt;
+        &lt;/div&gt;
+
+        &lt;p class=&quot;footer&quot;&gt;
+            Data from &lt;a href=&quot;https://zeeguu.org&quot;&gt;Zeeguu&lt;/a&gt; |
+            Updated {datetime.now().strftime('%Y-%m-%d %H:%M')}
+        &lt;/p&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;&quot;&quot;&quot;
+
+    return Response(html, mimetype=&quot;text/html&quot;)
+
+
+@api.route(&quot;/stats&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+def stats_index():
+    &quot;&quot;&quot;Public stats index page.&quot;&quot;&quot;
+    html = &quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Zeeguu Stats&lt;/title&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;style&gt;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            background: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+        .stats-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .stats-list li {
+            margin-bottom: 15px;
+        }
+        .stats-list a {
+            display: block;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            text-decoration: none;
+            color: #2c3e50;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .stats-list a:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        .stats-list .title {
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #3498db;
+        }
+        .stats-list .desc {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;h1&gt;Zeeguu Stats&lt;/h1&gt;
+        &lt;p class=&quot;subtitle&quot;&gt;Public statistics about the Zeeguu platform&lt;/p&gt;
+
+        &lt;ul class=&quot;stats-list&quot;&gt;
+            &lt;li&gt;
+                &lt;a href=&quot;/stats/monthly_active_users&quot;&gt;
+                    &lt;div class=&quot;title&quot;&gt;Monthly Active Users&lt;/div&gt;
+                    &lt;div class=&quot;desc&quot;&gt;Chart and table showing active users per month&lt;/div&gt;
+                &lt;/a&gt;
+            &lt;/li&gt;
+            &lt;li&gt;
+                &lt;a href=&quot;/stats/monthly_activity&quot;&gt;
+                    &lt;div class=&quot;title&quot;&gt;Monthly Activity Breakdown&lt;/div&gt;
+                    &lt;div class=&quot;desc&quot;&gt;Stacked chart showing exercises, reading, browsing, and audio minutes&lt;/div&gt;
+                &lt;/a&gt;
+            &lt;/li&gt;
+        &lt;/ul&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;&quot;&quot;&quot;
+    return Response(html, mimetype=&quot;text/html&quot;)
+
+
+def _compute_activity_stats_for_month(month_start, month_end):
+    &quot;&quot;&quot;Compute activity minutes by type for a specific month range.&quot;&quot;&quot;
+    from sqlalchemy import func
+
+    # Exercise minutes
+    exercise_ms = (
+        db_session.query(func.sum(UserExerciseSession.duration))
+        .filter(UserExerciseSession.start_time &gt;= month_start)
+        .filter(UserExerciseSession.start_time &lt; month_end)
+        .scalar()
+    ) or 0
+
+    # Reading minutes
+    reading_ms = (
+        db_session.query(func.sum(UserReadingSession.duration))
+        .filter(UserReadingSession.start_time &gt;= month_start)
+        .filter(UserReadingSession.start_time &lt; month_end)
+        .scalar()
+    ) or 0
+
+    # Browsing minutes
+    browsing_ms = (
+        db_session.query(func.sum(UserBrowsingSession.duration))
+        .filter(UserBrowsingSession.start_time &gt;= month_start)
+        .filter(UserBrowsingSession.start_time &lt; month_end)
+        .scalar()
+    ) or 0
+
+    # Audio minutes (stored in seconds)
+    audio_sec = (
+        db_session.query(func.sum(DailyAudioLesson.duration_seconds))
+        .filter(DailyAudioLesson.completed_at &gt;= month_start)
+        .filter(DailyAudioLesson.completed_at &lt; month_end)
+        .scalar()
+    ) or 0
+
+    return {
+        &quot;exercise_minutes&quot;: round(exercise_ms / 60000),
+        &quot;reading_minutes&quot;: round(reading_ms / 60000),
+        &quot;browsing_minutes&quot;: round(browsing_ms / 60000),
+        &quot;audio_minutes&quot;: round(audio_sec / 60),
+    }
+
+
+def get_monthly_activity_stats(months=12):
+    &quot;&quot;&quot;
+    Get activity stats per month for the last N months.
+    Uses caching: historical months cached permanently, current month refreshed every 6 hours.
+    &quot;&quot;&quot;
+    from zeeguu.core.model import MonthlyActivityStatsCache
+
+    now = datetime.now()
+    current_year_month = now.strftime(&quot;%Y-%m&quot;)
+    monthly_data = []
+
+    # Get all cached data in one query
+    cache = MonthlyActivityStatsCache.get_all_cached()
+
+    for i in range(months):
+        # Calculate month boundaries
+        if i == 0:
+            month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            month_end = now
+        else:
+            year = now.year
+            month = now.month - i
+            while month &lt;= 0:
+                month += 12
+                year -= 1
+            month_start = datetime(year, month, 1)
+            next_month = month + 1
+            next_year = year
+            if next_month &gt; 12:
+                next_month = 1
+                next_year += 1
+            month_end = datetime(next_year, next_month, 1)
+
+        year_month = month_start.strftime(&quot;%Y-%m&quot;)
+        is_current_month = (year_month == current_year_month)
+
+        # Check cache
+        cached = cache.get(year_month)
+        use_cache = False
+
+        if cached:
+            if is_current_month:
+                cache_age = now - cached.computed_at
+                if cache_age.total_seconds() &lt; 6 * 3600:
+                    use_cache = True
+            else:
+                use_cache = True
+
+        if use_cache:
+            stats = {
+                &quot;exercise_minutes&quot;: cached.exercise_minutes,
+                &quot;reading_minutes&quot;: cached.reading_minutes,
+                &quot;browsing_minutes&quot;: cached.browsing_minutes,
+                &quot;audio_minutes&quot;: cached.audio_minutes,
+            }
+        else:
+            stats = _compute_activity_stats_for_month(month_start, month_end)
+            MonthlyActivityStatsCache.set_cached(
+                db_session, year_month,
+                stats[&quot;exercise_minutes&quot;],
+                stats[&quot;reading_minutes&quot;],
+                stats[&quot;browsing_minutes&quot;],
+                stats[&quot;audio_minutes&quot;]
+            )
+
+        monthly_data.append({
+            &quot;month&quot;: year_month,
+            &quot;month_label&quot;: month_start.strftime(&quot;%b %Y&quot;),
+            **stats,
+        })
+
+    return list(reversed(monthly_data))
+
+
+@api.route(&quot;/stats/monthly_activity&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+def monthly_activity_page():
+    &quot;&quot;&quot;
+    Public page showing monthly activity breakdown by type.
+    Stacked bar chart with exercises, reading, browsing, and audio.
+    &quot;&quot;&quot;
+    months = min(int(request.args.get(&quot;months&quot;, 12)), 24)
+    monthly_data = get_monthly_activity_stats(months)
+
+    # Calculate max total for chart scaling
+    max_total = max(
+        (m[&quot;exercise_minutes&quot;] + m[&quot;reading_minutes&quot;] + m[&quot;browsing_minutes&quot;] + m[&quot;audio_minutes&quot;]
+         for m in monthly_data),
+        default=1
+    )
+    max_bar_height = 160  # pixels, leaving room for labels
+
+    # Colors for each activity type
+    colors = {
+        &quot;exercise&quot;: &quot;#e74c3c&quot;,  # Red
+        &quot;reading&quot;: &quot;#3498db&quot;,   # Blue
+        &quot;browsing&quot;: &quot;#2ecc71&quot;,  # Green
+        &quot;audio&quot;: &quot;#9b59b6&quot;,     # Purple
+    }
+
+    # Generate stacked bars
+    chart_bars = &quot;&quot;
+    for m in monthly_data:
+        total = m[&quot;exercise_minutes&quot;] + m[&quot;reading_minutes&quot;] + m[&quot;browsing_minutes&quot;] + m[&quot;audio_minutes&quot;]
+        total_height_px = int((total / max_total * max_bar_height) if max_total &gt; 0 else 0)
+
+        # Calculate individual heights as percentage of this bar's total
+        if total &gt; 0:
+            exercise_pct = m[&quot;exercise_minutes&quot;] / total * 100
+            reading_pct = m[&quot;reading_minutes&quot;] / total * 100
+            browsing_pct = m[&quot;browsing_minutes&quot;] / total * 100
+            audio_pct = m[&quot;audio_minutes&quot;] / total * 100
+        else:
+            exercise_pct = reading_pct = browsing_pct = audio_pct = 0
+
+        chart_bars += f&quot;&quot;&quot;
+            &lt;div class=&quot;bar-container&quot;&gt;
+                &lt;div class=&quot;bar-value&quot;&gt;{total:,}&lt;/div&gt;
+                &lt;div class=&quot;stacked-bar&quot; style=&quot;height: {total_height_px}px;&quot;&gt;
+                    &lt;div class=&quot;segment audio&quot; style=&quot;height: {audio_pct}%;&quot; title=&quot;Audio: {m['audio_minutes']:,} min&quot;&gt;&lt;/div&gt;
+                    &lt;div class=&quot;segment browsing&quot; style=&quot;height: {browsing_pct}%;&quot; title=&quot;Browsing: {m['browsing_minutes']:,} min&quot;&gt;&lt;/div&gt;
+                    &lt;div class=&quot;segment reading&quot; style=&quot;height: {reading_pct}%;&quot; title=&quot;Reading: {m['reading_minutes']:,} min&quot;&gt;&lt;/div&gt;
+                    &lt;div class=&quot;segment exercise&quot; style=&quot;height: {exercise_pct}%;&quot; title=&quot;Exercises: {m['exercise_minutes']:,} min&quot;&gt;&lt;/div&gt;
+                &lt;/div&gt;
+                &lt;span class=&quot;bar-label&quot;&gt;{m['month_label'][:3]}&lt;/span&gt;
+            &lt;/div&gt;
+&quot;&quot;&quot;
+
+    # Generate table rows
+    table_rows = &quot;&quot;
+    for m in reversed(monthly_data):
+        total = m[&quot;exercise_minutes&quot;] + m[&quot;reading_minutes&quot;] + m[&quot;browsing_minutes&quot;] + m[&quot;audio_minutes&quot;]
+        table_rows += f&quot;&quot;&quot;
+            &lt;tr&gt;
+                &lt;td&gt;{m['month_label']}&lt;/td&gt;
+                &lt;td class=&quot;exercise&quot;&gt;{m['exercise_minutes']:,}&lt;/td&gt;
+                &lt;td class=&quot;reading&quot;&gt;{m['reading_minutes']:,}&lt;/td&gt;
+                &lt;td class=&quot;browsing&quot;&gt;{m['browsing_minutes']:,}&lt;/td&gt;
+                &lt;td class=&quot;audio&quot;&gt;{m['audio_minutes']:,}&lt;/td&gt;
+                &lt;td class=&quot;total&quot;&gt;{total:,}&lt;/td&gt;
+            &lt;/tr&gt;
+&quot;&quot;&quot;
+
+    html = f&quot;&quot;&quot;&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Monthly Activity - Zeeguu&lt;/title&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;style&gt;
+        * {{ box-sizing: border-box; }}
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #333;
+        }}
+        .container {{
+            max-width: 900px;
+            margin: 0 auto;
+        }}
+        h1 {{
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 1.5em;
+        }}
+        .subtitle {{
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            font-size: 0.95em;
+        }}
+        .chart-section {{
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }}
+        .legend {{
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }}
+        .legend-item {{
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85em;
+        }}
+        .legend-color {{
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }}
+        .legend-color.exercise {{ background: {colors['exercise']}; }}
+        .legend-color.reading {{ background: {colors['reading']}; }}
+        .legend-color.browsing {{ background: {colors['browsing']}; }}
+        .legend-color.audio {{ background: {colors['audio']}; }}
+        .chart {{
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 220px;
+            padding: 25px 0 10px 0;
+            border-bottom: 2px solid #ecf0f1;
+        }}
+        .bar-container {{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 1;
+            height: 100%;
+            position: relative;
+        }}
+        .bar-value {{
+            font-size: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }}
+        .stacked-bar {{
+            width: 70%;
+            max-width: 35px;
+            display: flex;
+            flex-direction: column;
+            border-radius: 3px 3px 0 0;
+            overflow: hidden;
+            min-height: 2px;
+        }}
+        .segment {{
+            width: 100%;
+            transition: opacity 0.2s;
+        }}
+        .segment:hover {{
+            opacity: 0.8;
+        }}
+        .segment.exercise {{ background: {colors['exercise']}; }}
+        .segment.reading {{ background: {colors['reading']}; }}
+        .segment.browsing {{ background: {colors['browsing']}; }}
+        .segment.audio {{ background: {colors['audio']}; }}
+        .bar-label {{
+            margin-top: 8px;
+            font-size: 11px;
+            color: #7f8c8d;
+        }}
+        .table-section {{
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }}
+        .table-section h2 {{
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+        }}
+        th, td {{
+            padding: 10px 12px;
+            text-align: right;
+            border-bottom: 1px solid #ecf0f1;
+        }}
+        th:first-child, td:first-child {{
+            text-align: left;
+        }}
+        th {{
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }}
+        th.exercise {{ color: {colors['exercise']}; }}
+        th.reading {{ color: {colors['reading']}; }}
+        th.browsing {{ color: {colors['browsing']}; }}
+        th.audio {{ color: {colors['audio']}; }}
+        td.exercise {{ color: {colors['exercise']}; font-weight: 500; }}
+        td.reading {{ color: {colors['reading']}; font-weight: 500; }}
+        td.browsing {{ color: {colors['browsing']}; font-weight: 500; }}
+        td.audio {{ color: {colors['audio']}; font-weight: 500; }}
+        td.total {{ font-weight: 600; color: #2c3e50; }}
+        tr:hover {{
+            background: #f8f9fa;
+        }}
+        .footer {{
+            margin-top: 20px;
+            text-align: center;
+            color: #95a5a6;
+            font-size: 0.85em;
+        }}
+        .footer a {{
+            color: #3498db;
+            text-decoration: none;
+        }}
+        .breadcrumb {{
+            display: inline-block;
+            color: #3498db;
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }}
+        .breadcrumb:hover {{
+            text-decoration: underline;
+        }}
+        body.embed {{
+            background: transparent;
+            padding: 10px;
+        }}
+        body.embed h1, body.embed .subtitle, body.embed .footer, body.embed .breadcrumb {{
+            display: none;
+        }}
+        body.embed .chart-section, body.embed .table-section {{
+            box-shadow: none;
+            border: 1px solid #ecf0f1;
+        }}
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body{&quot;class='embed'&quot; if request.args.get('embed') else ''}&gt;
+    &lt;div class=&quot;container&quot;&gt;
+        &lt;a href=&quot;/stats&quot; class=&quot;breadcrumb&quot;&gt;&amp;larr; All Stats&lt;/a&gt;
+        &lt;h1&gt;Monthly Activity Breakdown&lt;/h1&gt;
+        &lt;p class=&quot;subtitle&quot;&gt;Total minutes spent on different learning activities&lt;/p&gt;
+
+        &lt;div class=&quot;chart-section&quot;&gt;
+            &lt;div class=&quot;legend&quot;&gt;
+                &lt;div class=&quot;legend-item&quot;&gt;&lt;div class=&quot;legend-color exercise&quot;&gt;&lt;/div&gt; Exercises&lt;/div&gt;
+                &lt;div class=&quot;legend-item&quot;&gt;&lt;div class=&quot;legend-color reading&quot;&gt;&lt;/div&gt; Reading&lt;/div&gt;
+                &lt;div class=&quot;legend-item&quot;&gt;&lt;div class=&quot;legend-color browsing&quot;&gt;&lt;/div&gt; Browsing&lt;/div&gt;
+                &lt;div class=&quot;legend-item&quot;&gt;&lt;div class=&quot;legend-color audio&quot;&gt;&lt;/div&gt; Audio&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;chart&quot;&gt;
+{chart_bars}
+            &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;table-section&quot;&gt;
+            &lt;h2&gt;Details (minutes)&lt;/h2&gt;
+            &lt;table&gt;
+                &lt;thead&gt;
+                    &lt;tr&gt;
+                        &lt;th&gt;Month&lt;/th&gt;
+                        &lt;th class=&quot;exercise&quot;&gt;Exercises&lt;/th&gt;
+                        &lt;th class=&quot;reading&quot;&gt;Reading&lt;/th&gt;
+                        &lt;th class=&quot;browsing&quot;&gt;Browsing&lt;/th&gt;
+                        &lt;th class=&quot;audio&quot;&gt;Audio&lt;/th&gt;
+                        &lt;th&gt;Total&lt;/th&gt;
+                    &lt;/tr&gt;
+                &lt;/thead&gt;
+                &lt;tbody&gt;
+{table_rows}
+                &lt;/tbody&gt;
+            &lt;/table&gt;
+        &lt;/div&gt;
+
+        &lt;p class=&quot;footer&quot;&gt;
+            Data from &lt;a href=&quot;https://zeeguu.org&quot;&gt;Zeeguu&lt;/a&gt; |
+            Updated {datetime.now().strftime('%Y-%m-%d %H:%M')}
+        &lt;/p&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;&quot;&quot;&quot;
+
+    return Response(html, mimetype=&quot;text/html&quot;)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

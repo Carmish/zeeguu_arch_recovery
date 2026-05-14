@@ -1,0 +1,196 @@
+<html>
+<head>
+    <title>def session_history()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def session_history()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/api/endpoints/session_history.py [0:0]</i></p>
+<ul>
+    <li><b>122</b> lines of code</li>
+    <li><b>26</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def session_history():
+    &quot;&quot;&quot;
+    Get session-based history for the current user.
+
+    Query params:
+        days: number of days to look back (default: 7, max: 30)
+        from_date: ISO date string for custom range start
+        to_date: ISO date string for custom range end
+
+    Returns a list of sessions ordered by start_time descending, grouped by date.
+    Each session includes:
+        - session_type: 'reading', 'exercise', or 'browsing'
+        - start_time: ISO timestamp
+        - duration: in milliseconds
+        - words: list of words translated/practiced
+        - For reading: article_title
+        - For exercise: performance summary
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    learned_language = user.learned_language
+
+    # Handle date range - either from_date/to_date or days
+    from_date_str = flask.request.args.get(&quot;from_date&quot;)
+    to_date_str = flask.request.args.get(&quot;to_date&quot;)
+
+    if from_date_str and to_date_str:
+        from_date = datetime.fromisoformat(from_date_str.replace('Z', '+00:00')).replace(tzinfo=None)
+        to_date = datetime.fromisoformat(to_date_str.replace('Z', '+00:00')).replace(tzinfo=None)
+    else:
+        days = min(int(flask.request.args.get(&quot;days&quot;, 7)), 30)
+        from_date = datetime.now() - timedelta(days=days)
+        to_date = datetime.now()
+
+    # Fetch all session types
+    reading_sessions = UserReadingSession.find_by_user(
+        user.id, from_date=from_date.isoformat()
+    )
+    exercise_sessions = UserExerciseSession.find_by_user_id(
+        user.id, from_date=from_date.isoformat()
+    )
+    browsing_sessions = UserBrowsingSession.find_by_user(
+        user.id, from_date=from_date.isoformat()
+    )
+
+    sessions = []
+
+    def format_duration(duration_ms):
+        &quot;&quot;&quot;Format duration showing seconds for short durations, minutes for longer ones.&quot;&quot;&quot;
+        if duration_ms is None or duration_ms == 0:
+            return &quot;0 sec&quot;
+        seconds = duration_ms / 1000
+        if seconds &lt; 60:
+            return f&quot;{int(seconds)} sec&quot;
+        minutes = seconds / 60
+        if minutes &lt; 60:
+            return f&quot;{round(minutes, 1)} min&quot;
+        hours = minutes / 60
+        return f&quot;{round(hours, 1)} hr&quot;
+
+    # Process reading sessions
+    for rs in reading_sessions:
+        # Skip sessions with no duration (abandoned/not properly closed)
+        if not rs.duration:
+            continue
+        # Filter by learned language
+        if rs.article and rs.article.language_id != learned_language.id:
+            continue
+        bookmarks = _bookmarks_for_reading_session(rs.id, learned_language.id)
+
+        # Count interruptions (focus lost events during this session)
+        end_time = rs.last_action_time if rs.last_action_time else rs.start_time
+        interruptions = _count_interruptions(
+            user.id, rs.start_time, end_time, EVENT_ARTICLE_LOST_FOCUS
+        )
+        focus_level = _calculate_focus_level(interruptions, rs.duration, len(bookmarks))
+
+        # reading_source is stored directly on the session ('extension' or 'web')
+        # Will be None for historical sessions created before this field was added
+        reading_source = rs.reading_source
+
+        sessions.append(
+            {
+                &quot;session_type&quot;: &quot;reading&quot;,
+                &quot;start_time&quot;: rs.start_time.isoformat(),
+                &quot;duration&quot;: rs.duration,
+                &quot;duration_readable&quot;: format_duration(rs.duration),
+                &quot;article_id&quot;: rs.article_id,
+                &quot;article_title&quot;: rs.article.title if rs.article else None,
+                &quot;reading_source&quot;: reading_source,
+                &quot;words&quot;: bookmarks,
+                &quot;word_count&quot;: len(bookmarks),
+                &quot;interruptions&quot;: interruptions,
+                &quot;focus_level&quot;: focus_level,
+            }
+        )
+
+    # Process exercise sessions
+    for es in exercise_sessions:
+        exercise_data = _exercises_for_session(es.id, learned_language.id)
+        # Only include sessions with exercises in the learned language
+        if exercise_data[&quot;total&quot;] &gt; 0:
+            # Count interruptions (focus lost events during this session)
+            end_time = es.last_action_time if es.last_action_time else es.start_time
+            interruptions = _count_interruptions(
+                user.id, es.start_time, end_time, EVENT_EXERCISE_LOST_FOCUS
+            )
+            focus_level = _calculate_focus_level(
+                interruptions, es.duration, exercise_data[&quot;total&quot;]
+            )
+
+            sessions.append(
+                {
+                    &quot;session_type&quot;: &quot;exercise&quot;,
+                    &quot;start_time&quot;: es.start_time.isoformat(),
+                    &quot;duration&quot;: es.duration,
+                    &quot;duration_readable&quot;: format_duration(es.duration),
+                    &quot;words&quot;: exercise_data[&quot;words_practiced&quot;],
+                    &quot;word_count&quot;: exercise_data[&quot;total&quot;],
+                    &quot;correct_count&quot;: exercise_data[&quot;correct&quot;],
+                    &quot;accuracy&quot;: exercise_data[&quot;accuracy&quot;],
+                    &quot;interruptions&quot;: interruptions,
+                    &quot;focus_level&quot;: focus_level,
+                }
+            )
+
+    # Process browsing sessions
+    for bs in browsing_sessions:
+        bookmarks = _bookmarks_for_browsing_session(bs.id, learned_language.id)
+        if bookmarks:  # Only include browsing sessions with translations in learned language
+            sessions.append(
+                {
+                    &quot;session_type&quot;: &quot;browsing&quot;,
+                    &quot;start_time&quot;: bs.start_time.isoformat(),
+                    &quot;duration&quot;: bs.duration,
+                    &quot;duration_readable&quot;: format_duration(bs.duration),
+                    &quot;words&quot;: bookmarks,
+                    &quot;word_count&quot;: len(bookmarks),
+                }
+            )
+
+    # Process listening sessions
+    listening_sessions = UserListeningSession.find_by_user_and_language(
+        user.id, learned_language.id, from_date=from_date.isoformat()
+    )
+
+    for ls in listening_sessions:
+        # Skip sessions with no duration
+        if not ls.duration:
+            continue
+        audio_lesson = ls.daily_audio_lesson
+        is_completed = audio_lesson.is_completed if audio_lesson else False
+
+        # Only show words for completed lessons (incomplete = unknown coverage)
+        if is_completed:
+            words = _words_for_audio_lesson(audio_lesson, learned_language.id)
+        else:
+            words = []
+
+        sessions.append(
+            {
+                &quot;session_type&quot;: &quot;audio&quot;,
+                &quot;start_time&quot;: ls.start_time.isoformat(),
+                &quot;duration&quot;: ls.duration,  # Already in milliseconds
+                &quot;duration_readable&quot;: format_duration(ls.duration),
+                &quot;words&quot;: words,
+                &quot;word_count&quot;: len(words),
+                &quot;completed&quot;: is_completed,
+            }
+        )
+
+    # Sort by start_time descending
+    sessions.sort(key=lambda s: s[&quot;start_time&quot;], reverse=True)
+
+    return json_result(sessions)
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

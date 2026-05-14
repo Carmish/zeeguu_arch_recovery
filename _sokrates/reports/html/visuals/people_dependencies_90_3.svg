@@ -1,0 +1,223 @@
+<svg width="776pt" height="648pt"
+ viewBox="0.00 0.00 776.00 648.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 643.75)">
+<title>G</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-643.75 772.34,-643.75 772.34,4 -4,4"/>
+<!-- mircea.lungu@gmail.com -->
+<g id="node1" class="node">
+<title>mircea.lungu@gmail.com</title>
+<polygon fill="grey" stroke="white" points="421.84,-639.75 249.84,-639.75 249.84,-603.75 421.84,-603.75 421.84,-639.75"/>
+<text xml:space="preserve" text-anchor="middle" x="335.84" y="-617.08" font-family="Tahoma" font-size="14.00">mircea.lungu@gmail.com</text>
+</g>
+<!-- gabortodor@gmail.com -->
+<g id="node2" class="node">
+<title>gabortodor@gmail.com</title>
+<polygon fill="grey" stroke="white" points="299.84,-553.5 139.84,-553.5 139.84,-517.5 299.84,-517.5 299.84,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="219.84" y="-530.83" font-family="Tahoma" font-size="14.00">gabortodor@gmail.com</text>
+</g>
+<!-- mircea.lungu@gmail.com&#45;&#45;gabortodor@gmail.com -->
+<g id="edge1" class="edge">
+<title>mircea.lungu@gmail.com&#45;&#45;gabortodor@gmail.com</title>
+<path fill="none" stroke="#00688b" stroke-width="10" d="M311.8,-603.29C291.89,-588.83 263.74,-568.39 243.84,-553.93"/>
+<text xml:space="preserve" text-anchor="middle" x="297.16" y="-574.35" font-family="Arial" font-size="12.00"> 111 </text>
+</g>
+<!-- nicra@itu.dk -->
+<g id="node3" class="node">
+<title>nicra@itu.dk</title>
+<polygon fill="grey" stroke="white" points="350.71,-467.25 258.96,-467.25 258.96,-431.25 350.71,-431.25 350.71,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="304.84" y="-444.57" font-family="Tahoma" font-size="14.00">nicra@itu.dk</text>
+</g>
+<!-- mircea.lungu@gmail.com&#45;&#45;nicra@itu.dk -->
+<g id="edge2" class="edge">
+<title>mircea.lungu@gmail.com&#45;&#45;nicra@itu.dk</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M332.69,-603.46C326.75,-570.78 313.94,-500.3 307.99,-467.58"/>
+<text xml:space="preserve" text-anchor="middle" x="333.17" y="-531.23" font-family="Arial" font-size="12.00"> 75 </text>
+</g>
+<!-- 98952123+xxpinkmagicxx@users.noreply.github.com -->
+<g id="node8" class="node">
+<title>98952123+xxpinkmagicxx@users.noreply.github.com</title>
+<polygon fill="grey" stroke="white" points="532.59,-208.5 191.09,-208.5 191.09,-172.5 532.59,-172.5 532.59,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="361.84" y="-185.82" font-family="Tahoma" font-size="14.00">98952123+xxpinkmagicxx@users.noreply.github.com</text>
+</g>
+<!-- mircea.lungu@gmail.com&#45;&#45;98952123+xxpinkmagicxx@users.noreply.github.com -->
+<g id="edge26" class="edge">
+<title>mircea.lungu@gmail.com&#45;&#45;98952123+xxpinkmagicxx@users.noreply.github.com</title>
+<path fill="none" stroke="#00688b" stroke-width="2" stroke-opacity="0.439216" d="M249.48,-615.41C206.44,-607.86 157.92,-590.89 130.84,-553.5 121.45,-540.54 128.93,-533.39 130.84,-517.5 144.94,-399.98 136.04,-362.04 193.84,-258.75 207.49,-234.35 231.96,-218.79 258.07,-208.87"/>
+<text xml:space="preserve" text-anchor="middle" x="152.95" y="-401.85" font-family="Arial" font-size="12.00"> 23 </text>
+</g>
+<!-- gabortodor@gmail.com&#45;&#45;nicra@itu.dk -->
+<g id="edge11" class="edge">
+<title>gabortodor@gmail.com&#45;&#45;nicra@itu.dk</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M237.45,-517.04C252.04,-502.58 272.67,-482.14 287.25,-467.68"/>
+<text xml:space="preserve" text-anchor="middle" x="277.18" y="-488.1" font-family="Arial" font-size="12.00"> 53 </text>
+</g>
+<!-- kalny.zalan7@gmail.com -->
+<g id="node4" class="node">
+<title>kalny.zalan7@gmail.com</title>
+<polygon fill="grey" stroke="white" points="673.21,-294.75 506.46,-294.75 506.46,-258.75 673.21,-258.75 673.21,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="589.84" y="-272.07" font-family="Tahoma" font-size="14.00">kalny.zalan7@gmail.com</text>
+</g>
+<!-- gabortodor@gmail.com&#45;&#45;kalny.zalan7@gmail.com -->
+<g id="edge3" class="edge">
+<title>gabortodor@gmail.com&#45;&#45;kalny.zalan7@gmail.com</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M276.1,-517.02C293.66,-511.5 313.07,-505.31 330.84,-499.5 440.5,-463.6 493.37,-473.88 561.84,-381 580.9,-355.14 586.99,-317.08 588.93,-295.12"/>
+<text xml:space="preserve" text-anchor="middle" x="556.03" y="-401.85" font-family="Arial" font-size="12.00"> 73 </text>
+</g>
+<!-- nickras2001@gmail.com -->
+<g id="node5" class="node">
+<title>nickras2001@gmail.com</title>
+<polygon fill="grey" stroke="white" points="553.09,-381 388.59,-381 388.59,-345 553.09,-345 553.09,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="470.84" y="-358.32" font-family="Tahoma" font-size="14.00">nickras2001@gmail.com</text>
+</g>
+<!-- gabortodor@gmail.com&#45;&#45;nickras2001@gmail.com -->
+<g id="edge5" class="edge">
+<title>gabortodor@gmail.com&#45;&#45;nickras2001@gmail.com</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M263.78,-517.13C292.24,-504.99 329.51,-487.39 359.84,-467.25 390,-447.22 394.37,-437.96 420.84,-413.25 432.06,-402.77 444.34,-390.68 453.93,-381.1"/>
+<text xml:space="preserve" text-anchor="middle" x="412.03" y="-444.98" font-family="Arial" font-size="12.00"> 60 </text>
+</g>
+<!-- 63254940+gabortodor@users.noreply.github.com -->
+<g id="node6" class="node">
+<title>63254940+gabortodor@users.noreply.github.com</title>
+<polygon fill="grey" stroke="white" points="480.09,-122.25 159.59,-122.25 159.59,-86.25 480.09,-86.25 480.09,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="319.84" y="-99.58" font-family="Tahoma" font-size="14.00">63254940+gabortodor@users.noreply.github.com</text>
+</g>
+<!-- gabortodor@gmail.com&#45;&#45;63254940+gabortodor@users.noreply.github.com -->
+<g id="edge6" class="edge">
+<title>gabortodor@gmail.com&#45;&#45;63254940+gabortodor@users.noreply.github.com</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M203.44,-517.11C160.74,-469.63 52.8,-334.13 102.84,-226.5 126.19,-176.26 144.66,-167.61 192.84,-140.25 205.46,-133.08 219.64,-127.31 233.82,-122.69"/>
+<text xml:space="preserve" text-anchor="middle" x="103.73" y="-315.6" font-family="Arial" font-size="12.00"> 60 </text>
+</g>
+<!-- 72095082+klnyzzz33@users.noreply.github.com -->
+<g id="node7" class="node">
+<title>72095082+klnyzzz33@users.noreply.github.com</title>
+<polygon fill="grey" stroke="white" points="670.84,-36 360.84,-36 360.84,0 670.84,0 670.84,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="515.84" y="-13.32" font-family="Tahoma" font-size="14.00">72095082+klnyzzz33@users.noreply.github.com</text>
+</g>
+<!-- gabortodor@gmail.com&#45;&#45;72095082+klnyzzz33@users.noreply.github.com -->
+<g id="edge17" class="edge">
+<title>gabortodor@gmail.com&#45;&#45;72095082+klnyzzz33@users.noreply.github.com</title>
+<path fill="none" stroke="#00688b" stroke-width="2" stroke-opacity="0.439216" d="M184.76,-517.1C140.22,-493.03 64.65,-445.18 26.84,-381 -6.7,-324.07 0.84,-300.7 0.84,-234.62 0.84,-234.62 0.84,-234.62 0.84,-103.25 0.84,-66.39 208.98,-42.34 360.62,-29.72"/>
+<text xml:space="preserve" text-anchor="middle" x="10.3" y="-272.48" font-family="Arial" font-size="12.00"> 33 </text>
+</g>
+<!-- gabortodor@gmail.com&#45;&#45;98952123+xxpinkmagicxx@users.noreply.github.com -->
+<g id="edge19" class="edge">
+<title>gabortodor@gmail.com&#45;&#45;98952123+xxpinkmagicxx@users.noreply.github.com</title>
+<path fill="none" stroke="#00688b" stroke-width="2" stroke-opacity="0.439216" d="M213.47,-517.23C197.6,-470.97 161.28,-342.15 214.84,-258.75 230.38,-234.55 257.04,-218.94 283.43,-208.93"/>
+<text xml:space="preserve" text-anchor="middle" x="197.33" y="-358.73" font-family="Arial" font-size="12.00"> 30 </text>
+</g>
+<!-- nicra@itu.dk&#45;&#45;kalny.zalan7@gmail.com -->
+<g id="edge12" class="edge">
+<title>nicra@itu.dk&#45;&#45;kalny.zalan7@gmail.com</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M312.09,-431.14C323.48,-404.97 345.79,-356.79 360.34,-345 401.62,-311.53 458.99,-294.72 506.05,-286.27"/>
+<text xml:space="preserve" text-anchor="middle" x="370.09" y="-358.73" font-family="Arial" font-size="12.00"> 50 </text>
+</g>
+<!-- nicra@itu.dk&#45;&#45;nickras2001@gmail.com -->
+<g id="edge14" class="edge">
+<title>nicra@itu.dk&#45;&#45;nickras2001@gmail.com</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M339.23,-430.79C367.72,-416.33 408.01,-395.89 436.49,-381.43"/>
+<text xml:space="preserve" text-anchor="middle" x="407.53" y="-401.85" font-family="Arial" font-size="12.00"> 48 </text>
+</g>
+<!-- nicra@itu.dk&#45;&#45;63254940+gabortodor@users.noreply.github.com -->
+<g id="edge15" class="edge">
+<title>nicra@itu.dk&#45;&#45;63254940+gabortodor@users.noreply.github.com</title>
+<path fill="none" stroke="#00688b" stroke-width="3" stroke-opacity="0.509804" d="M294.49,-430.77C266.96,-383.89 193.23,-255.68 181.84,-208.5 178.08,-192.95 173.36,-186.07 181.84,-172.5 196.88,-148.43 223.29,-132.75 249.01,-122.64"/>
+<text xml:space="preserve" text-anchor="middle" x="228.12" y="-272.48" font-family="Arial" font-size="12.00"> 44 </text>
+</g>
+<!-- nicra@itu.dk&#45;&#45;72095082+klnyzzz33@users.noreply.github.com -->
+<g id="edge27" class="edge">
+<title>nicra@itu.dk&#45;&#45;72095082+klnyzzz33@users.noreply.github.com</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.368627" d="M286.34,-430.82C273.22,-417.86 255.72,-399.32 242.84,-381 163.9,-268.74 63.03,-191.71 150.84,-86.25 178,-53.63 273.88,-36.77 360.55,-28.1"/>
+<text xml:space="preserve" text-anchor="middle" x="149.15" y="-229.35" font-family="Arial" font-size="12.00"> 19 </text>
+</g>
+<!-- nicra@itu.dk&#45;&#45;98952123+xxpinkmagicxx@users.noreply.github.com -->
+<g id="edge28" class="edge">
+<title>nicra@itu.dk&#45;&#45;98952123+xxpinkmagicxx@users.noreply.github.com</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.368627" d="M308.67,-431.01C319.05,-384.23 347.66,-255.35 358.02,-208.67"/>
+<text xml:space="preserve" text-anchor="middle" x="344.4" y="-315.6" font-family="Arial" font-size="12.00"> 19 </text>
+</g>
+<!-- kalny.zalan7@gmail.com&#45;&#45;mircea.lungu@gmail.com -->
+<g id="edge4" class="edge">
+<title>kalny.zalan7@gmail.com&#45;&#45;mircea.lungu@gmail.com</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M599.65,-295.23C608.07,-311.86 618.84,-337.87 618.84,-362 618.84,-536.5 618.84,-536.5 618.84,-536.5 618.84,-578.02 505.51,-600.73 422.28,-611.81"/>
+<text xml:space="preserve" text-anchor="middle" x="628.59" y="-444.98" font-family="Arial" font-size="12.00"> 73 </text>
+</g>
+<!-- kalny.zalan7@gmail.com&#45;&#45;72095082+klnyzzz33@users.noreply.github.com -->
+<g id="edge18" class="edge">
+<title>kalny.zalan7@gmail.com&#45;&#45;72095082+klnyzzz33@users.noreply.github.com</title>
+<path fill="none" stroke="#00688b" stroke-width="2" stroke-opacity="0.439216" d="M601.96,-258.45C605.46,-252.96 609.08,-246.75 611.84,-240.75 624.64,-212.9 630.96,-201.77 621.84,-172.5 604.39,-116.54 558.63,-62.98 533.31,-36.4"/>
+<text xml:space="preserve" text-anchor="middle" x="624.95" y="-143.1" font-family="Arial" font-size="12.00"> 30 </text>
+</g>
+<!-- kalny.zalan7@gmail.com&#45;&#45;98952123+xxpinkmagicxx@users.noreply.github.com -->
+<g id="edge24" class="edge">
+<title>kalny.zalan7@gmail.com&#45;&#45;98952123+xxpinkmagicxx@users.noreply.github.com</title>
+<path fill="none" stroke="#00688b" stroke-width="2" stroke-opacity="0.439216" d="M552.56,-258.26C524.58,-245.19 489.93,-229.14 482.84,-226.5 465.62,-220.09 446.68,-214.12 428.99,-208.99"/>
+<text xml:space="preserve" text-anchor="middle" x="523.89" y="-229.35" font-family="Arial" font-size="12.00"> 26 </text>
+</g>
+<!-- nickras2001@gmail.com&#45;&#45;mircea.lungu@gmail.com -->
+<g id="edge7" class="edge">
+<title>nickras2001@gmail.com&#45;&#45;mircea.lungu@gmail.com</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M463.97,-381.46C455.63,-402.23 440.82,-437.8 425.84,-467.25 399.92,-518.19 364.46,-575.67 346.78,-603.63"/>
+<text xml:space="preserve" text-anchor="middle" x="426.13" y="-488.1" font-family="Arial" font-size="12.00"> 59 </text>
+</g>
+<!-- nickras2001@gmail.com&#45;&#45;kalny.zalan7@gmail.com -->
+<g id="edge9" class="edge">
+<title>nickras2001@gmail.com&#45;&#45;kalny.zalan7@gmail.com</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M488.87,-344.57C499.6,-334.65 513.72,-322.34 527.34,-312.75 536.18,-306.52 546.23,-300.48 555.65,-295.22"/>
+<text xml:space="preserve" text-anchor="middle" x="537.09" y="-315.6" font-family="Arial" font-size="12.00"> 55 </text>
+</g>
+<!-- nickras2001@gmail.com&#45;&#45;63254940+gabortodor@users.noreply.github.com -->
+<g id="edge10" class="edge">
+<title>nickras2001@gmail.com&#45;&#45;63254940+gabortodor@users.noreply.github.com</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M456.14,-344.77C439.08,-322.61 415.82,-283.98 436.84,-258.75 465.18,-224.73 503.02,-271.56 534.84,-240.75 556.74,-219.54 560.01,-196.99 541.84,-172.5 526.21,-151.44 469.02,-134.4 416.6,-122.74"/>
+<text xml:space="preserve" text-anchor="middle" x="556.12" y="-229.35" font-family="Arial" font-size="12.00"> 54 </text>
+</g>
+<!-- nickras2001@gmail.com&#45;&#45;72095082+klnyzzz33@users.noreply.github.com -->
+<g id="edge21" class="edge">
+<title>nickras2001@gmail.com&#45;&#45;72095082+klnyzzz33@users.noreply.github.com</title>
+<path fill="none" stroke="#00688b" stroke-width="2" stroke-opacity="0.439216" d="M553.38,-353.92C596.79,-345.61 647.9,-328.77 681.84,-294.75 701.63,-274.91 700.84,-262.65 700.84,-234.62 700.84,-234.62 700.84,-234.62 700.84,-103.25 700.84,-68.93 674.14,-48.53 641.03,-36.42"/>
+<text xml:space="preserve" text-anchor="middle" x="710.59" y="-186.22" font-family="Arial" font-size="12.00"> 27 </text>
+</g>
+<!-- nickras2001@gmail.com&#45;&#45;98952123+xxpinkmagicxx@users.noreply.github.com -->
+<g id="edge22" class="edge">
+<title>nickras2001@gmail.com&#45;&#45;98952123+xxpinkmagicxx@users.noreply.github.com</title>
+<path fill="none" stroke="#00688b" stroke-width="2" stroke-opacity="0.439216" d="M459.79,-344.71C438.89,-312.03 393.83,-241.55 372.92,-208.83"/>
+<text xml:space="preserve" text-anchor="middle" x="436.92" y="-272.48" font-family="Arial" font-size="12.00"> 27 </text>
+</g>
+<!-- 63254940+gabortodor@users.noreply.github.com&#45;&#45;mircea.lungu@gmail.com -->
+<g id="edge8" class="edge">
+<title>63254940+gabortodor@users.noreply.github.com&#45;&#45;mircea.lungu@gmail.com</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M189.5,-122.74C120.07,-135.84 48.84,-157.17 48.84,-189.5 48.84,-536.5 48.84,-536.5 48.84,-536.5 48.84,-578.76 164.83,-601.34 249.34,-612.18"/>
+<text xml:space="preserve" text-anchor="middle" x="58.59" y="-358.73" font-family="Arial" font-size="12.00"> 58 </text>
+</g>
+<!-- 63254940+gabortodor@users.noreply.github.com&#45;&#45;kalny.zalan7@gmail.com -->
+<g id="edge13" class="edge">
+<title>63254940+gabortodor@users.noreply.github.com&#45;&#45;kalny.zalan7@gmail.com</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M474.55,-122.71C525.65,-129.18 570.68,-135.98 574.84,-140.25 605.72,-171.95 599.49,-229.64 593.89,-258.43"/>
+<text xml:space="preserve" text-anchor="middle" x="608.13" y="-186.22" font-family="Arial" font-size="12.00"> 50 </text>
+</g>
+<!-- 63254940+gabortodor@users.noreply.github.com&#45;&#45;72095082+klnyzzz33@users.noreply.github.com -->
+<g id="edge20" class="edge">
+<title>63254940+gabortodor@users.noreply.github.com&#45;&#45;72095082+klnyzzz33@users.noreply.github.com</title>
+<path fill="none" stroke="#00688b" stroke-width="2" stroke-opacity="0.439216" d="M360.45,-85.79C394.09,-71.33 441.65,-50.89 475.28,-36.43"/>
+<text xml:space="preserve" text-anchor="middle" x="439.32" y="-56.85" font-family="Arial" font-size="12.00"> 28 </text>
+</g>
+<!-- 72095082+klnyzzz33@users.noreply.github.com&#45;&#45;mircea.lungu@gmail.com -->
+<g id="edge16" class="edge">
+<title>72095082+klnyzzz33@users.noreply.github.com&#45;&#45;mircea.lungu@gmail.com</title>
+<path fill="none" stroke="#00688b" stroke-width="3" stroke-opacity="0.509804" d="M651.65,-36.45C667.34,-41.01 682.75,-46.76 696.84,-54 725.15,-68.55 748.84,-71.42 748.84,-103.25 748.84,-536.5 748.84,-536.5 748.84,-536.5 748.84,-602.59 543.24,-617.36 422.16,-620.33"/>
+<text xml:space="preserve" text-anchor="middle" x="758.59" y="-315.6" font-family="Arial" font-size="12.00"> 34 </text>
+</g>
+<!-- 72095082+klnyzzz33@users.noreply.github.com&#45;&#45;98952123+xxpinkmagicxx@users.noreply.github.com -->
+<g id="edge25" class="edge">
+<title>72095082+klnyzzz33@users.noreply.github.com&#45;&#45;98952123+xxpinkmagicxx@users.noreply.github.com</title>
+<path fill="none" stroke="#00688b" stroke-width="2" stroke-opacity="0.439216" d="M515.46,-36.21C514.13,-58.36 508.85,-96.98 488.84,-122.25 470.56,-145.33 442.15,-161.42 416.83,-172.06"/>
+<text xml:space="preserve" text-anchor="middle" x="516.48" y="-99.97" font-family="Arial" font-size="12.00"> 24 </text>
+</g>
+<!-- 98952123+xxpinkmagicxx@users.noreply.github.com&#45;&#45;63254940+gabortodor@users.noreply.github.com -->
+<g id="edge23" class="edge">
+<title>98952123+xxpinkmagicxx@users.noreply.github.com&#45;&#45;63254940+gabortodor@users.noreply.github.com</title>
+<path fill="none" stroke="#00688b" stroke-width="2" stroke-opacity="0.439216" d="M353.13,-172.04C345.93,-157.58 335.73,-137.14 328.53,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="353.1" y="-143.1" font-family="Arial" font-size="12.00"> 27 </text>
+</g>
+</g>
+</svg>

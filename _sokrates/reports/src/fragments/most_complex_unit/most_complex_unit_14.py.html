@@ -1,0 +1,116 @@
+<html>
+<head>
+    <title>def generate_crawl_summary()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def generate_crawl_summary()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/operations/crawler/crawl.py [0:0]</i></p>
+<ul>
+    <li><b>76</b> lines of code</li>
+    <li><b>29</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def generate_crawl_summary(crawl_reports):
+    &quot;&quot;&quot;Generate a concise summary from multiple crawl reports&quot;&quot;&quot;
+    summary = &quot;ZEEGUU CRAWLER SUMMARY (Round-Robin)\n&quot;
+    summary += &quot;=&quot; * 60 + &quot;\n\n&quot;
+
+    total_new = 0
+    total_in_db = 0
+    total_low_quality = 0
+    total_errors = 0
+    total_unprocessed = 0
+    total_readability_timeout = 0
+
+    for lang_code, report in crawl_reports.items():
+        lang_data = report.data[&quot;lang&quot;][lang_code]
+        lang_new = 0
+        lang_in_db = 0
+        lang_low_quality = 0
+        lang_errors = 0
+        lang_unprocessed = 0
+        lang_readability_timeout = 0
+
+        summary += f&quot;\n{lang_code.upper()}\n&quot;
+        summary += &quot;-&quot; * 40 + &quot;\n&quot;
+
+        for feed_id, feed_data in lang_data[&quot;feeds&quot;].items():
+            feed = Feed.find_by_id(feed_id)
+            if not feed:
+                continue
+
+            new = feed_data.get(&quot;total_downloaded&quot;, 0) or 0
+            in_db = feed_data.get(&quot;total_in_db&quot;, 0) or 0
+            low_q = feed_data.get(&quot;total_low_quality&quot;, 0) or 0
+            errors = len(feed_data.get(&quot;feed_errors&quot;, []))
+            unprocessed = feed_data.get(&quot;total_skipped_unprocessed&quot;, 0) or 0
+            readability_timeout = feed_data.get(&quot;total_readability_timeout&quot;, 0) or 0
+
+            lang_new += new
+            lang_in_db += in_db
+            lang_low_quality += low_q
+            lang_errors += errors
+            lang_unprocessed += unprocessed
+            lang_readability_timeout += readability_timeout
+
+            # Only show feeds with activity, errors, unprocessed articles, or readability timeouts
+            if new &gt; 0 or errors &gt; 0 or unprocessed &gt; 0 or readability_timeout &gt; 0:
+                status = &quot;&quot;
+                if errors &gt; 0:
+                    status = f&quot; [ERROR]&quot;
+                elif new == 0 and in_db &gt; 0:
+                    status = &quot; [all in DB]&quot;
+
+                feed_time = feed_data.get(&quot;crawl_time&quot;, 0) or 0
+                # Mark feeds that hit the 5-minute limit
+                if feed_time &gt;= 300:
+                    status += &quot; [MAX_TIME_REACHED]&quot;
+
+                unproc_str = f&quot; | Unproc: {unprocessed:3d}&quot; if unprocessed &gt; 0 else &quot;&quot;
+                rdbl_str = f&quot; | RdblTO: {readability_timeout:3d}&quot; if readability_timeout &gt; 0 else &quot;&quot;
+                summary += f&quot;  {feed.title[:40]:40s} | New: {new:3d} | InDB: {in_db:3d} | LowQ: {low_q:3d}{unproc_str}{rdbl_str} | Time: {feed_time:5.1f}s{status}\n&quot;
+
+        total_new += lang_new
+        total_in_db += lang_in_db
+        total_low_quality += lang_low_quality
+        total_errors += lang_errors
+        total_unprocessed += lang_unprocessed
+        total_readability_timeout += lang_readability_timeout
+
+        summary += f&quot;\n  {lang_code.upper()} Total: {lang_new} new, {lang_in_db} already in DB, {lang_low_quality} low quality&quot;
+        if lang_unprocessed &gt; 0:
+            summary += f&quot;, {lang_unprocessed} unprocessed&quot;
+        if lang_readability_timeout &gt; 0:
+            summary += f&quot;, {lang_readability_timeout} readability timeouts&quot;
+        if lang_errors &gt; 0:
+            summary += f&quot;, {lang_errors} errors&quot;
+        summary += f&quot; | Time: {lang_data.get('total_time', 0) or 0:.1f}s\n&quot;
+
+    # Calculate total time
+    total_time = sum(
+        report.data[&quot;lang&quot;][lang_code].get(&quot;total_time&quot;, 0) or 0
+        for lang_code, report in crawl_reports.items()
+    )
+
+    summary += &quot;\n&quot; + &quot;=&quot; * 60 + &quot;\n&quot;
+    summary += f&quot;OVERALL: {total_new} new articles, {total_in_db} already in DB, {total_low_quality} low quality&quot;
+    if total_unprocessed &gt; 0:
+        summary += f&quot;, {total_unprocessed} unprocessed&quot;
+    if total_readability_timeout &gt; 0:
+        summary += f&quot;, {total_readability_timeout} readability timeouts&quot;
+    if total_errors &gt; 0:
+        summary += f&quot;, {total_errors} errors&quot;
+    summary += f&quot;\nTotal crawl duration: {total_time:.1f}s ({total_time/60:.1f} minutes)&quot;
+    summary += &quot;\n&quot;
+
+    return summary
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

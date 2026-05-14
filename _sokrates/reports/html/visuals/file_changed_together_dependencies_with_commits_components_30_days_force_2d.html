@@ -1,0 +1,3662 @@
+<head>
+    <style> body {
+        margin: 0;
+    } </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/force-graph"></script>
+</head>
+
+<body>
+<div id="graph"></div>
+
+<script>
+    const gData = {
+  "nodes" : [ {
+    "id" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "size" : 12
+  }, {
+    "id" : "commit_321f284b6d30fedda9c6739e989d3fbb33fe04af",
+    "size" : 5
+  }, {
+    "id" : "commit_a311a958c4a313b0b4448d97391de54bc41ed23c",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/badges/__init__.py]",
+    "size" : 1
+  }, {
+    "id" : "commit_852782c931be45f0a7b4db12e853a2e9821d003d",
+    "size" : 2
+  }, {
+    "id" : "commit_9464f1be6c1d320f8af8af18387c55d54835e6b8",
+    "size" : 2
+  }, {
+    "id" : "commit_c1bbabccb1abce4a791556402e6fa1c575b03066",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/endpoints/reading_sessions.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "size" : 12
+  }, {
+    "id" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "size" : 18
+  }, {
+    "id" : "commit_4d46efd7ee64e554251dc447b49cad11c1c81d9c",
+    "size" : 4
+  }, {
+    "id" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "size" : 15
+  }, {
+    "id" : "commit_33e44e10f7556ce1f0d24f1a41130b97aeb68a52",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/endpoints/translation.py]",
+    "size" : 3
+  }, {
+    "id" : "commit_c9f84b0b965f93c71b34d0d7adc67a4cc7692dcc",
+    "size" : 5
+  }, {
+    "id" : "[zeeguu/core/model/friend_request.py]",
+    "size" : 17
+  }, {
+    "id" : "commit_25cf1fd1a9a6583d8637cd10b08764f1f85b2502",
+    "size" : 7
+  }, {
+    "id" : "commit_827b827d5c6e6f8c90498bb32ed5777096fbd075",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "size" : 1
+  }, {
+    "id" : "commit_fb707b9bb68808d91af6e3d8260be0bf311b16f6",
+    "size" : 5
+  }, {
+    "id" : "commit_9c3ecf4837100f350ba8e15b3b3de6b2c18585bd",
+    "size" : 7
+  }, {
+    "id" : "commit_4612f599dcbc631ba16855ec3467ec5971f1f90e",
+    "size" : 2
+  }, {
+    "id" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "size" : 10
+  }, {
+    "id" : "[zeeguu/api/endpoints/helpers/activity_sessions.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "size" : 15
+  }, {
+    "id" : "[zeeguu/core/model/badge_category.py]",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/api/endpoints/article_upload.py]",
+    "size" : 8
+  }, {
+    "id" : "commit_d0a6883b4c6888c56240a690af9d3eec3f24f46e",
+    "size" : 2
+  }, {
+    "id" : "commit_621cb6c17f40800bf21b48dd1658278d88fc3683",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/article.py]",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/api/endpoints/listening_sessions.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/user_watching_session.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/util/time.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/migrations/26-04-14--add_article_upload.sql]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/api/endpoints/__init__.py]",
+    "size" : 4
+  }, {
+    "id" : "commit_2e027de94058f76067fbb56d789ca99e4deb035a",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/core/model/user_word.py]",
+    "size" : 3
+  }, {
+    "id" : "commit_d1f6f08c6d2deaefb33ab55e64b937c2aac84554",
+    "size" : 4
+  }, {
+    "id" : "commit_033032d99c9b75d5fe70d720dfabaed35c725c3f",
+    "size" : 4
+  }, {
+    "id" : "commit_3eeecf6c4c358984b00a7dc93e07b4bb199236ba",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/endpoints/accounts.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/leaderboards/__init__.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/friends.py]",
+    "size" : 23
+  }, {
+    "id" : "[zeeguu/core/friends/listeners.py]",
+    "size" : 11
+  }, {
+    "id" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "size" : 9
+  }, {
+    "id" : "commit_bc8a98ef156dd4014681d21e64dbc8a6fe6bf1bb",
+    "size" : 2
+  }, {
+    "id" : "commit_b9755e8af1b57340b2e83fc7889c876f89226bca",
+    "size" : 3
+  }, {
+    "id" : "[tools/migrations/26-02-24-c--add_username.sql]",
+    "size" : 3
+  }, {
+    "id" : "commit_b4df131f169519185ca8b8db91714be97107194f",
+    "size" : 7
+  }, {
+    "id" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "size" : 6
+  }, {
+    "id" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "size" : 9
+  }, {
+    "id" : "commit_bbaccd82c5538da174e39e6e3c9f2400cf37fe00",
+    "size" : 2
+  }, {
+    "id" : "[tools/migrations/26-02-26--add_max_streak_to_user_language.sql]",
+    "size" : 1
+  }, {
+    "id" : "commit_f6a042567935529ff7fd794776a9fd2998733d36",
+    "size" : 4
+  }, {
+    "id" : "commit_d6f005f8a4e70f241200e66a7c4ce5620af41414",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/user_avatar.py]",
+    "size" : 7
+  }, {
+    "id" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "size" : 12
+  }, {
+    "id" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/llm_services/anthropic_service.py]",
+    "size" : 1
+  }, {
+    "id" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "size" : 11
+  }, {
+    "id" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "size" : 14
+  }, {
+    "id" : "commit_c91a4285392b7ebdea97875d4fa659b33ab04864",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/api/endpoints/browsing_sessions.py]",
+    "size" : 1
+  }, {
+    "id" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "size" : 10
+  }, {
+    "id" : "[zeeguu/api/endpoints/user_languages.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/audio_lesson_dialogue.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/article_upload.py]",
+    "size" : 7
+  }, {
+    "id" : "commit_7b55750fa04a4faa0d617ceaea9f7741723492e2",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/core/friends/__init__.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/__init__.py]",
+    "size" : 15
+  }, {
+    "id" : "commit_04bc25df39ac9e765a6273ee7774a8c818a9b6c9",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/user_language.py]",
+    "size" : 15
+  }, {
+    "id" : "commit_db67fb8f5b0166974ce699258860becee9e4c552",
+    "size" : 2
+  }, {
+    "id" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "size" : 8
+  }, {
+    "id" : "[tools/migrations/26-04-07--add_language_id_to_exercise_and_browsing_sessions.sql]",
+    "size" : 1
+  }, {
+    "id" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "size" : 15
+  }, {
+    "id" : "[tools/migrations/26-04-15--update_user_name_email_collation.sql]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/user_feature_toggles.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/api/endpoints/exercises.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "size" : 10
+  }, {
+    "id" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "size" : 16
+  }, {
+    "id" : "commit_fa5af274890c88ade1682318270a2a1ac0ef92cb",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/core/model/user_browsing_session.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/exercise_sessions.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/badges.py]",
+    "size" : 17
+  }, {
+    "id" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "size" : 28
+  }, {
+    "id" : "[zeeguu/core/badges/listeners.py]",
+    "size" : 19
+  }, {
+    "id" : "commit_3dfe3748611ca541af43b61d1967ec984485efb9",
+    "size" : 3
+  }, {
+    "id" : "commit_2f235a20cb1c45d0442ae9edfb2f0a8c7967dc7b",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/app.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/friends/friend_streak.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/user.py]",
+    "size" : 24
+  }, {
+    "id" : "commit_e61ba660c15cde429e4ba5b629a4fb864afe951a",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/user_badge_progress.py]",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/api/endpoints/article.py]",
+    "size" : 1
+  }, {
+    "id" : "commit_6aad28cd7a90a56aae25d591dc4d1610c541c7f3",
+    "size" : 3
+  }, {
+    "id" : "commit_945fe859d377560e26bc99cb899aecbab3035c50",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/core/badges/badge_progress.py]",
+    "size" : 10
+  }, {
+    "id" : "[zeeguu/core/events/__init__.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/api/endpoints/user.py]",
+    "size" : 17
+  }, {
+    "id" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "size" : 10
+  }, {
+    "id" : "[zeeguu/api/endpoints/user_articles.py]",
+    "size" : 2
+  }, {
+    "id" : "commit_74fb1279406650b9e8c1c34fd3cb88576984bd2c",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/llm_services/simplification_service.py]",
+    "size" : 1
+  }, {
+    "id" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "size" : 12
+  }, {
+    "id" : "[tools/migrations/26-04-11--add_user_timezone.sql]",
+    "size" : 1
+  }, {
+    "id" : "commit_a2b915fa27cf7209820dc4e18719049841dbb2ad",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/badge.py]",
+    "size" : 7
+  }, {
+    "id" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "size" : 15
+  }, {
+    "id" : "commit_4a770f108385a02f2ec29df57331d6b345994ff9",
+    "size" : 2
+  }, {
+    "id" : "commit_2129060e4423c76b7456e831bbf74161bbcf9e47",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "size" : 6
+  }, {
+    "id" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/api/endpoints/bookmarks_and_words.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/exercise_outcome.py]",
+    "size" : 1
+  }, {
+    "id" : "commit_de9489386e846d783545bf303b1e72627b8156e5",
+    "size" : 3
+  }, {
+    "id" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "size" : 15
+  }, {
+    "id" : "[zeeguu/core/model/user_badge.py]",
+    "size" : 3
+  }, {
+    "id" : "commit_56b48fa6a7a0a9fb6fafe3f0ae7bd4e57ac4eca9",
+    "size" : 3
+  }, {
+    "id" : "commit_9b146bab3950d04cb853089b64b80326269a39d7",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/core/model/friendship.py]",
+    "size" : 9
+  }, {
+    "id" : "[zeeguu/api/endpoints/activity_tracking.py]",
+    "size" : 3
+  }, {
+    "id" : "commit_e1d32888512e49e944db321a1063cdaa1af3eaf4",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/daily_audio_lesson.py]",
+    "size" : 1
+  }, {
+    "id" : "commit_6f0c6f37b409175acc4a78384668f70f8bfa26eb",
+    "size" : 2
+  }, {
+    "id" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "size" : 49
+  }, {
+    "id" : "commit_14096cab43837fce35b0967fe0be20f9f0769a75",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "size" : 12
+  }, {
+    "id" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "size" : 13
+  }, {
+    "id" : "[tools/migrations/26-03-13--add_user_avatar.sql]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/user_exercise_session.py]",
+    "size" : 1
+  } ],
+  "links" : [ {
+    "source" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "count" : 12
+  }, {
+    "source" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "count" : 12
+  }, {
+    "source" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 10
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "count" : 10
+  }, {
+    "source" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 10
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "count" : 10
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 15
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 15
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_321f284b6d30fedda9c6739e989d3fbb33fe04af",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_321f284b6d30fedda9c6739e989d3fbb33fe04af",
+    "count" : 4
+  }, {
+    "source" : "commit_321f284b6d30fedda9c6739e989d3fbb33fe04af",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_321f284b6d30fedda9c6739e989d3fbb33fe04af",
+    "count" : 4
+  }, {
+    "source" : "commit_c9f84b0b965f93c71b34d0d7adc67a4cc7692dcc",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_c9f84b0b965f93c71b34d0d7adc67a4cc7692dcc",
+    "count" : 4
+  }, {
+    "source" : "commit_c9f84b0b965f93c71b34d0d7adc67a4cc7692dcc",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_c9f84b0b965f93c71b34d0d7adc67a4cc7692dcc",
+    "count" : 4
+  }, {
+    "source" : "commit_827b827d5c6e6f8c90498bb32ed5777096fbd075",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_827b827d5c6e6f8c90498bb32ed5777096fbd075",
+    "count" : 3
+  }, {
+    "source" : "commit_827b827d5c6e6f8c90498bb32ed5777096fbd075",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_827b827d5c6e6f8c90498bb32ed5777096fbd075",
+    "count" : 3
+  }, {
+    "source" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "count" : 14
+  }, {
+    "source" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "count" : 14
+  }, {
+    "source" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 13
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "count" : 13
+  }, {
+    "source" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 13
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "count" : 13
+  }, {
+    "source" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "count" : 11
+  }, {
+    "source" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "count" : 11
+  }, {
+    "source" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "count" : 11
+  }, {
+    "source" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "count" : 11
+  }, {
+    "source" : "commit_033032d99c9b75d5fe70d720dfabaed35c725c3f",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_033032d99c9b75d5fe70d720dfabaed35c725c3f",
+    "count" : 3
+  }, {
+    "source" : "commit_033032d99c9b75d5fe70d720dfabaed35c725c3f",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_033032d99c9b75d5fe70d720dfabaed35c725c3f",
+    "count" : 3
+  }, {
+    "source" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "count" : 11
+  }, {
+    "source" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "count" : 11
+  }, {
+    "source" : "commit_fa5af274890c88ade1682318270a2a1ac0ef92cb",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_fa5af274890c88ade1682318270a2a1ac0ef92cb",
+    "count" : 3
+  }, {
+    "source" : "commit_fa5af274890c88ade1682318270a2a1ac0ef92cb",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "commit_fa5af274890c88ade1682318270a2a1ac0ef92cb",
+    "count" : 3
+  }, {
+    "source" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "count" : 12
+  }, {
+    "source" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 12
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "count" : 12
+  }, {
+    "source" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 7
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "count" : 7
+  }, {
+    "source" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 7
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "count" : 7
+  }, {
+    "source" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 10
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "count" : 10
+  }, {
+    "source" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 10
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "count" : 10
+  }, {
+    "source" : "commit_4d46efd7ee64e554251dc447b49cad11c1c81d9c",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_4d46efd7ee64e554251dc447b49cad11c1c81d9c",
+    "count" : 3
+  }, {
+    "source" : "commit_4d46efd7ee64e554251dc447b49cad11c1c81d9c",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "commit_4d46efd7ee64e554251dc447b49cad11c1c81d9c",
+    "count" : 3
+  }, {
+    "source" : "commit_e1d32888512e49e944db321a1063cdaa1af3eaf4",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_e1d32888512e49e944db321a1063cdaa1af3eaf4",
+    "count" : 2
+  }, {
+    "source" : "commit_e1d32888512e49e944db321a1063cdaa1af3eaf4",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "commit_e1d32888512e49e944db321a1063cdaa1af3eaf4",
+    "count" : 2
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 48
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 15
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 15
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "count" : 14
+  }, {
+    "source" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 14
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "count" : 14
+  }, {
+    "source" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 13
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "count" : 13
+  }, {
+    "source" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 13
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "count" : 13
+  }, {
+    "source" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "count" : 11
+  }, {
+    "source" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 11
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "count" : 11
+  }, {
+    "source" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "count" : 11
+  }, {
+    "source" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 11
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "count" : 11
+  }, {
+    "source" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "count" : 11
+  }, {
+    "source" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 11
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "count" : 11
+  }, {
+    "source" : "commit_fa5af274890c88ade1682318270a2a1ac0ef92cb",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_fa5af274890c88ade1682318270a2a1ac0ef92cb",
+    "count" : 3
+  }, {
+    "source" : "commit_f6a042567935529ff7fd794776a9fd2998733d36",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_f6a042567935529ff7fd794776a9fd2998733d36",
+    "count" : 3
+  }, {
+    "source" : "commit_f6a042567935529ff7fd794776a9fd2998733d36",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "commit_f6a042567935529ff7fd794776a9fd2998733d36",
+    "count" : 3
+  }, {
+    "source" : "commit_4d46efd7ee64e554251dc447b49cad11c1c81d9c",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_4d46efd7ee64e554251dc447b49cad11c1c81d9c",
+    "count" : 3
+  }, {
+    "source" : "commit_e1d32888512e49e944db321a1063cdaa1af3eaf4",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_e1d32888512e49e944db321a1063cdaa1af3eaf4",
+    "count" : 2
+  }, {
+    "source" : "commit_6aad28cd7a90a56aae25d591dc4d1610c541c7f3",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_6aad28cd7a90a56aae25d591dc4d1610c541c7f3",
+    "count" : 2
+  }, {
+    "source" : "commit_6aad28cd7a90a56aae25d591dc4d1610c541c7f3",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_6aad28cd7a90a56aae25d591dc4d1610c541c7f3",
+    "count" : 2
+  }, {
+    "source" : "commit_d6f005f8a4e70f241200e66a7c4ce5620af41414",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "commit_d6f005f8a4e70f241200e66a7c4ce5620af41414",
+    "count" : 2
+  }, {
+    "source" : "commit_d6f005f8a4e70f241200e66a7c4ce5620af41414",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "commit_d6f005f8a4e70f241200e66a7c4ce5620af41414",
+    "count" : 2
+  }, {
+    "source" : "commit_56b48fa6a7a0a9fb6fafe3f0ae7bd4e57ac4eca9",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "commit_56b48fa6a7a0a9fb6fafe3f0ae7bd4e57ac4eca9",
+    "count" : 2
+  }, {
+    "source" : "commit_56b48fa6a7a0a9fb6fafe3f0ae7bd4e57ac4eca9",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "commit_56b48fa6a7a0a9fb6fafe3f0ae7bd4e57ac4eca9",
+    "count" : 2
+  }, {
+    "source" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "count" : 14
+  }, {
+    "source" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "count" : 14
+  }, {
+    "source" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "count" : 9
+  }, {
+    "source" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "count" : 9
+  }, {
+    "source" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "count" : 9
+  }, {
+    "source" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "count" : 9
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 15
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 15
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "count" : 14
+  }, {
+    "source" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "count" : 14
+  }, {
+    "source" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 13
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "count" : 13
+  }, {
+    "source" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 13
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "count" : 13
+  }, {
+    "source" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "count" : 11
+  }, {
+    "source" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "count" : 11
+  }, {
+    "source" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "count" : 11
+  }, {
+    "source" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "count" : 11
+  }, {
+    "source" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "count" : 11
+  }, {
+    "source" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "count" : 11
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "count" : 14
+  }, {
+    "source" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "count" : 14
+  }, {
+    "source" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "count" : 14
+  }, {
+    "source" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "count" : 14
+  }, {
+    "source" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "count" : 9
+  }, {
+    "source" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "count" : 9
+  }, {
+    "source" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "count" : 9
+  }, {
+    "source" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "count" : 9
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 15
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 15
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "count" : 14
+  }, {
+    "source" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "count" : 14
+  }, {
+    "source" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 13
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "count" : 13
+  }, {
+    "source" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 13
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "count" : 13
+  }, {
+    "source" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "count" : 11
+  }, {
+    "source" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "count" : 11
+  }, {
+    "source" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "count" : 11
+  }, {
+    "source" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "count" : 11
+  }, {
+    "source" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "count" : 11
+  }, {
+    "source" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "count" : 11
+  }, {
+    "source" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "count" : 12
+  }, {
+    "source" : "commit_9c3ecf4837100f350ba8e15b3b3de6b2c18585bd",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_9c3ecf4837100f350ba8e15b3b3de6b2c18585bd",
+    "count" : 6
+  }, {
+    "source" : "commit_9c3ecf4837100f350ba8e15b3b3de6b2c18585bd",
+    "target" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "count" : 6
+  }, {
+    "source" : "[tools/migrations/26-02-24-friendship_system.sql]",
+    "target" : "commit_9c3ecf4837100f350ba8e15b3b3de6b2c18585bd",
+    "count" : 6
+  }, {
+    "source" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 7
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "count" : 7
+  }, {
+    "source" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 10
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "count" : 10
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 15
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_c9f84b0b965f93c71b34d0d7adc67a4cc7692dcc",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "commit_c9f84b0b965f93c71b34d0d7adc67a4cc7692dcc",
+    "count" : 4
+  }, {
+    "source" : "commit_827b827d5c6e6f8c90498bb32ed5777096fbd075",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "commit_827b827d5c6e6f8c90498bb32ed5777096fbd075",
+    "count" : 3
+  }, {
+    "source" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "count" : 14
+  }, {
+    "source" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 13
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "count" : 13
+  }, {
+    "source" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "count" : 11
+  }, {
+    "source" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "count" : 11
+  }, {
+    "source" : "commit_033032d99c9b75d5fe70d720dfabaed35c725c3f",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "commit_033032d99c9b75d5fe70d720dfabaed35c725c3f",
+    "count" : 3
+  }, {
+    "source" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "count" : 11
+  }, {
+    "source" : "commit_c9f84b0b965f93c71b34d0d7adc67a4cc7692dcc",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_c9f84b0b965f93c71b34d0d7adc67a4cc7692dcc",
+    "count" : 4
+  }, {
+    "source" : "commit_827b827d5c6e6f8c90498bb32ed5777096fbd075",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_827b827d5c6e6f8c90498bb32ed5777096fbd075",
+    "count" : 3
+  }, {
+    "source" : "commit_bbaccd82c5538da174e39e6e3c9f2400cf37fe00",
+    "target" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/api/endpoints/daily_streak.py]",
+    "target" : "commit_bbaccd82c5538da174e39e6e3c9f2400cf37fe00",
+    "count" : 1
+  }, {
+    "source" : "commit_bbaccd82c5538da174e39e6e3c9f2400cf37fe00",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_bbaccd82c5538da174e39e6e3c9f2400cf37fe00",
+    "count" : 1
+  }, {
+    "source" : "commit_033032d99c9b75d5fe70d720dfabaed35c725c3f",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_033032d99c9b75d5fe70d720dfabaed35c725c3f",
+    "count" : 3
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_fb707b9bb68808d91af6e3d8260be0bf311b16f6",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 4
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "commit_fb707b9bb68808d91af6e3d8260be0bf311b16f6",
+    "count" : 4
+  }, {
+    "source" : "commit_fb707b9bb68808d91af6e3d8260be0bf311b16f6",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_fb707b9bb68808d91af6e3d8260be0bf311b16f6",
+    "count" : 4
+  }, {
+    "source" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 10
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "count" : 10
+  }, {
+    "source" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 10
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "count" : 10
+  }, {
+    "source" : "commit_945fe859d377560e26bc99cb899aecbab3035c50",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "commit_945fe859d377560e26bc99cb899aecbab3035c50",
+    "count" : 3
+  }, {
+    "source" : "commit_945fe859d377560e26bc99cb899aecbab3035c50",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_945fe859d377560e26bc99cb899aecbab3035c50",
+    "count" : 3
+  }, {
+    "source" : "commit_621cb6c17f40800bf21b48dd1658278d88fc3683",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 1
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "commit_621cb6c17f40800bf21b48dd1658278d88fc3683",
+    "count" : 1
+  }, {
+    "source" : "commit_621cb6c17f40800bf21b48dd1658278d88fc3683",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_621cb6c17f40800bf21b48dd1658278d88fc3683",
+    "count" : 1
+  }, {
+    "source" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "count" : 14
+  }, {
+    "source" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "count" : 14
+  }, {
+    "source" : "commit_d1f6f08c6d2deaefb33ab55e64b937c2aac84554",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "commit_d1f6f08c6d2deaefb33ab55e64b937c2aac84554",
+    "count" : 3
+  }, {
+    "source" : "commit_d1f6f08c6d2deaefb33ab55e64b937c2aac84554",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_d1f6f08c6d2deaefb33ab55e64b937c2aac84554",
+    "count" : 3
+  }, {
+    "source" : "commit_14096cab43837fce35b0967fe0be20f9f0769a75",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "commit_14096cab43837fce35b0967fe0be20f9f0769a75",
+    "count" : 3
+  }, {
+    "source" : "commit_14096cab43837fce35b0967fe0be20f9f0769a75",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_14096cab43837fce35b0967fe0be20f9f0769a75",
+    "count" : 3
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 48
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_74fb1279406650b9e8c1c34fd3cb88576984bd2c",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "commit_74fb1279406650b9e8c1c34fd3cb88576984bd2c",
+    "count" : 2
+  }, {
+    "source" : "commit_74fb1279406650b9e8c1c34fd3cb88576984bd2c",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_74fb1279406650b9e8c1c34fd3cb88576984bd2c",
+    "count" : 2
+  }, {
+    "source" : "commit_3dfe3748611ca541af43b61d1967ec984485efb9",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "commit_3dfe3748611ca541af43b61d1967ec984485efb9",
+    "count" : 2
+  }, {
+    "source" : "commit_3dfe3748611ca541af43b61d1967ec984485efb9",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_3dfe3748611ca541af43b61d1967ec984485efb9",
+    "count" : 2
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "count" : 14
+  }, {
+    "source" : "commit_2e027de94058f76067fbb56d789ca99e4deb035a",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "commit_2e027de94058f76067fbb56d789ca99e4deb035a",
+    "count" : 3
+  }, {
+    "source" : "commit_2e027de94058f76067fbb56d789ca99e4deb035a",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_2e027de94058f76067fbb56d789ca99e4deb035a",
+    "count" : 3
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 15
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "count" : 14
+  }, {
+    "source" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 13
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "count" : 13
+  }, {
+    "source" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "count" : 11
+  }, {
+    "source" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "count" : 11
+  }, {
+    "source" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "count" : 11
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/core/badges/badge_progress.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/core/badges/badge_progress.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "target" : "[zeeguu/core/badges/badge_progress.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/badges/badge_progress.py]",
+    "target" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "count" : 14
+  }, {
+    "source" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "target" : "[zeeguu/core/badges/badge_progress.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/badges/badge_progress.py]",
+    "target" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "count" : 12
+  }, {
+    "source" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "target" : "[zeeguu/core/badges/badge_progress.py]",
+    "count" : 10
+  }, {
+    "source" : "[zeeguu/core/badges/badge_progress.py]",
+    "target" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "count" : 10
+  }, {
+    "source" : "commit_3eeecf6c4c358984b00a7dc93e07b4bb199236ba",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_3eeecf6c4c358984b00a7dc93e07b4bb199236ba",
+    "count" : 1
+  }, {
+    "source" : "commit_3eeecf6c4c358984b00a7dc93e07b4bb199236ba",
+    "target" : "[zeeguu/core/badges/badge_progress.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/badges/badge_progress.py]",
+    "target" : "commit_3eeecf6c4c358984b00a7dc93e07b4bb199236ba",
+    "count" : 1
+  }, {
+    "source" : "commit_c1bbabccb1abce4a791556402e6fa1c575b03066",
+    "target" : "[zeeguu/core/badges/listeners.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/badges/listeners.py]",
+    "target" : "commit_c1bbabccb1abce4a791556402e6fa1c575b03066",
+    "count" : 1
+  }, {
+    "source" : "commit_c1bbabccb1abce4a791556402e6fa1c575b03066",
+    "target" : "[zeeguu/core/badges/badge_progress.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/badges/badge_progress.py]",
+    "target" : "commit_c1bbabccb1abce4a791556402e6fa1c575b03066",
+    "count" : 1
+  }, {
+    "source" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "target" : "[zeeguu/core/badges/badge_progress.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/badges/badge_progress.py]",
+    "target" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "count" : 14
+  }, {
+    "source" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "target" : "[zeeguu/core/badges/badge_progress.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/core/badges/badge_progress.py]",
+    "target" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "count" : 9
+  }, {
+    "source" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "target" : "[zeeguu/core/badges/badge_progress.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/core/badges/badge_progress.py]",
+    "target" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "count" : 9
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/badges/badge_progress.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/badges/badge_progress.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_2e027de94058f76067fbb56d789ca99e4deb035a",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_2e027de94058f76067fbb56d789ca99e4deb035a",
+    "count" : 3
+  }, {
+    "source" : "commit_f6a042567935529ff7fd794776a9fd2998733d36",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "commit_f6a042567935529ff7fd794776a9fd2998733d36",
+    "count" : 3
+  }, {
+    "source" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "count" : 12
+  }, {
+    "source" : "commit_4612f599dcbc631ba16855ec3467ec5971f1f90e",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "commit_4612f599dcbc631ba16855ec3467ec5971f1f90e",
+    "count" : 1
+  }, {
+    "source" : "commit_4612f599dcbc631ba16855ec3467ec5971f1f90e",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_4612f599dcbc631ba16855ec3467ec5971f1f90e",
+    "count" : 1
+  }, {
+    "source" : "commit_4a770f108385a02f2ec29df57331d6b345994ff9",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "commit_4a770f108385a02f2ec29df57331d6b345994ff9",
+    "count" : 1
+  }, {
+    "source" : "commit_4a770f108385a02f2ec29df57331d6b345994ff9",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_4a770f108385a02f2ec29df57331d6b345994ff9",
+    "count" : 1
+  }, {
+    "source" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 10
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "count" : 10
+  }, {
+    "source" : "commit_2e027de94058f76067fbb56d789ca99e4deb035a",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "commit_2e027de94058f76067fbb56d789ca99e4deb035a",
+    "count" : 3
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 15
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "count" : 14
+  }, {
+    "source" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 13
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "count" : 13
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 17
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "count" : 17
+  }, {
+    "source" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_a311a958c4a313b0b4448d97391de54bc41ed23c",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 1
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "commit_a311a958c4a313b0b4448d97391de54bc41ed23c",
+    "count" : 1
+  }, {
+    "source" : "commit_a311a958c4a313b0b4448d97391de54bc41ed23c",
+    "target" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "count" : 1
+  }, {
+    "source" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "target" : "commit_a311a958c4a313b0b4448d97391de54bc41ed23c",
+    "count" : 1
+  }, {
+    "source" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 12
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "count" : 12
+  }, {
+    "source" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "target" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "count" : 12
+  }, {
+    "source" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "target" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "count" : 12
+  }, {
+    "source" : "commit_9c3ecf4837100f350ba8e15b3b3de6b2c18585bd",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 6
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "commit_9c3ecf4837100f350ba8e15b3b3de6b2c18585bd",
+    "count" : 6
+  }, {
+    "source" : "commit_9c3ecf4837100f350ba8e15b3b3de6b2c18585bd",
+    "target" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "count" : 6
+  }, {
+    "source" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "target" : "commit_9c3ecf4837100f350ba8e15b3b3de6b2c18585bd",
+    "count" : 6
+  }, {
+    "source" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 7
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "count" : 7
+  }, {
+    "source" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "target" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "count" : 7
+  }, {
+    "source" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "target" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "count" : 7
+  }, {
+    "source" : "commit_7b55750fa04a4faa0d617ceaea9f7741723492e2",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "commit_7b55750fa04a4faa0d617ceaea9f7741723492e2",
+    "count" : 3
+  }, {
+    "source" : "commit_7b55750fa04a4faa0d617ceaea9f7741723492e2",
+    "target" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "count" : 3
+  }, {
+    "source" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "target" : "commit_7b55750fa04a4faa0d617ceaea9f7741723492e2",
+    "count" : 3
+  }, {
+    "source" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 14
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "count" : 14
+  }, {
+    "source" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "target" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "count" : 14
+  }, {
+    "source" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "target" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "count" : 14
+  }, {
+    "source" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 9
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "count" : 9
+  }, {
+    "source" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "target" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "count" : 9
+  }, {
+    "source" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "target" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "count" : 9
+  }, {
+    "source" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 9
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "count" : 9
+  }, {
+    "source" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "target" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "count" : 9
+  }, {
+    "source" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "target" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "count" : 9
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "count" : 48
+  }, {
+    "source" : "[tools/migrations/26-02-19-b--insert_default_badges.sql]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "count" : 48
+  }, {
+    "source" : "[tools/migrations/26-02-19-a--add_badges.sql]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_321f284b6d30fedda9c6739e989d3fbb33fe04af",
+    "target" : "[zeeguu/core/friends/listeners.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/friends/listeners.py]",
+    "target" : "commit_321f284b6d30fedda9c6739e989d3fbb33fe04af",
+    "count" : 4
+  }, {
+    "source" : "commit_fa5af274890c88ade1682318270a2a1ac0ef92cb",
+    "target" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "target" : "commit_fa5af274890c88ade1682318270a2a1ac0ef92cb",
+    "count" : 3
+  }, {
+    "source" : "commit_f6a042567935529ff7fd794776a9fd2998733d36",
+    "target" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "target" : "commit_f6a042567935529ff7fd794776a9fd2998733d36",
+    "count" : 3
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "count" : 15
+  }, {
+    "source" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "target" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "target" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "count" : 14
+  }, {
+    "source" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "target" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "count" : 13
+  }, {
+    "source" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "target" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "count" : 13
+  }, {
+    "source" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "target" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "target" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "count" : 11
+  }, {
+    "source" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "target" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "target" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "count" : 11
+  }, {
+    "source" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "target" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "target" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "count" : 11
+  }, {
+    "source" : "commit_d6f005f8a4e70f241200e66a7c4ce5620af41414",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_d6f005f8a4e70f241200e66a7c4ce5620af41414",
+    "count" : 2
+  }, {
+    "source" : "commit_56b48fa6a7a0a9fb6fafe3f0ae7bd4e57ac4eca9",
+    "target" : "[zeeguu/core/model/friend_request.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/friend_request.py]",
+    "target" : "commit_56b48fa6a7a0a9fb6fafe3f0ae7bd4e57ac4eca9",
+    "count" : 2
+  }, {
+    "source" : "commit_4d46efd7ee64e554251dc447b49cad11c1c81d9c",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_4d46efd7ee64e554251dc447b49cad11c1c81d9c",
+    "count" : 3
+  }, {
+    "source" : "commit_6aad28cd7a90a56aae25d591dc4d1610c541c7f3",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_6aad28cd7a90a56aae25d591dc4d1610c541c7f3",
+    "count" : 2
+  }, {
+    "source" : "commit_9b146bab3950d04cb853089b64b80326269a39d7",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_9b146bab3950d04cb853089b64b80326269a39d7",
+    "count" : 1
+  }, {
+    "source" : "commit_9b146bab3950d04cb853089b64b80326269a39d7",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_9b146bab3950d04cb853089b64b80326269a39d7",
+    "count" : 1
+  }, {
+    "source" : "commit_bc8a98ef156dd4014681d21e64dbc8a6fe6bf1bb",
+    "target" : "[zeeguu/api/endpoints/friends.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/api/endpoints/friends.py]",
+    "target" : "commit_bc8a98ef156dd4014681d21e64dbc8a6fe6bf1bb",
+    "count" : 1
+  }, {
+    "source" : "commit_bc8a98ef156dd4014681d21e64dbc8a6fe6bf1bb",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_bc8a98ef156dd4014681d21e64dbc8a6fe6bf1bb",
+    "count" : 1
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 15
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "count" : 14
+  }, {
+    "source" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 13
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "count" : 13
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "count" : 14
+  }, {
+    "source" : "commit_fb707b9bb68808d91af6e3d8260be0bf311b16f6",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_fb707b9bb68808d91af6e3d8260be0bf311b16f6",
+    "count" : 4
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_6f0c6f37b409175acc4a78384668f70f8bfa26eb",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_6f0c6f37b409175acc4a78384668f70f8bfa26eb",
+    "count" : 1
+  }, {
+    "source" : "commit_6f0c6f37b409175acc4a78384668f70f8bfa26eb",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_6f0c6f37b409175acc4a78384668f70f8bfa26eb",
+    "count" : 1
+  }, {
+    "source" : "commit_a2b915fa27cf7209820dc4e18719049841dbb2ad",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_a2b915fa27cf7209820dc4e18719049841dbb2ad",
+    "count" : 1
+  }, {
+    "source" : "commit_a2b915fa27cf7209820dc4e18719049841dbb2ad",
+    "target" : "[zeeguu/api/endpoints/user.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/api/endpoints/user.py]",
+    "target" : "commit_a2b915fa27cf7209820dc4e18719049841dbb2ad",
+    "count" : 1
+  }, {
+    "source" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 10
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "count" : 10
+  }, {
+    "source" : "commit_945fe859d377560e26bc99cb899aecbab3035c50",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "commit_945fe859d377560e26bc99cb899aecbab3035c50",
+    "count" : 3
+  }, {
+    "source" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "count" : 14
+  }, {
+    "source" : "commit_d1f6f08c6d2deaefb33ab55e64b937c2aac84554",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "commit_d1f6f08c6d2deaefb33ab55e64b937c2aac84554",
+    "count" : 3
+  }, {
+    "source" : "commit_14096cab43837fce35b0967fe0be20f9f0769a75",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "commit_14096cab43837fce35b0967fe0be20f9f0769a75",
+    "count" : 3
+  }, {
+    "source" : "commit_c91a4285392b7ebdea97875d4fa659b33ab04864",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "commit_c91a4285392b7ebdea97875d4fa659b33ab04864",
+    "count" : 2
+  }, {
+    "source" : "commit_c91a4285392b7ebdea97875d4fa659b33ab04864",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "commit_c91a4285392b7ebdea97875d4fa659b33ab04864",
+    "count" : 2
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_74fb1279406650b9e8c1c34fd3cb88576984bd2c",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "commit_74fb1279406650b9e8c1c34fd3cb88576984bd2c",
+    "count" : 2
+  }, {
+    "source" : "commit_3dfe3748611ca541af43b61d1967ec984485efb9",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "commit_3dfe3748611ca541af43b61d1967ec984485efb9",
+    "count" : 2
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/model/friendship.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/model/friendship.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[zeeguu/core/model/friendship.py]",
+    "count" : 15
+  }, {
+    "source" : "[zeeguu/core/model/friendship.py]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_321f284b6d30fedda9c6739e989d3fbb33fe04af",
+    "target" : "[zeeguu/core/model/friendship.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/model/friendship.py]",
+    "target" : "commit_321f284b6d30fedda9c6739e989d3fbb33fe04af",
+    "count" : 4
+  }, {
+    "source" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "target" : "[zeeguu/core/model/friendship.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/friendship.py]",
+    "target" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "count" : 14
+  }, {
+    "source" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "target" : "[zeeguu/core/model/friendship.py]",
+    "count" : 13
+  }, {
+    "source" : "[zeeguu/core/model/friendship.py]",
+    "target" : "commit_058ad8816f595b14feeadae8c359c6f31c274080",
+    "count" : 13
+  }, {
+    "source" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "target" : "[zeeguu/core/model/friendship.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/model/friendship.py]",
+    "target" : "commit_874fcc48f71571a09b52537b962fcfd8b88c9702",
+    "count" : 11
+  }, {
+    "source" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "target" : "[zeeguu/core/model/friendship.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/model/friendship.py]",
+    "target" : "commit_c9f50753006cb58f3f14a0f40b3c23d93a7a75cb",
+    "count" : 11
+  }, {
+    "source" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "target" : "[zeeguu/core/model/friendship.py]",
+    "count" : 11
+  }, {
+    "source" : "[zeeguu/core/model/friendship.py]",
+    "target" : "commit_1b18f3641dd8c52430ae8718a9ac3994fffc881b",
+    "count" : 11
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_b9755e8af1b57340b2e83fc7889c876f89226bca",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "commit_b9755e8af1b57340b2e83fc7889c876f89226bca",
+    "count" : 2
+  }, {
+    "source" : "commit_b9755e8af1b57340b2e83fc7889c876f89226bca",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_b9755e8af1b57340b2e83fc7889c876f89226bca",
+    "count" : 2
+  }, {
+    "source" : "commit_04bc25df39ac9e765a6273ee7774a8c818a9b6c9",
+    "target" : "[zeeguu/core/model/user_language.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/model/user_language.py]",
+    "target" : "commit_04bc25df39ac9e765a6273ee7774a8c818a9b6c9",
+    "count" : 1
+  }, {
+    "source" : "commit_04bc25df39ac9e765a6273ee7774a8c818a9b6c9",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_04bc25df39ac9e765a6273ee7774a8c818a9b6c9",
+    "count" : 1
+  }, {
+    "source" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "target" : "[zeeguu/core/model/user_avatar.py]",
+    "count" : 10
+  }, {
+    "source" : "[zeeguu/core/model/user_avatar.py]",
+    "target" : "commit_2da1eaa054341995afc2b4831d8ef2d6e7a96694",
+    "count" : 10
+  }, {
+    "source" : "commit_945fe859d377560e26bc99cb899aecbab3035c50",
+    "target" : "[zeeguu/core/model/user_avatar.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/user_avatar.py]",
+    "target" : "commit_945fe859d377560e26bc99cb899aecbab3035c50",
+    "count" : 3
+  }, {
+    "source" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "target" : "[zeeguu/core/model/user_avatar.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/user_avatar.py]",
+    "target" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "count" : 14
+  }, {
+    "source" : "commit_d1f6f08c6d2deaefb33ab55e64b937c2aac84554",
+    "target" : "[zeeguu/core/model/user_avatar.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/user_avatar.py]",
+    "target" : "commit_d1f6f08c6d2deaefb33ab55e64b937c2aac84554",
+    "count" : 3
+  }, {
+    "source" : "commit_14096cab43837fce35b0967fe0be20f9f0769a75",
+    "target" : "[zeeguu/core/model/user_avatar.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/user_avatar.py]",
+    "target" : "commit_14096cab43837fce35b0967fe0be20f9f0769a75",
+    "count" : 3
+  }, {
+    "source" : "commit_c91a4285392b7ebdea97875d4fa659b33ab04864",
+    "target" : "[zeeguu/core/model/user_avatar.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/user_avatar.py]",
+    "target" : "commit_c91a4285392b7ebdea97875d4fa659b33ab04864",
+    "count" : 2
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/model/user_avatar.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/model/user_avatar.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/core/model/badge.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/core/model/badge.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "target" : "[zeeguu/core/model/badge.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/badge.py]",
+    "target" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "count" : 14
+  }, {
+    "source" : "commit_7b55750fa04a4faa0d617ceaea9f7741723492e2",
+    "target" : "[zeeguu/core/model/badge.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/core/model/badge.py]",
+    "target" : "commit_7b55750fa04a4faa0d617ceaea9f7741723492e2",
+    "count" : 3
+  }, {
+    "source" : "commit_7b55750fa04a4faa0d617ceaea9f7741723492e2",
+    "target" : "[zeeguu/api/endpoints/badges.py]",
+    "count" : 3
+  }, {
+    "source" : "[zeeguu/api/endpoints/badges.py]",
+    "target" : "commit_7b55750fa04a4faa0d617ceaea9f7741723492e2",
+    "count" : 3
+  }, {
+    "source" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "target" : "[zeeguu/core/model/badge.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/badge.py]",
+    "target" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "count" : 14
+  }, {
+    "source" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "target" : "[zeeguu/core/model/badge.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/core/model/badge.py]",
+    "target" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "count" : 9
+  }, {
+    "source" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "target" : "[zeeguu/core/model/badge.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/core/model/badge.py]",
+    "target" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "count" : 9
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/model/badge.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/model/badge.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_852782c931be45f0a7b4db12e853a2e9821d003d",
+    "target" : "[zeeguu/core/model/article_upload.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/model/article_upload.py]",
+    "target" : "commit_852782c931be45f0a7b4db12e853a2e9821d003d",
+    "count" : 1
+  }, {
+    "source" : "commit_852782c931be45f0a7b4db12e853a2e9821d003d",
+    "target" : "[zeeguu/api/endpoints/article_upload.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/api/endpoints/article_upload.py]",
+    "target" : "commit_852782c931be45f0a7b4db12e853a2e9821d003d",
+    "count" : 1
+  }, {
+    "source" : "commit_db67fb8f5b0166974ce699258860becee9e4c552",
+    "target" : "[zeeguu/core/model/article_upload.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/model/article_upload.py]",
+    "target" : "commit_db67fb8f5b0166974ce699258860becee9e4c552",
+    "count" : 1
+  }, {
+    "source" : "commit_db67fb8f5b0166974ce699258860becee9e4c552",
+    "target" : "[zeeguu/api/endpoints/article_upload.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/api/endpoints/article_upload.py]",
+    "target" : "commit_db67fb8f5b0166974ce699258860becee9e4c552",
+    "count" : 1
+  }, {
+    "source" : "commit_25cf1fd1a9a6583d8637cd10b08764f1f85b2502",
+    "target" : "[zeeguu/core/model/article_upload.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/core/model/article_upload.py]",
+    "target" : "commit_25cf1fd1a9a6583d8637cd10b08764f1f85b2502",
+    "count" : 6
+  }, {
+    "source" : "commit_25cf1fd1a9a6583d8637cd10b08764f1f85b2502",
+    "target" : "[zeeguu/api/endpoints/article_upload.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/api/endpoints/article_upload.py]",
+    "target" : "commit_25cf1fd1a9a6583d8637cd10b08764f1f85b2502",
+    "count" : 6
+  }, {
+    "source" : "commit_9464f1be6c1d320f8af8af18387c55d54835e6b8",
+    "target" : "[zeeguu/core/model/article_upload.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/model/article_upload.py]",
+    "target" : "commit_9464f1be6c1d320f8af8af18387c55d54835e6b8",
+    "count" : 1
+  }, {
+    "source" : "commit_9464f1be6c1d320f8af8af18387c55d54835e6b8",
+    "target" : "[zeeguu/api/endpoints/article_upload.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/api/endpoints/article_upload.py]",
+    "target" : "commit_9464f1be6c1d320f8af8af18387c55d54835e6b8",
+    "count" : 1
+  }, {
+    "source" : "commit_e61ba660c15cde429e4ba5b629a4fb864afe951a",
+    "target" : "[zeeguu/core/model/article_upload.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/article_upload.py]",
+    "target" : "commit_e61ba660c15cde429e4ba5b629a4fb864afe951a",
+    "count" : 2
+  }, {
+    "source" : "commit_e61ba660c15cde429e4ba5b629a4fb864afe951a",
+    "target" : "[zeeguu/api/endpoints/article_upload.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/article_upload.py]",
+    "target" : "commit_e61ba660c15cde429e4ba5b629a4fb864afe951a",
+    "count" : 2
+  }, {
+    "source" : "commit_b4df131f169519185ca8b8db91714be97107194f",
+    "target" : "[zeeguu/core/model/article_upload.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/core/model/article_upload.py]",
+    "target" : "commit_b4df131f169519185ca8b8db91714be97107194f",
+    "count" : 6
+  }, {
+    "source" : "commit_b4df131f169519185ca8b8db91714be97107194f",
+    "target" : "[zeeguu/api/endpoints/article_upload.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/api/endpoints/article_upload.py]",
+    "target" : "commit_b4df131f169519185ca8b8db91714be97107194f",
+    "count" : 6
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/core/model/article_upload.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/core/model/article_upload.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/api/endpoints/article_upload.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/api/endpoints/article_upload.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_fb707b9bb68808d91af6e3d8260be0bf311b16f6",
+    "target" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "count" : 4
+  }, {
+    "source" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "target" : "commit_fb707b9bb68808d91af6e3d8260be0bf311b16f6",
+    "count" : 4
+  }, {
+    "source" : "commit_2129060e4423c76b7456e831bbf74161bbcf9e47",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "commit_2129060e4423c76b7456e831bbf74161bbcf9e47",
+    "count" : 2
+  }, {
+    "source" : "commit_2129060e4423c76b7456e831bbf74161bbcf9e47",
+    "target" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "target" : "commit_2129060e4423c76b7456e831bbf74161bbcf9e47",
+    "count" : 2
+  }, {
+    "source" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "count" : 12
+  }, {
+    "source" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "target" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "count" : 12
+  }, {
+    "source" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "target" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "count" : 12
+  }, {
+    "source" : "commit_9c3ecf4837100f350ba8e15b3b3de6b2c18585bd",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 6
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "commit_9c3ecf4837100f350ba8e15b3b3de6b2c18585bd",
+    "count" : 6
+  }, {
+    "source" : "commit_9c3ecf4837100f350ba8e15b3b3de6b2c18585bd",
+    "target" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "count" : 6
+  }, {
+    "source" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "target" : "commit_9c3ecf4837100f350ba8e15b3b3de6b2c18585bd",
+    "count" : 6
+  }, {
+    "source" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "target" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "count" : 7
+  }, {
+    "source" : "[tools/migrations/26-02-24-b--add_username.py]",
+    "target" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "count" : 7
+  }, {
+    "source" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "target" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "count" : 7
+  }, {
+    "source" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "target" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "count" : 7
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "count" : 48
+  }, {
+    "source" : "[tools/migrations/26-02-24-a--add_username.sql]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "target" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "target" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "count" : 14
+  }, {
+    "source" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "target" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "target" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "count" : 12
+  }, {
+    "source" : "commit_9c3ecf4837100f350ba8e15b3b3de6b2c18585bd",
+    "target" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "target" : "commit_9c3ecf4837100f350ba8e15b3b3de6b2c18585bd",
+    "count" : 6
+  }, {
+    "source" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "target" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "count" : 7
+  }, {
+    "source" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "target" : "commit_c36658792c363f5a3cfcef92e36a22b9a6009725",
+    "count" : 7
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_b9755e8af1b57340b2e83fc7889c876f89226bca",
+    "target" : "[zeeguu/core/model/friendship.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/friendship.py]",
+    "target" : "commit_b9755e8af1b57340b2e83fc7889c876f89226bca",
+    "count" : 2
+  }, {
+    "source" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "target" : "[zeeguu/core/model/badge_category.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/badge_category.py]",
+    "target" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "count" : 14
+  }, {
+    "source" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "target" : "[zeeguu/core/model/badge_category.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/core/model/badge_category.py]",
+    "target" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "count" : 9
+  }, {
+    "source" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "target" : "[zeeguu/core/model/badge_category.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/core/model/badge_category.py]",
+    "target" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "count" : 9
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/model/badge_category.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/model/badge_category.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "target" : "[zeeguu/core/model/user_badge_progress.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/user_badge_progress.py]",
+    "target" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "count" : 14
+  }, {
+    "source" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "target" : "[zeeguu/core/model/user_badge_progress.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/core/model/user_badge_progress.py]",
+    "target" : "commit_92c81b7b86d4f2aaea46d8d62cc9b2eab58ae78b",
+    "count" : 9
+  }, {
+    "source" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "target" : "[zeeguu/core/model/user_badge_progress.py]",
+    "count" : 9
+  }, {
+    "source" : "[zeeguu/core/model/user_badge_progress.py]",
+    "target" : "commit_b692c95f33adb5fd64df190aa3dfaaa14f7428d1",
+    "count" : 9
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/model/user_badge_progress.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/model/user_badge_progress.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "count" : 15
+  }, {
+    "source" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_c9f84b0b965f93c71b34d0d7adc67a4cc7692dcc",
+    "target" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "target" : "commit_c9f84b0b965f93c71b34d0d7adc67a4cc7692dcc",
+    "count" : 4
+  }, {
+    "source" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "target" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "target" : "commit_d2891b8396b26ca974107e61a8506a7c6c9791dc",
+    "count" : 14
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "target" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "target" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "count" : 14
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_25cf1fd1a9a6583d8637cd10b08764f1f85b2502",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "commit_25cf1fd1a9a6583d8637cd10b08764f1f85b2502",
+    "count" : 6
+  }, {
+    "source" : "commit_25cf1fd1a9a6583d8637cd10b08764f1f85b2502",
+    "target" : "[zeeguu/api/endpoints/__init__.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/api/endpoints/__init__.py]",
+    "target" : "commit_25cf1fd1a9a6583d8637cd10b08764f1f85b2502",
+    "count" : 6
+  }, {
+    "source" : "commit_b4df131f169519185ca8b8db91714be97107194f",
+    "target" : "[zeeguu/core/model/__init__.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/core/model/__init__.py]",
+    "target" : "commit_b4df131f169519185ca8b8db91714be97107194f",
+    "count" : 6
+  }, {
+    "source" : "commit_b4df131f169519185ca8b8db91714be97107194f",
+    "target" : "[zeeguu/api/endpoints/__init__.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/api/endpoints/__init__.py]",
+    "target" : "commit_b4df131f169519185ca8b8db91714be97107194f",
+    "count" : 6
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/api/endpoints/__init__.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/api/endpoints/__init__.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/api/endpoints/__init__.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/api/endpoints/__init__.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_25cf1fd1a9a6583d8637cd10b08764f1f85b2502",
+    "target" : "[zeeguu/core/model/article.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/core/model/article.py]",
+    "target" : "commit_25cf1fd1a9a6583d8637cd10b08764f1f85b2502",
+    "count" : 6
+  }, {
+    "source" : "commit_de9489386e846d783545bf303b1e72627b8156e5",
+    "target" : "[zeeguu/core/model/article.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/model/article.py]",
+    "target" : "commit_de9489386e846d783545bf303b1e72627b8156e5",
+    "count" : 2
+  }, {
+    "source" : "commit_de9489386e846d783545bf303b1e72627b8156e5",
+    "target" : "[zeeguu/api/endpoints/article_upload.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/article_upload.py]",
+    "target" : "commit_de9489386e846d783545bf303b1e72627b8156e5",
+    "count" : 2
+  }, {
+    "source" : "commit_b4df131f169519185ca8b8db91714be97107194f",
+    "target" : "[zeeguu/core/model/article.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/core/model/article.py]",
+    "target" : "commit_b4df131f169519185ca8b8db91714be97107194f",
+    "count" : 6
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/core/model/article.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/core/model/article.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/api/app.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/api/app.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "target" : "[zeeguu/api/app.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/app.py]",
+    "target" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "count" : 14
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/api/app.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/api/app.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/core/friends/__init__.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/core/friends/__init__.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "target" : "[zeeguu/core/friends/__init__.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/friends/__init__.py]",
+    "target" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "count" : 14
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/friends/__init__.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/friends/__init__.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/core/model/user_word.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/core/model/user_word.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "target" : "[zeeguu/core/model/user_word.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/user_word.py]",
+    "target" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "count" : 14
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/model/user_word.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/model/user_word.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/api/endpoints/translation.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/api/endpoints/translation.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "target" : "[zeeguu/api/endpoints/translation.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/translation.py]",
+    "target" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "count" : 14
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/api/endpoints/translation.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/api/endpoints/translation.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/core/model/user_badge.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/core/model/user_badge.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/api/endpoints/activity_tracking.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/api/endpoints/activity_tracking.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "target" : "[zeeguu/core/model/user_badge.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/user_badge.py]",
+    "target" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "count" : 14
+  }, {
+    "source" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "target" : "[zeeguu/api/endpoints/activity_tracking.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/activity_tracking.py]",
+    "target" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "count" : 14
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/model/user_badge.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/model/user_badge.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/api/endpoints/activity_tracking.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/api/endpoints/activity_tracking.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "target" : "[zeeguu/core/events/__init__.py]",
+    "count" : 17
+  }, {
+    "source" : "[zeeguu/core/events/__init__.py]",
+    "target" : "commit_268705fb4421d2ff56e5c9bb211c735a5ddb4073",
+    "count" : 17
+  }, {
+    "source" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "target" : "[zeeguu/core/events/__init__.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/events/__init__.py]",
+    "target" : "commit_695b5262c9e53382d8800982031a722d4306c485",
+    "count" : 14
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/events/__init__.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/events/__init__.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_25cf1fd1a9a6583d8637cd10b08764f1f85b2502",
+    "target" : "[tools/migrations/26-04-14--add_article_upload.sql]",
+    "count" : 6
+  }, {
+    "source" : "[tools/migrations/26-04-14--add_article_upload.sql]",
+    "target" : "commit_25cf1fd1a9a6583d8637cd10b08764f1f85b2502",
+    "count" : 6
+  }, {
+    "source" : "commit_b4df131f169519185ca8b8db91714be97107194f",
+    "target" : "[tools/migrations/26-04-14--add_article_upload.sql]",
+    "count" : 6
+  }, {
+    "source" : "[tools/migrations/26-04-14--add_article_upload.sql]",
+    "target" : "commit_b4df131f169519185ca8b8db91714be97107194f",
+    "count" : 6
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[tools/migrations/26-04-14--add_article_upload.sql]",
+    "count" : 27
+  }, {
+    "source" : "[tools/migrations/26-04-14--add_article_upload.sql]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_fb707b9bb68808d91af6e3d8260be0bf311b16f6",
+    "target" : "[tools/migrations/26-02-24-c--add_username.sql]",
+    "count" : 4
+  }, {
+    "source" : "[tools/migrations/26-02-24-c--add_username.sql]",
+    "target" : "commit_fb707b9bb68808d91af6e3d8260be0bf311b16f6",
+    "count" : 4
+  }, {
+    "source" : "commit_2129060e4423c76b7456e831bbf74161bbcf9e47",
+    "target" : "[tools/migrations/26-02-24-c--add_username.sql]",
+    "count" : 2
+  }, {
+    "source" : "[tools/migrations/26-02-24-c--add_username.sql]",
+    "target" : "commit_2129060e4423c76b7456e831bbf74161bbcf9e47",
+    "count" : 2
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[tools/migrations/26-02-24-c--add_username.sql]",
+    "count" : 48
+  }, {
+    "source" : "[tools/migrations/26-02-24-c--add_username.sql]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_25cf1fd1a9a6583d8637cd10b08764f1f85b2502",
+    "target" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "target" : "commit_25cf1fd1a9a6583d8637cd10b08764f1f85b2502",
+    "count" : 6
+  }, {
+    "source" : "commit_de9489386e846d783545bf303b1e72627b8156e5",
+    "target" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "target" : "commit_de9489386e846d783545bf303b1e72627b8156e5",
+    "count" : 2
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "target" : "[zeeguu/api/endpoints/accounts.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/accounts.py]",
+    "target" : "commit_9966bfc7f800bdaa263580795ac2cfbaed275dad",
+    "count" : 14
+  }, {
+    "source" : "commit_2f235a20cb1c45d0442ae9edfb2f0a8c7967dc7b",
+    "target" : "[zeeguu/api/endpoints/accounts.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/api/endpoints/accounts.py]",
+    "target" : "commit_2f235a20cb1c45d0442ae9edfb2f0a8c7967dc7b",
+    "count" : 1
+  }, {
+    "source" : "commit_2f235a20cb1c45d0442ae9edfb2f0a8c7967dc7b",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_2f235a20cb1c45d0442ae9edfb2f0a8c7967dc7b",
+    "count" : 1
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/api/endpoints/accounts.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/api/endpoints/accounts.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/friends/friend_streak.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/friends/friend_streak.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "target" : "[zeeguu/core/friends/friend_streak.py]",
+    "count" : 15
+  }, {
+    "source" : "[zeeguu/core/friends/friend_streak.py]",
+    "target" : "commit_ff179d2c2bd8dff96bd8699e291001d70cb93f2f",
+    "count" : 15
+  }, {
+    "source" : "commit_321f284b6d30fedda9c6739e989d3fbb33fe04af",
+    "target" : "[zeeguu/core/friends/friend_streak.py]",
+    "count" : 4
+  }, {
+    "source" : "[zeeguu/core/friends/friend_streak.py]",
+    "target" : "commit_321f284b6d30fedda9c6739e989d3fbb33fe04af",
+    "count" : 4
+  }, {
+    "source" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "target" : "[zeeguu/core/user_feature_toggles.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/user_feature_toggles.py]",
+    "target" : "commit_72af82af0c741ef644e5a43dbad17331dbffe59e",
+    "count" : 12
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/user_feature_toggles.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/user_feature_toggles.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/api/endpoints/helpers/activity_sessions.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/api/endpoints/helpers/activity_sessions.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/api/endpoints/helpers/activity_sessions.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/api/endpoints/helpers/activity_sessions.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_e61ba660c15cde429e4ba5b629a4fb864afe951a",
+    "target" : "[zeeguu/api/endpoints/user_articles.py]",
+    "count" : 2
+  }, {
+    "source" : "[zeeguu/api/endpoints/user_articles.py]",
+    "target" : "commit_e61ba660c15cde429e4ba5b629a4fb864afe951a",
+    "count" : 2
+  }, {
+    "source" : "commit_b4df131f169519185ca8b8db91714be97107194f",
+    "target" : "[zeeguu/api/endpoints/user_articles.py]",
+    "count" : 6
+  }, {
+    "source" : "[zeeguu/api/endpoints/user_articles.py]",
+    "target" : "commit_b4df131f169519185ca8b8db91714be97107194f",
+    "count" : 6
+  }, {
+    "source" : "commit_33e44e10f7556ce1f0d24f1a41130b97aeb68a52",
+    "target" : "[tools/migrations/26-04-15--update_user_name_email_collation.sql]",
+    "count" : 1
+  }, {
+    "source" : "[tools/migrations/26-04-15--update_user_name_email_collation.sql]",
+    "target" : "commit_33e44e10f7556ce1f0d24f1a41130b97aeb68a52",
+    "count" : 1
+  }, {
+    "source" : "commit_33e44e10f7556ce1f0d24f1a41130b97aeb68a52",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "commit_33e44e10f7556ce1f0d24f1a41130b97aeb68a52",
+    "count" : 1
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[tools/migrations/26-04-15--update_user_name_email_collation.sql]",
+    "count" : 48
+  }, {
+    "source" : "[tools/migrations/26-04-15--update_user_name_email_collation.sql]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/api/endpoints/user_watching_session.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/api/endpoints/user_watching_session.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[tools/migrations/26-04-11--add_user_timezone.sql]",
+    "count" : 27
+  }, {
+    "source" : "[tools/migrations/26-04-11--add_user_timezone.sql]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[tools/migrations/26-04-07--add_language_id_to_exercise_and_browsing_sessions.sql]",
+    "count" : 27
+  }, {
+    "source" : "[tools/migrations/26-04-07--add_language_id_to_exercise_and_browsing_sessions.sql]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/model/daily_audio_lesson.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/model/daily_audio_lesson.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/core/model/user_exercise_session.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/core/model/user_exercise_session.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/api/endpoints/user_languages.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/api/endpoints/user_languages.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/model/exercise_outcome.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/model/exercise_outcome.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/api/endpoints/browsing_sessions.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/api/endpoints/browsing_sessions.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/core/model/audio_lesson_dialogue.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/core/model/audio_lesson_dialogue.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[tools/migrations/26-03-13--add_user_avatar.sql]",
+    "count" : 48
+  }, {
+    "source" : "[tools/migrations/26-03-13--add_user_avatar.sql]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/api/endpoints/listening_sessions.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/api/endpoints/listening_sessions.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/core/llm_services/simplification_service.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_service.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/core/util/time.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/core/util/time.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[tools/migrations/26-02-26--add_max_streak_to_user_language.sql]",
+    "count" : 48
+  }, {
+    "source" : "[tools/migrations/26-02-26--add_max_streak_to_user_language.sql]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/badges/__init__.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/badges/__init__.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/api/endpoints/exercises.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/api/endpoints/exercises.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "target" : "[zeeguu/core/leaderboards/__init__.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/leaderboards/__init__.py]",
+    "target" : "commit_270a5bfc656e1c1cfd71e5df02b61c51dde9e41e",
+    "count" : 48
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/api/endpoints/reading_sessions.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/api/endpoints/reading_sessions.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/api/endpoints/exercise_sessions.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/api/endpoints/exercise_sessions.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/api/endpoints/bookmarks_and_words.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/api/endpoints/bookmarks_and_words.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/core/model/user_browsing_session.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/core/model/user_browsing_session.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "target" : "[zeeguu/core/llm_services/anthropic_service.py]",
+    "count" : 27
+  }, {
+    "source" : "[zeeguu/core/llm_services/anthropic_service.py]",
+    "target" : "commit_30295294b2a54827c53e228b2b5445c389ea299a",
+    "count" : 27
+  }, {
+    "source" : "commit_d0a6883b4c6888c56240a690af9d3eec3f24f46e",
+    "target" : "[zeeguu/api/endpoints/article.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/api/endpoints/article.py]",
+    "target" : "commit_d0a6883b4c6888c56240a690af9d3eec3f24f46e",
+    "count" : 1
+  }, {
+    "source" : "commit_d0a6883b4c6888c56240a690af9d3eec3f24f46e",
+    "target" : "[zeeguu/core/user_feature_toggles.py]",
+    "count" : 1
+  }, {
+    "source" : "[zeeguu/core/user_feature_toggles.py]",
+    "target" : "commit_d0a6883b4c6888c56240a690af9d3eec3f24f46e",
+    "count" : 1
+  } ]
+}
+
+    const maxNodeSize = gData.nodes.map(n => n.size).reduce((a, b) => Math.max(a, b));
+    const maxCount = gData.links.map(l => l.count).reduce((a, b) => Math.max(a, b));
+
+    gData.links = gData.links.map(l => {
+        return {source: l.target, target: l.source, count: l.count}
+    });
+    const colorOf = (node) => {
+        if (!node.id.startsWith("[")) return "rgba(135, 206, 235, 0.6)";
+        return "rgba(100,100,100,0.6)";
+    }
+
+    const elem = document.getElementById('graph');
+    const Graph = ForceGraph()(elem)
+        .graphData(gData)
+        .nodeRelSize(4)
+        .nodeVal(n => Math.max(20 * n.size / maxNodeSize, 0.001))
+        .nodeLabel(n => n.id + " (" + n.size + ")")
+        .nodeColor(n => colorOf(n))
+        .linkDirectionalParticles(1)
+        .linkDirectionalParticleSpeed(d => d.count / maxCount * 0.01)
+        .linkOpacity(0.1)
+        .linkWidth(d => 3 * d.count / maxCount + 0.1);
+
+</script>
+</body>

@@ -1,0 +1,172 @@
+<html>
+<head>
+    <title>def add_word_to_learning()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def add_word_to_learning()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/api/endpoints/generated_examples.py [0:0]</i></p>
+<ul>
+    <li><b>90</b> lines of code</li>
+    <li><b>15</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def add_word_to_learning():
+    &quot;&quot;&quot;
+    Add a word to learning with LLM-optimized word form, translation, and example.
+
+    The LLM will:
+    - Normalize the word to dictionary form (e.g., &quot;oph&aelig;v&quot; -&gt; &quot;oph&aelig;ve&quot;)
+    - Clean up the translation (e.g., &quot;cancel&quot; -&gt; &quot;to cancel&quot;)
+    - Select or generate the best example sentence
+
+    Request body (JSON):
+    {
+        &quot;word&quot;: &quot;oph&aelig;v&quot;,
+        &quot;translation&quot;: &quot;cancel&quot;,
+        &quot;from_lang&quot;: &quot;da&quot;,
+        &quot;to_lang&quot;: &quot;en&quot;,
+        &quot;examples&quot;: [&quot;Jeg vil gerne oph&aelig;ve min reservation.&quot;, ...]
+    }
+
+    Success Response (200):
+    {
+        &quot;success&quot;: true,
+        &quot;bookmark_id&quot;: 123,
+        &quot;learning_card&quot;: {
+            &quot;word&quot;: &quot;oph&aelig;ve&quot;,
+            &quot;translation&quot;: &quot;to cancel&quot;,
+            &quot;example&quot;: &quot;Jeg vil gerne oph&aelig;ve min reservation.&quot;,
+            &quot;example_translation&quot;: &quot;I would like to cancel my reservation.&quot;
+        }
+    }
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    data = request.get_json()
+
+    if not data:
+        return json_result({&quot;error&quot;: &quot;JSON body required&quot;}, status=400)
+
+    word = data.get(&quot;word&quot;, &quot;&quot;).strip()
+    translation = data.get(&quot;translation&quot;, &quot;&quot;).strip()
+    from_lang = data.get(&quot;from_lang&quot;, &quot;&quot;)
+    to_lang = data.get(&quot;to_lang&quot;, &quot;&quot;)
+    examples = data.get(&quot;examples&quot;, [])
+
+    if not word or not translation or not from_lang or not to_lang:
+        return json_result({&quot;error&quot;: &quot;word, translation, from_lang, to_lang required&quot;}, status=400)
+
+    # Get user's CEFR level
+    cefr_level = data.get(&quot;cefr_level&quot;, DEFAULT_CEFR_LEVEL)
+
+    # Get language objects
+    origin_lang = Language.find(from_lang)
+    target_lang = Language.find(to_lang)
+
+    if not origin_lang or not target_lang:
+        return json_result({&quot;error&quot;: &quot;Invalid language codes&quot;}, status=400)
+
+    try:
+        # Call LLM to prepare the optimal learning card
+        learning_card = prepare_learning_card(
+            searched_word=word,
+            translation=translation,
+            source_lang=origin_lang.name,
+            target_lang=target_lang.name,
+            cefr_level=cefr_level,
+            examples=examples
+        )
+
+        final_word = learning_card[&quot;word&quot;]
+        final_translation = learning_card[&quot;translation&quot;]
+        final_example = learning_card[&quot;example&quot;]
+
+        # Create or find the meaning
+        meaning = Meaning.find_or_create(
+            db_session, final_word, from_lang, final_translation, to_lang
+        )
+
+        # Create UserWord with is_user_added flag
+        user_word = UserWord.find_or_create(
+            db_session, user, meaning, is_user_added=True
+        )
+
+        user_word.user_preference = UserWordExPreference.USE_IN_EXERCISES
+        user_word.update_fit_for_study(db_session)
+
+        # Validate word position in example
+        validation_result = validate_single_occurrence(final_word, final_example, origin_lang)
+
+        if not validation_result[&quot;valid&quot;]:
+            log(f&quot;Word validation failed for '{final_word}' in example: {validation_result['error_message']}&quot;)
+            # Use fallback position data
+            sentence_i = 0
+            token_i = 0
+            c_sentence_i = 0
+            c_token_i = 0
+            total_tokens = len(final_example.split())
+        else:
+            position_data = validation_result[&quot;position_data&quot;]
+            sentence_i = position_data[&quot;sentence_i&quot;]
+            token_i = position_data[&quot;token_i&quot;]
+            c_sentence_i = position_data[&quot;c_sentence_i&quot;]
+            c_token_i = position_data[&quot;c_token_i&quot;]
+            total_tokens = position_data[&quot;total_tokens&quot;]
+
+        # Create context identifier for user-added word
+        context_identifier = ContextIdentifier(
+            context_type=ContextType.USER_EDITED_TEXT
+        )
+
+        # Create bookmark
+        bookmark = Bookmark.find_or_create(
+            db_session,
+            user,
+            final_word,
+            from_lang,
+            final_translation,
+            to_lang,
+            final_example,
+            None,  # article_id
+            None,  # source_id
+            sentence_i=sentence_i,
+            token_i=token_i,
+            total_tokens=total_tokens,
+            c_sentence_i=c_sentence_i,
+            c_token_i=c_token_i,
+            context_identifier=context_identifier,
+        )
+
+        # Set as preferred bookmark and schedule for learning
+        user_word.preferred_bookmark = bookmark
+        # Note: find_or_create has side effect of creating schedule and setting level=1
+        FourLevelsPerWord.find_or_create(db_session, user_word)
+
+        db_session.add(user_word)
+        db_session.commit()
+
+        return json_result({
+            &quot;success&quot;: True,
+            &quot;bookmark_id&quot;: bookmark.id,
+            &quot;user_word_id&quot;: user_word.id,
+            &quot;learning_card&quot;: learning_card
+        })
+
+    except Exception as e:
+        db_session.rollback()
+        log(f&quot;Error adding word to learning: {e}&quot;)
+        traceback.print_exc()
+
+        return json_result({
+            &quot;error&quot;: &quot;Failed to prepare learning card. Please try again.&quot;,
+            &quot;detail&quot;: str(e)
+        }, status=500)
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

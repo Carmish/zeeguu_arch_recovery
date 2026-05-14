@@ -1,0 +1,336 @@
+<html>
+<head>
+    <title>tools/validate_and_clean_examples.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/validate_and_clean_examples.py (<b>203</b> lines of code) (<a href="validate_and_clean_examples.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python3
+&quot;&quot;&quot;
+Script to validate existing example sentences and remove those that use wrong meanings.
+Batches multiple examples together for efficient LLM validation.
+&quot;&quot;&quot;
+
+import os
+import sys
+import json
+import time
+from typing import List, Dict, Set
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import zeeguu.core.model
+
+db_session = zeeguu.core.model.db.session
+
+
+from zeeguu.core.model import ExampleSentence, Meaning, Phrase
+from zeeguu.logging import log
+import anthropic
+
+from zeeguu.api.app import create_app
+from zeeguu.core.model import db
+
+app = create_app()
+app.app_context().push()
+
+
+# Batch size for LLM validation (balance between efficiency and token limits)
+BATCH_SIZE = 20
+
+
+def get_anthropic_client():
+    &quot;&quot;&quot;Initialize Anthropic client&quot;&quot;&quot;
+    api_key = os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)
+    if not api_key:
+        raise ValueError(&quot;ANTHROPIC_API_KEY environment variable not set&quot;)
+    return anthropic.Anthropic(api_key=api_key)
+
+
+def validate_examples_batch(client, examples_batch: List[Dict]) -&gt; Set[int]:
+    &quot;&quot;&quot;
+    Send a batch of examples to LLM for validation.
+    Returns set of example IDs that use the WRONG meaning.
+    &quot;&quot;&quot;
+
+    # Prepare the validation prompt
+    examples_text = json.dumps(examples_batch, indent=2)
+
+    prompt = f&quot;&quot;&quot;Analyze these example sentences for language learning. Each example has:
+- id: unique identifier
+- word: the word being taught
+- translation: the intended meaning/translation
+- sentence: example sentence in source language
+- sentence_translation: translation of the example
+
+Your task: Identify examples where the word is used with a DIFFERENT meaning than the provided translation.
+
+Examples to analyze:
+{examples_text}
+
+Return ONLY a JSON array of IDs for examples that use the WRONG meaning.
+If all examples are correct, return an empty array: []
+
+For instance, if word=&quot;virker&quot; and translation=&quot;seem&quot;, but the sentence uses &quot;virker&quot; to mean &quot;work/function&quot;, that ID should be included.
+
+Response format - ONLY return the JSON array, nothing else:
+[id1, id2, id3]
+
+Or if all are correct:
+[]&quot;&quot;&quot;
+
+    try:
+        response = client.messages.create(
+            model=&quot;claude-sonnet-4-5-20250929&quot;,
+            max_tokens=500,
+            temperature=0,
+            system=&quot;You are a language expert validating example sentences for language learning. Return only JSON arrays with no additional text.&quot;,
+            messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}],
+        )
+
+        # Parse the response
+        content = response.content[0].text.strip()
+
+        # Log raw response for debugging
+        if len(content) &gt; 500:
+            log(f&quot;Warning: Long response ({len(content)} chars)&quot;)
+
+        # Clean up potential markdown formatting
+        if &quot;```json&quot; in content.lower():
+            start = content.lower().find(&quot;```json&quot;) + 7
+            end = content.find(&quot;```&quot;, start)
+            if end != -1:
+                content = content[start:end]
+        elif &quot;```&quot; in content:
+            start = content.find(&quot;```&quot;) + 3
+            end = content.find(&quot;```&quot;, start)
+            if end != -1:
+                content = content[start:end]
+
+        # Remove any non-JSON text before/after the array
+        content = content.strip()
+
+        # Find the JSON array
+        start_idx = content.find(&quot;[&quot;)
+        end_idx = content.rfind(&quot;]&quot;)
+
+        if start_idx != -1 and end_idx != -1 and end_idx &gt; start_idx:
+            json_content = content[start_idx : end_idx + 1]
+        else:
+            # No array found, assume all examples are correct
+            log(f&quot;No JSON array found in response: {content[:100]}&quot;)
+            return set()
+
+        # Parse JSON array
+        try:
+            wrong_ids = json.loads(json_content)
+            if not isinstance(wrong_ids, list):
+                log(f&quot;Response is not a list: {wrong_ids}&quot;)
+                return set()
+            return set(wrong_ids)
+        except json.JSONDecodeError as e:
+            log(f&quot;Failed to parse JSON: {e}&quot;)
+            log(f&quot;Content was: {json_content[:200]}&quot;)
+            return set()
+
+    except Exception as e:
+        log(f&quot;Error validating batch: {e}&quot;)
+        return set()
+
+
+def main():
+    &quot;&quot;&quot;Main function to validate and clean examples&quot;&quot;&quot;
+
+    print(&quot;Starting validation of example sentences...&quot;)
+    print(&quot;=&quot; * 60)
+
+    # Get total count
+    total_count = db_session.query(ExampleSentence).count()
+    print(f&quot;Total example sentences in database: {total_count}&quot;)
+
+    # Get all examples with their meanings
+    query = (
+        db_session.query(
+            ExampleSentence.id,
+            ExampleSentence.sentence,
+            ExampleSentence.translation,
+            Phrase.content.label(&quot;word&quot;),
+            Phrase.language_id,
+        )
+        .join(Meaning, ExampleSentence.meaning_id == Meaning.id)
+        .join(Phrase, Meaning.origin_id == Phrase.id)
+    )
+
+    # Also get the translation
+    translation_subquery = (
+        db_session.query(
+            Meaning.id.label(&quot;meaning_id&quot;), Phrase.content.label(&quot;translation_word&quot;)
+        ).join(Phrase, Meaning.translation_id == Phrase.id)
+    ).subquery()
+
+    examples = (
+        query.join(
+            translation_subquery,
+            ExampleSentence.meaning_id == translation_subquery.c.meaning_id,
+        )
+        .add_column(translation_subquery.c.translation_word)
+        .all()
+    )
+
+    print(f&quot;Retrieved {len(examples)} examples for validation&quot;)
+
+    # Initialize Anthropic client
+    client = get_anthropic_client()
+
+    # Import needed for checking bookmarks
+    from zeeguu.core.model import ExampleSentenceContext
+
+    # Process in batches
+    all_wrong_ids = set()
+    all_deleted_ids = set()
+    all_linked_ids = set()
+
+    for i in range(0, len(examples), BATCH_SIZE):
+        batch_examples = examples[i : i + BATCH_SIZE]
+        batch_num = (i // BATCH_SIZE) + 1
+        total_batches = (len(examples) + BATCH_SIZE - 1) // BATCH_SIZE
+
+        print(f&quot;\nProcessing batch {batch_num}/{total_batches}...&quot;)
+
+        # Prepare batch for validation
+        batch_data = []
+        batch_lookup = {}  # Map ID to full example data
+        for ex in batch_examples:
+            batch_data.append(
+                {
+                    &quot;id&quot;: ex.id,
+                    &quot;word&quot;: ex.word,
+                    &quot;translation&quot;: ex.translation_word,
+                    &quot;sentence&quot;: ex.sentence,
+                    &quot;sentence_translation&quot;: ex.translation,
+                }
+            )
+            batch_lookup[ex.id] = ex
+
+        # Validate this batch with retry logic for rate limits
+        retry_count = 0
+        max_retries = 3
+        wrong_ids = set()
+
+        while retry_count &lt; max_retries:
+            try:
+                wrong_ids = validate_examples_batch(client, batch_data)
+                break  # Success, exit retry loop
+            except Exception as e:
+                if &quot;rate_limit_error&quot; in str(e) or &quot;429&quot; in str(e):
+                    retry_count += 1
+                    if retry_count &lt; max_retries:
+                        wait_time = 60 * retry_count  # Wait 60s, 120s, 180s
+                        print(
+                            f&quot;  Rate limited. Waiting {wait_time} seconds before retry {retry_count}/{max_retries}...&quot;
+                        )
+                        time.sleep(wait_time)
+                    else:
+                        print(
+                            f&quot;  Skipping batch after {max_retries} rate limit retries&quot;
+                        )
+                        wrong_ids = set()
+                else:
+                    # Not a rate limit error, treat as validation failure
+                    wrong_ids = set()
+                    break
+
+        if wrong_ids:
+            print(f&quot;  Found {len(wrong_ids)} incorrect examples&quot;)
+            all_wrong_ids.update(wrong_ids)
+
+            # Check which ones are linked to bookmarks
+            linked_in_batch = set(
+                row[0]
+                for row in db_session.query(ExampleSentenceContext.example_sentence_id)
+                .filter(ExampleSentenceContext.example_sentence_id.in_(wrong_ids))
+                .all()
+            )
+
+            deletable_in_batch = wrong_ids - linked_in_batch
+
+            # Print details of incorrect examples before deleting
+            for wrong_id in wrong_ids:
+                if wrong_id in batch_lookup:
+                    ex = batch_lookup[wrong_id]
+                    print(f&quot;    ID {ex.id}: '{ex.word}' &rarr; '{ex.translation_word}'&quot;)
+                    print(f&quot;      Sentence: {ex.sentence}&quot;)
+                    if wrong_id in linked_in_batch:
+                        print(f&quot;      ⚠️  SKIPPED - linked to bookmark&quot;)
+                        all_linked_ids.add(wrong_id)
+                    else:
+                        print(f&quot;      ✗ DELETING - uses wrong meaning&quot;)
+
+            # Delete the incorrect examples that aren't linked
+            if deletable_in_batch:
+                deleted_count = (
+                    db_session.query(ExampleSentence)
+                    .filter(ExampleSentence.id.in_(deletable_in_batch))
+                    .delete(synchronize_session=False)
+                )
+                db_session.commit()
+                all_deleted_ids.update(deletable_in_batch)
+                print(f&quot;  ✓ Deleted {deleted_count} incorrect examples&quot;)
+        else:
+            print(f&quot;  All examples in this batch are correct&quot;)
+
+        # Add a small delay between batches to avoid rate limits
+        if i + BATCH_SIZE &lt; len(examples):  # Don't delay after the last batch
+            time.sleep(10)
+
+    print(&quot;\n&quot; + &quot;=&quot; * 60)
+    print(f&quot;Validation and cleanup complete!&quot;)
+    print(f&quot;\nSummary:&quot;)
+    print(f&quot;  Total incorrect examples found: {len(all_wrong_ids)}&quot;)
+    print(f&quot;  ✓ Deleted: {len(all_deleted_ids)} examples&quot;)
+    print(f&quot;  ⚠️  Preserved (linked to bookmarks): {len(all_linked_ids)} examples&quot;)
+
+    if all_linked_ids:
+        print(
+            f&quot;\nExamples that couldn't be deleted (linked to bookmarks): {sorted(all_linked_ids)}&quot;
+        )
+
+    if all_deleted_ids:
+        # Count affected meanings
+        print(f&quot;\nNext steps:&quot;)
+        print(
+            f&quot;1. Run the prefetch script to regenerate examples for affected meanings&quot;
+        )
+        print(f&quot;2. New examples will use the v3 prompt which prevents wrong meanings&quot;)
+    elif all_wrong_ids:
+        print(
+            f&quot;\nAll incorrect examples are linked to bookmarks and couldn't be deleted.&quot;
+        )
+        print(
+            f&quot;Consider manually updating these bookmarks or regenerating the examples.&quot;
+        )
+    else:
+        print(&quot;\nAll examples appear to be using the correct meanings!&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

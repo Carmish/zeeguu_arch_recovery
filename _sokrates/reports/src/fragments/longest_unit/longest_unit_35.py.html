@@ -1,0 +1,167 @@
+<html>
+<head>
+    <title>def set_preferred_example()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def set_preferred_example()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/api/endpoints/generated_examples.py [0:0]</i></p>
+<ul>
+    <li><b>82</b> lines of code</li>
+    <li><b>4</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def set_preferred_example(user_word_id):
+    &quot;&quot;&quot;
+    Endpoint: POST /set_preferred_example/&lt;user_word_id&gt;
+
+    Set the user's preferred example/context for a word by creating a bookmark
+    from the selected ExampleSentence.
+
+    Request body (JSON):
+    {
+        &quot;sentence_id&quot;: 123  // ID of the ExampleSentence to set as preferred
+    }
+
+    Success Response (200):
+    {
+        &quot;bookmark_id&quot;: 456,
+        &quot;user_word_id&quot;: 789,
+        &quot;message&quot;: &quot;Generated example saved successfully&quot;,
+        &quot;updated_bookmark&quot;: { ... },  // Full bookmark data
+        &quot;bookmark_context_id&quot;: 101
+    }
+
+    Error Response (400):
+    {
+        &quot;error&quot;: &quot;Unable to save this example&quot;,
+        &quot;detail&quot;: &quot;The selected example sentence does not contain the word you're learning. Please choose a different example or report this issue.&quot;,
+        &quot;technical_detail&quot;: &quot;Word 'example' not found in sentence&quot;,
+        &quot;user_word_id&quot;: 789
+    }
+
+    Error Response (404):
+    {
+        &quot;error&quot;: &quot;UserWord not found or unauthorized&quot;
+    }
+    OR
+    {
+        &quot;error&quot;: &quot;Sentence with ID 123 not found for this word&quot;
+    }
+
+    :param user_word_id: ID of the UserWord
+    :return: JSON response with bookmark data or error message
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    user_word = UserWord.query.get(user_word_id)
+
+    if not user_word or user_word.user_id != user.id:
+        return json_result({&quot;error&quot;: &quot;UserWord not found or unauthorized&quot;}, status=404)
+
+    # Get the sentence_id from request
+    data = request.get_json()
+    if not data or &quot;sentence_id&quot; not in data:
+        return json_result({&quot;error&quot;: &quot;sentence_id is required&quot;}, status=400)
+
+    sentence_id = data[&quot;sentence_id&quot;]
+
+    # Find the ExampleSentence - must belong to this user's meaning
+    example_sentence_obj = ExampleSentence.query.filter(
+        ExampleSentence.id == sentence_id,
+        ExampleSentence.meaning_id == user_word.meaning_id,
+    ).first()
+
+    if not example_sentence_obj:
+        return json_result(
+            {&quot;error&quot;: f&quot;Sentence with ID {sentence_id} not found for this word&quot;},
+            status=404,
+        )
+
+    selected_sentence = example_sentence_obj.sentence
+
+    # Find word position using shared utility (fuzzy matching for generated examples)
+    target_word = user_word.meaning.origin.content
+    result = find_first_occurrence(
+        target_word, selected_sentence, user_word.meaning.origin.language
+    )
+
+    if not result[&quot;found&quot;]:
+        log(
+            f&quot;ERROR: Could not find word '{target_word}' in example sentence '{selected_sentence}'&quot;
+        )
+        log(f&quot;Error: {result['error_message']}&quot;)
+        return json_result(
+            {
+                &quot;error&quot;: &quot;Unable to save this example&quot;,
+                &quot;detail&quot;: &quot;The selected example sentence does not contain the word you're learning. Please choose a different example or report this issue.&quot;,
+                &quot;technical_detail&quot;: result[&quot;error_message&quot;],
+                &quot;user_word_id&quot;: user_word_id,
+            },
+            status=400,  # Bad Request as it's a data issue, not server error
+        )
+
+    # Extract position data
+    position_data = result[&quot;position_data&quot;]
+    sentence_i = position_data[&quot;sentence_i&quot;]
+    token_i = position_data[&quot;token_i&quot;]
+    c_sentence_i = position_data[&quot;c_sentence_i&quot;]
+    c_token_i = position_data[&quot;c_token_i&quot;]
+    total_tokens_found = position_data[&quot;total_tokens&quot;]
+
+    log(
+        f&quot;Successfully found '{target_word}' at position sent_i={sentence_i}, token_i={token_i}, total_tokens={total_tokens_found}&quot;
+    )
+
+    # Create the context identifier with the example sentence ID
+    context_identifier = ContextIdentifier(
+        context_type=ContextType.EXAMPLE_SENTENCE,
+        example_sentence_id=example_sentence_obj.id,
+    )
+
+    # Create a new bookmark with the generated example
+    bookmark = Bookmark.find_or_create(
+        db_session,
+        user,
+        user_word.meaning.origin.content,
+        user_word.meaning.origin.language.code,
+        user_word.meaning.translation.content,
+        user_word.meaning.translation.language.code,
+        selected_sentence,
+        None,  # article_id
+        None,  # source_id
+        sentence_i=sentence_i,
+        token_i=token_i,
+        total_tokens=total_tokens_found,  # Use calculated token count
+        c_sentence_i=c_sentence_i,
+        c_token_i=c_token_i,
+        context_identifier=context_identifier,
+    )
+
+    # Update the user_word's preferred_bookmark
+    user_word.preferred_bookmark = bookmark
+    db_session.add(user_word)
+    db_session.commit()
+
+    # Refresh the user_word from database to get updated preferred_bookmark
+    db_session.refresh(user_word)
+
+    return json_result(
+        {
+            &quot;bookmark_id&quot;: bookmark.id,
+            &quot;user_word_id&quot;: user_word_id,
+            &quot;message&quot;: &quot;Generated example saved successfully&quot;,
+            &quot;updated_bookmark&quot;: bookmark.as_dictionary(
+                with_context=True, with_context_tokenized=True
+            ),
+            &quot;bookmark_context_id&quot;: bookmark.context.id,
+        }
+    )
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

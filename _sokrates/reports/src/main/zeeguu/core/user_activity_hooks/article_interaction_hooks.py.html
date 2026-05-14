@@ -1,0 +1,124 @@
+<html>
+<head>
+    <title>zeeguu/core/user_activity_hooks/article_interaction_hooks.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/user_activity_hooks/article_interaction_hooks.py (<b>69</b> lines of code) (<a href="article_interaction_hooks.py">raw</a>):</h3>
+<div id="editor">from datetime import datetime
+
+from zeeguu.core.constants import (
+    EVENT_USER_FEEDBACK,
+    EVENT_LIKE_ARTICLE,
+    EVENT_OPEN_ARTICLE,
+)
+from zeeguu.logging import log
+from zeeguu.core.model import Article, UserArticle
+
+
+def distill_article_interactions(session, user, data):
+    &quot;&quot;&quot;
+
+        extracts info from user_activity_data
+
+    :param session:
+    :param event:
+    :param value:
+    :param user:
+    &quot;&quot;&quot;
+
+    event = data[&quot;event&quot;]
+    value = data[&quot;value&quot;]
+    article_id = int(data[&quot;article_id&quot;])
+
+    log(f&quot;event is: {event}&quot;)
+
+    if EVENT_OPEN_ARTICLE in event:
+        article_opened(session, article_id, user)
+    elif EVENT_USER_FEEDBACK in event:
+        article_feedback(session, article_id, user, value)
+    &quot;&quot;&quot; elif EVENT_LIKE_ARTICLE in event:
+        article_liked(session, article_id, user, value == &quot;true&quot;) &quot;&quot;&quot;
+
+
+def article_feedback(session, article_id, user, event_value):
+    from zeeguu.core.emailer.user_activity import send_notification_article_feedback
+
+    nicer = {
+        '&quot;not_finished_for_broken&quot;': &quot;BROKEN&quot;,
+        '&quot;maybe_finish_later&quot;': &quot;Later&quot;,
+        '&quot;finished_difficulty_ok&quot;': &quot;OK&quot;,
+        '&quot;finished_difficulty_hard&quot;': &quot;HARD&quot;,
+        '&quot;finished_difficulty_easy&quot;': &quot;EASY&quot;,
+        '&quot;not_finished_for_other&quot;': &quot;Not Finished - OTHER&quot;,
+        '&quot;not_finished_for_boring&quot;': &quot;Not Finished - BORINNG&quot;,
+        '&quot;read_later&quot;': &quot;Read Later&quot;,
+        '&quot;not_finished_for_too_difficult&quot;': &quot;Not Finished - TOO DIFFICULT&quot;,
+    }
+
+    def beautify_article_feedback(feedback):
+        return nicer.get(feedback, feedback)
+
+    article = Article.query.filter_by(id=article_id).one()
+
+    if (
+        &quot;broken&quot;
+        or &quot;not_finished_for_broken&quot;
+        or &quot;not_finished_for_incomplete&quot;
+        or &quot;not_finished_for_other&quot; in event_value
+    ):
+        article.vote_broken()
+        session.add(article)
+        session.commit()
+
+    send_notification_article_feedback(
+        beautify_article_feedback(event_value),
+        user,
+        article.title,
+        article.url.as_string(),
+        article.id,
+    )
+
+
+def article_liked(session, article_id, user, like_value):
+    from zeeguu.core.emailer.user_activity import send_notification_article_feedback
+
+    article = Article.query.filter_by(id=article_id).one()
+    ua = UserArticle.find(user, article)
+    ua.liked = like_value
+    session.add(ua)
+    session.commit()
+    log(f&quot;{ua}&quot;)
+    send_notification_article_feedback(
+        &quot;Liked&quot;, user, article.title, article.url.as_string(), article.id
+    )
+
+
+def article_opened(session, article_id, user):
+    article = Article.query.filter_by(id=article_id).one()
+    ua = UserArticle.find(user, article)
+    if not ua:
+        ua = UserArticle.find_or_create(session, user, article, opened=datetime.now())
+    ua.opened = datetime.now()
+    session.add(ua)
+    session.commit()
+    log(f&quot;{ua}&quot;)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

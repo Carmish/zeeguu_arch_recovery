@@ -1,0 +1,415 @@
+<html>
+<head>
+    <title>zeeguu/operations/crawler/crawl.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/operations/crawler/crawl.py (<b>262</b> lines of code) (<a href="crawl.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python
+&quot;&quot;&quot;
+Round-robin crawler that interleaves feeds across multiple languages.
+
+This prevents one language from blocking progress in others when encountering
+slow feeds or timeouts. Processes feeds in a fair rotation: one feed from each
+language, then repeat.
+
+Usage:
+    python tools/crawler/crawl_roundrobin.py                    # Crawl all languages
+    python tools/crawler/crawl_roundrobin.py --all              # Crawl all languages (explicit)
+    python tools/crawler/crawl_roundrobin.py da pt en           # Crawl specific languages
+    python tools/crawler/crawl_roundrobin.py --max-time 600 da  # Set max 10 minutes per feed
+    python tools/crawler/crawl_roundrobin.py --recent-days 2    # Only articles from last 2 days
+    python tools/crawler/crawl_roundrobin.py --max-articles 50  # Process max 50 articles per feed
+
+Options:
+    --max-time SECONDS     Maximum time in seconds to spend per feed (default: 300)
+    --articles-per-feed N  Max articles to process per feed before moving to next (default: 1)
+    --recent-days N        Only process articles from last N days (overrides feed last_crawled_time)
+    --max-articles N       Maximum articles to download per feed (default: 1000)
+&quot;&quot;&quot;
+from datetime import datetime, timedelta
+import sys
+import argparse
+from collections import defaultdict
+import traceback
+
+from sqlalchemy.exc import PendingRollbackError
+from time import time
+
+import zeeguu.core
+from zeeguu.logging import log
+from zeeguu.core.content_retriever.article_downloader import download_from_feed
+from zeeguu.core.model import Feed, Language
+from zeeguu.operations.crawler.crawl_report import CrawlReport
+import logging
+
+# Configure logging to show INFO level
+logging.getLogger(&quot;elasticsearch&quot;).setLevel(logging.CRITICAL)
+logging.getLogger(&quot;zeeguu.core&quot;).setLevel(logging.INFO)
+logging.getLogger(&quot;zeeguu.logging&quot;).setLevel(logging.INFO)
+
+from zeeguu.api.app import create_app_for_scripts
+
+app = create_app_for_scripts()
+app.app_context().push()
+
+db_session = zeeguu.core.model.db.session
+
+
+def generate_crawl_summary(crawl_reports):
+    &quot;&quot;&quot;Generate a concise summary from multiple crawl reports&quot;&quot;&quot;
+    summary = &quot;ZEEGUU CRAWLER SUMMARY (Round-Robin)\n&quot;
+    summary += &quot;=&quot; * 60 + &quot;\n\n&quot;
+
+    total_new = 0
+    total_in_db = 0
+    total_low_quality = 0
+    total_errors = 0
+    total_unprocessed = 0
+    total_readability_timeout = 0
+
+    for lang_code, report in crawl_reports.items():
+        lang_data = report.data[&quot;lang&quot;][lang_code]
+        lang_new = 0
+        lang_in_db = 0
+        lang_low_quality = 0
+        lang_errors = 0
+        lang_unprocessed = 0
+        lang_readability_timeout = 0
+
+        summary += f&quot;\n{lang_code.upper()}\n&quot;
+        summary += &quot;-&quot; * 40 + &quot;\n&quot;
+
+        for feed_id, feed_data in lang_data[&quot;feeds&quot;].items():
+            feed = Feed.find_by_id(feed_id)
+            if not feed:
+                continue
+
+            new = feed_data.get(&quot;total_downloaded&quot;, 0) or 0
+            in_db = feed_data.get(&quot;total_in_db&quot;, 0) or 0
+            low_q = feed_data.get(&quot;total_low_quality&quot;, 0) or 0
+            errors = len(feed_data.get(&quot;feed_errors&quot;, []))
+            unprocessed = feed_data.get(&quot;total_skipped_unprocessed&quot;, 0) or 0
+            readability_timeout = feed_data.get(&quot;total_readability_timeout&quot;, 0) or 0
+
+            lang_new += new
+            lang_in_db += in_db
+            lang_low_quality += low_q
+            lang_errors += errors
+            lang_unprocessed += unprocessed
+            lang_readability_timeout += readability_timeout
+
+            # Only show feeds with activity, errors, unprocessed articles, or readability timeouts
+            if new &gt; 0 or errors &gt; 0 or unprocessed &gt; 0 or readability_timeout &gt; 0:
+                status = &quot;&quot;
+                if errors &gt; 0:
+                    status = f&quot; [ERROR]&quot;
+                elif new == 0 and in_db &gt; 0:
+                    status = &quot; [all in DB]&quot;
+
+                feed_time = feed_data.get(&quot;crawl_time&quot;, 0) or 0
+                # Mark feeds that hit the 5-minute limit
+                if feed_time &gt;= 300:
+                    status += &quot; [MAX_TIME_REACHED]&quot;
+
+                unproc_str = f&quot; | Unproc: {unprocessed:3d}&quot; if unprocessed &gt; 0 else &quot;&quot;
+                rdbl_str = f&quot; | RdblTO: {readability_timeout:3d}&quot; if readability_timeout &gt; 0 else &quot;&quot;
+                summary += f&quot;  {feed.title[:40]:40s} | New: {new:3d} | InDB: {in_db:3d} | LowQ: {low_q:3d}{unproc_str}{rdbl_str} | Time: {feed_time:5.1f}s{status}\n&quot;
+
+        total_new += lang_new
+        total_in_db += lang_in_db
+        total_low_quality += lang_low_quality
+        total_errors += lang_errors
+        total_unprocessed += lang_unprocessed
+        total_readability_timeout += lang_readability_timeout
+
+        summary += f&quot;\n  {lang_code.upper()} Total: {lang_new} new, {lang_in_db} already in DB, {lang_low_quality} low quality&quot;
+        if lang_unprocessed &gt; 0:
+            summary += f&quot;, {lang_unprocessed} unprocessed&quot;
+        if lang_readability_timeout &gt; 0:
+            summary += f&quot;, {lang_readability_timeout} readability timeouts&quot;
+        if lang_errors &gt; 0:
+            summary += f&quot;, {lang_errors} errors&quot;
+        summary += f&quot; | Time: {lang_data.get('total_time', 0) or 0:.1f}s\n&quot;
+
+    # Calculate total time
+    total_time = sum(
+        report.data[&quot;lang&quot;][lang_code].get(&quot;total_time&quot;, 0) or 0
+        for lang_code, report in crawl_reports.items()
+    )
+
+    summary += &quot;\n&quot; + &quot;=&quot; * 60 + &quot;\n&quot;
+    summary += f&quot;OVERALL: {total_new} new articles, {total_in_db} already in DB, {total_low_quality} low quality&quot;
+    if total_unprocessed &gt; 0:
+        summary += f&quot;, {total_unprocessed} unprocessed&quot;
+    if total_readability_timeout &gt; 0:
+        summary += f&quot;, {total_readability_timeout} readability timeouts&quot;
+    if total_errors &gt; 0:
+        summary += f&quot;, {total_errors} errors&quot;
+    summary += f&quot;\nTotal crawl duration: {total_time:.1f}s ({total_time/60:.1f} minutes)&quot;
+    summary += &quot;\n&quot;
+
+    return summary
+
+
+def crawl_round_robin(languages_to_crawl, articles_per_feed=1, recent_days=None, max_articles_per_feed=1000, simplification_provider='deepseek'):
+    &quot;&quot;&quot;
+    Crawl feeds in round-robin fashion across languages.
+
+    Args:
+        languages_to_crawl: List of language codes to crawl
+        articles_per_feed: Number of articles to process per feed before switching (default: 1)
+        recent_days: Only process articles from last N days (overrides feed last_crawled_time)
+        max_articles_per_feed: Maximum articles to download per feed (default: 1000)
+        simplification_provider: LLM provider for article simplification (default: 'deepseek')
+
+    Returns:
+        Dict of crawl reports per language
+    &quot;&quot;&quot;
+    # Initialize crawl reports for each language
+    crawl_reports = {}
+    for lang_code in languages_to_crawl:
+        crawl_report = CrawlReport()
+        crawl_report.add_language(lang_code)
+        crawl_reports[lang_code] = crawl_report
+
+    # Track simplified articles per (language, topic) per day
+    # This ensures topic diversity per language - caps vary by language popularity
+    # Initialize from database with today's counts
+    from zeeguu.core.content_retriever.article_downloader import get_todays_simplified_counts_by_language_topic, get_max_simplified_for_language
+    topic_simplification_counts = defaultdict(int)  # Key: (language_id, topic_id)
+
+    # Load today's counts from DB for all languages we're crawling
+    for lang_code in languages_to_crawl:
+        language = Language.find(lang_code)
+        if language:
+            todays_counts = get_todays_simplified_counts_by_language_topic(db_session, language.id)
+            for topic_id, count in todays_counts.items():
+                topic_simplification_counts[(language.id, topic_id)] = count
+
+    if topic_simplification_counts:
+        log(f&quot;Today's simplified counts by language/topic:&quot;)
+        from zeeguu.core.model import Topic
+        # Group by language for cleaner output
+        by_language = defaultdict(list)
+        for (lang_id, topic_id), count in topic_simplification_counts.items():
+            by_language[lang_id].append((topic_id, count))
+        for lang_code in languages_to_crawl:
+            language = Language.find(lang_code)
+            if language and language.id in by_language:
+                max_cap = get_max_simplified_for_language(lang_code)
+                topics_str = &quot;, &quot;.join([
+                    f&quot;{Topic.find_by_id(tid).title}:{cnt}&quot;
+                    for tid, cnt in sorted(by_language[language.id], key=lambda x: -x[1])
+                ])
+                log(f&quot;  {lang_code.upper()} (cap:{max_cap}): {topics_str}&quot;)
+
+    # Get all feeds grouped by language
+    feeds_by_language = {}
+    total_feeds = 0
+
+    for lang_code in languages_to_crawl:
+        language = Language.find(lang_code)
+        feeds = Feed.query.filter_by(language_id=language.id).filter_by(deactivated=False).all()
+        feeds_by_language[lang_code] = feeds
+        total_feeds += len(feeds)
+        log(f&quot;{lang_code.upper()}: {len(feeds)} feeds&quot;)
+
+    log(f&quot;\nTotal feeds across all languages: {total_feeds}&quot;)
+    log(f&quot;Processing {articles_per_feed} article(s) per feed before switching&quot;)
+
+    # If recent_days is set, temporarily override last_crawled_time for all feeds
+    if recent_days:
+        min_date = datetime.now() - timedelta(days=recent_days)
+        log(f&quot;*** Filtering articles: Only processing from last {recent_days} days (since {min_date.strftime('%Y-%m-%d %H:%M')})&quot;)
+        for lang_code in languages_to_crawl:
+            for feed in feeds_by_language[lang_code]:
+                if feed.last_crawled_time and feed.last_crawled_time &lt; min_date:
+                    log(f&quot;    Overriding {feed.title}: {feed.last_crawled_time} -&gt; {min_date}&quot;)
+                    feed.last_crawled_time = min_date
+    log(&quot;&quot;)
+
+    # Track which feed index we're at for each language
+    feed_indices = {lang: 0 for lang in languages_to_crawl}
+    feeds_completed = 0
+
+    # Round-robin through languages until all feeds are processed
+    while feeds_completed &lt; total_feeds:
+        made_progress = False
+
+        for lang_code in languages_to_crawl:
+            feeds = feeds_by_language[lang_code]
+            idx = feed_indices[lang_code]
+
+            # Skip if this language has no more feeds
+            if idx &gt;= len(feeds):
+                continue
+
+            made_progress = True
+            feed = feeds[idx]
+            crawl_report = crawl_reports[lang_code]
+
+            # Add feed to report
+            crawl_report.add_feed(feed)
+
+            if feed.deactivated:
+                feed_indices[lang_code] += 1
+                feeds_completed += 1
+                continue
+
+            # Process this feed
+            try:
+                log(&quot;&quot;)
+                log(f&quot;[{lang_code.upper()}] &gt;&gt;&gt;&gt;&gt; {feed.title} ({idx+1}/{len(feeds)}) &lt;&lt;&lt;&lt;&lt;&quot;)
+
+                feed_start_time = time()
+
+                # Download from feed (this already handles article limits internally)
+                download_from_feed(
+                    feed,
+                    db_session,
+                    crawl_report,
+                    limit=max_articles_per_feed,
+                    simplification_provider=simplification_provider,
+                    topic_simplification_counts=topic_simplification_counts,
+                )
+
+                feed_time = time() - feed_start_time
+                log(f&quot;*** Feed processing time: {feed_time:.1f}s&quot;)
+
+            except PendingRollbackError as e:
+                db_session.rollback()
+                log(&quot;Rollback required; full stack trace:&quot;)
+                traceback.print_exc()
+                crawl_report.add_feed_error(feed, str(e))
+
+            except Exception as e:
+                traceback.print_exc()
+                crawl_report.add_feed_error(feed, str(e))
+
+            # Move to next feed for this language
+            feed_indices[lang_code] += 1
+            feeds_completed += 1
+
+            log(f&quot;*** Progress: {feeds_completed}/{total_feeds} feeds completed ({feeds_completed*100//total_feeds}%)&quot;)
+
+        # If no language made progress, all feeds are done
+        if not made_progress:
+            break
+
+    log(f&quot;\nFinished processing {feeds_completed} feeds across {len(languages_to_crawl)} languages&quot;)
+
+    # Log topic simplification summary grouped by language
+    if topic_simplification_counts:
+        from zeeguu.core.model import Topic
+        log(f&quot;\nTopic Simplification Summary:&quot;)
+        by_language = defaultdict(list)
+        for (lang_id, topic_id), count in topic_simplification_counts.items():
+            by_language[lang_id].append((topic_id, count))
+        for lang_code in languages_to_crawl:
+            language = Language.find(lang_code)
+            if language and language.id in by_language:
+                max_cap = get_max_simplified_for_language(lang_code)
+                log(f&quot;  {lang_code.upper()} (cap:{max_cap}):&quot;)
+                for topic_id, count in sorted(by_language[language.id], key=lambda x: -x[1]):
+                    topic = Topic.find_by_id(topic_id)
+                    topic_name = topic.title if topic else f&quot;Unknown({topic_id})&quot;
+                    cap_indicator = &quot; [CAP]&quot; if count &gt;= max_cap else &quot;&quot;
+                    log(f&quot;    {topic_name}: {count}{cap_indicator}&quot;)
+
+    # Calculate and save total times per language
+    for lang_code, crawl_report in crawl_reports.items():
+        # Calculate total time for this language
+        lang_data = crawl_report.data[&quot;lang&quot;][lang_code]
+        total_time = sum(
+            feed_data.get(&quot;crawl_time&quot;, 0) or 0
+            for feed_data in lang_data[&quot;feeds&quot;].values()
+        )
+        crawl_report.set_total_time(lang_code, total_time)
+        crawl_report.save_crawl_report()
+
+    return crawl_reports
+
+
+# All available languages in order of priority
+ALL_LANGUAGES = ['da', 'pt', 'sv', 'ro', 'nl', 'fr', 'en', 'el', 'de', 'es', 'it']
+
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Crawl articles in round-robin fashion across languages')
+parser.add_argument('languages', nargs='*', help='Language codes to crawl (default: all)')
+parser.add_argument('--all', action='store_true', help='Crawl all languages')
+parser.add_argument('--max-time', type=int, default=300,
+                   help='Maximum time in seconds per feed (default: 300)')
+parser.add_argument('--articles-per-feed', type=int, default=1,
+                   help='Number of articles to process per feed before switching (default: 1)')
+parser.add_argument('--recent-days', type=int, default=None,
+                   help='Only process articles from last N days (overrides feed last_crawled_time)')
+parser.add_argument('--max-articles', type=int, default=1000,
+                   help='Maximum articles to download per feed (default: 1000)')
+parser.add_argument('--provider', type=str, choices=['deepseek', 'anthropic'], default='deepseek',
+                   help='LLM provider for article simplification (default: deepseek)')
+
+args = parser.parse_args()
+
+# Set the max feed processing time as environment variable for the downloader to use
+import os
+os.environ['MAX_FEED_PROCESSING_TIME_SECONDS'] = str(args.max_time)
+
+# Determine which languages to crawl
+if args.all or not args.languages:
+    languages_to_crawl = ALL_LANGUAGES
+else:
+    languages_to_crawl = args.languages
+    # Validate languages
+    invalid = [lang for lang in languages_to_crawl if lang not in ALL_LANGUAGES]
+    if invalid:
+        log(f&quot;ERROR: Invalid language codes: {invalid}&quot;)
+        log(f&quot;Valid languages: {ALL_LANGUAGES}&quot;)
+        sys.exit(1)
+
+start = datetime.now()
+log(f&quot;=== Starting crawl for languages: {languages_to_crawl} ===&quot;)
+log(f&quot;=== Started at: {start} ===&quot;)
+log(f&quot;=== Max time per feed: {args.max_time}s ===&quot;)
+log(f&quot;=== Max articles per feed: {args.max_articles} ===&quot;)
+log(f&quot;=== Articles per feed (round-robin): {args.articles_per_feed} ===&quot;)
+log(f&quot;=== Simplification provider: {args.provider.upper()} ===&quot;)
+if args.recent_days:
+    log(f&quot;=== Recent days filter: {args.recent_days} days ===&quot;)
+log(&quot;&quot;)
+
+try:
+    crawl_reports = crawl_round_robin(languages_to_crawl, args.articles_per_feed, args.recent_days, args.max_articles, args.provider)
+
+    end = datetime.now()
+    total_duration = end - start
+    log(f&quot;\n=== Finished at: {end} ===&quot;)
+    log(f&quot;=== Total duration: {total_duration} ===&quot;)
+
+    # Generate summary (logged only, no email)
+    summary = generate_crawl_summary(crawl_reports)
+    log(&quot;\n&quot; + summary)
+
+except Exception as e:
+    log(f&quot;FATAL ERROR: {e}&quot;)
+    traceback.print_exc()
+    sys.exit(1)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

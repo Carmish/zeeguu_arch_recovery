@@ -1,0 +1,207 @@
+<html>
+<head>
+    <title>zeeguu/core/nlp_pipeline/alignment_errant.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/nlp_pipeline/alignment_errant.py (<b>115</b> lines of code) (<a href="alignment_errant.py">raw</a>):</h3>
+<div id="editor">from itertools import groupby
+from rapidfuzz.distance import Indel
+import spacy.parts_of_speech as POS
+from .edit_errant import Edit
+
+&quot;&quot;&quot;
+Code from https://github.com/chrisjbryant/errant/blob/master/errant/alignment.py
+(ERRANT v2.3.3)
+
+No changes were made.
+&quot;&quot;&quot;
+
+class ERRANT_Alignment:
+    # Protected class resource
+    _open_pos = {POS.ADJ, POS.ADV, POS.NOUN, POS.VERB}
+
+    # Input 1: An original text string parsed by spacy
+    # Input 2: A corrected text string parsed by spacy
+    # Input 3: A flag for standard Levenshtein alignment
+    def __init__(self, orig, cor, lev=False):
+        # Set orig and cor
+        self.orig = orig
+        self.cor = cor
+        # Align orig and cor and get the cost and op matrices
+        self.cost_matrix, self.op_matrix = self.align(lev)
+        # Get the cheapest align sequence from the op matrix
+        self.align_seq = self.get_cheapest_align_seq()
+
+    # Input: A flag for standard Levenshtein alignment
+    # Output: The cost matrix and the operation matrix of the alignment
+    def align(self, lev):
+        # Sentence lengths
+        o_len = len(self.orig)
+        c_len = len(self.cor)
+        # Lower case token IDs (for transpositions)
+        o_low = [o.lower for o in self.orig]
+        c_low = [c.lower for c in self.cor]
+        # Create the cost_matrix and the op_matrix
+        cost_matrix = [[0.0 for j in range(c_len+1)] for i in range(o_len+1)]
+        op_matrix = [[&quot;O&quot; for j in range(c_len+1)] for i in range(o_len+1)]
+        # Fill in the edges
+        for i in range(1, o_len+1):
+            cost_matrix[i][0] = cost_matrix[i-1][0] + 1
+            op_matrix[i][0] = &quot;D&quot;
+        for j in range(1, c_len+1):
+            cost_matrix[0][j] = cost_matrix[0][j-1] + 1
+            op_matrix[0][j] = &quot;I&quot;
+
+        # Loop through the cost_matrix
+        for i in range(o_len):
+            for j in range(c_len):
+                # Matches
+                if self.orig[i].orth == self.cor[j].orth:
+                    cost_matrix[i+1][j+1] = cost_matrix[i][j]
+                    op_matrix[i+1][j+1] = &quot;M&quot;
+                # Non-matches
+                else:
+                    del_cost = cost_matrix[i][j+1] + 1
+                    ins_cost = cost_matrix[i+1][j] + 1
+                    trans_cost = float(&quot;inf&quot;)
+                    # Standard Levenshtein (S = 1)
+                    if lev: sub_cost = cost_matrix[i][j] + 1
+                    # Linguistic Damerau-Levenshtein
+                    else:
+                        # Custom substitution
+                        sub_cost = cost_matrix[i][j] + \
+                            self.get_sub_cost(self.orig[i], self.cor[j])
+                        # Transpositions require &gt;=2 tokens
+                        # Traverse the diagonal while there is not a Match.
+                        k = 1
+                        while i-k &gt;= 0 and j-k &gt;= 0 and \
+                                cost_matrix[i-k+1][j-k+1] != cost_matrix[i-k][j-k]:
+                            if sorted(o_low[i-k:i+1]) == sorted(c_low[j-k:j+1]):
+                                trans_cost = cost_matrix[i-k][j-k] + k
+                                break
+                            k += 1
+                    # Costs
+                    costs = [trans_cost, sub_cost, ins_cost, del_cost]
+                    # Get the index of the cheapest (first cheapest if tied)
+                    l = costs.index(min(costs))
+                    # Save the cost and the op in the matrices
+                    cost_matrix[i+1][j+1] = costs[l]
+                    if   l == 0: op_matrix[i+1][j+1] = &quot;T&quot;+str(k+1)
+                    elif l == 1: op_matrix[i+1][j+1] = &quot;S&quot;
+                    elif l == 2: op_matrix[i+1][j+1] = &quot;I&quot;
+                    else: op_matrix[i+1][j+1] = &quot;D&quot;
+        # Return the matrices
+        return cost_matrix, op_matrix
+
+    # Input 1: A spacy orig Token
+    # Input 2: A spacy cor Token
+    # Output: A linguistic cost between 0 &lt; x &lt; 2
+    def get_sub_cost(self, o, c):
+        # Short circuit if the only difference is case
+        if o.lower == c.lower: return 0
+        # Lemma cost
+        if o.lemma == c.lemma: lemma_cost = 0
+        else: lemma_cost = 0.499
+        # POS cost
+        if o.pos == c.pos: pos_cost = 0
+        elif o.pos in self._open_pos and c.pos in self._open_pos: pos_cost = 0.25
+        else: pos_cost = 0.5
+        # Char cost
+        char_cost = Indel.normalized_distance(o.text, c.text)
+        # Combine the costs
+        return lemma_cost + pos_cost + char_cost
+
+    # Get the cheapest alignment sequence and indices from the op matrix
+    # align_seq = [(op, o_start, o_end, c_start, c_end), ...]
+    def get_cheapest_align_seq(self):
+        i = len(self.op_matrix)-1
+        j = len(self.op_matrix[0])-1
+        align_seq = []
+        # Work backwards from bottom right until we hit top left
+        while i + j != 0:
+            # Get the edit operation in the current cell
+            op = self.op_matrix[i][j]
+            # Matches and substitutions
+            if op in {&quot;M&quot;, &quot;S&quot;}:
+                align_seq.append((op, i-1, i, j-1, j))
+                i -= 1
+                j -= 1
+            # Deletions
+            elif op == &quot;D&quot;:
+                align_seq.append((op, i-1, i, j, j))
+                i -= 1
+            # Insertions
+            elif op == &quot;I&quot;:
+                align_seq.append((op, i, i, j-1, j))
+                j -= 1
+            # Transpositions
+            else:
+                # Get the size of the transposition
+                k = int(op[1:])
+                align_seq.append((op, i-k, i, j-k, j))
+                i -= k
+                j -= k
+        # Reverse the list to go from left to right and return
+        align_seq.reverse()
+        return align_seq
+
+    # all-split: Don't merge anything
+    def get_all_split_edits(self):
+        edits = []
+        for align in self.align_seq:
+            if align[0] != &quot;M&quot;: 
+                edits.append(Edit(self.orig, self.cor, align[1:]))
+        return edits
+
+    # all-merge: Merge all adjacent non-match ops
+    def get_all_merge_edits(self):
+        edits = []
+        for op, group in groupby(self.align_seq, 
+                lambda x: True if x[0] == &quot;M&quot; else False):
+            if not op:
+                merged = self.merge_edits(list(group))
+                edits.append(Edit(self.orig, self.cor, merged[0][1:]))
+        return edits
+
+    # all-equal: Merge all edits of the same operation type.
+    def get_all_equal_edits(self):
+        edits = []
+        for op, group in groupby(self.align_seq, lambda x: x[0]):
+            if op != &quot;M&quot;:
+                merged = self.merge_edits(list(group))
+                edits.append(Edit(self.orig, self.cor, merged[0][1:]))
+        return edits
+
+    # Merge the input alignment sequence to a single edit span
+    def merge_edits(self, seq):
+        if seq: return [(&quot;X&quot;, seq[0][1], seq[-1][2], seq[0][3], seq[-1][4])]
+        else: return seq
+
+    # Alignment object string representation
+    def __str__(self):
+        orig = &quot; &quot;.join([&quot;Orig:&quot;]+[tok.text for tok in self.orig])
+        cor = &quot; &quot;.join([&quot;Cor:&quot;]+[tok.text for tok in self.cor])
+        cost_matrix = &quot;\n&quot;.join([&quot;Cost Matrix:&quot;]+[str(row) for row in self.cost_matrix])
+        op_matrix = &quot;\n&quot;.join([&quot;Operation Matrix:&quot;]+[str(row) for row in self.op_matrix])
+        seq = &quot;Best alignment: &quot;+str([a[0] for a in self.align_seq])
+        return &quot;\n&quot;.join([orig, cor, cost_matrix, op_matrix, seq])
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

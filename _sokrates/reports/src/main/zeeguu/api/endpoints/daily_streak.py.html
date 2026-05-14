@@ -1,0 +1,130 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/daily_streak.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/daily_streak.py (<b>65</b> lines of code) (<a href="daily_streak.py">raw</a>):</h3>
+<div id="editor">import flask
+
+from zeeguu.api.utils.json_result import json_result
+from zeeguu.api.utils.route_wrappers import cross_domain, requires_session
+from zeeguu.core.util.time import user_local_today
+from zeeguu.core.model.friendship import Friendship
+from . import api
+from ...core.model import User
+from ...core.model.db import db
+from ...core.model.user_language import UserLanguage
+
+
+@api.route(&quot;/daily_streak&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_daily_streak():
+    user = User.find_by_id(flask.g.user_id)
+    ul = UserLanguage.find_or_create(db.session, user, user.learned_language)
+    return json_result({&quot;daily_streak&quot;: ul.current_daily_streak})
+
+
+@api.route(&quot;/all_language_streaks&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_all_language_streaks():
+    user = User.find_by_id(flask.g.user_id)
+    today = user_local_today(user)
+    result = [
+        {
+            &quot;code&quot;: ul.language.code,
+            &quot;language&quot;: ul.language.name,
+            &quot;daily_streak&quot;: ul.current_daily_streak,
+            &quot;practiced_today&quot;: ul.local_last_practiced == today,
+        }
+        for ul in UserLanguage.query.filter_by(user_id=user.id).all()
+        if ul.language_id != user.native_language_id
+    ]
+    result.sort(key=lambda x: x[&quot;daily_streak&quot;], reverse=True)
+    return json_result(result)
+
+
+@api.route(&quot;/language_streak_history&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_my_language_streak_history():
+    &quot;&quot;&quot;
+           Retrieve detailed language streak information for the logged-in user.
+
+           Returns:
+               list[dict]: A list of dictionaries, each containing:
+                   - code (str): The code of the language.
+                   - language (str): The name of the language.
+                   - daily_streak (int, optional): Current daily streak for the language.
+                   - max_streak (int, optional): Max streak for the language.
+                   - max_streak_date (str, optional): Date when the max streak was achieved at.
+        &quot;&quot;&quot;
+    return json_result(_serialize_language_streaks(flask.g.user_id, include_private=True))
+
+
+@api.route(&quot;/friend_language_streak_history/&lt;username&gt;&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_friend_language_streak_history(username):
+    &quot;&quot;&quot;
+           Retrieve detailed language streak information for a user.
+
+           Returns the given user's language streaks only if they are friends with the requester.
+           Otherwise, returns the requester's own language streaks.
+
+           Args:
+               username (str): The username of the user whose streaks are requested.
+
+           Returns:
+               list[dict]: A list of dictionaries, each containing:
+                   - code (str): The code of the language.
+                   - language (str): The name of the language.
+                   - daily_streak (int, optional): Current daily streak for the language (visible only to self or friends).
+                   - max_streak (int, optional): Max streak for the language (visible only to self or friends).
+                   - max_streak_date (str, optional): Date when the max streak was achieved at (visible only to self or friends).
+        &quot;&quot;&quot;
+    friend = User.find_by_username(username)
+    if friend is None:
+        return []
+    is_self_or_friend = friend.id == flask.g.user_id or Friendship.are_friends(flask.g.user_id, friend.id)
+    return json_result(_serialize_language_streaks(friend.id, include_private=is_self_or_friend))
+
+
+def _serialize_language_streaks(user_id: int, include_private: bool) -&gt; list[dict]:
+    user_languages = UserLanguage.query.filter_by(user_id=user_id).all()
+    user_languages.sort(key=lambda ul: ul.max_streak or 0, reverse=True)
+    result = []
+    for ul in user_languages:
+        obj = {
+            &quot;code&quot;: ul.language.code,
+            &quot;language&quot;: ul.language.name
+        }
+        if include_private:
+            obj.update({
+                &quot;daily_streak&quot;: ul.current_daily_streak,
+                &quot;max_streak&quot;: ul.max_streak or 0,
+                &quot;max_streak_date&quot;: ul.max_streak_date.strftime(&quot;%Y-%m-%d&quot;) if ul.max_streak_date else None,
+            })
+        result.append(obj)
+    return result
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

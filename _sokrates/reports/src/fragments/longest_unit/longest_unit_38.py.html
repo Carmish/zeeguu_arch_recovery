@@ -1,0 +1,137 @@
+<html>
+<head>
+    <title>def get_all_translations()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def get_all_translations()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/translation_services/translator.py [0:0]</i></p>
+<ul>
+    <li><b>80</b> lines of code</li>
+    <li><b>14</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def get_all_translations(word, context, from_lang, to_lang, is_separated_mwe=False, full_sentence_context=None):
+    &quot;&quot;&quot;
+    Get translations from all available services.
+
+    Args:
+        word: Word to translate
+        context: Sentence context (may be truncated to ~28 words)
+        from_lang: Source language code
+        to_lang: Target language code
+        is_separated_mwe: True if word is a separated MWE like &quot;rufe ... an&quot;
+        full_sentence_context: Full untruncated sentence for separated MWEs
+
+    Returns:
+        List of translation dicts (duplicates removed)
+    &quot;&quot;&quot;
+    from python_translators.translation_query import TranslationQuery
+
+    if is_separated_mwe and full_sentence_context:
+        # Azure alignment finds each part separately
+        t0 = translate_separated_mwe(word, full_sentence_context, from_lang, to_lang)
+        # LLM understands grammar well
+        t1 = translate_with_llm(word, full_sentence_context, from_lang, to_lang)
+        # Context-free fallbacks
+        query = TranslationQuery(word, &quot;&quot;, &quot;&quot;, 1)
+        data = {
+            &quot;source_language&quot;: from_lang,
+            &quot;target_language&quot;: to_lang,
+            &quot;word&quot;: word,
+            &quot;query&quot;: query,
+            &quot;context&quot;: &quot;&quot;,
+        }
+        t2 = microsoft_contextual_translate(data)
+        t3 = google_contextual_translate(data)
+        return _remove_duplicate_translations([t0, t1, t2, t3])
+    else:
+        # For contiguous MWEs: use phrase translation plus other services and LLM
+        if &quot; &quot; in word:
+            from concurrent.futures import ThreadPoolExecutor, as_completed
+
+            query = TranslationQuery(word, &quot;&quot;, &quot;&quot;, 1)
+            data = {
+                &quot;source_language&quot;: from_lang,
+                &quot;target_language&quot;: to_lang,
+                &quot;word&quot;: word,
+                &quot;query&quot;: query,
+                &quot;context&quot;: context,
+            }
+
+            funcs = [
+                lambda: translate_mwe_phrase(word, from_lang, to_lang),
+                lambda d=data: azure_alignment_contextual_translate(d),
+                lambda d=data: microsoft_contextual_translate(d),
+                lambda d=data: google_contextual_translate(d),
+                lambda: translate_with_llm(word, context, from_lang, to_lang),
+            ]
+
+            results = []
+            with ThreadPoolExecutor(max_workers=len(funcs)) as executor:
+                futures = [executor.submit(f) for f in funcs]
+                for future in as_completed(futures):
+                    try:
+                        result = future.result()
+                        if result:
+                            results.append(result)
+                    except Exception:
+                        pass
+
+            return _remove_duplicate_translations(results)
+
+        # Single words: use all contextual services (in parallel)
+        try:
+            query = TranslationQuery.for_word_occurrence(word, context, 1, 7)
+        except (AttributeError, Exception):
+            # Word not found in context or regex failed (special chars like &quot;-&quot;)
+            # Fall back to simple query
+            query = TranslationQuery(word, &quot;&quot;, &quot;&quot;, 1)
+        data = {
+            &quot;source_language&quot;: from_lang,
+            &quot;target_language&quot;: to_lang,
+            &quot;word&quot;: word,
+            &quot;query&quot;: query,
+            &quot;context&quot;: context,
+        }
+
+        # Run translation services in parallel
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+
+        def get_azure():
+            return azure_alignment_contextual_translate(data)
+
+        def get_msft():
+            return microsoft_contextual_translate(data)
+
+        def get_google():
+            return google_contextual_translate(data)
+
+        results = {&quot;azure&quot;: None, &quot;msft&quot;: None, &quot;google&quot;: None}
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            futures = {
+                executor.submit(get_azure): &quot;azure&quot;,
+                executor.submit(get_msft): &quot;msft&quot;,
+                executor.submit(get_google): &quot;google&quot;,
+            }
+            for future in as_completed(futures):
+                key = futures[future]
+                try:
+                    results[key] = future.result()
+                except Exception:
+                    pass
+
+        # Romanian: Azure alignment confuses &quot;a&quot; (perfect tense auxiliary) with &quot;the&quot;
+        if from_lang == &quot;ro&quot;:
+            return _remove_duplicate_translations([results[&quot;google&quot;], results[&quot;msft&quot;], results[&quot;azure&quot;]])
+        else:
+            return _remove_duplicate_translations([results[&quot;azure&quot;], results[&quot;msft&quot;], results[&quot;google&quot;]])
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

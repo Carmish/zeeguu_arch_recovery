@@ -1,0 +1,32 @@
+<html>
+<head>
+    <title>tools/migrations/26-04-07--add_language_id_to_exercise_and_browsing_sessions.sql</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/migrations/26-04-07--add_language_id_to_exercise_and_browsing_sessions.sql (<b>2</b> lines of code) (<a href="26-04-07--add_language_id_to_exercise_and_browsing_sessions.sql">raw</a>):</h3>
+<div id="editor">-- Snapshot user.learned_language_id at session start so a late tail-update
+-- can't be re-credited after the user switches languages. Nullable; old
+-- rows fall back to user.learned_language. See activity_sessions._session_language.
+
+ALTER TABLE user_exercise_session ADD COLUMN language_id INT DEFAULT NULL;
+ALTER TABLE user_browsing_session ADD COLUMN language_id INT DEFAULT NULL;
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/sql");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

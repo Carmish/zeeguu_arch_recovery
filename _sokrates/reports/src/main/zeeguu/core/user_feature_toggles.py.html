@@ -1,0 +1,175 @@
+<html>
+<head>
+    <title>zeeguu/core/user_feature_toggles.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/user_feature_toggles.py (<b>74</b> lines of code) (<a href="user_feature_toggles.py">raw</a>):</h3>
+<div id="editor">&quot;&quot;&quot;
+Feature toggle logic for users.
+
+This module contains the core logic for determining which features
+are enabled for a user based on their cohort membership, invitation code, etc.
+&quot;&quot;&quot;
+
+
+def _feature_map():
+    return {
+        &quot;audio_exercises&quot;: _audio_exercises,
+        &quot;daily_audio&quot;: _daily_audio,
+        &quot;extension_experiment_1&quot;: _extension_experiment_1,
+        &quot;no_audio_exercises&quot;: _no_audio_exercises,
+        &quot;tiago_exercises&quot;: _tiago_exercises,
+        &quot;new_topics&quot;: _new_topics,
+        &quot;daily_feedback&quot;: _daily_feedback,
+        &quot;hide_recommendations&quot;: _hide_recommendations,
+        &quot;show_non_simplified_articles&quot;: _show_non_simplified_articles,
+        &quot;always_open_externally&quot;: _always_open_externally,
+        &quot;gamification&quot;: _gamification
+    }
+
+
+def features_for_user(user):
+    &quot;&quot;&quot;Return list of feature names enabled for the given user.&quot;&quot;&quot;
+    features = []
+    for name, detector_function in _feature_map().items():
+        if detector_function(user):
+            features.append(name)
+    return features
+
+
+def _daily_feedback(user):
+    return user.is_member_of_cohort(565)
+
+
+def is_feature_enabled_for_user(feature_name, user):
+    &quot;&quot;&quot;Check if a specific feature is enabled for the given user.&quot;&quot;&quot;
+    return feature_name in features_for_user(user)
+
+
+def _daily_audio(user):
+    # Enabled for everyone - kept for backward compatibility with deployed apps
+    return True
+
+
+def _new_topics(user):
+    return True
+
+
+def _tiago_exercises(user):
+    right_user = user.invitation_code == &quot;Tiago&quot; or user.id == 534 or user.id == 4022
+    right_language = user.learned_language.code in [&quot;da&quot;]
+    return right_user and right_language
+
+
+def _no_audio_exercises(user):
+    return user.is_member_of_cohort(447)
+
+
+def _audio_exercises(user):
+    return user.is_member_of_cohort(444)
+
+
+def _extension_experiment_1(user):
+    return (
+        (user.is_member_of_cohort(437))
+        or user.id in [3372, 3373, 2953, 3427, 2705]
+        or user.id &gt; 3555
+    )
+
+
+def _show_non_simplified_articles(user):
+    &quot;&quot;&quot;Show non-simplified (original) articles.
+
+    Transitional allowlist: the product direction is flipping so that
+    full articles (opened externally) become the default. This set holds
+    the pilots on the new flow while we validate it; eventually this will
+    be the behavior for everyone and the flag can go away.
+    &quot;&quot;&quot;
+    LEGACY_USER_IDS = {4607, 4626, 6083, 6250}
+    return user.id in LEGACY_USER_IDS
+
+
+def _always_open_externally(user):
+    &quot;&quot;&quot;Article cards in the feed always render the &quot;Open Externally&quot;
+    button for these users &mdash; except for saved articles, which still
+    open in the Zeeguu reader.
+
+    Click-through behavior is unchanged: the redirect-notification modal
+    still appears unless the user has dismissed it with &quot;don't show again&quot;.
+
+    Rollout: the original pilot users, plus every user signed up from id
+    6367 onwards (i.e., all new users going forward). Existing users keep
+    the in-reader flow until we flip the default for them too.
+    &quot;&quot;&quot;
+    BETA_USER_IDS = {4607, 6083, 6250}
+    NEW_USER_THRESHOLD = 6367
+    return user.id in BETA_USER_IDS or user.id &gt;= NEW_USER_THRESHOLD
+
+
+def _hide_recommendations(user):
+    &quot;&quot;&quot;Hide recommended articles for students in specific cohorts.
+
+    When enabled, students only see the Classroom tab with teacher-uploaded texts.
+    Teachers are excluded from this feature even if they are in the cohort.
+    &quot;&quot;&quot;
+    if user.isTeacher():
+        return False
+
+    COHORTS_WITH_HIDDEN_RECOMMENDATIONS = {564}
+
+    for user_cohort in user.cohorts:
+        if user_cohort.cohort_id in COHORTS_WITH_HIDDEN_RECOMMENDATIONS:
+            return True
+    return False
+
+# Gamification feature flag logic
+from sqlalchemy.exc import NoResultFound
+
+from .model.user import User
+from .model.cohort import Cohort
+def _gamification(user: User):
+    &quot;&quot;&quot;
+    Enable general gamification features for users whose invitation with the gamification invite code,
+    or who are in the gamification cohort. This includes features like badges, friends, and leaderboards.
+    &quot;&quot;&quot;
+
+    GAMIFICATION_INVITE_CODE = &quot;CD8HGKKJ&quot;
+    if user.is_dev:
+        return True
+
+    # Invitation code can be None
+    invitation_code = user.invitation_code or &quot;&quot;
+    if invitation_code.lower() == GAMIFICATION_INVITE_CODE.lower():
+        return True
+
+    # Find gamification cohort by invite code, if it exists.
+    try:
+        gamification_cohort = Cohort.find_by_code(GAMIFICATION_INVITE_CODE)
+    except NoResultFound:
+        gamification_cohort = None
+
+    if gamification_cohort and user.is_member_of_cohort(gamification_cohort.id):
+        return True
+
+    # Disabled for everyone else
+    return False
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

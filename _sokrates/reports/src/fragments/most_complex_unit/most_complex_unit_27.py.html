@@ -1,0 +1,84 @@
+<html>
+<head>
+    <title>def _merge_missing()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def _merge_missing()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/nlp_pipeline/automatic_gec_tagging.py [0:0]</i></p>
+<ul>
+    <li><b>57</b> lines of code</li>
+    <li><b>25</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+    def _merge_missing(self, og_labels, include_o_start_end, corrections_array=None):
+        merge_labels = []
+        corrections_merged = []
+        label_i = 0
+        label_j = label_i
+        skip_next = False
+        while(label_i &lt; len(og_labels)):
+            if include_o_start_end:
+                label_i_cat, (i_s_err,i_e_err) = og_labels[label_i]
+            else:
+                label_i_cat = og_labels[label_i]
+
+            if label_i_cat[0] == &quot;M&quot;:
+                modify_i_split = label_i_cat.split(&quot;:&quot;)[1]
+                all_labels_same = True
+                if include_o_start_end:
+                    label_j_cat, (_,_) = og_labels[label_j]
+                else:
+                    label_j_cat = og_labels[label_j]
+                while (label_j &lt; len(og_labels) and label_j_cat[0] == &quot;M&quot;):
+                    modify_j_split = label_j_cat.split(&quot;:&quot;)[1]
+                    if modify_i_split != modify_j_split:
+                        all_labels_same = False
+                    label_j += 1
+                    # Handle cases where there is the span targets.
+                    if label_j &gt;= len(og_labels): break # We have reached the end.
+                    if include_o_start_end:
+                        label_j_cat, (_,_) = og_labels[label_j]
+                    else:
+                        label_j_cat = og_labels[label_j]
+                if len(merge_labels) == 0:
+                    skip_next = True
+                    if corrections_array is not None: corrections_merged.append(corrections_array[label_i]) 
+                    if all_labels_same:
+                        if not include_o_start_end: merge_labels.append(label_i_cat) 
+                        else: merge_labels.append((label_i_cat, (i_s_err, i_e_err)))
+                    else:
+                        if not include_o_start_end: merge_labels.append(&quot;M:OTHER&quot;) 
+                        else: merge_labels.append((&quot;M:OTHER&quot;, (i_s_err, i_e_err))) 
+                else:
+                    if corrections_array is not None: corrections_merged[-1] += f&quot; {corrections_array[label_i]}&quot;
+                    if all_labels_same:
+                        if not include_o_start_end: merge_labels[-1] = (label_i_cat) 
+                        else: merge_labels[-1] = ((label_i_cat, (i_s_err, i_e_err))) 
+                    else:
+                        if not include_o_start_end: merge_labels[-1] = (&quot;M:OTHER&quot;) 
+                        else: merge_labels[-1] = ((&quot;M:OTHER&quot;, (i_s_err, i_e_err))) 
+                label_i = label_j
+            else:
+                # When we were missing something in the beggining, do not add label.
+                if not skip_next:
+                    merge_labels.append(og_labels[label_i])
+                    if corrections_array is not None: corrections_merged.append(corrections_array[label_i]) 
+                else:
+                    skip_next = False  
+                label_i += 1
+                label_j = label_i
+        # Set if the start_index is correct in last position
+        if include_o_start_end and merge_labels[-1][0].split(&quot;:&quot;)[0] == &quot;M&quot;:
+            merge_labels[-1] = (merge_labels[-1][0], (len(merge_labels) - 1, len(merge_labels)))
+
+        return merge_labels if corrections_array is None else (merge_labels, corrections_merged)
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

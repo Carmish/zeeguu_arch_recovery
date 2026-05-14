@@ -1,0 +1,56 @@
+<html>
+<head>
+    <title>zeeguu/core/model/badge.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/badge.py (<b>20</b> lines of code) (<a href="badge.py">raw</a>):</h3>
+<div id="editor">from zeeguu.core.model.db import db
+
+
+class Badge(db.Model):
+    &quot;&quot;&quot;
+       Represents a specific badge level within a badge category.
+       Each badge belongs to an BadgeCategory and has a level and threshold.
+    &quot;&quot;&quot;
+    __tablename__ = &quot;badge&quot;
+
+    id = db.Column(db.Integer, primary_key=True)
+    badge_category_id = db.Column(db.Integer, db.ForeignKey(&quot;badge_category.id&quot;), nullable=False)
+    level = db.Column(db.Integer, nullable=False)
+    threshold = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(100))
+    description = db.Column(db.Text)
+    icon_name = db.Column(db.String(255))
+
+    __table_args__ = (
+        db.UniqueConstraint(&quot;badge_category_id&quot;, &quot;level&quot;),
+    )
+
+    badge_category = db.relationship(&quot;BadgeCategory&quot;, back_populates=&quot;badges&quot;)
+    user_badges = db.relationship(
+        &quot;UserBadge&quot;,
+        back_populates=&quot;badge&quot;
+    )
+
+    def __repr__(self):
+        return f&quot;&lt;Badge BadgeCategory:{self.badge_category_id} Level:{self.level}&gt;&quot;
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

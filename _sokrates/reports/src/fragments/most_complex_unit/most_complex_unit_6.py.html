@@ -1,0 +1,116 @@
+<html>
+<head>
+    <title>def detect()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def detect()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/mwe/stanza_mwe_detector.py [0:0]</i></p>
+<ul>
+    <li><b>64</b> lines of code</li>
+    <li><b>38</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+    def detect(self, tokens: List[Dict]) -&gt; List[Dict]:
+        &quot;&quot;&quot;Detect MWEs including Germanic negation and infinitive markers.&quot;&quot;&quot;
+        mwe_groups = []
+        processed_indices = set()
+
+        for i, token in enumerate(tokens):
+            if i in processed_indices:
+                continue
+
+            dep = token.get(&quot;dep&quot;) or &quot;&quot;
+            pos = token.get(&quot;pos&quot;) or &quot;&quot;
+            head = token.get(&quot;head&quot;)
+            text = (token.get(&quot;text&quot;) or &quot;&quot;).lower()
+            lemma = (token.get(&quot;lemma&quot;) or &quot;&quot;).lower()
+
+            mwe_type = None
+            head_idx = None
+
+            # Check compound:prt, compound, aux
+            if dep in self.MWE_RELATIONS:
+                mwe_type = self.MWE_RELATIONS[dep]
+                head_idx = self._convert_head_to_index(head)
+
+            # Check negation: PART + advmod (Greek style)
+            elif pos == &quot;PART&quot; and dep == &quot;advmod&quot;:
+                mwe_type = &quot;negation&quot;
+                head_idx = self._convert_head_to_index(head)
+
+            # Germanic negation: ADV + advmod with known negation word
+            elif pos == &quot;ADV&quot; and dep == &quot;advmod&quot;:
+                if text in self.NEGATION_WORDS or lemma in self.NEGATION_WORDS:
+                    mwe_type = &quot;negation&quot;
+                    head_idx = self._convert_head_to_index(head)
+
+            # Infinitive markers: PART + mark (at, zu, te, att, to)
+            elif pos == &quot;PART&quot; and dep == &quot;mark&quot;:
+                if text in self.INFINITIVE_MARKERS or lemma in self.INFINITIVE_MARKERS:
+                    mwe_type = &quot;grammatical&quot;
+                    head_idx = self._convert_head_to_index(head)
+
+            if mwe_type and head_idx is not None and head_idx != i:
+                if not (0 &lt;= head_idx &lt; len(tokens)):
+                    continue
+
+                existing_group = self._find_group_by_head(mwe_groups, head_idx)
+
+                if existing_group:
+                    if i not in existing_group[&quot;dependent_indices&quot;]:
+                        existing_group[&quot;dependent_indices&quot;].append(i)
+                else:
+                    mwe_groups.append({
+                        &quot;head_idx&quot;: head_idx,
+                        &quot;dependent_indices&quot;: [i],
+                        &quot;type&quot;: mwe_type
+                    })
+
+                processed_indices.add(i)
+
+        # Post-processing: For separated MWEs (particle verbs), include intermediate words
+        # BUT only if the gap is small (max 2 intermediate words for Germanic)
+        # German can have very long gaps: &quot;Er steht jeden Morgen um sechs Uhr auf&quot;
+        # We don't want to include all of &quot;jeden Morgen um sechs Uhr&quot;
+        MAX_INTERMEDIATE_WORDS = 2
+
+        for group in mwe_groups:
+            head_idx = group[&quot;head_idx&quot;]
+            dep_indices = group[&quot;dependent_indices&quot;]
+
+            if not dep_indices:
+                continue
+
+            # Find the span of the MWE
+            all_indices = [head_idx] + dep_indices
+            min_idx = min(all_indices)
+            max_idx = max(all_indices)
+
+            # Count intermediate words (excluding punctuation)
+            intermediate_count = 0
+            for idx in range(min_idx + 1, max_idx):
+                if idx not in all_indices:
+                    token = tokens[idx]
+                    if token.get(&quot;pos&quot;) != &quot;PUNCT&quot;:
+                        intermediate_count += 1
+
+            # Only include intermediates if within limit
+            if intermediate_count &gt; 0 and intermediate_count &lt;= MAX_INTERMEDIATE_WORDS:
+                for idx in range(min_idx, max_idx + 1):
+                    if idx != head_idx and idx not in dep_indices:
+                        token = tokens[idx]
+                        if token.get(&quot;pos&quot;) == &quot;PUNCT&quot;:
+                            continue
+                        dep_indices.append(idx)
+
+        return mwe_groups
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

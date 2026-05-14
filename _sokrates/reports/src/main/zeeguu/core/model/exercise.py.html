@@ -1,0 +1,113 @@
+<html>
+<head>
+    <title>zeeguu/core/model/exercise.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/exercise.py (<b>63</b> lines of code) (<a href="exercise.py">raw</a>):</h3>
+<div id="editor">import zeeguu.core
+
+from zeeguu.core.model.exercise_outcome import ExerciseOutcome
+from zeeguu.core.model.exercise_source import ExerciseSource
+from zeeguu.core.model.user_exercise_session import UserExerciseSession
+
+from zeeguu.core.model.db import db
+from zeeguu.core.model.user_word import UserWord
+
+
+class Exercise(db.Model):
+    __table_args__ = {&quot;mysql_collate&quot;: &quot;utf8_bin&quot;}
+    __tablename__ = &quot;exercise&quot;
+
+    id = db.Column(db.Integer, primary_key=True)
+    outcome_id = db.Column(
+        db.Integer, db.ForeignKey(ExerciseOutcome.id), nullable=False
+    )
+    outcome = db.relationship(ExerciseOutcome)
+    source_id = db.Column(db.Integer, db.ForeignKey(ExerciseSource.id), nullable=False)
+    source = db.relationship(ExerciseSource)
+    solving_speed = db.Column(db.Integer)
+    time = db.Column(db.DateTime, nullable=False)
+    feedback = db.Column(db.String(255))
+
+    session_id = db.Column(
+        db.Integer, db.ForeignKey(UserExerciseSession.id), nullable=True
+    )
+    session = db.relationship(UserExerciseSession)
+
+    user_word_id = db.Column(db.Integer, db.ForeignKey(UserWord.id), nullable=False)
+    user_word = db.relationship(
+        UserWord,
+        backref=db.backref(&quot;exercise_log&quot;, order_by=&quot;Exercise.id&quot;),
+    )
+
+    def __init__(
+        self,
+        outcome,
+        source,
+        solving_speed,
+        time,
+        session_id,
+        user_word,
+        feedback=&quot;&quot;,
+    ):
+        self.outcome = outcome
+        self.source = source
+        self.solving_speed = solving_speed
+        self.time = time
+        self.feedback = feedback
+        self.session_id = session_id
+        self.user_word = user_word
+
+    def short_string_summary(self):
+        return str(self.source.id) + self.outcome.outcome[0]
+
+    def __str__(self):
+        return f&quot;{self.source.source} &quot; + str(self.time) + f&quot; {self.outcome.outcome}&quot;
+
+    def __repr__(self):
+        return self.__str__()
+
+    @classmethod
+    def find(cls, user_id=None):
+        &quot;&quot;&quot;
+        Find all the exercises for a particular or for all users
+
+        Parameters:
+        user_id = user identifier
+
+        return: list of exercises sorted by time in ascending order
+        &quot;&quot;&quot;
+        from zeeguu.core.model.user_word import UserWord
+
+        query = cls.query
+        if user_id is not None:
+            query = query.join(UserWord).filter(UserWord.user_id == user_id)
+        query = query.order_by(&quot;time&quot;)
+
+        return query.all()
+
+    def is_too_easy(self):
+        return self.outcome.outcome in ExerciseOutcome.too_easy_outcomes
+
+    def is_correct(self):
+        return ExerciseOutcome.is_correct(self.outcome.outcome)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

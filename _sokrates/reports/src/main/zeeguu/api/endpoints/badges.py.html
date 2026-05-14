@@ -1,0 +1,198 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/badges.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/badges.py (<b>87</b> lines of code) (<a href="badges.py">raw</a>):</h3>
+<div id="editor">from datetime import datetime
+
+import flask
+from sqlalchemy.orm import joinedload
+
+from zeeguu.api.utils.abort_handling import make_error
+from zeeguu.api.utils.json_result import json_result
+from zeeguu.api.utils.route_wrappers import cross_domain, requires_session
+from zeeguu.core.model import User
+from zeeguu.core.model.badge_category import BadgeCategory
+from zeeguu.core.model.badge import Badge
+from zeeguu.core.model.friendship import Friendship
+from zeeguu.core.model.user_badge import UserBadge
+from zeeguu.core.model.user_badge_progress import UserBadgeProgress
+from . import api, db_session
+
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/badges/count_unseen&quot;, methods=[&quot;GET&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def count_unseen_badges():
+    &quot;&quot;&quot;
+    Return the number of UserBadge entries that the current user has achieved but have not seen.
+    &quot;&quot;&quot;
+    return json_result(UserBadge.count_user_not_shown(flask.g.user_id))
+
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/my_badges&quot;, methods=[&quot;GET&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def get_my_badges():
+    &quot;&quot;&quot;
+        Retrieve all activity types and their corresponding badges for the current user.
+        Each badge includes achievement status and whether it has been shown.
+
+        Returns:
+        [
+            {
+               &quot;name&quot;: &quot;Translated Words&quot;,
+               &quot;description&quot;: &quot;Translate {threshold} words while reading.&quot;,
+               &quot;badges&quot;: [
+                   {
+                       &quot;level&quot;: 1,
+                       &quot;name&quot;: &quot;Word Explorer&quot;,
+                       &quot;threshold&quot;: 50,
+                       &quot;icon_name&quot;: &quot;/badge1.svg&quot;,
+                       &quot;achieved&quot;: true,
+                       &quot;achieved_at&quot;: &quot;2026-03-03T12:34:56&quot;,
+                       &quot;is_shown&quot;: false
+                   }, ...]
+               &quot;current_value&quot;: 10
+            }, ... ]
+    &quot;&quot;&quot;
+    return json_result(_serialize_user_badges(flask.g.user_id))
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/friend_badges/&lt;username&gt;&quot;, methods=[&quot;GET&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def get_friend_badges(username):
+    &quot;&quot;&quot;
+        Retrieve all activity types and their corresponding badges for the specified user.
+        Each badge includes achievement status and whether it has been shown.
+
+        Returns:
+        [
+            {
+               &quot;name&quot;: &quot;Translated Words&quot;,
+               &quot;description&quot;: &quot;Translate {threshold} words while reading.&quot;,
+               &quot;badges&quot;: [
+                   {
+                       &quot;level&quot;: 1,
+                       &quot;name&quot;: &quot;Word Explorer&quot;,
+                       &quot;threshold&quot;: 50,
+                       &quot;icon_name&quot;: &quot;/badge1.svg&quot;,
+                       &quot;achieved&quot;: true,
+                       &quot;achieved_at&quot;: &quot;2026-03-03T12:34:56&quot;,
+                       &quot;is_shown&quot;: false
+                   }, ...]
+               &quot;current_value&quot;: 10
+            }, ... ]
+    &quot;&quot;&quot;
+    friend = User.find_by_username(username)
+    if friend is None:
+        return []
+    if friend.id != flask.g.user_id and not Friendship.are_friends(flask.g.user_id, friend.id):
+        return make_error(403, &quot;You can only view badges for yourself or your friends.&quot;)
+    return json_result(_serialize_user_badges(friend.id))
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/badges/mark_all_seen&quot;, methods=[&quot;POST&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def mark_all_badges_as_seen():
+    &quot;&quot;&quot;
+    Mark all unseen badges for the current user as seen.
+
+    This updates all UserBadge records where:
+        - user_id matches the current user
+        - is_shown is False
+
+    Returns:
+    {
+        &quot;updated&quot;: true
+    }
+    &quot;&quot;&quot;
+    UserBadge.update_not_shown_for_user(db_session, flask.g.user_id)
+    db_session.commit()
+
+    return json_result({&quot;updated&quot;: True})
+
+
+def _most_recent_achievement(badge_category: BadgeCategory, achieved_map: dict) -&gt; datetime:
+    return max(
+        (
+            achieved_map[b.id].achieved_at
+            for b in badge_category.badges
+            if b.id in achieved_map and achieved_map[b.id].achieved_at is not None
+        ),
+        default=datetime.min,
+    )
+
+
+def _serialize_user_badges(user_id: int) -&gt; list[dict]:
+    badge_categories = BadgeCategory.query.options(joinedload(BadgeCategory.badges)).all()
+    user_badges = UserBadge.find_all(user_id)
+    achieved_map = {ub.badge_id: ub for ub in user_badges}
+    user_badge_progress_list = UserBadgeProgress.find_all(user_id)
+    progress_map = {um.badge_category_id: um for um in user_badge_progress_list}
+    sorted_categories = sorted(
+        badge_categories,
+        key=lambda bc: (_most_recent_achievement(bc, achieved_map), -bc.id),
+        reverse=True,
+    )
+    return [serialize_badge_category(bc, achieved_map, progress_map) for bc in sorted_categories]
+
+
+def serialize_badge_category(badge_category: BadgeCategory, achieved_map: dict, progress_map: dict) -&gt; dict:
+    metric = progress_map.get(badge_category.id)
+    badges = [
+        serialize_badge(badge, achieved_map.get(badge.id))
+        for badge in sorted(badge_category.badges, key=lambda b: b.level)
+    ]
+
+    return {
+        &quot;name&quot;: badge_category.name,
+        &quot;badges&quot;: badges,
+        &quot;current_value&quot;: metric.value if metric else 0,
+    }
+
+
+def serialize_badge(badge: Badge, user_badge: UserBadge | None) -&gt; dict:
+    return {
+        &quot;level&quot;: badge.level,
+        &quot;name&quot;: badge.name,
+        &quot;description&quot;: badge.description,
+        &quot;threshold&quot;: badge.threshold,
+        &quot;icon_name&quot;: badge.icon_name,
+        &quot;achieved&quot;: user_badge is not None,
+        &quot;achieved_at&quot;: (
+            user_badge.achieved_at.isoformat()
+            if user_badge and user_badge.achieved_at
+            else None
+        ),
+        &quot;is_shown&quot;: user_badge.is_shown if user_badge else False
+    }
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

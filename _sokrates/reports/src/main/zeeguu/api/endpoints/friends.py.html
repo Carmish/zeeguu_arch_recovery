@@ -1,0 +1,420 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/friends.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/friends.py (<b>245</b> lines of code) (<a href="friends.py">raw</a>):</h3>
+<div id="editor">import flask
+from flask import request
+from sqlalchemy.orm.exc import NoResultFound
+
+from zeeguu.api.utils.abort_handling import make_error
+from zeeguu.api.utils.json_result import json_result
+from zeeguu.api.utils.route_wrappers import cross_domain, requires_session
+from zeeguu.core.friends.friend_streak import compute_current_streak
+from zeeguu.core.model import User
+from zeeguu.core.model import UserLanguage
+from zeeguu.core.model.friend_request import FriendRequest
+from zeeguu.core.model.friendship import Friendship
+from zeeguu.core.model.user_avatar import UserAvatar
+from zeeguu.logging import log
+from . import api
+
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/my_friends&quot;, methods=[&quot;GET&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def get_my_friends():
+    &quot;&quot;&quot;
+        Get all friends for the current user.
+    &quot;&quot;&quot;
+    friend_details = Friendship.get_friends_of(flask.g.user_id)
+    return json_result([
+        _serialize_users_for_get_friends(fd, is_own_friends_list=True)
+        for fd in friend_details
+    ])
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/friends_of/&lt;username&gt;&quot;, methods=[&quot;GET&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def get_friends_of(username):
+    &quot;&quot;&quot;
+        Get all friends for the specified user_id.
+    &quot;&quot;&quot;
+    target = User.find_by_username(username)
+    if target is None:
+        return []
+    if target.id != flask.g.user_id and not Friendship.are_friends(flask.g.user_id, target.id):
+        return make_error(403, &quot;You can only view friends of yourself or your friends.&quot;)
+    friend_details = Friendship.get_friends_of(target.id)
+    return json_result([
+        _serialize_users_for_get_friends(fd, is_own_friends_list=False)
+        for fd in friend_details
+    ])
+
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/get_number_of_received_friend_requests&quot;, methods=[&quot;GET&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def get_number_of_received_friend_requests():
+    &quot;&quot;&quot;
+    Get the number of friend requests received by a user.
+    &quot;&quot;&quot;
+    return json_result(FriendRequest.get_number_of_received_friend_requests_for_user(flask.g.user_id))
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/get_received_friend_requests&quot;, methods=[&quot;GET&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def get_received_friend_requests():
+    &quot;&quot;&quot;
+    Get all friend requests received by a user.
+    &quot;&quot;&quot;
+    friend_requests = FriendRequest.get_received_friend_requests_for_user(flask.g.user_id)
+    result = []
+    for req in friend_requests:
+        serialized_req = _serialize_friend_request(req[0])
+        serialized_req[&quot;sender&quot;][&quot;avatar&quot;] = _serialize_user_avatar(req[1])
+        result.append(serialized_req)
+    return json_result(result)
+
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/get_sent_friend_requests&quot;, methods=[&quot;GET&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def get_sent_friend_requests():
+    &quot;&quot;&quot;
+    Get all friend requests sent by a user.
+    &quot;&quot;&quot;
+    friend_requests = FriendRequest.get_sent_friend_requests_for_user(flask.g.user_id)
+    result = [_serialize_friend_request(req) for req in friend_requests]
+    return json_result(result)
+
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/send_friend_request&quot;, methods=[&quot;POST&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def send_friend_request():
+    &quot;&quot;&quot;
+    Send a friend request from sender (currently logged-in user) to receiver
+    &quot;&quot;&quot;
+    try:
+        sender_id = flask.g.user_id
+        receiver_id = _get_receiver_from_request(sender_id)
+        friend_request = FriendRequest.send_friend_request(sender_id, receiver_id)
+        response = _serialize_friend_request(friend_request)
+        return json_result(response)
+    except ValueError as e:
+        log(f&quot;send_friend_request: error - {str(e)}&quot;)
+        return make_error(400, str(e))
+    except NoResultFound:
+        log(f&quot;send_friend_request: user not found&quot;)
+        return make_error(404, &quot;User not found&quot;)
+
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/delete_friend_request&quot;, methods=[&quot;POST&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def delete_friend_request():
+    &quot;&quot;&quot;
+    Delete a friend request between sender and receiver
+    &quot;&quot;&quot;
+    sender_id = flask.g.user_id
+    receiver_username = request.json.get(&quot;receiver_username&quot;)
+    receiver = User.find_by_username(receiver_username)
+    if receiver is None:
+        return make_error(404, &quot;User not found&quot;)
+    receiver_id = receiver.id
+
+    is_deleted = FriendRequest.delete_friend_request(sender_id, receiver_id)
+    return json_result({&quot;success&quot;: is_deleted})
+
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/accept_friend_request&quot;, methods=[&quot;POST&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def accept_friend_request():
+    &quot;&quot;&quot;
+    Accept a friend request between sender and receiver, and create a friendship
+    &quot;&quot;&quot;
+    try:
+        receiver_id = flask.g.user_id
+        sender_id = _get_sender_from_request(receiver_id)
+    except ValueError as e:
+        log(f&quot;accept_friend_request: error - {str(e)}&quot;)
+        return make_error(400, str(e))
+
+    friendship = FriendRequest.accept_friend_request(sender_id, receiver_id)
+    if friendship is None:
+        log(f&quot;accept_friend_request: no friend request found from user_id={sender_id} to user_id={receiver_id}&quot;)
+        return make_error(404, &quot;No friend request found to accept&quot;)
+
+    response = _serialize_friendship(friendship)
+    return json_result(response)
+
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/reject_friend_request&quot;, methods=[&quot;POST&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def reject_friend_request():
+    &quot;&quot;&quot;
+    Reject a friend request between sender and receiver, and delete the friend request record in the database
+    &quot;&quot;&quot;
+    try:
+        receiver_id = flask.g.user_id
+        sender_id = _get_sender_from_request(receiver_id)
+    except ValueError as e:
+        log(f&quot;reject_friend_request: error - {str(e)}&quot;)
+        return make_error(400, str(e))
+
+    is_rejected = FriendRequest.reject_friend_request(sender_id, receiver_id)
+    return json_result({&quot;success&quot;: is_rejected})
+
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/unfriend&quot;, methods=[&quot;POST&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def unfriend():
+    &quot;&quot;&quot;
+    Unfriend two users by deleting the Friendship row (friendship record) in the database.
+    &quot;&quot;&quot;
+    try:
+        sender_id = flask.g.user_id
+        receiver_id = _get_receiver_from_request(sender_id)
+    except ValueError as e:
+        log(f&quot;unfriend: error - {str(e)}&quot;)
+        return make_error(400, str(e))
+
+    is_removed = Friendship.remove(sender_id, receiver_id)
+    log(f&quot;unfriend: user_id={sender_id} unfriended user_id={receiver_id} - success={is_removed}&quot;)
+    return json_result({&quot;success&quot;: is_removed})
+
+
+# ---------------------------------------------------------------------------
+# Search and discover friends endpoints below
+# ---------------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------------
+@api.route(&quot;/search_users&quot;, methods=[&quot;GET&quot;])
+# ---------------------------------------------------------------------------
+@cross_domain
+@requires_session
+def search_by_search_term():
+    &quot;&quot;&quot;
+    Search for users matching the search term.
+    &quot;&quot;&quot;
+    search_term = flask.request.args.get(&quot;query&quot;)
+    if not search_term or search_term.strip() == &quot;&quot;:
+        return json_result([])
+
+    search_term = search_term.strip()
+    users_and_avatars = User.search(flask.g.user_id, search_term)
+    friendship_map   = Friendship.get_friendship_map(flask.g.user_id)
+    friend_request_map = FriendRequest.get_request_map(flask.g.user_id)
+    result = [
+        _serialize_users_for_search_users({
+            &quot;user&quot;: user,
+            &quot;user_avatar&quot;: avatar,
+            &quot;friendship&quot;: friendship_map.get(user.id),
+            &quot;friend_request&quot;: friend_request_map.get(user.id),
+        })
+        for user, avatar in users_and_avatars
+    ]
+
+    log(f&quot;search_users: user_id={flask.g.user_id} searched for search_term='{search_term}' and found {len(result)} results&quot;)
+    return json_result(result)
+
+
+# ---------------------------------------------------------------------------
+# Helper functions below
+# ---------------------------------------------------------------------------
+def _serialize_users_for_get_friends(user_data, is_own_friends_list: bool):
+    result = _serialize_users_common(user_data, include_friendship_data=is_own_friends_list)
+    result[&quot;languages&quot;] = _serialize_user_languages(user_data.get(&quot;user_languages&quot;), include_streaks=is_own_friends_list)
+    return result
+
+
+def _serialize_users_for_search_users(user_data):
+    result = _serialize_users_common(user_data, include_friendship_data=True)
+    result[&quot;friend_request&quot;] = _serialize_friend_request(user_data.get(&quot;friend_request&quot;))
+    return result
+
+
+def _serialize_users_common(user_data, include_friendship_data: bool):
+    result = _serialize_user(user_data.get(&quot;user&quot;))
+    result[&quot;avatar&quot;] = _serialize_user_avatar(user_data.get(&quot;user_avatar&quot;))
+    if include_friendship_data:
+        result[&quot;friendship&quot;] = _serialize_friendship(user_data.get(&quot;friendship&quot;))
+    return result
+
+
+def _serialize_user(user: User):
+    return {
+        &quot;name&quot;: user.name,
+        &quot;username&quot;: user.username,
+    }
+
+
+def _serialize_friendship(friendship: Friendship):
+    if friendship is None:
+        return None
+
+    return {
+        &quot;created_at&quot;: friendship.created_at,
+        &quot;friend_streak&quot;: compute_current_streak(friendship),
+        &quot;friend_streak_last_updated&quot;: friendship.friend_streak_last_updated.isoformat() if friendship.friend_streak_last_updated else None
+    }
+
+
+def _serialize_user_avatar(user_avatar: UserAvatar):
+    if user_avatar is None:
+        return None
+
+    return {
+        &quot;image_name&quot;: user_avatar.image_name,
+        &quot;character_color&quot;: user_avatar.character_color,
+        &quot;background_color&quot;: user_avatar.background_color,
+    }
+
+
+def _serialize_user_languages(user_languages: list[UserLanguage], include_streaks: bool = True):
+    if not user_languages:
+        return None
+
+    user_languages.sort(key=lambda ul: ul.max_streak, reverse=True)
+    result = []
+    for user_language in user_languages:
+        obj = {
+            &quot;code&quot;: user_language.language.code,
+            &quot;language&quot;: user_language.language.name,
+        }
+        if include_streaks:
+            obj[&quot;daily_streak&quot;] = user_language.daily_streak
+            obj[&quot;max_streak&quot;] = user_language.max_streak
+        result.append(obj)
+
+    return result
+
+
+def _serialize_friend_request(friend_request: FriendRequest):
+    &quot;&quot;&quot;
+    Serialize a FriendRequest object into JSON-friendly dict.
+
+    Args:
+        friend_request (FriendRequest): The friend request object
+
+    Returns:
+        dict: JSON-serializable dictionary
+    &quot;&quot;&quot;
+    if not friend_request:
+        return None
+
+    return {
+        &quot;sender&quot;: {
+            &quot;name&quot;: friend_request.sender.name,
+            &quot;username&quot;: friend_request.sender.username,
+        },
+        &quot;receiver&quot;: {
+            &quot;name&quot;: friend_request.receiver.name,
+            &quot;username&quot;: friend_request.receiver.username,
+        },
+        &quot;created_at&quot;: friend_request.created_at.isoformat() if friend_request.created_at else None,
+    }
+
+
+def _get_sender_from_request(receiver_id:int, sender_field=&quot;sender_username&quot;):
+    &quot;&quot;&quot;
+    Extract sender_id from request.json and current session.
+    Returns: validated sender_id
+    Raises ValueError with message if validation fails.
+    &quot;&quot;&quot;
+    sender_username = request.json.get(sender_field)
+    if sender_username is None:
+        raise ValueError(&quot;Missing sender username&quot;)
+    sender = User.find_by_username(sender_username)
+    if sender is None:
+        raise ValueError(&quot;Sender user not found&quot;)
+    sender_id = sender.id
+
+    status_code, error_message = _validate_friend_request_participants(sender_id, receiver_id)
+    if status_code &gt;= 400:
+        raise ValueError(error_message)
+
+    return sender_id
+
+def _get_receiver_from_request(sender_id:int, receiver_field=&quot;receiver_username&quot;):
+    &quot;&quot;&quot;
+    Extract receiver_id from request.json and current session.
+    Returns: validated receiver_id
+    Raises ValueError with message if validation fails.
+    &quot;&quot;&quot;
+    receiver_username = request.json.get(receiver_field)
+    if receiver_username is None:
+        raise ValueError(&quot;Missing receiver username&quot;)
+    receiver = User.find_by_username(receiver_username)
+    if receiver is None:
+        raise ValueError(&quot;Receiver user not found&quot;)
+    receiver_id = receiver.id
+
+    status_code, error_message = _validate_friend_request_participants(sender_id, receiver_id)
+    if status_code &gt;= 400:
+        raise ValueError(error_message)
+
+    return receiver_id
+
+
+def _validate_friend_request_participants(sender_id: int, receiver_id: int) -&gt; tuple[int, str]:
+    &quot;&quot;&quot;
+    :param sender_id: the user_id of the sender of the friend request
+    :param receiver_id: the user_id of the receiver of the friend request
+    Validate the friend request data, return (status_code, error_message)
+
+    :return: (status_code, error_message)
+    &quot;&quot;&quot;
+    if sender_id is None or receiver_id is None:
+        return 422, &quot;invalid data sender or/and receiver&quot;
+
+    if sender_id == receiver_id:
+        return 422, &quot;cannot send friend request to yourself&quot;
+
+    return 200, &quot;ok&quot;
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

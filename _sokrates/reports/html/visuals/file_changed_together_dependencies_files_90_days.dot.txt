@@ -1,0 +1,80 @@
+graph G {
+    compound="true"
+    rankdir="TB"
+    bgcolor="white"
+    fontname="Tahoma"
+
+    node [
+        fixedsize="false"
+        fontname="Tahoma"
+        color="white"
+        fillcolor="deepskyblue2"
+        fontcolor="black"
+        shape="box"
+        style="filled"
+        penwidth="1.0"
+    ]
+    edge [
+        fontname="Arial"
+        color="#00688b"
+        fontcolor="black"
+        fontsize="12"
+        arrowsize="0.5"
+        penwidth="1.0"
+    ]
+
+
+
+
+    "[zeeguu/core/model/friend_request.py]" -- "[zeeguu/api/endpoints/friends.py]" [label=" 27 ", penwidth="10", color="#00688bFF"];
+    "[zeeguu/api/endpoints/audio_lessons.py]" -- "[zeeguu/core/audio_lessons/daily_lesson_generator.py]" [label=" 24 ", penwidth="8", color="#00688bDB"];
+    "[zeeguu/api/endpoints/daily_streak.py]" -- "[zeeguu/api/endpoints/user.py]" [label=" 23 ", penwidth="8", color="#00688bDB"];
+    "[zeeguu/api/endpoints/friends.py]" -- "[tools/migrations/26-02-24-friendship_system.sql]" [label=" 23 ", penwidth="8", color="#00688bDB"];
+    "[zeeguu/core/account_management/user_account_creation.py]" -- "[zeeguu/core/model/user.py]" [label=" 22 ", penwidth="8", color="#00688bDB"];
+    "[zeeguu/core/model/user_language.py]" -- "[zeeguu/core/model/user.py]" [label=" 22 ", penwidth="8", color="#00688bDB"];
+    "[zeeguu/core/model/user.py]" -- "[zeeguu/api/endpoints/user.py]" [label=" 22 ", penwidth="8", color="#00688bDB"];
+    "[zeeguu/core/model/user_language.py]" -- "[zeeguu/api/endpoints/daily_streak.py]" [label=" 22 ", penwidth="8", color="#00688bDB"];
+    "[zeeguu/core/model/daily_audio_lesson.py]" -- "[zeeguu/core/audio_lessons/daily_lesson_generator.py]" [label=" 21 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/api/endpoints/friends.py]" -- "[zeeguu/api/endpoints/user.py]" [label=" 20 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/core/badges/badge_progress.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 20 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/core/model/friend_request.py]" -- "[tools/migrations/26-02-24-friendship_system.sql]" [label=" 20 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/core/model/badge.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 20 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/api/endpoints/daily_streak.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 20 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/api/endpoints/friends.py]" -- "[zeeguu/core/model/user.py]" [label=" 19 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/api/endpoints/daily_streak.py]" -- "[zeeguu/core/model/user.py]" [label=" 19 ", penwidth="7", color="#00688bC9"];
+    "[zeeguu/api/endpoints/friends.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 18 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/api/endpoints/friends.py]" -- "[zeeguu/api/endpoints/daily_streak.py]" [label=" 18 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/user.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 18 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/audio_lesson_meaning.py]" -- "[zeeguu/core/audio_lessons/daily_lesson_generator.py]" [label=" 18 ", penwidth="6", color="#00688bB7"];
+    "[zeeguu/core/model/user_language.py]" -- "[zeeguu/api/endpoints/translation.py]" [label=" 16 ", penwidth="5", color="#00688bA5"];
+    "[zeeguu/core/model/user_language.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 16 ", penwidth="5", color="#00688bA5"];
+    "[zeeguu/core/model/audio_lesson_meaning.py]" -- "[zeeguu/api/endpoints/audio_lessons.py]" [label=" 16 ", penwidth="5", color="#00688bA5"];
+    "[zeeguu/core/model/user_language.py]" -- "[zeeguu/core/badges/badge_progress.py]" [label=" 16 ", penwidth="5", color="#00688bA5"];
+    "[zeeguu/api/endpoints/user.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 15 ", penwidth="5", color="#00688bA5"];
+    "[zeeguu/core/audio_lessons/script_generator.py]" -- "[zeeguu/core/audio_lessons/daily_lesson_generator.py]" [label=" 15 ", penwidth="5", color="#00688bA5"];
+    "[tools/migrations/26-02-24-friendship_system.sql]" -- "[zeeguu/core/model/user.py]" [label=" 15 ", penwidth="5", color="#00688bA5"];
+    "[zeeguu/core/model/user_language.py]" -- "[zeeguu/api/endpoints/friends.py]" [label=" 15 ", penwidth="5", color="#00688bA5"];
+    "[zeeguu/api/endpoints/audio_lessons.py]" -- "[zeeguu/core/model/daily_audio_lesson.py]" [label=" 15 ", penwidth="5", color="#00688bA5"];
+    "[zeeguu/core/model/badge.py]" -- "[zeeguu/core/badges/badge_progress.py]" [label=" 14 ", penwidth="5", color="#00688bA5"];
+    "[zeeguu/core/model/user_language.py]" -- "[zeeguu/core/audio_lessons/daily_lesson_generator.py]" [label=" 13 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/model/user_language.py]" -- "[zeeguu/api/endpoints/user.py]" [label=" 13 ", penwidth="4", color="#00688b93"];
+    "[tools/migrations/26-02-24-friendship_system.sql]" -- "[zeeguu/api/endpoints/user.py]" [label=" 13 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/badges/listeners.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 13 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/model/user_word.py]" -- "[zeeguu/api/endpoints/translation.py]" [label=" 13 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/model/user_word.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 13 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]" -- "[zeeguu/core/model/user_language.py]" [label=" 13 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/model/__init__.py]" -- "[zeeguu/core/account_management/user_account_deletion.py]" [label=" 13 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/model/user_word.py]" -- "[zeeguu/core/model/user_language.py]" [label=" 13 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/badges/badge_progress.py]" -- "[zeeguu/core/audio_lessons/daily_lesson_generator.py]" [label=" 13 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/model/audio_lesson_generation_progress.py]" -- "[zeeguu/api/endpoints/audio_lessons.py]" [label=" 13 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/model/user_word.py]" -- "[zeeguu/core/badges/badge_progress.py]" [label=" 13 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/model/user_word.py]" -- "[zeeguu/core/audio_lessons/daily_lesson_generator.py]" [label=" 13 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py]" -- "[zeeguu/core/model/user_word.py]" [label=" 13 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/audio_lessons/daily_lesson_generator.py]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 12 ", penwidth="4", color="#00688b93"];
+    "[tools/migrations/26-02-24-friendship_system.sql]" -- "[zeeguu/api/endpoints/badges.py]" [label=" 12 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/audio_lessons/daily_lesson_generator.py]" -- "[zeeguu/api/endpoints/translation.py]" [label=" 12 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/model/audio_lesson_meaning.py]" -- "[zeeguu/core/model/daily_audio_lesson.py]" [label=" 12 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/badges/badge_progress.py]" -- "[zeeguu/api/endpoints/translation.py]" [label=" 12 ", penwidth="4", color="#00688b93"];
+    "[zeeguu/core/audio_lessons/script_generator.py]" -- "[zeeguu/api/endpoints/audio_lessons.py]" [label=" 12 ", penwidth="4", color="#00688b93"];
+
+}

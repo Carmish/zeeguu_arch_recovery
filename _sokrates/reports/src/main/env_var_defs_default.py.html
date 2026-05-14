@@ -1,0 +1,40 @@
+<html>
+<head>
+    <title>env_var_defs_default.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">env_var_defs_default.py (<b>10</b> lines of code) (<a href="env_var_defs_default.py">raw</a>):</h3>
+<div id="editor">import os
+
+os.environ[&quot;ZEEGUU_API_CONFIG&quot;] = os.path.expanduser(&quot;&lt;path-to-/endpoints.cfg&quot;)
+
+os.environ[&quot;FLASK_MONITORING_DASHBOARD_CONFIG&quot;] = os.path.expanduser(
+    &quot;&lt;path-to-/dashboard.cfg&quot;
+)
+
+os.environ[&quot;DASHBOARD_LOG_DIR&quot;] = os.path.expanduser(&quot;&lt;path-to-/.logs/&quot;)
+
+os.environ[&quot;GOOGLE_TRANSLATE_API_KEY&quot;] = &quot;&quot;
+os.environ[&quot;MICROSOFT_TRANSLATE_API_KEY&quot;] = &quot;&quot;
+os.environ[&quot;DEV_SKIP_TRANSLATION&quot;] = 0
+os.environ[&quot;WORDNIK_API_KEY&quot;] = &quot;&quot;
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

@@ -1,0 +1,89 @@
+<html>
+<head>
+    <title>def create_article_fragments()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def create_article_fragments()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/model/article.py [0:0]</i></p>
+<ul>
+    <li><b>40</b> lines of code</li>
+    <li><b>18</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+    def create_article_fragments(self, session):
+        &quot;&quot;&quot;
+        Parse HTML content and create article fragments for each HTML element.
+        This preserves the structure and formatting from the original article.
+        &quot;&quot;&quot;
+        from zeeguu.core.model.article_fragment import ArticleFragment
+        from bs4 import BeautifulSoup
+
+        # Get HTML content - use htmlContent if available, otherwise fall back to plain text
+        html_content = getattr(self, &quot;htmlContent&quot;, None) or self.source.get_content()
+
+        if not html_content:
+            return
+
+        # Parse HTML content
+        soup = BeautifulSoup(html_content, &quot;html.parser&quot;)
+
+        # Extract text content from HTML elements and create fragments
+        order = 0
+        # Include block-level HTML elements: headings, paragraphs, list items, blockquotes
+        # Note: We skip ul/ol containers to avoid duplication, only process individual li items
+        # Note: We skip inline elements like strong, em here as they should be preserved within their parent blocks
+        block_elements = [&quot;p&quot;, &quot;h1&quot;, &quot;h2&quot;, &quot;h3&quot;, &quot;h4&quot;, &quot;h5&quot;, &quot;h6&quot;, &quot;li&quot;, &quot;blockquote&quot;]
+
+        for element in soup.find_all(block_elements):
+            # Skip blockquote containers - we'll process their paragraph children instead
+            if element.name == &quot;blockquote&quot;:
+                continue
+
+            # For paragraphs inside blockquotes, use special formatting to indicate they're part of a quote
+            if element.name == &quot;p&quot; and element.find_parent(&quot;blockquote&quot;):
+                tag_name = &quot;blockquote&quot;
+                text_content = element.get_text().strip()
+            # For list items, get direct text content (not nested lists)
+            elif element.name == &quot;li&quot;:
+                # Get only direct text content, excluding nested ul/ol
+                text_parts = []
+                for content in element.contents:
+                    if hasattr(content, &quot;get_text&quot;):
+                        # Skip nested lists
+                        if content.name not in [&quot;ul&quot;, &quot;ol&quot;]:
+                            text_parts.append(content.get_text().strip())
+                    else:
+                        # Direct text node
+                        text_parts.append(str(content).strip())
+                text_content = &quot; &quot;.join(text_parts).strip()
+                tag_name = element.name
+            else:
+                # For other elements, preserve some inline formatting by getting inner HTML
+                # and then extracting text, but keep track of formatting
+                text_content = element.get_text().strip()
+                tag_name = element.name
+
+            if text_content:  # Only create fragments for non-empty content
+                ArticleFragment.find_or_create(
+                    session, self, text_content, order, tag_name, commit=False
+                )
+                order += 1
+
+        # If no HTML elements found, fall back to splitting plain text
+        if order == 0:
+            for i, paragraph in enumerate(self.source.get_content().split(&quot;\n\n&quot;)):
+                paragraph_text = paragraph.strip()
+                if paragraph_text:
+                    ArticleFragment.find_or_create(
+                        session, self, paragraph_text, i, &quot;p&quot;, commit=False
+                    )
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

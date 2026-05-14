@@ -1,0 +1,1011 @@
+<html>
+<head>
+    <title>zeeguu/core/llm_services/simplification_and_classification.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/llm_services/simplification_and_classification.py (<b>654</b> lines of code) (<a href="simplification_and_classification.py">raw</a>):</h3>
+<div id="editor">&quot;&quot;&quot;
+Article simplification and content classification.
+
+This module handles:
+- Creating CEFR-level appropriate simplified versions of articles
+- Classifying content (disturbing news, etc.)
+- Both operations done in a single LLM call for efficiency
+- Round-robin between DeepSeek and Anthropic for A/B comparison
+&quot;&quot;&quot;
+
+import os
+import requests
+import time
+from requests.exceptions import Timeout, RequestException
+from zeeguu.logging import log
+from zeeguu.core.model.article import Article
+from zeeguu.core.model.url import Url
+from .prompts.article_simplification import get_adaptive_simplification_prompt
+
+
+# Round-robin counter for alternating between providers
+_simplification_provider_counter = 0
+
+
+def _get_next_simplification_provider() -&gt; str:
+    &quot;&quot;&quot;
+    Round-robin between 'deepseek' and 'anthropic' for simplification.
+    This allows A/B comparison of error rates between providers.
+    &quot;&quot;&quot;
+    global _simplification_provider_counter
+    _simplification_provider_counter += 1
+
+    if _simplification_provider_counter % 2 == 0:
+        return &quot;deepseek&quot;
+    else:
+        return &quot;anthropic&quot;
+
+
+def get_target_levels_for_original_level(original_level: str) -&gt; list[str]:
+    &quot;&quot;&quot;
+    Get the list of CEFR levels that should be created for an original article level.
+    Returns all levels simpler than the original level.
+
+    Args:
+        original_level: The assessed CEFR level of the original article
+
+    Returns:
+        List of CEFR levels to create simplified versions for
+    &quot;&quot;&quot;
+    # CEFR levels in order from simplest to most complex
+    cefr_levels = [&quot;A1&quot;, &quot;A2&quot;, &quot;B1&quot;, &quot;B2&quot;, &quot;C1&quot;, &quot;C2&quot;]
+
+    if original_level not in cefr_levels:
+        # If invalid or unknown level, default to creating A1 and A2
+        log(f&quot;Unknown original CEFR level '{original_level}', defaulting to A1 and A2&quot;)
+        return [&quot;A1&quot;, &quot;A2&quot;]
+
+    # Find the index of the original level
+    original_index = cefr_levels.index(original_level)
+
+    # Return all levels simpler than the original
+    target_levels = cefr_levels[:original_index]
+
+    if not target_levels:
+        # If original is already A1, no simpler versions needed
+        log(
+            f&quot;Original article is already at {original_level} level, no simpler versions needed&quot;
+        )
+        return []
+
+    log(
+        f&quot;Original article is {original_level} level, creating simplified versions for: {target_levels}&quot;
+    )
+    return target_levels
+
+
+def simplify_article_adaptive_levels(
+    title: str,
+    content: str,
+    target_language: str,
+    model: str = &quot;deepseek-chat&quot;,
+    simplification_provider: str = None,
+    correct_grammar: bool = False,
+) -&gt; dict:
+    &quot;&quot;&quot;
+    Simplify article to all levels simpler than the original using a single API call.
+    Uses DeepSeek by default (Anthropic used in parallel mode for A/B comparison).
+
+    Args:
+        title: Original article title
+        content: Original article content
+        target_language: Language code (e.g., 'da', 'es')
+        model: Model to use (deprecated, provider chosen automatically)
+        simplification_provider: Provider to use ('deepseek' or 'anthropic'), overrides default if set
+        correct_grammar: Whether to run a separate Haiku grammar/spelling correction pass after simplification. Default is False &mdash; the DeepSeek + Haiku correction experiment ran 2025-12-09 &rarr; 2026-04-05 and concluded that the corrections were overwhelmingly cosmetic (~96% of title fixes and ~72% of content fixes were &le;2 char diffs). The correction pass and grammar_correction_log writes are kept in place but disabled by default; data from the experiment is preserved in the table.
+
+    Returns:
+        Dict containing all simplified versions and original metadata:
+        {
+            'original_cefr_level': str,
+            'original_summary': str,
+            'simplified_levels': list[str],  # e.g., ['A1', 'A2', 'B1']
+            'versions': {
+                'A1': {'title': str, 'content': str, 'summary': str},
+                'A2': {'title': str, 'content': str, 'summary': str},
+                ...
+            },
+            'provider': str,  # 'deepseek' or 'anthropic'
+            'model_name': str  # e.g., 'deepseek-chat' or 'claude-3-haiku-20240307'
+        }
+
+    Raises:
+        Exception: If API call fails or returns unexpected response
+    &quot;&quot;&quot;
+
+    # Get the adaptive prompt
+    prompt_template = get_adaptive_simplification_prompt(target_language)
+    prompt = prompt_template.format(title=title, content=content)
+
+    # Choose provider: use specified, or round-robin between deepseek and anthropic
+    if simplification_provider:
+        provider = simplification_provider
+    else:
+        # Round-robin based on a simple counter
+        provider = _get_next_simplification_provider()
+    log(f&quot;Using {provider.upper()} provider for simplification&quot;)
+
+    # Try the chosen provider first, fallback to the other if it fails
+    if provider == &quot;deepseek&quot;:
+        api_key = os.environ.get(&quot;DEEPSEEK_API_SIMPLIFICATIONS&quot;)
+        fallback_api_key = os.environ.get(&quot;ANTHROPIC_TEXT_SIMPLIFICATION_KEY&quot;)
+    else:
+        api_key = os.environ.get(&quot;ANTHROPIC_TEXT_SIMPLIFICATION_KEY&quot;)
+        fallback_api_key = os.environ.get(&quot;DEEPSEEK_API_SIMPLIFICATIONS&quot;)
+
+    if not api_key:
+        log(f&quot;WARNING: {provider.upper()} API key not set, trying fallback&quot;)
+        provider = &quot;anthropic&quot; if provider == &quot;deepseek&quot; else &quot;deepseek&quot;
+        api_key = fallback_api_key
+        if not api_key:
+            raise Exception(
+                &quot;Neither DEEPSEEK_API_SIMPLIFICATIONS nor ANTHROPIC_TEXT_SIMPLIFICATION_KEY environment variable set&quot;
+            )
+
+    try:
+        log(f&quot;Adaptively simplifying article '{title[:50]}...' in {target_language}&quot;)
+        log(f&quot;  Article length: {len(content)} characters&quot;)
+        log(f&quot;  Prompt length: {len(prompt)} characters&quot;)
+
+        # Make API call based on provider
+        api_start_time = time.time()
+
+        if provider == &quot;deepseek&quot;:
+            model_name = &quot;deepseek-chat&quot;
+            headers = {
+                &quot;Authorization&quot;: f&quot;Bearer {api_key}&quot;,
+                &quot;Content-Type&quot;: &quot;application/json&quot;,
+            }
+            data = {
+                &quot;model&quot;: model_name,
+                &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}],
+                &quot;max_tokens&quot;: 6000,
+                &quot;temperature&quot;: 0.1,
+            }
+            log(f&quot;  Sending request to DeepSeek API...&quot;)
+            response = requests.post(
+                &quot;https://api.deepseek.com/v1/chat/completions&quot;,
+                headers=headers,
+                json=data,
+                timeout=180,
+            )
+        else:  # anthropic
+            model_name = &quot;claude-3-haiku-20240307&quot;
+            headers = {
+                &quot;x-api-key&quot;: api_key,
+                &quot;anthropic-version&quot;: &quot;2023-06-01&quot;,
+                &quot;Content-Type&quot;: &quot;application/json&quot;,
+            }
+            data = {
+                &quot;model&quot;: model_name,
+                &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}],
+                &quot;max_tokens&quot;: 4000,
+                &quot;temperature&quot;: 0.1,
+            }
+            log(f&quot;  Sending request to Anthropic API...&quot;)
+            response = requests.post(
+                &quot;https://api.anthropic.com/v1/messages&quot;,
+                headers=headers,
+                json=data,
+                timeout=180,
+            )
+
+        api_duration = time.time() - api_start_time
+        log(
+            f&quot;  {provider.upper()} API responded with status: {response.status_code} (took {api_duration:.2f} seconds)&quot;
+        )
+
+        if response.status_code != 200:
+            raise Exception(
+                f&quot;{provider.upper()} API error: {response.status_code} - {response.text}&quot;
+            )
+
+        log(f&quot;  Parsing {provider.upper()} API response...&quot;)
+        response_json = response.json()
+
+        # Extract result based on provider
+        if provider == &quot;deepseek&quot;:
+            result = response_json[&quot;choices&quot;][0][&quot;message&quot;][&quot;content&quot;].strip()
+        else:  # anthropic
+            result = response_json[&quot;content&quot;][0][&quot;text&quot;].strip()
+        log(f&quot;  Response length: {len(result)} characters&quot;)
+
+        # Check if article is unfinished due to paywall
+        if result.lower().strip() == &quot;unfinished&quot;:
+            raise Exception(&quot;PAYWALL: Article appears to be incomplete due to paywall&quot;)
+
+        # Check if article is advertorial
+        if result.lower().strip() == &quot;advertorial&quot;:
+            raise Exception(
+                &quot;ADVERTORIAL: Article appears to be advertorial/promotional content&quot;
+            )
+
+        log(f&quot;  Parsing response sections...&quot;)
+        # Parse the response
+        sections = {}
+        lines = result.split(&quot;\n&quot;)
+        current_section = None
+        current_content = []
+
+        for line in lines:
+            line = line.strip()
+            if &quot;:&quot; in line and any(
+                line.startswith(prefix)
+                for prefix in [
+                    &quot;DISTURBING_CONTENT&quot;,
+                    &quot;ARTICLE_TYPE&quot;,
+                    &quot;ORIGINAL_LEVEL&quot;,
+                    &quot;ORIGINAL_SUMMARY&quot;,
+                    &quot;SIMPLIFIED_LEVELS&quot;,
+                ]
+            ):
+                # Save previous section
+                if current_section:
+                    sections[current_section] = &quot;\n&quot;.join(current_content).strip()
+                # Start new section
+                section_name = line.split(&quot;:&quot;)[0]
+                current_section = section_name
+                current_content = [line.split(&quot;:&quot;, 1)[1].strip()]
+            elif &quot;_TITLE:&quot; in line or &quot;_CONTENT:&quot; in line or &quot;_SUMMARY:&quot; in line:
+                # Save previous section
+                if current_section:
+                    sections[current_section] = &quot;\n&quot;.join(current_content).strip()
+                # Start new section
+                section_name = line.split(&quot;:&quot;)[0]
+                current_section = section_name
+                current_content = [line.split(&quot;:&quot;, 1)[1].strip()]
+            elif current_section:
+                current_content.append(line)
+
+        # Save last section
+        if current_section:
+            sections[current_section] = &quot;\n&quot;.join(current_content).strip()
+
+        log(f&quot;  Found {len(sections)} sections in response&quot;)
+        log(f&quot;  Section keys: {list(sections.keys())}&quot;)
+
+        # Extract basic info
+        def clean_text(text):
+            return text.strip(&quot;[](){}\&quot;'&quot;)
+
+        def strip_markdown_from_summary(text):
+            &quot;&quot;&quot;Remove markdown bold/italic formatting from summary text.&quot;&quot;&quot;
+            import re
+
+            # Remove bold (**text** or __text__)
+            text = re.sub(r&quot;\*\*(.+?)\*\*&quot;, r&quot;\1&quot;, text)
+            text = re.sub(r&quot;__(.+?)__&quot;, r&quot;\1&quot;, text)
+            # Remove italic (*text* or _text_)
+            text = re.sub(r&quot;\*(.+?)\*&quot;, r&quot;\1&quot;, text)
+            text = re.sub(r&quot;(?&lt;!\w)_(.+?)_(?!\w)&quot;, r&quot;\1&quot;, text)
+            return text
+
+        is_disturbing = (
+            clean_text(sections.get(&quot;DISTURBING_CONTENT&quot;, &quot;NO&quot;)).upper() == &quot;YES&quot;
+        )
+        article_type_raw = clean_text(sections.get(&quot;ARTICLE_TYPE&quot;, &quot;&quot;)).upper()
+        article_type = (
+            article_type_raw if article_type_raw in [&quot;NEWS&quot;, &quot;GENERAL&quot;] else None
+        )
+        original_level = clean_text(sections.get(&quot;ORIGINAL_LEVEL&quot;, &quot;&quot;))
+        original_summary = strip_markdown_from_summary(
+            clean_text(sections.get(&quot;ORIGINAL_SUMMARY&quot;, &quot;&quot;))
+        )
+        simplified_levels_str = clean_text(sections.get(&quot;SIMPLIFIED_LEVELS&quot;, &quot;&quot;))
+
+        # Parse simplified levels
+        if simplified_levels_str:
+            simplified_levels = [
+                level.strip() for level in simplified_levels_str.split(&quot;,&quot;)
+            ]
+        else:
+            simplified_levels = []
+
+        # Validate CEFR level
+        valid_levels = [&quot;A1&quot;, &quot;A2&quot;, &quot;B1&quot;, &quot;B2&quot;, &quot;C1&quot;, &quot;C2&quot;]
+        if original_level not in valid_levels:
+            log(
+                f&quot;Warning: Invalid original CEFR level '{original_level}', defaulting to 'B2'&quot;
+            )
+            original_level = &quot;B2&quot;
+
+        log(
+            f&quot;  Extracted: original_level={original_level}, simplified_levels={simplified_levels}&quot;
+        )
+
+        # Extract simplified versions
+        log(f&quot;  Extracting simplified versions for levels: {simplified_levels}&quot;)
+        versions = {}
+        for level in simplified_levels:
+            log(f&quot;    Processing level {level}...&quot;)
+            title_key = f&quot;{level}_TITLE&quot;
+            content_key = f&quot;{level}_CONTENT&quot;
+            summary_key = f&quot;{level}_SUMMARY&quot;
+
+            if all(key in sections for key in [title_key, content_key, summary_key]):
+                versions[level] = {
+                    &quot;title&quot;: clean_text(sections[title_key]),
+                    &quot;content&quot;: clean_text(sections[content_key]),
+                    &quot;summary&quot;: strip_markdown_from_summary(
+                        clean_text(sections[summary_key])
+                    ),
+                }
+                log(f&quot;    Successfully extracted {level} version&quot;)
+            else:
+                missing_keys = [
+                    key
+                    for key in [title_key, content_key, summary_key]
+                    if key not in sections
+                ]
+                log(f&quot;    Missing keys for {level}: {missing_keys}&quot;)
+
+        # Validate we got the expected content
+        if not original_summary:
+            raise Exception(&quot;Missing original summary in response&quot;)
+
+        # Filter out incomplete levels but keep the ones that are complete
+        valid_levels = []
+        invalid_levels = []
+        for level in simplified_levels:
+            if level in versions and all(versions[level].values()):
+                valid_levels.append(level)
+            else:
+                invalid_levels.append(level)
+                log(
+                    f&quot;  Warning: Missing or incomplete content for {level} level, skipping&quot;
+                )
+
+        # Update simplified_levels to only include valid ones
+        simplified_levels = valid_levels
+
+        # Only fail if we got NO valid levels at all
+        if not simplified_levels:
+            raise Exception(
+                f&quot;No complete simplified versions were created. Incomplete levels: {invalid_levels}&quot;
+            )
+
+        if invalid_levels:
+            log(
+                f&quot;Partially successful: simplified article to {len(simplified_levels)} levels: {simplified_levels} (skipped incomplete: {invalid_levels})&quot;
+            )
+        else:
+            log(
+                f&quot;Successfully simplified article to {len(simplified_levels)} levels: {simplified_levels} (original was {original_level}, disturbing: {is_disturbing})&quot;
+            )
+
+        # Grammar correction pass - fix spelling/grammar errors introduced during simplification
+        uncorrected_versions = None
+        if correct_grammar and simplified_levels:
+            log(
+                f&quot;  Running grammar correction pass on {len(simplified_levels)} simplified versions...&quot;
+            )
+            try:
+                from .grammar_correction_service import get_grammar_correction_service
+
+                grammar_service = get_grammar_correction_service()
+
+                # Keep a copy of uncorrected versions for logging
+                import copy
+
+                uncorrected_versions = copy.deepcopy(versions)
+
+                for level in simplified_levels:
+                    if level in versions:
+                        log(f&quot;    Correcting {level} version...&quot;)
+                        corrected = grammar_service.correct_simplified_version(
+                            versions[level], target_language, provider=&quot;anthropic&quot;
+                        )
+                        versions[level] = corrected
+                        log(f&quot;    {level} version corrected&quot;)
+
+                log(f&quot;  Grammar correction completed for all levels&quot;)
+            except Exception as e:
+                # Log but don't fail - uncorrected simplification is better than no simplification
+                log(
+                    f&quot;  WARNING: Grammar correction failed, using uncorrected versions: {e}&quot;
+                )
+                uncorrected_versions = None  # Don't log if correction failed
+
+        return {
+            &quot;is_disturbing&quot;: is_disturbing,
+            &quot;article_type&quot;: article_type.lower() if article_type else None,
+            &quot;original_cefr_level&quot;: original_level,
+            &quot;original_summary&quot;: original_summary,
+            &quot;simplified_levels&quot;: simplified_levels,
+            &quot;versions&quot;: versions,
+            &quot;uncorrected_versions&quot;: uncorrected_versions,  # For logging corrections
+            &quot;provider&quot;: provider,
+            &quot;model_name&quot;: model_name,
+        }
+
+    except Timeout as e:
+        log(f&quot;  ERROR: DeepSeek API call timed out after 3 minutes&quot;)
+        raise Exception(
+            f&quot;Failed to adaptively simplify article: API timeout after 180 seconds&quot;
+        )
+    except RequestException as e:
+        log(f&quot;  ERROR: Network error during API call: {str(e)}&quot;)
+        raise Exception(
+            f&quot;Failed to adaptively simplify article: Network error - {str(e)}&quot;
+        )
+    except Exception as e:
+        log(f&quot;  ERROR: Unexpected error: {str(e)}&quot;)
+        raise Exception(f&quot;Failed to adaptively simplify article: {str(e)}&quot;)
+
+
+def create_simplified_article_adaptive(
+    session, original_article: Article, cefr_level: str, commit: bool = True
+) -&gt; Article:
+    &quot;&quot;&quot;
+    Create a simplified version of an article using the adaptive approach.
+    Uses the LLM to assess the original level and create the requested level.
+
+    Args:
+        session: Database session
+        original_article: The original article to simplify
+        cefr_level: Target CEFR level (A1, A2, B1, B2, C1, C2)
+        commit: Whether to commit the transaction
+
+    Returns:
+        The created simplified article
+
+    Raises:
+        Exception: If simplification fails
+    &quot;&quot;&quot;
+
+    # Check if simplified version already exists
+    for existing in original_article.simplified_versions:
+        if existing.cefr_level == cefr_level:
+            log(
+                f&quot;Simplified version for {cefr_level} already exists for article {original_article.id}&quot;
+            )
+            return existing
+
+    # Get the content to simplify
+    title = original_article.title
+    content = original_article.get_content()
+    language_code = original_article.language.code
+
+    log(
+        f&quot;Creating {cefr_level} simplified version for article {original_article.id} using adaptive approach&quot;
+    )
+
+    try:
+        # Use the adaptive approach to get all levels
+        result = simplify_article_adaptive_levels(title, content, language_code)
+
+        # Extract the results
+        original_level = result[&quot;original_cefr_level&quot;]
+        original_summary = result[&quot;original_summary&quot;]
+        simplified_levels = result[&quot;simplified_levels&quot;]
+        versions = result[&quot;versions&quot;]
+        provider = result[&quot;provider&quot;]
+        model_name = result[&quot;model_name&quot;]
+
+        # Check if the requested level is available
+        if cefr_level not in versions:
+            raise Exception(
+                f&quot;Requested level {cefr_level} was not created by the LLM. Available levels: {list(versions.keys())}&quot;
+            )
+
+        # Update the original article with assessed metadata if not already set
+        if not original_article.cefr_level:
+            original_article.cefr_level = original_level
+        if not original_article.summary:
+            original_article.summary = original_summary
+
+        # Create the simplified article
+        version_data = versions[cefr_level]
+
+        simplified_article = Article.create_simplified_version(
+            session=session,
+            parent_article=original_article,
+            simplified_title=version_data[&quot;title&quot;],
+            simplified_content=version_data[&quot;content&quot;],
+            simplified_summary=version_data[&quot;summary&quot;],
+            cefr_level=cefr_level,
+            ai_model=model_name,
+            original_cefr_level=original_level,
+            original_summary=original_summary,
+            commit=commit,
+        )
+
+        log(f&quot;Created simplified article {simplified_article.id} at {cefr_level} level&quot;)
+        return simplified_article
+
+    except Exception as e:
+        raise Exception(f&quot;Failed to create {cefr_level} simplified version: {str(e)}&quot;)
+
+
+def simplify_and_classify(
+    session, original_article: Article, simplification_provider: str = None
+) -&gt; tuple[list[Article], list[tuple[str, str]]]:
+    &quot;&quot;&quot;
+    Simplify article to multiple CEFR levels and classify content type (e.g., disturbing).
+
+    Uses a single LLM call to:
+    1. Assess the original article's CEFR level
+    2. Create all appropriate simplified versions
+    3. Detect content classifications (disturbing news, etc.)
+
+    This function is designed to be called by the crawler/article creation process.
+
+    Args:
+        session: Database session
+        original_article: The original article to simplify
+        simplification_provider: Provider to use ('deepseek' or 'anthropic'), overrides default if set
+
+    Returns:
+        Tuple of (simplified_articles, classifications)
+        - simplified_articles: List of created simplified Article objects
+        - classifications: List of (classification_type, detection_method) tuples
+          e.g., [(&quot;DISTURBING&quot;, &quot;LLM&quot;)]
+    &quot;&quot;&quot;
+
+    # Only create simplified versions for articles that don't already have them
+    # and are not themselves simplified versions
+    if original_article.parent_article_id:
+        log(
+            f&quot;SKIP: Article {original_article.id} is already a simplified version (parent: {original_article.parent_article_id})&quot;
+        )
+        return [], []
+
+    if original_article.simplified_versions:
+        existing_levels = [v.cefr_level for v in original_article.simplified_versions]
+        log(
+            f&quot;SKIP: Article {original_article.id} already has {len(original_article.simplified_versions)} simplified versions: {existing_levels}&quot;
+        )
+        return [], []
+
+    # Only simplify articles with substantial content
+    word_count = original_article.get_word_count()
+    if word_count &lt; 100:
+        log(
+            f&quot;SKIP: Article {original_article.id} is too short for simplification - {word_count} words (minimum: 100 words)&quot;
+        )
+        return [], []
+
+    log(
+        f&quot;STARTING: Auto-creating simplified versions for article {original_article.id}&quot;
+    )
+    log(f&quot;  Title: {original_article.title[:100]}...&quot;)
+    log(f&quot;  Language: {original_article.language.code}&quot;)
+    log(f&quot;  Word count: {word_count}&quot;)
+
+    try:
+        # Use the adaptive approach - single API call for assessment and all simplifications
+        title = original_article.title
+        content = original_article.get_content()
+        language_code = original_article.language.code
+
+        log(f&quot;  Calling LLM for assessment and simplification...&quot;)
+        log(
+            f&quot;  Request details: title_len={len(title)}, content_len={len(content)}, language={language_code}&quot;
+        )
+        result = simplify_article_adaptive_levels(
+            title,
+            content,
+            language_code,
+            simplification_provider=simplification_provider,
+        )
+        log(f&quot;  LLM call completed successfully&quot;)
+
+        # Extract the results
+        is_disturbing = result.get(&quot;is_disturbing&quot;, False)
+        article_type = result.get(&quot;article_type&quot;)
+        original_level = result[&quot;original_cefr_level&quot;]
+        original_summary = result[&quot;original_summary&quot;]
+        simplified_levels = result[&quot;simplified_levels&quot;]
+        versions = result[&quot;versions&quot;]
+        uncorrected_versions = result.get(
+            &quot;uncorrected_versions&quot;
+        )  # For logging corrections
+        provider = result[&quot;provider&quot;]
+        model_name = result[&quot;model_name&quot;]
+
+        log(f&quot;  LLM Assessment complete:&quot;)
+        log(f&quot;    Provider used: {provider.upper()} ({model_name})&quot;)
+        log(f&quot;    Original level: {original_level}&quot;)
+        log(f&quot;    Article type: {article_type}&quot;)
+        log(f&quot;    Simplified levels to create: {simplified_levels}&quot;)
+        log(f&quot;    Versions returned by LLM: {list(versions.keys())}&quot;)
+        log(f&quot;    Disturbing content detected: {is_disturbing}&quot;)
+
+        # Update the original article with assessed metadata
+        log(f&quot;  Updating original article metadata...&quot;)
+        original_article.cefr_level = original_level
+        if article_type:
+            original_article.article_type = article_type
+        if not original_article.summary:
+            original_article.summary = original_summary
+
+        if not simplified_levels:
+            log(
+                f&quot;SKIP: Article {original_article.id} is already at {original_level} level - no simpler versions needed (AI assessment)&quot;
+            )
+            # committing before return
+            session.commit()
+
+            # Return classifications even if no simplification needed
+            classifications = []
+            if is_disturbing:
+                classifications.append((&quot;DISTURBING&quot;, &quot;LLM&quot;))
+            return [], classifications
+
+        # Create all simplified articles
+        log(f&quot;  Creating {len(simplified_levels)} simplified articles in database...&quot;)
+        simplified_articles = []
+
+        for level in simplified_levels:
+            log(f&quot;    Creating {level} version...&quot;)
+            if level in versions:
+                version_data = versions[level]
+                simplified_article = Article.create_simplified_version(
+                    session=session,
+                    parent_article=original_article,
+                    simplified_title=version_data[&quot;title&quot;],
+                    simplified_content=version_data[&quot;content&quot;],
+                    simplified_summary=version_data[&quot;summary&quot;],
+                    cefr_level=level,
+                    ai_model=model_name,
+                    original_cefr_level=None,  # Already set on parent
+                    original_summary=None,  # Already set on parent
+                    commit=False,
+                )
+                simplified_articles.append(simplified_article)
+                log(f&quot;    Created {level} version (temp ID, will commit later)&quot;)
+            else:
+                log(f&quot;    Skipping {level} - not in versions data&quot;)
+
+        # Commit all changes
+        log(
+            f&quot;  Committing {len(simplified_articles)} simplified articles to database...&quot;
+        )
+        session.commit()
+        log(f&quot;  Database commit completed&quot;)
+
+        # Update URLs for all simplified articles now that they have IDs
+        log(f&quot;  Updating URLs for simplified articles...&quot;)
+        for simplified_article in simplified_articles:
+            log(
+                f&quot;    Updating URL for article {simplified_article.id} ({simplified_article.cefr_level})&quot;
+            )
+            final_url_string = (
+                f&quot;https://zeeguu.org/read/article?id={simplified_article.id}&quot;
+            )
+            final_url = Url.find_or_create(session, final_url_string)
+            simplified_article.url = final_url
+            session.add(simplified_article)
+
+        # Commit URL updates
+        log(f&quot;  Committing URL updates...&quot;)
+        session.commit()
+        log(f&quot;  URL updates committed&quot;)
+
+        # Update parent article's ES document with new available_cefr_levels
+        log(f&quot;  Updating parent article in Elasticsearch...&quot;)
+        try:
+            from zeeguu.core.elastic.indexing import create_or_update_article
+
+            create_or_update_article(original_article, session)
+            log(f&quot;  Elasticsearch update completed&quot;)
+        except Exception as e:
+            log(f&quot;  WARNING: Failed to update parent article in ES: {e}&quot;)
+            # Don't fail the whole operation just because ES update failed
+
+        # Log grammar corrections if any were made
+        if uncorrected_versions:
+            log(f&quot;  Logging grammar corrections...&quot;)
+            try:
+                from zeeguu.core.model.grammar_correction_log import (
+                    GrammarCorrectionLog,
+                    CorrectionFieldType,
+                )
+                from zeeguu.core.model.ai_generator import AIGenerator
+                from .grammar_correction_service import ANTHROPIC_CORRECTION_MODEL
+
+                field_to_enum = {
+                    &quot;title&quot;: CorrectionFieldType.TITLE,
+                    &quot;content&quot;: CorrectionFieldType.CONTENT,
+                    &quot;summary&quot;: CorrectionFieldType.SUMMARY,
+                }
+
+                # Get or create AIGenerator records
+                simplification_ai_generator = AIGenerator.find_or_create(
+                    session, model_name
+                )
+                correction_ai_generator = AIGenerator.find_or_create(
+                    session, ANTHROPIC_CORRECTION_MODEL
+                )
+
+                for simplified_article in simplified_articles:
+                    level = simplified_article.cefr_level
+                    if level in uncorrected_versions and level in versions:
+                        uncorrected = uncorrected_versions[level]
+                        corrected = versions[level]
+
+                        # Log each field if it changed
+                        for field in [&quot;title&quot;, &quot;content&quot;, &quot;summary&quot;]:
+                            if field in uncorrected and field in corrected:
+                                GrammarCorrectionLog.log_correction(
+                                    session=session,
+                                    article_id=simplified_article.id,
+                                    field_type=field_to_enum[field],
+                                    original_text=uncorrected[field],
+                                    corrected_text=corrected[field],
+                                    language_id=original_article.language_id,
+                                    correction_ai_generator_id=correction_ai_generator.id,
+                                    simplification_ai_generator_id=simplification_ai_generator.id,
+                                )
+
+                session.commit()
+                log(f&quot;  Grammar corrections logged&quot;)
+            except Exception as e:
+                log(f&quot;  WARNING: Failed to log grammar corrections: {e}&quot;)
+                # Don't fail the whole operation just because logging failed
+
+        # Collect classifications detected by LLM
+        classifications = []
+        if is_disturbing:
+            log(f&quot;  LLM detected disturbing content - will be tagged by caller&quot;)
+            classifications.append((&quot;DISTURBING&quot;, &quot;LLM&quot;))
+
+        log(
+            f&quot;SUCCESS: Created {len(simplified_articles)} simplified versions for article {original_article.id}&quot;
+        )
+        log(f&quot;  Original level (AI-assessed): {original_level}&quot;)
+        log(f&quot;  Created levels: {[a.cefr_level for a in simplified_articles]}&quot;)
+        log(f&quot;  Article IDs: {[a.id for a in simplified_articles]}&quot;)
+        return simplified_articles, classifications
+
+    except Exception as e:
+        error_msg = str(e)
+        log(
+            f&quot;ERROR: Failed to auto-create simplified versions for article {original_article.id}&quot;
+        )
+        log(f&quot;  Error type: {type(e).__name__}&quot;)
+        log(f&quot;  Error message: {error_msg}&quot;)
+
+        # Provide specific guidance for common errors
+        if &quot;incomplete due to paywall&quot; in error_msg:
+            log(
+                f&quot;  REASON: Article appears to be truncated by paywall - consider marking as broken&quot;
+            )
+        elif &quot;DEEPSEEK_API&quot; in error_msg:
+            log(f&quot;  REASON: API key missing or invalid&quot;)
+        elif &quot;API error&quot; in error_msg:
+            log(f&quot;  REASON: External API failure - may be temporary&quot;)
+        else:
+            log(f&quot;  REASON: Unexpected error during simplification process&quot;)
+
+        # Only rollback for specific database-related errors that might have corrupted the session
+        # Don't rollback for API failures or missing configurations
+        if (
+            &quot;IntegrityError&quot; in str(type(e))
+            or &quot;DataError&quot; in str(type(e))
+            or &quot;database&quot; in error_msg.lower()
+            or &quot;constraint&quot; in error_msg.lower()
+        ):
+            log(f&quot;  DATABASE ERROR: Rolling back session due to database-related error&quot;)
+            session.rollback()
+        else:
+            log(
+                f&quot;  NO ROLLBACK: Error is not database-related, preserving original article&quot;
+            )
+
+        return [], []
+
+
+def create_user_specific_simplified_version(session, article, target_level):
+    &quot;&quot;&quot;
+    Create a single simplified version of an article for a specific CEFR level.
+    Much faster than creating all levels.
+
+    Args:
+        session: Database session
+        article: Original article to simplify
+        target_level: CEFR level to create (e.g., &quot;A2&quot;)
+
+    Returns:
+        Simplified Article object or None if failed
+    &quot;&quot;&quot;
+    from zeeguu.logging import log
+
+    log(f&quot;Creating simplified version for article {article.id} at level {target_level}&quot;)
+
+    try:
+        # Get the original article's assessed level
+        from zeeguu.core.language.fk_to_cefr import fk_to_cefr
+
+        original_level = article.cefr_level or fk_to_cefr(article.get_fk_difficulty())
+
+        # Don't simplify if target level is same or higher than original
+        cefr_order = [&quot;A1&quot;, &quot;A2&quot;, &quot;B1&quot;, &quot;B2&quot;, &quot;C1&quot;, &quot;C2&quot;]
+        if target_level not in cefr_order or original_level not in cefr_order:
+            log(
+                f&quot;Invalid CEFR levels: original={original_level}, target={target_level}&quot;
+            )
+            return None
+
+        target_index = cefr_order.index(target_level)
+        original_index = cefr_order.index(original_level)
+
+        if target_index &gt;= original_index:
+            log(
+                f&quot;Target level {target_level} is not simpler than original {original_level}&quot;
+            )
+            return None
+
+        # Create the simplified version using targeted prompt
+        simplified_content = _create_targeted_simplified_version(
+            article.content,
+            article.title,
+            article.language.code,
+            original_level,
+            target_level,
+        )
+
+        if not simplified_content:
+            log(f&quot;Failed to generate simplified content for {target_level}&quot;)
+            return None
+
+        # Create the new simplified article using the proper method with correct AI model info
+        new_article = Article.create_simplified_version(
+            session=session,
+            parent_article=article,
+            simplified_title=simplified_content[&quot;title&quot;],
+            simplified_content=simplified_content[&quot;content&quot;],
+            simplified_summary=simplified_content.get(&quot;summary&quot;, &quot;&quot;),
+            cefr_level=target_level,
+            ai_model=&quot;claude-3-5-sonnet&quot;,  # Match what SimplificationService actually uses
+            commit=True,
+        )
+
+        log(
+            f&quot;Successfully created simplified article {new_article.id} at {target_level} level&quot;
+        )
+        return new_article
+
+    except Exception as e:
+        log(f&quot;Error creating simplified version: {str(e)}&quot;)
+        session.rollback()
+        return None
+
+
+def create_simplified_version_from_upload(session, upload, target_level):
+    &quot;&quot;&quot;
+    Simplify an ArticleUpload directly at target_level. No parent Article
+    is created; the resulting simplified Article stores source_upload_id
+    as the back-reference. Returns the simplified Article or None.
+    &quot;&quot;&quot;
+    from zeeguu.logging import log
+
+    log(f&quot;Creating simplified article from upload {upload.id} at level {target_level}&quot;)
+
+    cefr_order = [&quot;A1&quot;, &quot;A2&quot;, &quot;B1&quot;, &quot;B2&quot;, &quot;C1&quot;, &quot;C2&quot;]
+    if target_level not in cefr_order:
+        log(f&quot;Invalid target CEFR level: {target_level}&quot;)
+        return None
+
+    if not upload.language:
+        log(f&quot;Upload {upload.id} has no detected language; cannot simplify&quot;)
+        return None
+
+    content = upload.text_content or upload.raw_html or &quot;&quot;
+    title = upload.title or &quot;&quot;
+    if not content.strip():
+        log(f&quot;Upload {upload.id} has no content to simplify&quot;)
+        return None
+
+    try:
+        result = _create_targeted_simplified_version(
+            content,
+            title,
+            upload.language.code,
+            None,  # original_level unknown and unused by the service
+            target_level,
+        )
+        if not result:
+            log(f&quot;Simplification LLM returned nothing for upload {upload.id}&quot;)
+            return None
+
+        return Article.create_simplified_version(
+            session=session,
+            source_upload=upload,
+            simplified_title=result[&quot;title&quot;],
+            simplified_content=result[&quot;content&quot;],
+            simplified_summary=result.get(&quot;summary&quot;, &quot;&quot;),
+            cefr_level=target_level,
+            ai_model=&quot;claude-3-5-sonnet&quot;,
+            commit=True,
+        )
+    except Exception as e:
+        log(f&quot;Error simplifying upload {upload.id}: {e}&quot;)
+        session.rollback()
+        return None
+
+
+def _create_targeted_simplified_version(
+    content, title, language_code, original_level, target_level
+):
+    &quot;&quot;&quot;
+    Create a simplified version targeting a specific CEFR level using the new SimplificationService.
+    &quot;&quot;&quot;
+    from zeeguu.core.llm_services.simplification_service import (
+        get_simplification_service,
+    )
+
+    service = get_simplification_service()
+    return service.simplify_text(title, content, target_level, language_code)
+
+
+def assess_article_cefr_level(title, content, language_code):
+    &quot;&quot;&quot;
+    Assess the CEFR level of an article using LLM fallback chain (Anthropic &rarr; DeepSeek).
+
+    Args:
+        title: Article title
+        content: Article content
+        language_code: Language code (e.g., 'da', 'es')
+
+    Returns:
+        Tuple of (cefr_level, method) where:
+        - cefr_level: CEFR level string (A1, A2, B1, B2, C1, C2) or None if failed
+        - method: Assessment method used (&quot;llm_assessed_anthropic&quot; or &quot;llm_assessed_deepseek&quot;)
+    &quot;&quot;&quot;
+    from zeeguu.core.llm_services.simplification_service import (
+        get_simplification_service,
+    )
+
+    service = get_simplification_service()
+    cefr_level, topic, method = service.assess_cefr_and_topic_with_fallback(
+        title, content, language_code
+    )
+    return (cefr_level, method)
+
+
+def assess_article_cefr_level_deepseek_only(title, content, language_code):
+    &quot;&quot;&quot;
+    Assess the CEFR level using DeepSeek only for consistency with batch crawling.
+    Use this when creating clones/copies to ensure same model evaluates as during crawling.
+
+    Args:
+        title: Article title
+        content: Article content
+        language_code: Language code (e.g., 'da', 'es')
+
+    Returns:
+        CEFR level string (A1, A2, B1, B2, C1, C2) or None if failed
+    &quot;&quot;&quot;
+    from zeeguu.core.llm_services.simplification_service import (
+        get_simplification_service,
+    )
+
+    service = get_simplification_service()
+    return service.assess_cefr_level_deepseek_only(title, content, language_code)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

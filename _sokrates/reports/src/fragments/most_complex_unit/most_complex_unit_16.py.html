@@ -1,0 +1,129 @@
+<html>
+<head>
+    <title>def build_daily_lesson()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def build_daily_lesson()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/audio_lessons/lesson_builder.py [0:0]</i></p>
+<ul>
+    <li><b>71</b> lines of code</li>
+    <li><b>28</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+    def build_daily_lesson(self, daily_lesson: DailyAudioLesson, voice_synthesizer=None) -&gt; str:
+        &quot;&quot;&quot;
+        Build a complete daily lesson by concatenating all segment audio files.
+
+        Args:
+            daily_lesson: The DailyAudioLesson instance with segments
+
+        Returns:
+            Path to the generated daily lesson MP3 file
+        &quot;&quot;&quot;
+        audio_segments = []
+        content_segment_count = 0
+
+        # Determine languages for transitions and outro
+        teacher_language = None
+        learned_language = None
+        if daily_lesson.user:
+            if daily_lesson.user.native_language:
+                teacher_language = daily_lesson.user.native_language.code
+            if daily_lesson.user.learned_language:
+                learned_language = daily_lesson.user.learned_language.code
+
+        # Process segments in order
+        segments_list = list(daily_lesson.segments)
+
+        for idx, segment in enumerate(segments_list):
+
+            audio_path = None
+
+            if (
+                segment.segment_type == &quot;meaning_lesson&quot;
+                and segment.audio_lesson_meaning
+            ):
+                # Add transition before 2nd+ meaning segments
+                content_segment_count += 1
+                if content_segment_count &gt; 1 and voice_synthesizer and teacher_language:
+                    # Add silence then transition phrase
+                    audio_segments.append(AudioSegment.silent(duration=2000))
+                    transition = self._get_transition_audio(voice_synthesizer, teacher_language)
+                    audio_segments.append(transition)
+                    audio_segments.append(AudioSegment.silent(duration=1500))
+
+                # Use the individual meaning lesson audio
+                relative_path = segment.audio_lesson_meaning.audio_file_path
+                # Remove leading /audio/ since we're already in /$ZEEGUU_DATA_FOLDER/audio
+                if relative_path.startswith(&quot;/audio/&quot;):
+                    relative_path = relative_path[7:]  # Remove '/audio/'
+                audio_path = os.path.join(self.audio_dir, relative_path)
+
+            elif (
+                segment.segment_type == &quot;dialogue_lesson&quot;
+                and segment.audio_lesson_dialogue
+            ):
+                content_segment_count += 1
+                # Add teacher intro before dialogue
+                if voice_synthesizer and teacher_language:
+                    intro = self._get_dialogue_intro_audio(voice_synthesizer, teacher_language)
+                    audio_segments.append(intro)
+                    audio_segments.append(AudioSegment.silent(duration=1500))
+
+                relative_path = segment.audio_lesson_dialogue.audio_file_path
+                if relative_path.startswith(&quot;/audio/&quot;):
+                    relative_path = relative_path[7:]
+                audio_path = os.path.join(self.audio_dir, relative_path)
+
+            elif (
+                segment.segment_type in [&quot;intro&quot;, &quot;outro&quot;]
+                and segment.daily_audio_lesson_wrapper
+            ):
+                # Use the wrapper audio
+                relative_path = segment.daily_audio_lesson_wrapper.audio_file_path
+                audio_path = os.path.join(self.audio_dir, relative_path.lstrip(&quot;/&quot;))
+
+            else:
+                audio_path = None
+
+            if audio_path and os.path.exists(audio_path):
+                log(f&quot;Adding segment audio: {audio_path}&quot;)
+                audio_segment = AudioSegment.from_mp3(audio_path)
+                audio_segments.append(audio_segment)
+            else:
+                log(
+                    f&quot;Warning: Audio file not found for segment {segment.id}: {audio_path}&quot;
+                )
+
+        # Add outro after all segments
+        if voice_synthesizer and teacher_language and content_segment_count &gt; 0:
+            audio_segments.append(AudioSegment.silent(duration=2000))
+            has_dialogue = any(s.segment_type == &quot;dialogue_lesson&quot; for s in segments_list)
+            audio_segments.extend(self._get_outro_segments(voice_synthesizer, teacher_language, learned_language, is_dialogue=has_dialogue))
+
+        # Combine all audio segments
+        if audio_segments:
+            combined_audio = audio_segments[0]
+            for segment in audio_segments[1:]:
+                combined_audio += segment
+        else:
+            # Create a short silence if no audio segments
+            log(&quot;Warning: No audio segments found, creating empty lesson&quot;)
+            combined_audio = AudioSegment.silent(duration=1000)  # 1 second silence
+
+        # Save the final daily lesson audio
+        output_path = os.path.join(self.daily_lessons_dir, f&quot;{daily_lesson.id}.mp3&quot;)
+        combined_audio.export(output_path, format=&quot;mp3&quot;)
+
+        log(f&quot;Generated daily lesson audio: {output_path}&quot;)
+        return output_path
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

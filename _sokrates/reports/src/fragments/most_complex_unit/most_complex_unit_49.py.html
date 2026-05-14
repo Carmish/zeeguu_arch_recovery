@@ -1,0 +1,109 @@
+<html>
+<head>
+    <title>def _tokenize_fragments()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def _tokenize_fragments()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/model/article.py [0:0]</i></p>
+<ul>
+    <li><b>63</b> lines of code</li>
+    <li><b>18</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+    def _tokenize_fragments(self, tokenizer):
+        &quot;&quot;&quot;
+        Tokenize article fragments with batch MWE processing for efficiency.
+
+        Uses batch tokenization when available (StanzaServiceClient) to process
+        all fragments in a single HTTP request instead of N sequential requests.
+
+        For hybrid languages (de, nl, sv, da, no, en, el), uses a single LLM call
+        to process all sentences in all fragments.
+        &quot;&quot;&quot;
+        from zeeguu.core.model.context_identifier import ContextIdentifier
+        from zeeguu.core.model.context_type import ContextType
+        from zeeguu.core.model.article_fragment import ArticleFragment
+        from zeeguu.core.mwe import enrich_tokens_with_mwe
+        from zeeguu.core.mwe.enricher import HYBRID_LANGUAGES
+
+        use_hybrid = self.language.code in HYBRID_LANGUAGES
+
+        fragments_list = list(
+            ArticleFragment.get_all_article_fragments_in_order(self.id)
+        )
+        fragment_tokens_list = []
+        all_fragment_sentences = []
+
+        # Batch tokenization: process all fragments in a single call if supported
+        if hasattr(tokenizer, 'tokenize_batch'):
+            texts = [f.text.content for f in fragments_list]
+            fragment_tokens_list = tokenizer.tokenize_batch(texts, flatten=False)
+        else:
+            # Fallback: tokenize each fragment individually
+            for frag_idx, fragment in enumerate(fragments_list):
+                frag_tokens = tokenizer.tokenize_text(fragment.text.content, flatten=False)
+                fragment_tokens_list.append(frag_tokens)
+
+        # Collect sentences for batch MWE processing
+        for frag_idx, frag_tokens in enumerate(fragment_tokens_list):
+            for para_idx, para in enumerate(frag_tokens):
+                for sent_idx, sentence in enumerate(para):
+                    all_fragment_sentences.append(
+                        (frag_idx, para_idx, sent_idx, sentence)
+                    )
+
+        # Batch MWE detection
+        if all_fragment_sentences:
+            if use_hybrid:
+                from zeeguu.core.mwe.llm_mwe_detector import BatchHybridMWEStrategy
+                from zeeguu.core.mwe.enricher import MWEDetector
+
+                batch_strategy = BatchHybridMWEStrategy(self.language.code)
+                sentences_only = [s[3] for s in all_fragment_sentences]
+                mwe_results = batch_strategy.detect_batch(sentences_only)
+
+                detector = MWEDetector(self.language.code, &quot;hybrid&quot;)
+                for idx, (frag_idx, para_idx, sent_idx, tokens) in enumerate(
+                    all_fragment_sentences
+                ):
+                    if idx &lt; len(mwe_results):
+                        detector._apply_mwe_groups(
+                            tokens, mwe_results[idx], para_idx, sent_idx
+                        )
+            else:
+                # Use stanza for non-hybrid languages
+                for frag_tokens in fragment_tokens_list:
+                    enrich_tokens_with_mwe(
+                        frag_tokens, self.language.code, mode=&quot;stanza&quot;
+                    )
+
+        # Build result
+        tokenized_fragments = []
+        for frag_idx, fragment in enumerate(fragments_list):
+            tokenized_fragments.append(
+                {
+                    &quot;context_identifier&quot;: ContextIdentifier(
+                        ContextType.ARTICLE_FRAGMENT,
+                        article_fragment_id=fragment.id,
+                        article_id=self.id,
+                    ).as_dictionary(),
+                    &quot;formatting&quot;: fragment.formatting,
+                    &quot;tokens&quot;: (
+                        fragment_tokens_list[frag_idx]
+                        if frag_idx &lt; len(fragment_tokens_list)
+                        else []
+                    ),
+                }
+            )
+
+        return tokenized_fragments
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

@@ -1,0 +1,208 @@
+<html>
+<head>
+    <title>zeeguu/core/content_cleaning/content_cleaner.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/content_cleaning/content_cleaner.py (<b>140</b> lines of code) (<a href="content_cleaner.py">raw</a>):</h3>
+<div id="editor">import zeeguu.core
+from zeeguu.core.model import Article, Language
+from nltk.tokenize import sent_tokenize
+import os
+import json
+
+JUNK_PATTERNS_TO_REMOVE = [
+    &quot;\nAdvertisement\n&quot;,
+    &quot;\ntrue\n&quot;,
+    &quot;Automatisk opl&aelig;sning\n&quot;,
+    &quot;Som registreret bruger kan du overv&aring;ge emner og journalister og modtage nyhederne i din indbakke og f&oslash;lge din nyhedsstr&oslash;m p&aring; Finans.&quot;,
+    # L'Express, October 19
+    &quot;\nOffre limit&eacute;e. 2 mois pour 1&euro; sans engagement\n&quot;,
+    &quot;\nJe m'abonne\n&quot;,
+    # Hoff Post
+    &quot;&Agrave; voir &eacute;galement sur le HuffPost&quot;,
+    &quot;&Agrave; voir &eacute;galement sur Le HuffPost&quot;,
+    #     Le Monde
+    &quot;Le Monde avec AFP&quot;,
+    &quot;Vous pouvez lire Le Monde sur un seul appareil &agrave; la fois&quot;,
+    &quot;Ce message s'affichera sur l'autre appareil.&quot;,
+    &quot;D&eacute;couvrir les offres multicomptes&quot;,
+    &quot;Pour plus d'informations, merci de contacter notre service commercial.&quot;,
+    #     dk
+    &quot;Artiklen forts&aelig;tter efter annoncen&quot;,
+    # French cookie/ad notices
+    &quot;Passer la publicit&eacute;&quot;,
+    &quot;La suite apr&egrave;s cette publicit&eacute;&quot;,
+    &quot;Quel plaisir de vous retrouver, avant d'acc&eacute;der &agrave; l'&eacute;quipe, merci d'accepter les cookies.&quot;,
+    &quot;Accepter les cookies et acc&eacute;der &agrave; l'&eacute;quipe gratuitement&quot;,
+    &quot;L'&eacute;quipe, les soci&eacute;t&eacute;s de son groupe et utilisent des cookies&quot;,
+    &quot;et pourront &ecirc;tre modifi&eacute;es &agrave; tout moment via le menu&quot;,
+    &quot;Cela nous permet de vous afficher de la publicit&eacute; personnalis&eacute;e&quot;,
+    &quot;En cas de refus, navigation et fonctionnalit&eacute;s seront limit&eacute;es sur le site.&quot;,
+    &quot;Vos pr&eacute;f&eacute;rences s'appliqueront uniquement &agrave; nos sites&quot;,
+    &quot;Plus d'informations : politique de confidentialit&eacute;.&quot;,
+    &quot;L'&eacute;quipe shopping du figaro est ind&eacute;pendante de la r&eacute;daction.&quot;,
+    # German affiliate links
+    &quot;Preis kann jetzt h&ouml;her sein.&quot;,
+    &quot;Der preis f&uuml;r dich bleibt gleich.&quot;,
+    &quot;Mehr erfahren.&quot;,
+    &quot;Der preis f&uuml;r dich bleibt dabei unver&auml;ndert.&quot;,
+    &quot;Diese affiliate-links sind durch ein&quot;,
+    &quot;symbol gekennzeichnet.&quot;,
+    &quot;Wenn du &uuml;ber diese links einkaufst, erhalten wir eine provision&quot;,
+    &quot;Das hilft unserer arbeit.&quot;,
+    &quot;Hat dir der beitrag gefallen?&quot;,
+    &quot;Folge uns auf msn und google news&quot;,
+    # Portuguese editorial disclaimers
+    &quot;Os textos nesta sec&ccedil;&atilde;o refletem a opini&atilde;o pessoal dos autores.&quot;,
+    &quot;N&atilde;o representam a vis&atilde;o nem espelham o seu posicionamento editorial.&quot;,
+    # Swedish account notices
+    &quot;Du vet v&auml;l att du kan skapa ett gratiskonto p&aring; dn?&quot;,
+    # Italian newsletter prompts
+    &quot;Vuoi ricevere tutto il meglio di vogue italia nella tua casella di posta?&quot;,
+    &quot;Iscriviti alla newsletter&quot;,
+    &quot;Notizie e approfondimenti sugli avvenimenti politici&quot;,
+    &quot;Leggi anche:&quot;,
+    # Greek boilerplate
+    &quot;&phi;ό&rho;&tau;&omega;&sigma;&eta; text-to-speech&quot;,
+    &quot;&alpha;&kappa;&omicron;&lambda;&omicron;&upsilon;&theta;ή&sigma;&tau;&epsilon; &tau;&omicron; techmaniacs.gr&quot;,
+    &quot;έ&nu;&alpha;&sigmaf; &alpha;&kappa;ό&mu;&alpha; &tau;&rho;ό&pi;&omicron;&sigmaf; &nu;&alpha; &mu;&alpha;&theta;&alpha;ί&nu;&epsilon;&tau;&epsilon; &tau;&alpha; &pi;ά&nu;&tau;&alpha; &pi;&rho;ώ&tau;&omicron;&iota;&quot;,
+    # French navigation
+    &quot;a lire aussi&quot;,
+    &quot;&agrave; lire aussi&quot;,
+]
+
+JUNK_PATTERNS_DATA_FOLDER = os.path.dirname(__file__)
+JUNK_COUNT_FILEPATH = os.path.join(
+    JUNK_PATTERNS_DATA_FOLDER, &quot;data&quot;, &quot;junk_patterns_found.json&quot;
+)
+
+with open(JUNK_COUNT_FILEPATH, &quot;r&quot;, encoding=&quot;utf-8&quot;) as f:
+    json_data = json.load(f)
+    JUNK_COUNT_PATTERNS = [sent for lang in json_data.values() for sent in lang]
+
+JUNK_PREFIXES = [
+    &quot;Der er ikke opl&aelig;sning af denne artikel, s&aring; den opl&aelig;ses derfor med maskinstemme.&quot;
+]
+
+&quot;&quot;&quot;
+
+    Sometimes newspaper/readability still leaves some individual fragments
+    in the article.text.
+
+
+:param text:
+:return:
+&quot;&quot;&quot;
+
+
+def normalize_sent(text: str):
+    return text.lower().strip()
+
+
+def filter_noise_patterns(
+    article, sent_filter_set, crawl_report=None, feed=None, url=None
+):
+    clean_artcile = &quot;&quot;
+    for paragraph in article.split(&quot;\n\n&quot;):
+        clean_paragraph = &quot;&quot;
+        is_prev_skip = False
+        for sent in sent_tokenize(paragraph):
+            if is_prev_skip and len(sent) &lt;= 10:
+                print(&quot;Skipped (Prev Skipped and Short!): &quot;, sent)
+                if crawl_report is not None:
+                    crawl_report.add_sent_removed(feed, sent, url)
+                continue
+            else:
+                is_prev_skip = False
+            if normalize_sent(sent) in sent_filter_set:
+                print(&quot;Skipped (Repetitive): &quot;, sent)
+                if crawl_report is not None:
+                    crawl_report.add_sent_removed(feed, sent, url)
+                is_prev_skip = True
+                continue
+            clean_paragraph += sent + &quot; &quot;
+        if len(clean_paragraph) &lt; 10:
+            continue
+        clean_artcile += clean_paragraph + &quot;\n\n&quot;
+    return clean_artcile.strip()
+
+
+def cleanup_non_content_bits_w_crawl_report(text: str, crawl_report, feed, url) -&gt; str:
+    if text is None:
+        return None
+    new_text = text
+    new_text = filter_noise_patterns(
+        text, set(JUNK_COUNT_PATTERNS), crawl_report, feed, url
+    )
+    for junk_pattern in JUNK_PATTERNS_TO_REMOVE:
+        cleaned = new_text.replace(junk_pattern, &quot;&quot;)
+
+        if cleaned != new_text:
+            crawl_report.add_sent_removed(feed, junk_pattern, url)
+            print(f&quot;- cleaned: {junk_pattern}&quot;)
+            new_text = cleaned
+
+    clean_text = &quot;&quot;
+    for junk_prefix in JUNK_PREFIXES:
+        for each in new_text.split(&quot;\n&quot;):
+            if each.startswith(junk_prefix):
+                print(&quot;&gt;&gt;&gt;&gt; dropping the Paragraph: &quot; + each)
+                crawl_report.add_sent_removed(feed, junk_pattern, url)
+                continue
+            clean_text += each + &quot;\n&quot;
+
+    return clean_text
+
+
+def cleanup_non_content_bits(text: str):
+    new_text = text
+    new_text = filter_noise_patterns(text, set(JUNK_COUNT_PATTERNS))
+
+    for junk_pattern in JUNK_PATTERNS_TO_REMOVE:
+        cleaned = new_text.replace(junk_pattern, &quot;&quot;)
+
+        if cleaned != new_text:
+            print(f&quot;- cleaned: {junk_pattern}&quot;)
+            new_text = cleaned
+
+    clean_text = &quot;&quot;
+    for junk_prefix in JUNK_PREFIXES:
+        for each in new_text.split(&quot;\n&quot;):
+            if each.startswith(junk_prefix):
+                print(&quot;&gt;&gt;&gt;&gt; dropping the Paragraph: &quot; + each)
+                continue
+            clean_text += each + &quot;\n&quot;
+
+    return clean_text
+
+
+def cleanup_all_articles_in_language(language_code):
+    db_session = zeeguu.core.model.db.session
+    language_id = Language.find(language_code).id
+    all_articles = Article.query.filter_by(language_id=language_id).all()
+    for each in all_articles:
+        cleaned_content = cleanup_non_content_bits(each.get_content())
+        if cleaned_content != each.get_content():
+            each.update_content(db_session, content=cleaned_content, commit=False)
+            print(each.title + &quot;\n\n&quot;)
+    db_session.commit()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

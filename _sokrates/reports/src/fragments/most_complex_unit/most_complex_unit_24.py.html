@@ -1,0 +1,239 @@
+<html>
+<head>
+    <title>def create_app()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def create_app()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/api/app.py [0:0]</i></p>
+<ul>
+    <li><b>138</b> lines of code</li>
+    <li><b>26</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def create_app(testing=False):
+    # *** Creating and starting the App *** #
+    app = Flask(&quot;Zeeguu-API&quot;)
+    CORS(app)
+    if testing:
+        app.testing = True
+
+    # Initialize rate limiter for security-sensitive endpoints
+    init_limiter(app)
+
+    load_configuration_or_abort(
+        app,
+        &quot;ZEEGUU_CONFIG&quot;,
+        [  # first three are required by core
+            &quot;MAX_SESSION&quot;,
+            &quot;SQLALCHEMY_DATABASE_URI&quot;,
+            &quot;SQLALCHEMY_TRACK_MODIFICATIONS&quot;,
+            # next three are required by API when
+            # run locally
+            &quot;DEBUG&quot;,
+            &quot;HOST&quot;,
+            &quot;SECRET_KEY&quot;,
+            # the following are required by the API
+            # for user account creation &amp; password recovery
+            &quot;INVITATION_CODES&quot;,
+            &quot;SMTP_EMAIL&quot;,
+        ],
+    )
+
+    # if we don't specify the charset in the connection string
+    # we are not able to store emojis
+    app.config[&quot;SQLALCHEMY_DATABASE_URI&quot;] += &quot;?charset=utf8mb4&quot;
+    # inspired from: https://stackoverflow.com/a/47278172/1200070
+
+    # Configure connection pool to handle concurrent requests
+    # Only apply pool settings for MySQL, not for SQLite (used in tests)
+    if &quot;mysql&quot; in app.config[&quot;SQLALCHEMY_DATABASE_URI&quot;].lower():
+        # Default is 5 + 10 overflow = 15 total connections
+        # Increase to handle higher concurrency
+        app.config[&quot;SQLALCHEMY_ENGINE_OPTIONS&quot;] = {
+            &quot;pool_size&quot;: 10,  # Core pool size (up from default 5)
+            &quot;max_overflow&quot;: 20,  # Additional connections when pool exhausted (up from default 10)
+            &quot;pool_recycle&quot;: 3600,  # Recycle connections after 1 hour to avoid MySQL timeout
+            &quot;pool_pre_ping&quot;: True,  # Verify connections before using them
+        }
+
+    from zeeguu.core.model.db import db
+
+    db.init_app(app)
+
+    # Add SQL query listener to catch source_text queries
+    from sqlalchemy import event
+    from sqlalchemy.engine import Engine
+    import sys
+
+    @event.listens_for(Engine, &quot;before_cursor_execute&quot;)
+    def detect_source_text_query(conn, cursor, statement, parameters, context, executemany):
+        if &quot;source_text&quot; in statement.lower():
+            # Check if it's a full table scan (SELECT without WHERE on source_text)
+            if &quot;select&quot; in statement.lower() and &quot;from source_text&quot; in statement.lower():
+                if &quot;where&quot; not in statement.lower():
+                    print(f&quot;\n!!! FULL TABLE SCAN DETECTED ON source_text !!!&quot;, file=sys.stderr)
+                    print(f&quot;Statement: {statement[:500]}&quot;, file=sys.stderr)
+                    print(f&quot;Parameters: {parameters}&quot;, file=sys.stderr)
+                    import traceback
+                    print(&quot;Call stack:&quot;, file=sys.stderr)
+                    traceback.print_stack(file=sys.stderr)
+                    sys.stderr.flush()
+
+    # Creating the DB tables if needed
+    # Note that this must be called after all the model classes are loaded
+    # And they are loaded above, in the import db... which implicitly loads the model package
+    with app.app_context():
+        db.create_all()
+
+    # Register event listeners for badges and friendship modules
+    import zeeguu.core.badges.listeners # noqa: F401
+    import zeeguu.core.friends.listeners # noqa: F401
+
+    from .endpoints import api
+
+    app.register_blueprint(api)
+
+    # Apply rate limits to security-sensitive endpoints (login, password reset, account creation)
+    apply_rate_limits_to_endpoints(app)
+
+    # Clean up database session after each request to return connections to pool
+    @app.teardown_request
+    def shutdown_session_request(exception=None):
+        try:
+            db.session.remove()
+        except RuntimeError:
+            # If we're outside of application context (e.g., during test teardown),
+            # the session has already been cleaned up or doesn't need cleanup
+            pass
+        if exception:
+            import sys
+            print(f&quot;[DB-SESSION-TEARDOWN] Exception during request: {exception}&quot;, file=sys.stderr)
+            sys.stderr.flush()
+
+    # Add static file serving for audio files
+    @app.route(&quot;/audio/&lt;path:filename&gt;&quot;)
+    def serve_audio(filename):
+        &quot;&quot;&quot;Serve audio files from the ZEEGUU_DATA_FOLDER/audio directory&quot;&quot;&quot;
+        audio_dir = os.path.join(ZEEGUU_DATA_FOLDER, &quot;audio&quot;)
+        return send_from_directory(audio_dir, filename)
+
+    # We're saving the zeeguu.core.app so we can refer to the config from deep in the code...
+    zeeguu.core.app = app
+
+    # Flask Monitoring Dashboard (skip in dev for faster startup)
+    if app.config.get(&quot;ENABLE_MONITORING_DASHBOARD&quot;, True):
+        try:
+            import flask_monitoringdashboard as dashboard
+
+            dashboard.config.init_from(envvar=&quot;FLASK_MONITORING_DASHBOARD_CONFIG&quot;)
+
+            from zeeguu.core.model import Session
+
+            dashboard.config.get_group_by = lambda: Session.find(request=flask.request).user_id
+            dashboard.bind(app=app)
+
+            warning(&quot;*** Flask Monitoring Dashboard enabled&quot;)
+        except Exception as e:
+            warning(f&quot;*** Flask Monitoring Dashboard not available: {e}&quot;)
+    else:
+        warning(&quot;*** Flask Monitoring Dashboard disabled (ENABLE_MONITORING_DASHBOARD=False)&quot;)
+
+    # print(app.config)
+    # Log the current git commit hash
+    try:
+        import subprocess
+        git_hash = subprocess.check_output(
+            [&quot;git&quot;, &quot;rev-parse&quot;, &quot;HEAD&quot;],
+            cwd=os.path.dirname(__file__),
+            stderr=subprocess.DEVNULL
+        ).decode('utf-8').strip()[:8]
+        git_branch = subprocess.check_output(
+            [&quot;git&quot;, &quot;rev-parse&quot;, &quot;--abbrev-ref&quot;, &quot;HEAD&quot;],
+            cwd=os.path.dirname(__file__),
+            stderr=subprocess.DEVNULL
+        ).decode('utf-8').strip()
+        warning(f&quot;*** ==== ZEEGUU API VERSION: {git_branch}@{git_hash}&quot;)
+    except Exception:
+        warning(&quot;*** ==== ZEEGUU API VERSION: &lt;git info unavailable&gt;&quot;)
+
+    # Log the DB connection string; after masking the password
+    db_connection_string = app.config[&quot;SQLALCHEMY_DATABASE_URI&quot;]
+    anon_conn_string = re.sub(
+        &quot;:([a-zA-Z_][a-zA-Z_0-9\-]*)@&quot;, &quot;:****@&quot;, db_connection_string
+    )
+    warning(&quot;*** ==== ZEEGUU CORE: Linked model with: &quot; + anon_conn_string)
+
+    # Run security configuration checks (skip during testing)
+    if not testing:
+        from zeeguu.api.utils.security_checks import check_security_config
+        check_security_config(app)
+
+    # Preload wordstats in production for faster response times
+    if app.config.get(&quot;PRELOAD_WORDSTATS&quot;, False):
+        warning(&quot;*** Preloading wordstats dictionaries...&quot;)
+        start_time = time.time()
+        from wordstats import LanguageInfo
+
+        # Get all supported languages from the database
+        from zeeguu.core.model import Language
+
+        # Use CODES_OF_LANGUAGES_THAT_CAN_BE_LEARNED for preloading
+        # (these are the languages that have wordstats data)
+        language_codes = Language.CODES_OF_LANGUAGES_THAT_CAN_BE_LEARNED
+
+        # Preload all language dictionaries
+        LanguageInfo.load_in_memory_for(language_codes)
+
+        elapsed = time.time() - start_time
+        warning(f&quot;*** Wordstats preloaded {len(language_codes)} languages in {elapsed:.2f}s&quot;)
+    else:
+        warning(&quot;*** Wordstats will use lazy loading (PRELOAD_WORDSTATS=False)&quot;)
+
+    # Preload Stanza tokenizers to avoid blocking during requests
+    # This must run inside app context since it needs the database
+    # Skip preloading during tests to avoid 8+ second overhead per test file
+    # Environment variable takes precedence over config file (for run_task/crawler containers)
+    with app.app_context():
+        preload_stanza_env = os.environ.get(&quot;PRELOAD_STANZA&quot;, &quot;&quot;).lower()
+        if preload_stanza_env:
+            preload_stanza = preload_stanza_env not in (&quot;false&quot;, &quot;0&quot;, &quot;no&quot;)
+        else:
+            preload_stanza = app.config.get(&quot;PRELOAD_STANZA&quot;, True)
+
+        if preload_stanza and not testing:
+            warning(&quot;*** Preloading Stanza tokenizers...&quot;)
+            start_time = time.time()
+            from zeeguu.core.model import Language
+            from zeeguu.core.tokenization import get_tokenizer, TOKENIZER_MODEL
+
+            language_codes = Language.CODES_OF_LANGUAGES_THAT_CAN_BE_LEARNED
+
+            # Preload tokenizers for all supported languages
+            # Use get_tokenizer() to ensure we create the exact same tokenizer as during requests
+            for lang_code in language_codes:
+                try:
+                    language = Language.find_or_create(lang_code)
+                    # Create tokenizer using the same function as requests (will cache the model)
+                    tokenizer = get_tokenizer(language, TOKENIZER_MODEL)
+                    # Tokenize a dummy word to ensure model is fully loaded
+                    tokenizer.tokenize_text(&quot;test&quot;)
+                    warning(f&quot;*** Preloaded Stanza tokenizer for {lang_code}&quot;)
+                except Exception as e:
+                    warning(f&quot;*** Failed to preload Stanza for {lang_code}: {e}&quot;)
+
+            elapsed = time.time() - start_time
+            warning(f&quot;*** Stanza tokenizers preloaded for {len(language_codes)} languages in {elapsed:.2f}s&quot;)
+        else:
+            warning(&quot;*** Stanza tokenizers will use lazy loading (PRELOAD_STANZA=False)&quot;)
+
+    return app
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

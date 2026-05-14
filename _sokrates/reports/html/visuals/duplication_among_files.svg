@@ -1,0 +1,2275 @@
+<svg width="32021pt" height="756pt"
+ viewBox="0.00 0.00 32021.00 756.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 751.75)">
+<title>G</title>
+<polygon fill="white" stroke="none" points="-4,4 -4,-751.75 32016.75,-751.75 32016.75,4 -4,4"/>
+<!-- [tools/report_generator/explore_report_notebook.ipynb] -->
+<g id="node1" class="node">
+<title>[tools/report_generator/explore_report_notebook.ipynb]</title>
+<polygon fill="#00b2ee" stroke="white" points="401.88,-747.75 41.62,-747.75 41.62,-711.75 401.88,-711.75 401.88,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="221.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/report_generator/explore_report_notebook.ipynb]</text>
+</g>
+<!-- [tools/report_generator/explore_report_notebook.ipynb]&#45;&#45;[tools/report_generator/explore_report_notebook.ipynb] -->
+<g id="edge3" class="edge">
+<title>[tools/report_generator/explore_report_notebook.ipynb]&#45;&#45;[tools/report_generator/explore_report_notebook.ipynb]</title>
+<path fill="none" stroke="#dc143c" stroke-width="2" stroke-opacity="0.439216" d="M402.13,-735.38C413.21,-734.05 419.88,-732.17 419.88,-729.75 419.88,-727.33 413.21,-725.45 402.13,-724.12"/>
+<text xml:space="preserve" text-anchor="middle" x="436.38" y="-725.48" font-family="Arial" font-size="12.00"> 4660 </text>
+</g>
+<!-- [zeeguu/operations/report_generator/explore_report_notebook.ipynb] -->
+<g id="node2" class="node">
+<title>[zeeguu/operations/report_generator/explore_report_notebook.ipynb]</title>
+<polygon fill="#00b2ee" stroke="white" points="443.5,-661.5 0,-661.5 0,-625.5 443.5,-625.5 443.5,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="221.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/operations/report_generator/explore_report_notebook.ipynb]</text>
+</g>
+<!-- [tools/report_generator/explore_report_notebook.ipynb]&#45;&#45;[zeeguu/operations/report_generator/explore_report_notebook.ipynb] -->
+<g id="edge1" class="edge">
+<title>[tools/report_generator/explore_report_notebook.ipynb]&#45;&#45;[zeeguu/operations/report_generator/explore_report_notebook.ipynb]</title>
+<path fill="none" stroke="#dc143c" stroke-width="10" d="M221.75,-711.29C221.75,-696.83 221.75,-676.39 221.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="241.62" y="-682.35" font-family="Arial" font-size="12.00"> 17990 </text>
+</g>
+<!-- [zeeguu/operations/report_generator/explore_report_notebook.ipynb]&#45;&#45;[zeeguu/operations/report_generator/explore_report_notebook.ipynb] -->
+<g id="edge2" class="edge">
+<title>[zeeguu/operations/report_generator/explore_report_notebook.ipynb]&#45;&#45;[zeeguu/operations/report_generator/explore_report_notebook.ipynb]</title>
+<path fill="none" stroke="#dc143c" stroke-width="2" stroke-opacity="0.439216" d="M443.73,-648.74C454.91,-647.44 461.5,-645.69 461.5,-643.5 461.5,-641.31 454.91,-639.56 443.73,-638.26"/>
+<text xml:space="preserve" text-anchor="middle" x="478" y="-639.23" font-family="Arial" font-size="12.00"> 4660 </text>
+</g>
+<!-- [tools/report_generator/generate_report.py] -->
+<g id="node3" class="node">
+<title>[tools/report_generator/generate_report.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="841.5,-747.75 554,-747.75 554,-711.75 841.5,-711.75 841.5,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="697.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/report_generator/generate_report.py]</text>
+</g>
+<!-- [tools/report_generator/generate_report.py]&#45;&#45;[tools/report_generator/generate_report.py] -->
+<g id="edge47" class="edge">
+<title>[tools/report_generator/generate_report.py]&#45;&#45;[tools/report_generator/generate_report.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M841.81,-735.81C852.76,-734.47 859.5,-732.45 859.5,-729.75 859.5,-727.05 852.76,-725.03 841.81,-723.69"/>
+<text xml:space="preserve" text-anchor="middle" x="869.25" y="-725.48" font-family="Arial" font-size="12.00"> 42 </text>
+</g>
+<!-- [zeeguu/operations/report_generator/generate_report.py] -->
+<g id="node4" class="node">
+<title>[zeeguu/operations/report_generator/generate_report.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="883.12,-661.5 512.38,-661.5 512.38,-625.5 883.12,-625.5 883.12,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="697.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/operations/report_generator/generate_report.py]</text>
+</g>
+<!-- [tools/report_generator/generate_report.py]&#45;&#45;[zeeguu/operations/report_generator/generate_report.py] -->
+<g id="edge4" class="edge">
+<title>[tools/report_generator/generate_report.py]&#45;&#45;[zeeguu/operations/report_generator/generate_report.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M697.75,-711.29C697.75,-696.83 697.75,-676.39 697.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="714.25" y="-682.35" font-family="Arial" font-size="12.00"> 1204 </text>
+</g>
+<!-- [zeeguu/operations/report_generator/generate_report.py]&#45;&#45;[zeeguu/operations/report_generator/generate_report.py] -->
+<g id="edge48" class="edge">
+<title>[zeeguu/operations/report_generator/generate_report.py]&#45;&#45;[zeeguu/operations/report_generator/generate_report.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M883.5,-649.06C894.52,-647.73 901.12,-645.88 901.12,-643.5 901.12,-641.12 894.52,-639.27 883.5,-637.94"/>
+<text xml:space="preserve" text-anchor="middle" x="910.88" y="-639.23" font-family="Arial" font-size="12.00"> 42 </text>
+</g>
+<!-- [tools/crawler/crawl_summary/crawl_report.py] -->
+<g id="node5" class="node">
+<title>[tools/crawler/crawl_summary/crawl_report.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1238,-747.75 929.5,-747.75 929.5,-711.75 1238,-711.75 1238,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="1083.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/crawler/crawl_summary/crawl_report.py]</text>
+</g>
+<!-- [zeeguu/operations/crawler/crawl_report.py] -->
+<g id="node6" class="node">
+<title>[zeeguu/operations/crawler/crawl_report.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1228.62,-661.5 938.88,-661.5 938.88,-625.5 1228.62,-625.5 1228.62,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="1083.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/operations/crawler/crawl_report.py]</text>
+</g>
+<!-- [tools/crawler/crawl_summary/crawl_report.py]&#45;&#45;[zeeguu/operations/crawler/crawl_report.py] -->
+<g id="edge5" class="edge">
+<title>[tools/crawler/crawl_summary/crawl_report.py]&#45;&#45;[zeeguu/operations/crawler/crawl_report.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M1083.75,-711.29C1083.75,-696.83 1083.75,-676.39 1083.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="1096.88" y="-682.35" font-family="Arial" font-size="12.00"> 390 </text>
+</g>
+<!-- [zeeguu/core/mwe/stanza_mwe_detector.py] -->
+<g id="node7" class="node">
+<title>[zeeguu/core/mwe/stanza_mwe_detector.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1549.88,-747.75 1255.62,-747.75 1255.62,-711.75 1549.88,-711.75 1549.88,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="1402.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/mwe/stanza_mwe_detector.py]</text>
+</g>
+<!-- [zeeguu/core/mwe/stanza_mwe_detector.py]&#45;&#45;[zeeguu/core/mwe/stanza_mwe_detector.py] -->
+<g id="edge6" class="edge">
+<title>[zeeguu/core/mwe/stanza_mwe_detector.py]&#45;&#45;[zeeguu/core/mwe/stanza_mwe_detector.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M1550.34,-735.75C1561.21,-734.4 1567.88,-732.4 1567.88,-729.75 1567.88,-727.1 1561.21,-725.1 1550.34,-723.75"/>
+<text xml:space="preserve" text-anchor="middle" x="1581" y="-725.48" font-family="Arial" font-size="12.00"> 376 </text>
+</g>
+<!-- [tools/report_generator/data_extractor.py] -->
+<g id="node8" class="node">
+<title>[tools/report_generator/data_extractor.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1887.5,-747.75 1612,-747.75 1612,-711.75 1887.5,-711.75 1887.5,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="1749.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/report_generator/data_extractor.py]</text>
+</g>
+<!-- [zeeguu/operations/report_generator/data_extractor.py] -->
+<g id="node9" class="node">
+<title>[zeeguu/operations/report_generator/data_extractor.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="1929.12,-661.5 1570.38,-661.5 1570.38,-625.5 1929.12,-625.5 1929.12,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="1749.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/operations/report_generator/data_extractor.py]</text>
+</g>
+<!-- [tools/report_generator/data_extractor.py]&#45;&#45;[zeeguu/operations/report_generator/data_extractor.py] -->
+<g id="edge7" class="edge">
+<title>[tools/report_generator/data_extractor.py]&#45;&#45;[zeeguu/operations/report_generator/data_extractor.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M1749.75,-711.29C1749.75,-696.83 1749.75,-676.39 1749.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="1762.88" y="-682.35" font-family="Arial" font-size="12.00"> 342 </text>
+</g>
+<!-- [zeeguu/core/translation_services/translator.py] -->
+<g id="node10" class="node">
+<title>[zeeguu/core/translation_services/translator.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2211.88,-747.75 1905.62,-747.75 1905.62,-711.75 2211.88,-711.75 2211.88,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="2058.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/translation_services/translator.py]</text>
+</g>
+<!-- [zeeguu/core/translation_services/translator.py]&#45;&#45;[zeeguu/core/translation_services/translator.py] -->
+<g id="edge8" class="edge">
+<title>[zeeguu/core/translation_services/translator.py]&#45;&#45;[zeeguu/core/translation_services/translator.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M2212.23,-735.69C2223.18,-734.34 2229.88,-732.36 2229.88,-729.75 2229.88,-727.14 2223.18,-725.16 2212.23,-723.81"/>
+<text xml:space="preserve" text-anchor="middle" x="2243" y="-725.48" font-family="Arial" font-size="12.00"> 338 </text>
+</g>
+<!-- [tools/ml/cefr_trainers/train_cefr_classifiers.py] -->
+<g id="node11" class="node">
+<title>[tools/ml/cefr_trainers/train_cefr_classifiers.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2580.88,-747.75 2274.62,-747.75 2274.62,-711.75 2580.88,-711.75 2580.88,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="2427.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/ml/cefr_trainers/train_cefr_classifiers.py]</text>
+</g>
+<!-- [tools/ml/cefr_trainers/train_cefr_classifiers_with_frequency.py] -->
+<g id="node12" class="node">
+<title>[tools/ml/cefr_trainers/train_cefr_classifiers_with_frequency.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2631.12,-661.5 2224.38,-661.5 2224.38,-625.5 2631.12,-625.5 2631.12,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="2427.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/ml/cefr_trainers/train_cefr_classifiers_with_frequency.py]</text>
+</g>
+<!-- [tools/ml/cefr_trainers/train_cefr_classifiers.py]&#45;&#45;[tools/ml/cefr_trainers/train_cefr_classifiers_with_frequency.py] -->
+<g id="edge9" class="edge">
+<title>[tools/ml/cefr_trainers/train_cefr_classifiers.py]&#45;&#45;[tools/ml/cefr_trainers/train_cefr_classifiers_with_frequency.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M2427.75,-711.29C2427.75,-696.83 2427.75,-676.39 2427.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="2440.88" y="-682.35" font-family="Arial" font-size="12.00"> 290 </text>
+</g>
+<!-- [tools/crawler/crawl_roundrobin.py] -->
+<g id="node13" class="node">
+<title>[tools/crawler/crawl_roundrobin.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2884.25,-661.5 2649.25,-661.5 2649.25,-625.5 2884.25,-625.5 2884.25,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="2766.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/crawler/crawl_roundrobin.py]</text>
+</g>
+<!-- [zeeguu/operations/crawler/crawl.py] -->
+<g id="node14" class="node">
+<title>[zeeguu/operations/crawler/crawl.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2966.12,-553.5 2721.38,-553.5 2721.38,-517.5 2966.12,-517.5 2966.12,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="2843.75" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/operations/crawler/crawl.py]</text>
+</g>
+<!-- [tools/crawler/crawl_roundrobin.py]&#45;&#45;[zeeguu/operations/crawler/crawl.py] -->
+<g id="edge10" class="edge">
+<title>[tools/crawler/crawl_roundrobin.py]&#45;&#45;[zeeguu/operations/crawler/crawl.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M2779.12,-625.47C2793.41,-605.81 2816.77,-573.63 2831.15,-553.84"/>
+<text xml:space="preserve" text-anchor="middle" x="2829.77" y="-585.23" font-family="Arial" font-size="12.00"> 286 </text>
+</g>
+<!-- [zeeguu/operations/crawler/crawl.py]&#45;&#45;[zeeguu/operations/crawler/crawl.py] -->
+<g id="edge133" class="edge">
+<title>[zeeguu/operations/crawler/crawl.py]&#45;&#45;[zeeguu/operations/crawler/crawl.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M2966.48,-541.87C2977.33,-540.53 2984.12,-538.41 2984.12,-535.5 2984.12,-532.59 2977.33,-530.47 2966.48,-529.13"/>
+<text xml:space="preserve" text-anchor="middle" x="2993.88" y="-531.23" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/api/endpoints/user_stats.py] -->
+<g id="node15" class="node">
+<title>[zeeguu/api/endpoints/user_stats.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="3213.38,-747.75 2970.12,-747.75 2970.12,-711.75 3213.38,-711.75 3213.38,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="3091.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/user_stats.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/user_stats.py]&#45;&#45;[zeeguu/api/endpoints/user_stats.py] -->
+<g id="edge11" class="edge">
+<title>[zeeguu/api/endpoints/user_stats.py]&#45;&#45;[zeeguu/api/endpoints/user_stats.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M3213.82,-736.12C3224.61,-734.78 3231.38,-732.66 3231.38,-729.75 3231.38,-726.84 3224.61,-724.72 3213.82,-723.38"/>
+<text xml:space="preserve" text-anchor="middle" x="3244.5" y="-725.48" font-family="Arial" font-size="12.00"> 210 </text>
+</g>
+<!-- [zeeguu/core/llm_services/simplification_service.py] -->
+<g id="node16" class="node">
+<title>[zeeguu/core/llm_services/simplification_service.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="3729.12,-553.5 3394.38,-553.5 3394.38,-517.5 3729.12,-517.5 3729.12,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="3561.75" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/llm_services/simplification_service.py]</text>
+</g>
+<!-- [zeeguu/core/llm_services/simplification_service.py]&#45;&#45;[zeeguu/core/llm_services/simplification_service.py] -->
+<g id="edge12" class="edge">
+<title>[zeeguu/core/llm_services/simplification_service.py]&#45;&#45;[zeeguu/core/llm_services/simplification_service.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M3729.42,-541.27C3740.45,-539.93 3747.12,-538.01 3747.12,-535.5 3747.12,-532.99 3740.45,-531.07 3729.42,-529.73"/>
+<text xml:space="preserve" text-anchor="middle" x="3760.25" y="-531.23" font-family="Arial" font-size="12.00"> 168 </text>
+</g>
+<!-- [tools/mark_broken_articles.py] -->
+<g id="node17" class="node">
+<title>[tools/mark_broken_articles.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="4105.25,-747.75 3894.25,-747.75 3894.25,-711.75 4105.25,-711.75 4105.25,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="3999.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/mark_broken_articles.py]</text>
+</g>
+<!-- [tools/mark_broken_articles.py]&#45;&#45;[tools/mark_broken_articles.py] -->
+<g id="edge43" class="edge">
+<title>[tools/mark_broken_articles.py]&#45;&#45;[tools/mark_broken_articles.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M4105.59,-736.4C4116.37,-735.08 4123.25,-732.87 4123.25,-729.75 4123.25,-726.63 4116.37,-724.42 4105.59,-723.1"/>
+<text xml:space="preserve" text-anchor="middle" x="4133" y="-725.48" font-family="Arial" font-size="12.00"> 46 </text>
+</g>
+<!-- [tools/tag_advertorials.py] -->
+<g id="node18" class="node">
+<title>[tools/tag_advertorials.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="4088.38,-661.5 3911.12,-661.5 3911.12,-625.5 4088.38,-625.5 4088.38,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="3999.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/tag_advertorials.py]</text>
+</g>
+<!-- [tools/mark_broken_articles.py]&#45;&#45;[tools/tag_advertorials.py] -->
+<g id="edge13" class="edge">
+<title>[tools/mark_broken_articles.py]&#45;&#45;[tools/tag_advertorials.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M3999.75,-711.29C3999.75,-696.83 3999.75,-676.39 3999.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="4012.88" y="-682.35" font-family="Arial" font-size="12.00"> 160 </text>
+</g>
+<!-- [tools/crawler/crawl.py] -->
+<g id="node19" class="node">
+<title>[tools/crawler/crawl.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="2952.5,-747.75 2791,-747.75 2791,-711.75 2952.5,-711.75 2952.5,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="2871.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/crawler/crawl.py]</text>
+</g>
+<!-- [tools/crawler/crawl.py]&#45;&#45;[tools/crawler/crawl_roundrobin.py] -->
+<g id="edge14" class="edge">
+<title>[tools/crawler/crawl.py]&#45;&#45;[tools/crawler/crawl_roundrobin.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M2849.99,-711.29C2831.97,-696.83 2806.49,-676.39 2788.48,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="2838.66" y="-682.35" font-family="Arial" font-size="12.00"> 146 </text>
+</g>
+<!-- [tools/crawler/crawl.py]&#45;&#45;[zeeguu/operations/crawler/crawl.py] -->
+<g id="edge25" class="edge">
+<title>[tools/crawler/crawl.py]&#45;&#45;[zeeguu/operations/crawler/crawl.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M2880.04,-711.45C2888.83,-690.85 2900.45,-655.44 2892.75,-625.5 2885.81,-598.51 2868.77,-570.93 2856.74,-553.78"/>
+<text xml:space="preserve" text-anchor="middle" x="2905.01" y="-639.23" font-family="Arial" font-size="12.00"> 90 </text>
+</g>
+<!-- [zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="node20" class="node">
+<title>[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="4513.12,-747.75 4160.38,-747.75 4160.38,-711.75 4513.12,-711.75 4513.12,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="4336.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/audio_lessons/daily_lesson_generator.py]</text>
+</g>
+<!-- [zeeguu/core/audio_lessons/daily_lesson_generator.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py] -->
+<g id="edge15" class="edge">
+<title>[zeeguu/core/audio_lessons/daily_lesson_generator.py]&#45;&#45;[zeeguu/core/audio_lessons/daily_lesson_generator.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M4513.43,-735.42C4524.47,-734.08 4531.12,-732.19 4531.12,-729.75 4531.12,-727.31 4524.47,-725.42 4513.43,-724.08"/>
+<text xml:space="preserve" text-anchor="middle" x="4544.25" y="-725.48" font-family="Arial" font-size="12.00"> 142 </text>
+</g>
+<!-- [zeeguu/core/model/user_browsing_session.py] -->
+<g id="node21" class="node">
+<title>[zeeguu/core/model/user_browsing_session.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="4884,-747.75 4575.5,-747.75 4575.5,-711.75 4884,-711.75 4884,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="4729.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_browsing_session.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_browsing_session.py]&#45;&#45;[zeeguu/core/model/user_browsing_session.py] -->
+<g id="edge118" class="edge">
+<title>[zeeguu/core/model/user_browsing_session.py]&#45;&#45;[zeeguu/core/model/user_browsing_session.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M4884.24,-735.69C4895.26,-734.34 4902,-732.36 4902,-729.75 4902,-727.14 4895.26,-725.16 4884.24,-723.81"/>
+<text xml:space="preserve" text-anchor="middle" x="4911.75" y="-725.48" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/model/user_reading_session.py] -->
+<g id="node22" class="node">
+<title>[zeeguu/core/model/user_reading_session.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="4644.5,-553.5 4345,-553.5 4345,-517.5 4644.5,-517.5 4644.5,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="4494.75" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_reading_session.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_browsing_session.py]&#45;&#45;[zeeguu/core/model/user_reading_session.py] -->
+<g id="edge16" class="edge">
+<title>[zeeguu/core/model/user_browsing_session.py]&#45;&#45;[zeeguu/core/model/user_reading_session.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M4605.88,-711.29C4517.53,-697.56 4412.03,-678.06 4398.5,-661.5 4367.73,-623.86 4425.9,-578.32 4464.47,-553.93"/>
+<text xml:space="preserve" text-anchor="middle" x="4411.62" y="-639.23" font-family="Arial" font-size="12.00"> 126 </text>
+</g>
+<!-- [zeeguu/core/model/user_listening_session.py] -->
+<g id="node38" class="node">
+<title>[zeeguu/core/model/user_listening_session.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="4737.38,-661.5 4434.12,-661.5 4434.12,-625.5 4737.38,-625.5 4737.38,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="4585.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_listening_session.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_browsing_session.py]&#45;&#45;[zeeguu/core/model/user_listening_session.py] -->
+<g id="edge28" class="edge">
+<title>[zeeguu/core/model/user_browsing_session.py]&#45;&#45;[zeeguu/core/model/user_listening_session.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M4699.91,-711.29C4675.2,-696.83 4640.25,-676.39 4615.55,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="4676.12" y="-682.35" font-family="Arial" font-size="12.00"> 76 </text>
+</g>
+<!-- [zeeguu/core/model/user_watching_session.py] -->
+<g id="node41" class="node">
+<title>[zeeguu/core/model/user_watching_session.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="4896,-467.25 4587.5,-467.25 4587.5,-431.25 4896,-431.25 4896,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="4741.75" y="-444.57" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_watching_session.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_browsing_session.py]&#45;&#45;[zeeguu/core/model/user_watching_session.py] -->
+<g id="edge69" class="edge">
+<title>[zeeguu/core/model/user_browsing_session.py]&#45;&#45;[zeeguu/core/model/user_watching_session.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M4735.43,-711.28C4739.5,-697.84 4744.61,-678.71 4746.75,-661.5 4755.65,-589.96 4747.94,-503.78 4743.88,-467.59"/>
+<text xml:space="preserve" text-anchor="middle" x="4760.61" y="-585.23" font-family="Arial" font-size="12.00"> 30 </text>
+</g>
+<!-- [zeeguu/core/model/user_exercise_session.py] -->
+<g id="node53" class="node">
+<title>[zeeguu/core/model/user_exercise_session.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="5094.75,-607.5 4790.75,-607.5 4790.75,-571.5 5094.75,-571.5 5094.75,-607.5"/>
+<text xml:space="preserve" text-anchor="middle" x="4942.75" y="-584.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_exercise_session.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_browsing_session.py]&#45;&#45;[zeeguu/core/model/user_exercise_session.py] -->
+<g id="edge42" class="edge">
+<title>[zeeguu/core/model/user_browsing_session.py]&#45;&#45;[zeeguu/core/model/user_exercise_session.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M4756.3,-711.52C4797.11,-685.03 4874.85,-634.57 4915.87,-607.95"/>
+<text xml:space="preserve" text-anchor="middle" x="4814.48" y="-682.35" font-family="Arial" font-size="12.00"> 48 </text>
+</g>
+<!-- [zeeguu/core/model/user_reading_session.py]&#45;&#45;[zeeguu/core/model/user_reading_session.py] -->
+<g id="edge52" class="edge">
+<title>[zeeguu/core/model/user_reading_session.py]&#45;&#45;[zeeguu/core/model/user_reading_session.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M4644.94,-541.47C4655.83,-540.12 4662.5,-538.13 4662.5,-535.5 4662.5,-532.87 4655.83,-530.88 4644.94,-529.53"/>
+<text xml:space="preserve" text-anchor="middle" x="4672.25" y="-531.23" font-family="Arial" font-size="12.00"> 40 </text>
+</g>
+<!-- [zeeguu/core/model/user_reading_session.py]&#45;&#45;[zeeguu/core/model/user_watching_session.py] -->
+<g id="edge30" class="edge">
+<title>[zeeguu/core/model/user_reading_session.py]&#45;&#45;[zeeguu/core/model/user_watching_session.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M4545.93,-517.04C4588.32,-502.58 4648.26,-482.14 4690.64,-467.68"/>
+<text xml:space="preserve" text-anchor="middle" x="4642.79" y="-488.1" font-family="Arial" font-size="12.00"> 68 </text>
+</g>
+<!-- [tools/crawler/feed_retrieval.py] -->
+<g id="node23" class="node">
+<title>[tools/crawler/feed_retrieval.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="5192.75,-747.75 4978.75,-747.75 4978.75,-711.75 5192.75,-711.75 5192.75,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="5085.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/crawler/feed_retrieval.py]</text>
+</g>
+<!-- [zeeguu/operations/crawler/feed_retrieval.py] -->
+<g id="node24" class="node">
+<title>[zeeguu/operations/crawler/feed_retrieval.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="5234.38,-661.5 4937.12,-661.5 4937.12,-625.5 5234.38,-625.5 5234.38,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="5085.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/operations/crawler/feed_retrieval.py]</text>
+</g>
+<!-- [tools/crawler/feed_retrieval.py]&#45;&#45;[zeeguu/operations/crawler/feed_retrieval.py] -->
+<g id="edge17" class="edge">
+<title>[tools/crawler/feed_retrieval.py]&#45;&#45;[zeeguu/operations/crawler/feed_retrieval.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M5085.75,-711.29C5085.75,-696.83 5085.75,-676.39 5085.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="5098.88" y="-682.35" font-family="Arial" font-size="12.00"> 124 </text>
+</g>
+<!-- [tools/old/remove_unreferenced_articles.py] -->
+<g id="node25" class="node">
+<title>[tools/old/remove_unreferenced_articles.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="5530.25,-747.75 5241.25,-747.75 5241.25,-711.75 5530.25,-711.75 5530.25,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="5385.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/old/remove_unreferenced_articles.py]</text>
+</g>
+<!-- [tools/remove_unreferenced_articles.py] -->
+<g id="node26" class="node">
+<title>[tools/remove_unreferenced_articles.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="5518.62,-661.5 5252.88,-661.5 5252.88,-625.5 5518.62,-625.5 5518.62,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="5385.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/remove_unreferenced_articles.py]</text>
+</g>
+<!-- [tools/old/remove_unreferenced_articles.py]&#45;&#45;[tools/remove_unreferenced_articles.py] -->
+<g id="edge18" class="edge">
+<title>[tools/old/remove_unreferenced_articles.py]&#45;&#45;[tools/remove_unreferenced_articles.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M5385.75,-711.29C5385.75,-696.83 5385.75,-676.39 5385.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="5398.88" y="-682.35" font-family="Arial" font-size="12.00"> 120 </text>
+</g>
+<!-- [tools/fix_compound_examples.py] -->
+<g id="node27" class="node">
+<title>[tools/fix_compound_examples.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="5777.62,-747.75 5547.88,-747.75 5547.88,-711.75 5777.62,-711.75 5777.62,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="5662.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/fix_compound_examples.py]</text>
+</g>
+<!-- [tools/fix_compound_examples.py]&#45;&#45;[tools/fix_compound_examples.py] -->
+<g id="edge156" class="edge">
+<title>[tools/fix_compound_examples.py]&#45;&#45;[tools/fix_compound_examples.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M5778.02,-736.23C5788.81,-734.9 5795.62,-732.74 5795.62,-729.75 5795.62,-726.76 5788.81,-724.6 5778.02,-723.27"/>
+<text xml:space="preserve" text-anchor="middle" x="5805.38" y="-725.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/fix_underscore_examples.py] -->
+<g id="node28" class="node">
+<title>[tools/fix_underscore_examples.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="5807.88,-661.5 5573.62,-661.5 5573.62,-625.5 5807.88,-625.5 5807.88,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="5690.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/fix_underscore_examples.py]</text>
+</g>
+<!-- [tools/fix_compound_examples.py]&#45;&#45;[tools/fix_underscore_examples.py] -->
+<g id="edge19" class="edge">
+<title>[tools/fix_compound_examples.py]&#45;&#45;[tools/fix_underscore_examples.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M5668.55,-711.29C5673.36,-696.83 5680.15,-676.39 5684.96,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="5691.55" y="-682.35" font-family="Arial" font-size="12.00"> 120 </text>
+</g>
+<!-- [zeeguu/api/endpoints/generated_examples.py] -->
+<g id="node32" class="node">
+<title>[zeeguu/api/endpoints/generated_examples.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="6145.62,-553.5 5837.88,-553.5 5837.88,-517.5 6145.62,-517.5 6145.62,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="5991.75" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/generated_examples.py]</text>
+</g>
+<!-- [tools/fix_underscore_examples.py]&#45;&#45;[zeeguu/api/endpoints/generated_examples.py] -->
+<g id="edge123" class="edge">
+<title>[tools/fix_underscore_examples.py]&#45;&#45;[zeeguu/api/endpoints/generated_examples.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M5740.12,-625.11C5795.91,-605.47 5886.2,-573.67 5942.11,-553.98"/>
+<text xml:space="preserve" text-anchor="middle" x="5895.55" y="-585.23" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/user_statistics/exercise_corectness.py] -->
+<g id="node29" class="node">
+<title>[zeeguu/core/user_statistics/exercise_corectness.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="6534.75,-747.75 6194.75,-747.75 6194.75,-711.75 6534.75,-711.75 6534.75,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="6364.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/user_statistics/exercise_corectness.py]</text>
+</g>
+<!-- [zeeguu/core/user_statistics/exercise_corectness.py]&#45;&#45;[zeeguu/core/user_statistics/exercise_corectness.py] -->
+<g id="edge20" class="edge">
+<title>[zeeguu/core/user_statistics/exercise_corectness.py]&#45;&#45;[zeeguu/core/user_statistics/exercise_corectness.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M6535.08,-735.49C6546.09,-734.15 6552.75,-732.23 6552.75,-729.75 6552.75,-727.27 6546.09,-725.35 6535.08,-724.01"/>
+<text xml:space="preserve" text-anchor="middle" x="6565.88" y="-725.48" font-family="Arial" font-size="12.00"> 120 </text>
+</g>
+<!-- [zeeguu/core/model/user.py] -->
+<g id="node30" class="node">
+<title>[zeeguu/core/model/user.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="6812.25,-747.75 6619.25,-747.75 6619.25,-711.75 6812.25,-711.75 6812.25,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="6715.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user.py]</text>
+</g>
+<!-- [zeeguu/core/model/user.py]&#45;&#45;[zeeguu/core/model/user.py] -->
+<g id="edge39" class="edge">
+<title>[zeeguu/core/model/user.py]&#45;&#45;[zeeguu/core/model/user.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M6812.65,-736.55C6823.34,-735.26 6830.25,-732.99 6830.25,-729.75 6830.25,-726.51 6823.34,-724.24 6812.65,-722.95"/>
+<text xml:space="preserve" text-anchor="middle" x="6840" y="-725.48" font-family="Arial" font-size="12.00"> 54 </text>
+</g>
+<!-- [zeeguu/core/word_scheduling/basicSR/basicSR.py] -->
+<g id="node31" class="node">
+<title>[zeeguu/core/word_scheduling/basicSR/basicSR.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="6882.38,-661.5 6549.12,-661.5 6549.12,-625.5 6882.38,-625.5 6882.38,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="6715.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/word_scheduling/basicSR/basicSR.py]</text>
+</g>
+<!-- [zeeguu/core/model/user.py]&#45;&#45;[zeeguu/core/word_scheduling/basicSR/basicSR.py] -->
+<g id="edge21" class="edge">
+<title>[zeeguu/core/model/user.py]&#45;&#45;[zeeguu/core/word_scheduling/basicSR/basicSR.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M6715.75,-711.29C6715.75,-696.83 6715.75,-676.39 6715.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="6728.5" y="-682.35" font-family="Arial" font-size="12.00"> 114 </text>
+</g>
+<!-- [zeeguu/core/word_scheduling/basicSR/basicSR.py]&#45;&#45;[zeeguu/core/word_scheduling/basicSR/basicSR.py] -->
+<g id="edge44" class="edge">
+<title>[zeeguu/core/word_scheduling/basicSR/basicSR.py]&#45;&#45;[zeeguu/core/word_scheduling/basicSR/basicSR.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M6882.75,-649.27C6893.73,-647.93 6900.38,-646.01 6900.38,-643.5 6900.38,-640.99 6893.73,-639.07 6882.75,-637.73"/>
+<text xml:space="preserve" text-anchor="middle" x="6910.12" y="-639.23" font-family="Arial" font-size="12.00"> 44 </text>
+</g>
+<!-- [zeeguu/api/endpoints/generated_examples.py]&#45;&#45;[zeeguu/api/endpoints/generated_examples.py] -->
+<g id="edge22" class="edge">
+<title>[zeeguu/api/endpoints/generated_examples.py]&#45;&#45;[zeeguu/api/endpoints/generated_examples.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M6145.9,-541.44C6156.9,-540.09 6163.62,-538.11 6163.62,-535.5 6163.62,-532.89 6156.9,-530.91 6145.9,-529.56"/>
+<text xml:space="preserve" text-anchor="middle" x="6176.38" y="-531.23" font-family="Arial" font-size="12.00"> 110 </text>
+</g>
+<!-- [zeeguu/core/account_management/user_account_creation.py] -->
+<g id="node33" class="node">
+<title>[zeeguu/core/account_management/user_account_creation.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="7345.12,-661.5 6938.38,-661.5 6938.38,-625.5 7345.12,-625.5 7345.12,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="7141.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/account_management/user_account_creation.py]</text>
+</g>
+<!-- [zeeguu/core/account_management/user_account_creation.py]&#45;&#45;[zeeguu/core/account_management/user_account_creation.py] -->
+<g id="edge23" class="edge">
+<title>[zeeguu/core/account_management/user_account_creation.py]&#45;&#45;[zeeguu/core/account_management/user_account_creation.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M7345.5,-648.88C7356.56,-647.57 7363.12,-645.77 7363.12,-643.5 7363.12,-641.23 7356.56,-639.43 7345.5,-638.12"/>
+<text xml:space="preserve" text-anchor="middle" x="7372.88" y="-639.23" font-family="Arial" font-size="12.00"> 90 </text>
+</g>
+<!-- [zeeguu/core/semantic_search/elastic_semantic_search.py] -->
+<g id="node34" class="node">
+<title>[zeeguu/core/semantic_search/elastic_semantic_search.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="7660.12,-747.75 7277.38,-747.75 7277.38,-711.75 7660.12,-711.75 7660.12,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="7468.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/semantic_search/elastic_semantic_search.py]</text>
+</g>
+<!-- [zeeguu/core/semantic_search/elastic_semantic_search.py]&#45;&#45;[zeeguu/core/semantic_search/elastic_semantic_search.py] -->
+<g id="edge24" class="edge">
+<title>[zeeguu/core/semantic_search/elastic_semantic_search.py]&#45;&#45;[zeeguu/core/semantic_search/elastic_semantic_search.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M7660.58,-735.24C7671.56,-733.92 7678.12,-732.09 7678.12,-729.75 7678.12,-727.41 7671.56,-725.58 7660.58,-724.26"/>
+<text xml:space="preserve" text-anchor="middle" x="7687.88" y="-725.48" font-family="Arial" font-size="12.00"> 90 </text>
+</g>
+<!-- [zeeguu/core/model/article_summary_context.py] -->
+<g id="node35" class="node">
+<title>[zeeguu/core/model/article_summary_context.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="8247.5,-661.5 7924,-661.5 7924,-625.5 8247.5,-625.5 8247.5,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="8085.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/article_summary_context.py]</text>
+</g>
+<!-- [zeeguu/core/model/article_title_context.py] -->
+<g id="node36" class="node">
+<title>[zeeguu/core/model/article_title_context.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="8564.25,-553.5 8275.25,-553.5 8275.25,-517.5 8564.25,-517.5 8564.25,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="8419.75" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/article_title_context.py]</text>
+</g>
+<!-- [zeeguu/core/model/article_summary_context.py]&#45;&#45;[zeeguu/core/model/article_title_context.py] -->
+<g id="edge26" class="edge">
+<title>[zeeguu/core/model/article_summary_context.py]&#45;&#45;[zeeguu/core/model/article_title_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8140.53,-625.11C8202.43,-605.47 8302.63,-573.67 8364.66,-553.98"/>
+<text xml:space="preserve" text-anchor="middle" x="8311.93" y="-585.23" font-family="Arial" font-size="12.00"> 86 </text>
+</g>
+<!-- [zeeguu/core/model/video_caption_context.py] -->
+<g id="node69" class="node">
+<title>[zeeguu/core/model/video_caption_context.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="8149.5,-208.5 7844,-208.5 7844,-172.5 8149.5,-172.5 8149.5,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="7996.75" y="-185.82" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/video_caption_context.py]</text>
+</g>
+<!-- [zeeguu/core/model/article_summary_context.py]&#45;&#45;[zeeguu/core/model/video_caption_context.py] -->
+<g id="edge59" class="edge">
+<title>[zeeguu/core/model/article_summary_context.py]&#45;&#45;[zeeguu/core/model/video_caption_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8075.07,-625.26C8050.48,-584.55 7990.04,-478.57 7964.75,-381 7951.11,-328.39 7951.63,-312.15 7961.75,-258.75 7965.21,-240.52 7975.47,-221.97 7984,-208.98"/>
+<text xml:space="preserve" text-anchor="middle" x="7983.92" y="-401.85" font-family="Arial" font-size="12.00"> 34 </text>
+</g>
+<!-- [zeeguu/core/model/example_sentence_context.py] -->
+<g id="node101" class="node">
+<title>[zeeguu/core/model/example_sentence_context.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="8381.5,-381 8046,-381 8046,-345 8381.5,-345 8381.5,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="8213.75" y="-358.32" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/example_sentence_context.py]</text>
+</g>
+<!-- [zeeguu/core/model/article_summary_context.py]&#45;&#45;[zeeguu/core/model/example_sentence_context.py] -->
+<g id="edge90" class="edge">
+<title>[zeeguu/core/model/article_summary_context.py]&#45;&#45;[zeeguu/core/model/example_sentence_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8087.56,-625.08C8092.77,-582.47 8111.06,-471.17 8165.75,-399 8170.86,-392.26 8177.62,-386.25 8184.45,-381.19"/>
+<text xml:space="preserve" text-anchor="middle" x="8129.68" y="-488.1" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/core/model/video_title_context.py] -->
+<g id="node102" class="node">
+<title>[zeeguu/core/model/video_title_context.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="8319.62,-122.25 8035.88,-122.25 8035.88,-86.25 8319.62,-86.25 8319.62,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="8177.75" y="-99.58" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/video_title_context.py]</text>
+</g>
+<!-- [zeeguu/core/model/article_summary_context.py]&#45;&#45;[zeeguu/core/model/video_title_context.py] -->
+<g id="edge89" class="edge">
+<title>[zeeguu/core/model/article_summary_context.py]&#45;&#45;[zeeguu/core/model/video_title_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8059.77,-625.36C8053.05,-620.15 8046.19,-614.05 8040.75,-607.5 7972.41,-525.23 7766.78,-255.09 7834.75,-172.5 7860.54,-141.17 7953.01,-124.22 8035.44,-115.17"/>
+<text xml:space="preserve" text-anchor="middle" x="7890.29" y="-358.73" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/core/model/text.py] -->
+<g id="node106" class="node">
+<title>[zeeguu/core/model/text.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="9183.88,-208.5 8991.62,-208.5 8991.62,-172.5 9183.88,-172.5 9183.88,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="9087.75" y="-185.82" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/text.py]</text>
+</g>
+<!-- [zeeguu/core/model/article_summary_context.py]&#45;&#45;[zeeguu/core/model/text.py] -->
+<g id="edge195" class="edge">
+<title>[zeeguu/core/model/article_summary_context.py]&#45;&#45;[zeeguu/core/model/text.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8247.93,-625.91C8249.55,-625.77 8251.15,-625.63 8252.75,-625.5 8323.31,-619.56 8883.75,-607.31 8883.75,-536.5 8883.75,-536.5 8883.75,-536.5 8883.75,-275.75 8883.75,-224.98 8938.4,-204.19 8991.13,-195.96"/>
+<text xml:space="preserve" text-anchor="middle" x="8893.5" y="-401.85" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/feed.py] -->
+<g id="node118" class="node">
+<title>[zeeguu/core/model/feed.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="8723.75,-294.75 8527.75,-294.75 8527.75,-258.75 8723.75,-258.75 8723.75,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="8625.75" y="-272.07" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/feed.py]</text>
+</g>
+<!-- [zeeguu/core/model/article_summary_context.py]&#45;&#45;[zeeguu/core/model/feed.py] -->
+<g id="edge194" class="edge">
+<title>[zeeguu/core/model/article_summary_context.py]&#45;&#45;[zeeguu/core/model/feed.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8233.48,-625.02C8449.65,-598.95 8826.75,-551.33 8826.75,-536.5 8826.75,-536.5 8826.75,-536.5 8826.75,-405.12 8826.75,-376.18 8821.52,-366.13 8801.75,-345 8779.07,-320.76 8746.7,-305.16 8715.9,-295.18"/>
+<text xml:space="preserve" text-anchor="middle" x="8836.5" y="-444.98" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/bookmark_context.py] -->
+<g id="node155" class="node">
+<title>[zeeguu/core/model/bookmark_context.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="8475.88,-467.25 8193.62,-467.25 8193.62,-431.25 8475.88,-431.25 8475.88,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="8334.75" y="-444.57" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/bookmark_context.py]</text>
+</g>
+<!-- [zeeguu/core/model/article_summary_context.py]&#45;&#45;[zeeguu/core/model/bookmark_context.py] -->
+<g id="edge166" class="edge">
+<title>[zeeguu/core/model/article_summary_context.py]&#45;&#45;[zeeguu/core/model/bookmark_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8108.01,-625.03C8138.94,-600.78 8196.7,-555.62 8246.25,-517.5 8268.43,-500.44 8293.87,-481.13 8311.77,-467.59"/>
+<text xml:space="preserve" text-anchor="middle" x="8256" y="-531.23" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/article_title_context.py]&#45;&#45;[zeeguu/core/model/video_caption_context.py] -->
+<g id="edge57" class="edge">
+<title>[zeeguu/core/model/article_title_context.py]&#45;&#45;[zeeguu/core/model/video_caption_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8274.77,-518.08C8237.91,-512.71 8203.89,-506.34 8186.75,-499.5 8101.38,-465.44 8059.72,-462.52 8017.25,-381 8009.86,-366.81 8013.53,-360.56 8017.25,-345 8023.08,-320.64 8036.92,-319.11 8042.75,-294.75 8046.47,-279.19 8047.48,-274.04 8042.75,-258.75 8036.9,-239.83 8023.69,-221.49 8012.92,-208.76"/>
+<text xml:space="preserve" text-anchor="middle" x="8027" y="-358.73" font-family="Arial" font-size="12.00"> 34 </text>
+</g>
+<!-- [zeeguu/core/model/article_title_context.py]&#45;&#45;[zeeguu/core/model/example_sentence_context.py] -->
+<g id="edge87" class="edge">
+<title>[zeeguu/core/model/article_title_context.py]&#45;&#45;[zeeguu/core/model/example_sentence_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8299.28,-517C8242.06,-505.98 8182.43,-489.56 8165.25,-467.25 8144.47,-440.26 8173.5,-402.93 8194.8,-381.34"/>
+<text xml:space="preserve" text-anchor="middle" x="8175" y="-444.98" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/core/model/article_title_context.py]&#45;&#45;[zeeguu/core/model/video_title_context.py] -->
+<g id="edge88" class="edge">
+<title>[zeeguu/core/model/article_title_context.py]&#45;&#45;[zeeguu/core/model/video_title_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8443.69,-517.09C8458.35,-504.93 8475.95,-487.33 8484.75,-467.25 8506.58,-417.45 8515.11,-393.1 8489.75,-345 8438.35,-247.52 8369.04,-277.04 8282.75,-208.5 8249.22,-181.87 8245.42,-170.13 8214.75,-140.25 8208.8,-134.45 8202.23,-128.19 8196.3,-122.59"/>
+<text xml:space="preserve" text-anchor="middle" x="8488.21" y="-315.6" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/core/model/article_title_context.py]&#45;&#45;[zeeguu/core/model/text.py] -->
+<g id="edge175" class="edge">
+<title>[zeeguu/core/model/article_title_context.py]&#45;&#45;[zeeguu/core/model/text.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8564.74,-517.25C8606.69,-507.35 8650.82,-491.76 8686.75,-467.25 8715.05,-447.94 8719.74,-439.5 8741.75,-413.25 8757.91,-393.97 8848.5,-239.96 8869.75,-226.5 8880.44,-219.73 8938.06,-210.64 8991.38,-203.42"/>
+<text xml:space="preserve" text-anchor="middle" x="8795.56" y="-358.73" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/article_title_context.py]&#45;&#45;[zeeguu/core/model/feed.py] -->
+<g id="edge183" class="edge">
+<title>[zeeguu/core/model/article_title_context.py]&#45;&#45;[zeeguu/core/model/feed.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8529.45,-517.08C8592.29,-501.09 8666.78,-470.69 8708.75,-413.25 8735.23,-377.01 8744.3,-349.66 8718.75,-312.75 8713.74,-305.52 8707.04,-299.77 8699.52,-295.22"/>
+<text xml:space="preserve" text-anchor="middle" x="8727.96" y="-401.85" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/article_title_context.py]&#45;&#45;[zeeguu/core/model/bookmark_context.py] -->
+<g id="edge189" class="edge">
+<title>[zeeguu/core/model/article_title_context.py]&#45;&#45;[zeeguu/core/model/bookmark_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8402.14,-517.04C8387.55,-502.58 8366.92,-482.14 8352.34,-467.68"/>
+<text xml:space="preserve" text-anchor="middle" x="8392.09" y="-488.1" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/elastic/elastic_query_builder.py] -->
+<g id="node37" class="node">
+<title>[zeeguu/core/elastic/elastic_query_builder.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="8630,-747.75 8333.5,-747.75 8333.5,-711.75 8630,-711.75 8630,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="8481.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/elastic/elastic_query_builder.py]</text>
+</g>
+<!-- [zeeguu/core/elastic/elastic_query_builder.py]&#45;&#45;[zeeguu/core/elastic/elastic_query_builder.py] -->
+<g id="edge27" class="edge">
+<title>[zeeguu/core/elastic/elastic_query_builder.py]&#45;&#45;[zeeguu/core/elastic/elastic_query_builder.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8630.34,-735.75C8641.29,-734.4 8648,-732.4 8648,-729.75 8648,-727.1 8641.29,-725.1 8630.34,-723.75"/>
+<text xml:space="preserve" text-anchor="middle" x="8657.75" y="-725.48" font-family="Arial" font-size="12.00"> 86 </text>
+</g>
+<!-- [zeeguu/core/model/user_listening_session.py]&#45;&#45;[zeeguu/core/model/user_reading_session.py] -->
+<g id="edge33" class="edge">
+<title>[zeeguu/core/model/user_listening_session.py]&#45;&#45;[zeeguu/core/model/user_reading_session.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M4571.13,-625.47C4554.25,-605.81 4526.63,-573.63 4509.64,-553.84"/>
+<text xml:space="preserve" text-anchor="middle" x="4563.47" y="-585.23" font-family="Arial" font-size="12.00"> 64 </text>
+</g>
+<!-- [zeeguu/core/model/user_listening_session.py]&#45;&#45;[zeeguu/core/model/user_watching_session.py] -->
+<g id="edge62" class="edge">
+<title>[zeeguu/core/model/user_listening_session.py]&#45;&#45;[zeeguu/core/model/user_watching_session.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M4611.68,-625.18C4634.7,-608.82 4668.09,-582.5 4690.75,-553.5 4711.92,-526.4 4727.67,-489.11 4735.72,-467.55"/>
+<text xml:space="preserve" text-anchor="middle" x="4723" y="-531.23" font-family="Arial" font-size="12.00"> 32 </text>
+</g>
+<!-- [zeeguu/core/model/new_text.py] -->
+<g id="node39" class="node">
+<title>[zeeguu/core/model/new_text.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="9137.38,-381 8912.12,-381 8912.12,-345 9137.38,-345 9137.38,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="9024.75" y="-358.32" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/new_text.py]</text>
+</g>
+<!-- [zeeguu/core/model/source_text.py] -->
+<g id="node40" class="node">
+<title>[zeeguu/core/model/source_text.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="9207.88,-294.75 8967.62,-294.75 8967.62,-258.75 9207.88,-258.75 9207.88,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="9087.75" y="-272.07" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/source_text.py]</text>
+</g>
+<!-- [zeeguu/core/model/new_text.py]&#45;&#45;[zeeguu/core/model/source_text.py] -->
+<g id="edge29" class="edge">
+<title>[zeeguu/core/model/new_text.py]&#45;&#45;[zeeguu/core/model/source_text.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M9037.8,-344.54C9048.62,-330.08 9063.91,-309.64 9074.71,-295.18"/>
+<text xml:space="preserve" text-anchor="middle" x="9069.77" y="-315.6" font-family="Arial" font-size="12.00"> 70 </text>
+</g>
+<!-- [zeeguu/core/model/new_text.py]&#45;&#45;[zeeguu/core/model/text.py] -->
+<g id="edge141" class="edge">
+<title>[zeeguu/core/model/new_text.py]&#45;&#45;[zeeguu/core/model/text.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8992.42,-344.55C8960.22,-324.79 8918.37,-291.12 8939.25,-258.75 8954.9,-234.49 8981.65,-218.89 9008.17,-208.89"/>
+<text xml:space="preserve" text-anchor="middle" x="8949" y="-272.48" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/model/source_text.py]&#45;&#45;[zeeguu/core/model/text.py] -->
+<g id="edge94" class="edge">
+<title>[zeeguu/core/model/source_text.py]&#45;&#45;[zeeguu/core/model/text.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M9087.75,-258.29C9087.75,-243.83 9087.75,-223.39 9087.75,-208.93"/>
+<text xml:space="preserve" text-anchor="middle" x="9097.5" y="-229.35" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/core/content_recommender/elastic_recommender.py] -->
+<g id="node42" class="node">
+<title>[zeeguu/core/content_recommender/elastic_recommender.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="9290.12,-661.5 8889.38,-661.5 8889.38,-625.5 9290.12,-625.5 9290.12,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="9089.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/content_recommender/elastic_recommender.py]</text>
+</g>
+<!-- [zeeguu/core/content_recommender/elastic_recommender.py]&#45;&#45;[zeeguu/core/content_recommender/elastic_recommender.py] -->
+<g id="edge31" class="edge">
+<title>[zeeguu/core/content_recommender/elastic_recommender.py]&#45;&#45;[zeeguu/core/content_recommender/elastic_recommender.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M9290.44,-648.92C9301.53,-647.6 9308.12,-645.8 9308.12,-643.5 9308.12,-641.2 9301.53,-639.4 9290.44,-638.08"/>
+<text xml:space="preserve" text-anchor="middle" x="9317.88" y="-639.23" font-family="Arial" font-size="12.00"> 66 </text>
+</g>
+<!-- [zeeguu/core/mwe/llm_mwe_detector.py] -->
+<g id="node43" class="node">
+<title>[zeeguu/core/mwe/llm_mwe_detector.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="9619.38,-661.5 9346.12,-661.5 9346.12,-625.5 9619.38,-625.5 9619.38,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="9482.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/mwe/llm_mwe_detector.py]</text>
+</g>
+<!-- [zeeguu/core/mwe/llm_mwe_detector.py]&#45;&#45;[zeeguu/core/mwe/llm_mwe_detector.py] -->
+<g id="edge32" class="edge">
+<title>[zeeguu/core/mwe/llm_mwe_detector.py]&#45;&#45;[zeeguu/core/mwe/llm_mwe_detector.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M9619.47,-649.69C9630.52,-648.34 9637.38,-646.28 9637.38,-643.5 9637.38,-640.72 9630.52,-638.66 9619.47,-637.31"/>
+<text xml:space="preserve" text-anchor="middle" x="9647.12" y="-639.23" font-family="Arial" font-size="12.00"> 64 </text>
+</g>
+<!-- [zeeguu/core/model/topic_filter.py] -->
+<g id="node44" class="node">
+<title>[zeeguu/core/model/topic_filter.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="9929.38,-747.75 9698.12,-747.75 9698.12,-711.75 9929.38,-711.75 9929.38,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="9813.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/topic_filter.py]</text>
+</g>
+<!-- [zeeguu/core/model/topic_subscription.py] -->
+<g id="node45" class="node">
+<title>[zeeguu/core/model/topic_subscription.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="9952.62,-661.5 9674.88,-661.5 9674.88,-625.5 9952.62,-625.5 9952.62,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="9813.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/topic_subscription.py]</text>
+</g>
+<!-- [zeeguu/core/model/topic_filter.py]&#45;&#45;[zeeguu/core/model/topic_subscription.py] -->
+<g id="edge34" class="edge">
+<title>[zeeguu/core/model/topic_filter.py]&#45;&#45;[zeeguu/core/model/topic_subscription.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M9813.75,-711.29C9813.75,-696.83 9813.75,-676.39 9813.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="9823.5" y="-682.35" font-family="Arial" font-size="12.00"> 64 </text>
+</g>
+<!-- [zeeguu/core/model/user_feedback.py] -->
+<g id="node168" class="node">
+<title>[zeeguu/core/model/user_feedback.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="9942.88,-553.5 9684.62,-553.5 9684.62,-517.5 9942.88,-517.5 9942.88,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="9813.75" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_feedback.py]</text>
+</g>
+<!-- [zeeguu/core/model/topic_subscription.py]&#45;&#45;[zeeguu/core/model/user_feedback.py] -->
+<g id="edge177" class="edge">
+<title>[zeeguu/core/model/topic_subscription.py]&#45;&#45;[zeeguu/core/model/user_feedback.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M9813.75,-625.47C9813.75,-605.81 9813.75,-573.63 9813.75,-553.84"/>
+<text xml:space="preserve" text-anchor="middle" x="9823.5" y="-585.23" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/migrations/24&#45;07&#45;30&#45;&#45;remove_articles_with_no_publish_time.sql] -->
+<g id="node46" class="node">
+<title>[tools/migrations/24&#45;07&#45;30&#45;&#45;remove_articles_with_no_publish_time.sql]</title>
+<polygon fill="#00b2ee" stroke="white" points="10400,-747.75 9947.5,-747.75 9947.5,-711.75 10400,-711.75 10400,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="10173.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/migrations/24&#45;07&#45;30&#45;&#45;remove_articles_with_no_publish_time.sql]</text>
+</g>
+<!-- [tools/migrations/24&#45;07&#45;30&#45;&#45;remove_articles_with_no_publish_time.sql]&#45;&#45;[tools/migrations/24&#45;07&#45;30&#45;&#45;remove_articles_with_no_publish_time.sql] -->
+<g id="edge35" class="edge">
+<title>[tools/migrations/24&#45;07&#45;30&#45;&#45;remove_articles_with_no_publish_time.sql]&#45;&#45;[tools/migrations/24&#45;07&#45;30&#45;&#45;remove_articles_with_no_publish_time.sql]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M10400.22,-734.95C10411.41,-733.65 10418,-731.92 10418,-729.75 10418,-727.58 10411.41,-725.85 10400.22,-724.55"/>
+<text xml:space="preserve" text-anchor="middle" x="10427.75" y="-725.48" font-family="Arial" font-size="12.00"> 60 </text>
+</g>
+<!-- [tools/mysql_to_elastic_for_articles.py] -->
+<g id="node47" class="node">
+<title>[tools/mysql_to_elastic_for_articles.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="10621.38,-661.5 10366.12,-661.5 10366.12,-625.5 10621.38,-625.5 10621.38,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="10493.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/mysql_to_elastic_for_articles.py]</text>
+</g>
+<!-- [tools/update_elastic_ids.py] -->
+<g id="node48" class="node">
+<title>[tools/update_elastic_ids.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="10577.12,-553.5 10386.38,-553.5 10386.38,-517.5 10577.12,-517.5 10577.12,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="10481.75" y="-530.83" font-family="Tahoma" font-size="14.00">[tools/update_elastic_ids.py]</text>
+</g>
+<!-- [tools/mysql_to_elastic_for_articles.py]&#45;&#45;[tools/update_elastic_ids.py] -->
+<g id="edge36" class="edge">
+<title>[tools/mysql_to_elastic_for_articles.py]&#45;&#45;[tools/update_elastic_ids.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M10491.82,-625.47C10489.6,-605.81 10485.95,-573.63 10483.71,-553.84"/>
+<text xml:space="preserve" text-anchor="middle" x="10499.28" y="-585.23" font-family="Arial" font-size="12.00"> 58 </text>
+</g>
+<!-- [tools/update_es_based_on_url_keyword.py] -->
+<g id="node87" class="node">
+<title>[tools/update_es_based_on_url_keyword.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="10494,-467.25 10203.5,-467.25 10203.5,-431.25 10494,-431.25 10494,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="10348.75" y="-444.57" font-family="Tahoma" font-size="14.00">[tools/update_es_based_on_url_keyword.py]</text>
+</g>
+<!-- [tools/mysql_to_elastic_for_articles.py]&#45;&#45;[tools/update_es_based_on_url_keyword.py] -->
+<g id="edge142" class="edge">
+<title>[tools/mysql_to_elastic_for_articles.py]&#45;&#45;[tools/update_es_based_on_url_keyword.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M10447.99,-625.05C10417.15,-610.73 10378.53,-587.28 10358.25,-553.5 10342.31,-526.95 10343.5,-489.47 10346,-467.73"/>
+<text xml:space="preserve" text-anchor="middle" x="10368" y="-531.23" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [tools/update_elastic_with_source_ids.py] -->
+<g id="node131" class="node">
+<title>[tools/update_elastic_with_source_ids.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="10783.62,-467.25 10511.88,-467.25 10511.88,-431.25 10783.62,-431.25 10783.62,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="10647.75" y="-444.57" font-family="Tahoma" font-size="14.00">[tools/update_elastic_with_source_ids.py]</text>
+</g>
+<!-- [tools/mysql_to_elastic_for_articles.py]&#45;&#45;[tools/update_elastic_with_source_ids.py] -->
+<g id="edge137" class="edge">
+<title>[tools/mysql_to_elastic_for_articles.py]&#45;&#45;[tools/update_elastic_with_source_ids.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M10514.65,-625.12C10534.36,-608.1 10564.05,-580.82 10585.75,-553.5 10607.99,-525.51 10628.18,-488.84 10639.14,-467.58"/>
+<text xml:space="preserve" text-anchor="middle" x="10619.73" y="-531.23" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [tools/update_elastic_ids.py]&#45;&#45;[tools/update_es_based_on_url_keyword.py] -->
+<g id="edge73" class="edge">
+<title>[tools/update_elastic_ids.py]&#45;&#45;[tools/update_es_based_on_url_keyword.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M10454.19,-517.04C10431.37,-502.58 10399.09,-482.14 10376.27,-467.68"/>
+<text xml:space="preserve" text-anchor="middle" x="10432.96" y="-488.1" font-family="Arial" font-size="12.00"> 28 </text>
+</g>
+<!-- [tools/update_elastic_ids.py]&#45;&#45;[tools/update_elastic_with_source_ids.py] -->
+<g id="edge120" class="edge">
+<title>[tools/update_elastic_ids.py]&#45;&#45;[tools/update_elastic_with_source_ids.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M10516.15,-517.04C10544.64,-502.58 10584.92,-482.14 10613.4,-467.68"/>
+<text xml:space="preserve" text-anchor="middle" x="10584.44" y="-488.1" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [tools/migrations/25&#45;02&#45;28&#45;&#45;04&#45;delete&#45;unused&#45;columns&#45;article.sql] -->
+<g id="node49" class="node">
+<title>[tools/migrations/25&#45;02&#45;28&#45;&#45;04&#45;delete&#45;unused&#45;columns&#45;article.sql]</title>
+<polygon fill="#00b2ee" stroke="white" points="11193.88,-661.5 10773.62,-661.5 10773.62,-625.5 11193.88,-625.5 11193.88,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="10983.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/migrations/25&#45;02&#45;28&#45;&#45;04&#45;delete&#45;unused&#45;columns&#45;article.sql]</text>
+</g>
+<!-- [tools/migrations/25&#45;02&#45;28&#45;&#45;04&#45;delete&#45;unused&#45;columns&#45;article.sql]&#45;&#45;[tools/migrations/25&#45;02&#45;28&#45;&#45;04&#45;delete&#45;unused&#45;columns&#45;article.sql] -->
+<g id="edge37" class="edge">
+<title>[tools/migrations/25&#45;02&#45;28&#45;&#45;04&#45;delete&#45;unused&#45;columns&#45;article.sql]&#45;&#45;[tools/migrations/25&#45;02&#45;28&#45;&#45;04&#45;delete&#45;unused&#45;columns&#45;article.sql]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M11194.34,-648.81C11205.36,-647.5 11211.88,-645.73 11211.88,-643.5 11211.88,-641.27 11205.36,-639.5 11194.34,-638.19"/>
+<text xml:space="preserve" text-anchor="middle" x="11221.62" y="-639.23" font-family="Arial" font-size="12.00"> 56 </text>
+</g>
+<!-- [zeeguu/api/endpoints/bookmarks_and_words.py] -->
+<g id="node50" class="node">
+<title>[zeeguu/api/endpoints/bookmarks_and_words.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="6152.75,-661.5 5830.75,-661.5 5830.75,-625.5 6152.75,-625.5 6152.75,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="5991.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/bookmarks_and_words.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/bookmarks_and_words.py]&#45;&#45;[zeeguu/api/endpoints/generated_examples.py] -->
+<g id="edge38" class="edge">
+<title>[zeeguu/api/endpoints/bookmarks_and_words.py]&#45;&#45;[zeeguu/api/endpoints/generated_examples.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M5991.75,-625.47C5991.75,-605.81 5991.75,-573.63 5991.75,-553.84"/>
+<text xml:space="preserve" text-anchor="middle" x="6001.5" y="-585.23" font-family="Arial" font-size="12.00"> 56 </text>
+</g>
+<!-- [zeeguu/api/endpoints/bookmarks_and_words.py]&#45;&#45;[zeeguu/api/endpoints/bookmarks_and_words.py] -->
+<g id="edge81" class="edge">
+<title>[zeeguu/api/endpoints/bookmarks_and_words.py]&#45;&#45;[zeeguu/api/endpoints/bookmarks_and_words.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M6153.12,-649.34C6164.09,-647.99 6170.75,-646.05 6170.75,-643.5 6170.75,-640.95 6164.09,-639.01 6153.12,-637.66"/>
+<text xml:space="preserve" text-anchor="middle" x="6180.5" y="-639.23" font-family="Arial" font-size="12.00"> 24 </text>
+</g>
+<!-- [zeeguu/core/leaderboards/leaderboards.py] -->
+<g id="node51" class="node">
+<title>[zeeguu/core/leaderboards/leaderboards.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="11487,-747.75 11196.5,-747.75 11196.5,-711.75 11487,-711.75 11487,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="11341.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/leaderboards/leaderboards.py]</text>
+</g>
+<!-- [zeeguu/core/leaderboards/leaderboards.py]&#45;&#45;[zeeguu/core/leaderboards/leaderboards.py] -->
+<g id="edge40" class="edge">
+<title>[zeeguu/core/leaderboards/leaderboards.py]&#45;&#45;[zeeguu/core/leaderboards/leaderboards.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M11487.4,-735.78C11498.3,-734.44 11505,-732.42 11505,-729.75 11505,-727.08 11498.3,-725.06 11487.4,-723.72"/>
+<text xml:space="preserve" text-anchor="middle" x="11514.75" y="-725.48" font-family="Arial" font-size="12.00"> 54 </text>
+</g>
+<!-- [zeeguu/api/endpoints/crawl_stats.py] -->
+<g id="node52" class="node">
+<title>[zeeguu/api/endpoints/crawl_stats.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="11791.38,-747.75 11542.12,-747.75 11542.12,-711.75 11791.38,-711.75 11791.38,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="11666.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/crawl_stats.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/crawl_stats.py]&#45;&#45;[zeeguu/api/endpoints/crawl_stats.py] -->
+<g id="edge41" class="edge">
+<title>[zeeguu/api/endpoints/crawl_stats.py]&#45;&#45;[zeeguu/api/endpoints/crawl_stats.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M11791.45,-736.12C11802.47,-734.78 11809.38,-732.66 11809.38,-729.75 11809.38,-726.84 11802.47,-724.72 11791.45,-723.38"/>
+<text xml:space="preserve" text-anchor="middle" x="11819.12" y="-725.48" font-family="Arial" font-size="12.00"> 50 </text>
+</g>
+<!-- [zeeguu/core/model/user_exercise_session.py]&#45;&#45;[zeeguu/core/model/user_watching_session.py] -->
+<g id="edge79" class="edge">
+<title>[zeeguu/core/model/user_exercise_session.py]&#45;&#45;[zeeguu/core/model/user_watching_session.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M4917.7,-571.27C4879.18,-544.78 4805.82,-494.32 4767.12,-467.7"/>
+<text xml:space="preserve" text-anchor="middle" x="4897.82" y="-531.23" font-family="Arial" font-size="12.00"> 26 </text>
+</g>
+<!-- [zeeguu/core/model/context_type.py] -->
+<g id="node54" class="node">
+<title>[zeeguu/core/model/context_type.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="12094.62,-747.75 11846.88,-747.75 11846.88,-711.75 12094.62,-711.75 12094.62,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="11970.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/context_type.py]</text>
+</g>
+<!-- [zeeguu/core/model/source_type.py] -->
+<g id="node55" class="node">
+<title>[zeeguu/core/model/source_type.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="12092.38,-661.5 11849.12,-661.5 11849.12,-625.5 12092.38,-625.5 12092.38,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="11970.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/source_type.py]</text>
+</g>
+<!-- [zeeguu/core/model/context_type.py]&#45;&#45;[zeeguu/core/model/source_type.py] -->
+<g id="edge45" class="edge">
+<title>[zeeguu/core/model/context_type.py]&#45;&#45;[zeeguu/core/model/source_type.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M11970.75,-711.29C11970.75,-696.83 11970.75,-676.39 11970.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="11980.5" y="-682.35" font-family="Arial" font-size="12.00"> 44 </text>
+</g>
+<!-- [zeeguu/core/llm_services/simplification_and_classification.py] -->
+<g id="node56" class="node">
+<title>[zeeguu/core/llm_services/simplification_and_classification.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="3761,-661.5 3362.5,-661.5 3362.5,-625.5 3761,-625.5 3761,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="3561.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/llm_services/simplification_and_classification.py]</text>
+</g>
+<!-- [zeeguu/core/llm_services/simplification_and_classification.py]&#45;&#45;[zeeguu/core/llm_services/simplification_service.py] -->
+<g id="edge46" class="edge">
+<title>[zeeguu/core/llm_services/simplification_and_classification.py]&#45;&#45;[zeeguu/core/llm_services/simplification_service.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M3561.75,-625.47C3561.75,-605.81 3561.75,-573.63 3561.75,-553.84"/>
+<text xml:space="preserve" text-anchor="middle" x="3571.5" y="-585.23" font-family="Arial" font-size="12.00"> 44 </text>
+</g>
+<!-- [zeeguu/core/llm_services/simplification_and_classification.py]&#45;&#45;[zeeguu/core/llm_services/simplification_and_classification.py] -->
+<g id="edge172" class="edge">
+<title>[zeeguu/core/llm_services/simplification_and_classification.py]&#45;&#45;[zeeguu/core/llm_services/simplification_and_classification.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M3761.4,-648.92C3772.44,-647.6 3779,-645.8 3779,-643.5 3779,-641.2 3772.44,-639.4 3761.4,-638.08"/>
+<text xml:space="preserve" text-anchor="middle" x="3788.75" y="-639.23" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/user_article.py] -->
+<g id="node57" class="node">
+<title>[zeeguu/core/model/user_article.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="12414.88,-553.5 12174.62,-553.5 12174.62,-517.5 12414.88,-517.5 12414.88,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="12294.75" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_article.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_video.py] -->
+<g id="node58" class="node">
+<title>[zeeguu/core/model/user_video.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="12412.25,-467.25 12177.25,-467.25 12177.25,-431.25 12412.25,-431.25 12412.25,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="12294.75" y="-444.57" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_video.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_article.py]&#45;&#45;[zeeguu/core/model/user_video.py] -->
+<g id="edge49" class="edge">
+<title>[zeeguu/core/model/user_article.py]&#45;&#45;[zeeguu/core/model/user_video.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M12294.75,-517.04C12294.75,-502.58 12294.75,-482.14 12294.75,-467.68"/>
+<text xml:space="preserve" text-anchor="middle" x="12304.5" y="-488.1" font-family="Arial" font-size="12.00"> 42 </text>
+</g>
+<!-- [tools/add_ml_assessment_to_recent_articles.py] -->
+<g id="node59" class="node">
+<title>[tools/add_ml_assessment_to_recent_articles.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="12993.25,-747.75 12674.25,-747.75 12674.25,-711.75 12993.25,-711.75 12993.25,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="12833.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/add_ml_assessment_to_recent_articles.py]</text>
+</g>
+<!-- [tools/backfill_cefr_assessments.py] -->
+<g id="node60" class="node">
+<title>[tools/backfill_cefr_assessments.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="12952,-661.5 12715.5,-661.5 12715.5,-625.5 12952,-625.5 12952,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="12833.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/backfill_cefr_assessments.py]</text>
+</g>
+<!-- [tools/add_ml_assessment_to_recent_articles.py]&#45;&#45;[tools/backfill_cefr_assessments.py] -->
+<g id="edge50" class="edge">
+<title>[tools/add_ml_assessment_to_recent_articles.py]&#45;&#45;[tools/backfill_cefr_assessments.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M12833.75,-711.29C12833.75,-696.83 12833.75,-676.39 12833.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="12843.5" y="-682.35" font-family="Arial" font-size="12.00"> 40 </text>
+</g>
+<!-- [stanza_service/app.py] -->
+<g id="node61" class="node">
+<title>[stanza_service/app.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="13488.88,-661.5 13326.62,-661.5 13326.62,-625.5 13488.88,-625.5 13488.88,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="13407.75" y="-638.83" font-family="Tahoma" font-size="14.00">[stanza_service/app.py]</text>
+</g>
+<!-- [stanza_service/app.py]&#45;&#45;[stanza_service/app.py] -->
+<g id="edge128" class="edge">
+<title>[stanza_service/app.py]&#45;&#45;[stanza_service/app.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M13489.03,-650.63C13499.76,-649.41 13506.88,-647.04 13506.88,-643.5 13506.88,-639.96 13499.76,-637.59 13489.03,-636.37"/>
+<text xml:space="preserve" text-anchor="middle" x="13516.62" y="-639.23" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/tokenization/stanza_tokenizer.py] -->
+<g id="node62" class="node">
+<title>[zeeguu/core/tokenization/stanza_tokenizer.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="13318.75,-553.5 13014.75,-553.5 13014.75,-517.5 13318.75,-517.5 13318.75,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="13166.75" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/tokenization/stanza_tokenizer.py]</text>
+</g>
+<!-- [stanza_service/app.py]&#45;&#45;[zeeguu/core/tokenization/stanza_tokenizer.py] -->
+<g id="edge51" class="edge">
+<title>[stanza_service/app.py]&#45;&#45;[zeeguu/core/tokenization/stanza_tokenizer.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M13368.22,-625.11C13323.49,-605.44 13251.04,-573.57 13206.3,-553.89"/>
+<text xml:space="preserve" text-anchor="middle" x="13332.67" y="-585.23" font-family="Arial" font-size="12.00"> 40 </text>
+</g>
+<!-- [stanza_service/install_models.py] -->
+<g id="node141" class="node">
+<title>[stanza_service/install_models.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="13653.38,-553.5 13428.12,-553.5 13428.12,-517.5 13653.38,-517.5 13653.38,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="13540.75" y="-530.83" font-family="Tahoma" font-size="14.00">[stanza_service/install_models.py]</text>
+</g>
+<!-- [stanza_service/app.py]&#45;&#45;[stanza_service/install_models.py] -->
+<g id="edge135" class="edge">
+<title>[stanza_service/app.py]&#45;&#45;[stanza_service/install_models.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M13429.41,-625.23C13454.15,-605.52 13494.37,-573.47 13519.09,-553.76"/>
+<text xml:space="preserve" text-anchor="middle" x="13503.68" y="-585.23" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/llm_services/anthropic_service.py] -->
+<g id="node63" class="node">
+<title>[zeeguu/core/llm_services/anthropic_service.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="14053.25,-747.75 13740.25,-747.75 13740.25,-711.75 14053.25,-711.75 14053.25,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="13896.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/llm_services/anthropic_service.py]</text>
+</g>
+<!-- [zeeguu/core/llm_services/deepseek_service.py] -->
+<g id="node64" class="node">
+<title>[zeeguu/core/llm_services/deepseek_service.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="14053.62,-661.5 13739.88,-661.5 13739.88,-625.5 14053.62,-625.5 14053.62,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="13896.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/llm_services/deepseek_service.py]</text>
+</g>
+<!-- [zeeguu/core/llm_services/anthropic_service.py]&#45;&#45;[zeeguu/core/llm_services/deepseek_service.py] -->
+<g id="edge53" class="edge">
+<title>[zeeguu/core/llm_services/anthropic_service.py]&#45;&#45;[zeeguu/core/llm_services/deepseek_service.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M13896.75,-711.29C13896.75,-696.83 13896.75,-676.39 13896.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="13906.5" y="-682.35" font-family="Arial" font-size="12.00"> 38 </text>
+</g>
+<!-- [tools/precompute_upcoming_meaning_lessons.py] -->
+<g id="node65" class="node">
+<title>[tools/precompute_upcoming_meaning_lessons.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="14401.88,-747.75 14071.62,-747.75 14071.62,-711.75 14401.88,-711.75 14401.88,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="14236.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/precompute_upcoming_meaning_lessons.py]</text>
+</g>
+<!-- [tools/precompute_upcoming_meaning_lessons.py]&#45;&#45;[tools/precompute_upcoming_meaning_lessons.py] -->
+<g id="edge54" class="edge">
+<title>[tools/precompute_upcoming_meaning_lessons.py]&#45;&#45;[tools/precompute_upcoming_meaning_lessons.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M14402.11,-735.55C14413.17,-734.21 14419.88,-732.28 14419.88,-729.75 14419.88,-727.22 14413.17,-725.29 14402.11,-723.95"/>
+<text xml:space="preserve" text-anchor="middle" x="14429.62" y="-725.48" font-family="Arial" font-size="12.00"> 38 </text>
+</g>
+<!-- [zeeguu/core/model/friendship.py] -->
+<g id="node66" class="node">
+<title>[zeeguu/core/model/friendship.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="14685.88,-747.75 14457.62,-747.75 14457.62,-711.75 14685.88,-711.75 14685.88,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="14571.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/friendship.py]</text>
+</g>
+<!-- [zeeguu/core/model/friendship.py]&#45;&#45;[zeeguu/core/model/friendship.py] -->
+<g id="edge55" class="edge">
+<title>[zeeguu/core/model/friendship.py]&#45;&#45;[zeeguu/core/model/friendship.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M14686.37,-736.23C14697.1,-734.9 14703.88,-732.74 14703.88,-729.75 14703.88,-726.76 14697.1,-724.6 14686.37,-723.27"/>
+<text xml:space="preserve" text-anchor="middle" x="14713.62" y="-725.48" font-family="Arial" font-size="12.00"> 38 </text>
+</g>
+<!-- [tools/migrations/25&#45;07&#45;31&#45;&#45;recalculate_multiword_phrase_ranks.py] -->
+<g id="node67" class="node">
+<title>[tools/migrations/25&#45;07&#45;31&#45;&#45;recalculate_multiword_phrase_ranks.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="15177.75,-747.75 14741.75,-747.75 14741.75,-711.75 15177.75,-711.75 15177.75,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="14959.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/migrations/25&#45;07&#45;31&#45;&#45;recalculate_multiword_phrase_ranks.py]</text>
+</g>
+<!-- [tools/migrations/25&#45;10&#45;22&#45;&#45;recalculate_all_multiword_phrase_ranks.py] -->
+<g id="node68" class="node">
+<title>[tools/migrations/25&#45;10&#45;22&#45;&#45;recalculate_all_multiword_phrase_ranks.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="15188.25,-661.5 14731.25,-661.5 14731.25,-625.5 15188.25,-625.5 15188.25,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="14959.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/migrations/25&#45;10&#45;22&#45;&#45;recalculate_all_multiword_phrase_ranks.py]</text>
+</g>
+<!-- [tools/migrations/25&#45;07&#45;31&#45;&#45;recalculate_multiword_phrase_ranks.py]&#45;&#45;[tools/migrations/25&#45;10&#45;22&#45;&#45;recalculate_all_multiword_phrase_ranks.py] -->
+<g id="edge56" class="edge">
+<title>[tools/migrations/25&#45;07&#45;31&#45;&#45;recalculate_multiword_phrase_ranks.py]&#45;&#45;[tools/migrations/25&#45;10&#45;22&#45;&#45;recalculate_all_multiword_phrase_ranks.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M14959.75,-711.29C14959.75,-696.83 14959.75,-676.39 14959.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="14969.5" y="-682.35" font-family="Arial" font-size="12.00"> 36 </text>
+</g>
+<!-- [tools/migrations/25&#45;10&#45;22&#45;&#45;recalculate_single_word_phrase_ranks.py] -->
+<g id="node98" class="node">
+<title>[tools/migrations/25&#45;10&#45;22&#45;&#45;recalculate_single_word_phrase_ranks.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="15183.75,-553.5 14735.75,-553.5 14735.75,-517.5 15183.75,-517.5 15183.75,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="14959.75" y="-530.83" font-family="Tahoma" font-size="14.00">[tools/migrations/25&#45;10&#45;22&#45;&#45;recalculate_single_word_phrase_ranks.py]</text>
+</g>
+<!-- [tools/migrations/25&#45;10&#45;22&#45;&#45;recalculate_all_multiword_phrase_ranks.py]&#45;&#45;[tools/migrations/25&#45;10&#45;22&#45;&#45;recalculate_single_word_phrase_ranks.py] -->
+<g id="edge85" class="edge">
+<title>[tools/migrations/25&#45;10&#45;22&#45;&#45;recalculate_all_multiword_phrase_ranks.py]&#45;&#45;[tools/migrations/25&#45;10&#45;22&#45;&#45;recalculate_single_word_phrase_ranks.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M14959.75,-625.47C14959.75,-605.81 14959.75,-573.63 14959.75,-553.84"/>
+<text xml:space="preserve" text-anchor="middle" x="14969.5" y="-585.23" font-family="Arial" font-size="12.00"> 24 </text>
+</g>
+<!-- [zeeguu/core/model/video_caption_context.py]&#45;&#45;[zeeguu/core/model/video_title_context.py] -->
+<g id="edge93" class="edge">
+<title>[zeeguu/core/model/video_caption_context.py]&#45;&#45;[zeeguu/core/model/video_title_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8034.25,-172.04C8065.32,-157.58 8109.24,-137.14 8140.29,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="8107.84" y="-143.1" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/api/endpoints/user_articles.py] -->
+<g id="node70" class="node">
+<title>[zeeguu/api/endpoints/user_articles.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="9218.88,-747.75 8960.62,-747.75 8960.62,-711.75 9218.88,-711.75 9218.88,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="9089.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/user_articles.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/user_articles.py]&#45;&#45;[zeeguu/core/content_recommender/elastic_recommender.py] -->
+<g id="edge58" class="edge">
+<title>[zeeguu/api/endpoints/user_articles.py]&#45;&#45;[zeeguu/core/content_recommender/elastic_recommender.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M9089.75,-711.29C9089.75,-696.83 9089.75,-676.39 9089.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="9099.5" y="-682.35" font-family="Arial" font-size="12.00"> 34 </text>
+</g>
+<!-- [zeeguu/core/sql/learner/exercises_history.py] -->
+<g id="node71" class="node">
+<title>[zeeguu/core/sql/learner/exercises_history.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="15495.88,-747.75 15195.62,-747.75 15195.62,-711.75 15495.88,-711.75 15495.88,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="15345.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/sql/learner/exercises_history.py]</text>
+</g>
+<!-- [zeeguu/core/sql/learner/words.py] -->
+<g id="node72" class="node">
+<title>[zeeguu/core/sql/learner/words.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="15462.5,-661.5 15229,-661.5 15229,-625.5 15462.5,-625.5 15462.5,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="15345.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/sql/learner/words.py]</text>
+</g>
+<!-- [zeeguu/core/sql/learner/exercises_history.py]&#45;&#45;[zeeguu/core/sql/learner/words.py] -->
+<g id="edge60" class="edge">
+<title>[zeeguu/core/sql/learner/exercises_history.py]&#45;&#45;[zeeguu/core/sql/learner/words.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M15345.75,-711.29C15345.75,-696.83 15345.75,-676.39 15345.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="15355.5" y="-682.35" font-family="Arial" font-size="12.00"> 34 </text>
+</g>
+<!-- [zeeguu/core/sql/learner/words.py]&#45;&#45;[zeeguu/core/sql/learner/words.py] -->
+<g id="edge110" class="edge">
+<title>[zeeguu/core/sql/learner/words.py]&#45;&#45;[zeeguu/core/sql/learner/words.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M15462.64,-649.98C15473.59,-648.65 15480.5,-646.49 15480.5,-643.5 15480.5,-640.51 15473.59,-638.35 15462.64,-637.02"/>
+<text xml:space="preserve" text-anchor="middle" x="15490.25" y="-639.23" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/core/language/strategies/flesch_kincaid_difficulty_estimator.py] -->
+<g id="node73" class="node">
+<title>[zeeguu/core/language/strategies/flesch_kincaid_difficulty_estimator.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="15971.25,-747.75 15514.25,-747.75 15514.25,-711.75 15971.25,-711.75 15971.25,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="15742.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/language/strategies/flesch_kincaid_difficulty_estimator.py]</text>
+</g>
+<!-- [zeeguu/core/language/strategies/word_rank_difficulty_estimator.py] -->
+<g id="node74" class="node">
+<title>[zeeguu/core/language/strategies/word_rank_difficulty_estimator.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="16175.12,-661.5 15738.38,-661.5 15738.38,-625.5 16175.12,-625.5 16175.12,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="15956.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/language/strategies/word_rank_difficulty_estimator.py]</text>
+</g>
+<!-- [zeeguu/core/language/strategies/flesch_kincaid_difficulty_estimator.py]&#45;&#45;[zeeguu/core/language/strategies/word_rank_difficulty_estimator.py] -->
+<g id="edge61" class="edge">
+<title>[zeeguu/core/language/strategies/flesch_kincaid_difficulty_estimator.py]&#45;&#45;[zeeguu/core/language/strategies/word_rank_difficulty_estimator.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M15787.09,-711.29C15823.82,-696.83 15875.75,-676.39 15912.47,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="15872.31" y="-682.35" font-family="Arial" font-size="12.00"> 32 </text>
+</g>
+<!-- [zeeguu/core/tokenization/nltk_tokenizer.py] -->
+<g id="node75" class="node">
+<title>[zeeguu/core/tokenization/nltk_tokenizer.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="13301.12,-747.75 13014.38,-747.75 13014.38,-711.75 13301.12,-711.75 13301.12,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="13157.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/tokenization/nltk_tokenizer.py]</text>
+</g>
+<!-- [zeeguu/core/tokenization/nltk_tokenizer.py]&#45;&#45;[zeeguu/core/tokenization/stanza_tokenizer.py] -->
+<g id="edge63" class="edge">
+<title>[zeeguu/core/tokenization/nltk_tokenizer.py]&#45;&#45;[zeeguu/core/tokenization/stanza_tokenizer.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M13081.06,-711.29C13027.91,-695.17 12970.9,-667.34 12996.25,-625.5 13018.23,-589.23 13060.36,-567.05 13097.24,-553.9"/>
+<text xml:space="preserve" text-anchor="middle" x="13006" y="-639.23" font-family="Arial" font-size="12.00"> 32 </text>
+</g>
+<!-- [zeeguu/core/tokenization/stanza_client.py] -->
+<g id="node78" class="node">
+<title>[zeeguu/core/tokenization/stanza_client.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="13308.25,-661.5 13025.25,-661.5 13025.25,-625.5 13308.25,-625.5 13308.25,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="13166.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/tokenization/stanza_client.py]</text>
+</g>
+<!-- [zeeguu/core/tokenization/nltk_tokenizer.py]&#45;&#45;[zeeguu/core/tokenization/stanza_client.py] -->
+<g id="edge104" class="edge">
+<title>[zeeguu/core/tokenization/nltk_tokenizer.py]&#45;&#45;[zeeguu/core/tokenization/stanza_client.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M13159.61,-711.29C13161.16,-696.83 13163.34,-676.39 13164.89,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="13172.54" y="-682.35" font-family="Arial" font-size="12.00"> 18 </text>
+</g>
+<!-- [tools/crawler/article_crawler.py] -->
+<g id="node76" class="node">
+<title>[tools/crawler/article_crawler.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="16665.25,-747.75 16448.25,-747.75 16448.25,-711.75 16665.25,-711.75 16665.25,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="16556.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/crawler/article_crawler.py]</text>
+</g>
+<!-- [zeeguu/operations/crawler/article_crawler.py] -->
+<g id="node77" class="node">
+<title>[zeeguu/operations/crawler/article_crawler.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="16706.88,-661.5 16406.62,-661.5 16406.62,-625.5 16706.88,-625.5 16706.88,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="16556.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/operations/crawler/article_crawler.py]</text>
+</g>
+<!-- [tools/crawler/article_crawler.py]&#45;&#45;[zeeguu/operations/crawler/article_crawler.py] -->
+<g id="edge64" class="edge">
+<title>[tools/crawler/article_crawler.py]&#45;&#45;[zeeguu/operations/crawler/article_crawler.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M16556.75,-711.29C16556.75,-696.83 16556.75,-676.39 16556.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="16566.5" y="-682.35" font-family="Arial" font-size="12.00"> 32 </text>
+</g>
+<!-- [zeeguu/core/tokenization/stanza_client.py]&#45;&#45;[zeeguu/core/tokenization/stanza_tokenizer.py] -->
+<g id="edge65" class="edge">
+<title>[zeeguu/core/tokenization/stanza_client.py]&#45;&#45;[zeeguu/core/tokenization/stanza_tokenizer.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M13166.75,-625.47C13166.75,-605.81 13166.75,-573.63 13166.75,-553.84"/>
+<text xml:space="preserve" text-anchor="middle" x="13176.5" y="-585.23" font-family="Arial" font-size="12.00"> 30 </text>
+</g>
+<!-- [tools/migrations/24&#45;11&#45;04&#45;&#45;updating&#45;url&#45;keyword&#45;mapping.sql] -->
+<g id="node79" class="node">
+<title>[tools/migrations/24&#45;11&#45;04&#45;&#45;updating&#45;url&#45;keyword&#45;mapping.sql]</title>
+<polygon fill="#00b2ee" stroke="white" points="17086.62,-747.75 16682.88,-747.75 16682.88,-711.75 17086.62,-711.75 17086.62,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="16884.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/migrations/24&#45;11&#45;04&#45;&#45;updating&#45;url&#45;keyword&#45;mapping.sql]</text>
+</g>
+<!-- [tools/migrations/24&#45;11&#45;04&#45;&#45;updating&#45;url&#45;keyword&#45;mapping.sql]&#45;&#45;[tools/migrations/24&#45;11&#45;04&#45;&#45;updating&#45;url&#45;keyword&#45;mapping.sql] -->
+<g id="edge66" class="edge">
+<title>[tools/migrations/24&#45;11&#45;04&#45;&#45;updating&#45;url&#45;keyword&#45;mapping.sql]&#45;&#45;[tools/migrations/24&#45;11&#45;04&#45;&#45;updating&#45;url&#45;keyword&#45;mapping.sql]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M17087.12,-735.13C17098.1,-733.82 17104.62,-732.02 17104.62,-729.75 17104.62,-727.48 17098.1,-725.68 17087.12,-724.37"/>
+<text xml:space="preserve" text-anchor="middle" x="17114.38" y="-725.48" font-family="Arial" font-size="12.00"> 30 </text>
+</g>
+<!-- [zeeguu/api/endpoints/leaderboards.py] -->
+<g id="node80" class="node">
+<title>[zeeguu/api/endpoints/leaderboards.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="17403,-747.75 17142.5,-747.75 17142.5,-711.75 17403,-711.75 17403,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="17272.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/leaderboards.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/leaderboards.py]&#45;&#45;[zeeguu/api/endpoints/leaderboards.py] -->
+<g id="edge67" class="edge">
+<title>[zeeguu/api/endpoints/leaderboards.py]&#45;&#45;[zeeguu/api/endpoints/leaderboards.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M17403.35,-736C17414.23,-734.65 17421,-732.57 17421,-729.75 17421,-726.93 17414.23,-724.85 17403.35,-723.5"/>
+<text xml:space="preserve" text-anchor="middle" x="17430.75" y="-725.48" font-family="Arial" font-size="12.00"> 30 </text>
+</g>
+<!-- [zeeguu/api/endpoints/article.py] -->
+<g id="node81" class="node">
+<title>[zeeguu/api/endpoints/article.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="17677,-747.75 17458.5,-747.75 17458.5,-711.75 17677,-711.75 17677,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="17567.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/article.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/article.py]&#45;&#45;[zeeguu/api/endpoints/article.py] -->
+<g id="edge132" class="edge">
+<title>[zeeguu/api/endpoints/article.py]&#45;&#45;[zeeguu/api/endpoints/article.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M17677.26,-736.34C17688.1,-735.02 17695,-732.82 17695,-729.75 17695,-726.68 17688.1,-724.48 17677.26,-723.16"/>
+<text xml:space="preserve" text-anchor="middle" x="17704.75" y="-725.48" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/api/endpoints/article_upload.py] -->
+<g id="node82" class="node">
+<title>[zeeguu/api/endpoints/article_upload.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="17701,-661.5 17434.5,-661.5 17434.5,-625.5 17701,-625.5 17701,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="17567.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/article_upload.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/article.py]&#45;&#45;[zeeguu/api/endpoints/article_upload.py] -->
+<g id="edge68" class="edge">
+<title>[zeeguu/api/endpoints/article.py]&#45;&#45;[zeeguu/api/endpoints/article_upload.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M17567.75,-711.29C17567.75,-696.83 17567.75,-676.39 17567.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="17577.5" y="-682.35" font-family="Arial" font-size="12.00"> 30 </text>
+</g>
+<!-- [tools/prefetch_example_sentences_for_users.py] -->
+<g id="node83" class="node">
+<title>[tools/prefetch_example_sentences_for_users.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="6530.75,-661.5 6208.75,-661.5 6208.75,-625.5 6530.75,-625.5 6530.75,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="6369.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/prefetch_example_sentences_for_users.py]</text>
+</g>
+<!-- [tools/prefetch_example_sentences_for_users.py]&#45;&#45;[zeeguu/api/endpoints/generated_examples.py] -->
+<g id="edge70" class="edge">
+<title>[tools/prefetch_example_sentences_for_users.py]&#45;&#45;[zeeguu/api/endpoints/generated_examples.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M6307.75,-625.11C6237.69,-605.47 6124.3,-573.67 6054.09,-553.98"/>
+<text xml:space="preserve" text-anchor="middle" x="6246.44" y="-585.23" font-family="Arial" font-size="12.00"> 30 </text>
+</g>
+<!-- [zeeguu/core/model/monthly_active_users_cache.py] -->
+<g id="node84" class="node">
+<title>[zeeguu/core/model/monthly_active_users_cache.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="18077,-747.75 17732.5,-747.75 17732.5,-711.75 18077,-711.75 18077,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="17904.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/monthly_active_users_cache.py]</text>
+</g>
+<!-- [zeeguu/core/model/monthly_activity_stats_cache.py] -->
+<g id="node85" class="node">
+<title>[zeeguu/core/model/monthly_activity_stats_cache.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="18078.5,-661.5 17731,-661.5 17731,-625.5 18078.5,-625.5 18078.5,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="17904.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/monthly_activity_stats_cache.py]</text>
+</g>
+<!-- [zeeguu/core/model/monthly_active_users_cache.py]&#45;&#45;[zeeguu/core/model/monthly_activity_stats_cache.py] -->
+<g id="edge71" class="edge">
+<title>[zeeguu/core/model/monthly_active_users_cache.py]&#45;&#45;[zeeguu/core/model/monthly_activity_stats_cache.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M17904.75,-711.29C17904.75,-696.83 17904.75,-676.39 17904.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="17914.5" y="-682.35" font-family="Arial" font-size="12.00"> 28 </text>
+</g>
+<!-- [tools/diagnose_recommendations.py] -->
+<g id="node86" class="node">
+<title>[tools/diagnose_recommendations.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="18359.75,-747.75 18109.75,-747.75 18109.75,-711.75 18359.75,-711.75 18359.75,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="18234.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/diagnose_recommendations.py]</text>
+</g>
+<!-- [tools/diagnose_recommendations.py]&#45;&#45;[tools/diagnose_recommendations.py] -->
+<g id="edge72" class="edge">
+<title>[tools/diagnose_recommendations.py]&#45;&#45;[tools/diagnose_recommendations.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M18359.77,-736.12C18370.82,-734.78 18377.75,-732.66 18377.75,-729.75 18377.75,-726.84 18370.82,-724.72 18359.77,-723.38"/>
+<text xml:space="preserve" text-anchor="middle" x="18387.5" y="-725.48" font-family="Arial" font-size="12.00"> 28 </text>
+</g>
+<!-- [zeeguu/core/model/article_difficulty_feedback.py] -->
+<g id="node88" class="node">
+<title>[zeeguu/core/model/article_difficulty_feedback.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="12458.75,-747.75 12130.75,-747.75 12130.75,-711.75 12458.75,-711.75 12458.75,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="12294.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/article_difficulty_feedback.py]</text>
+</g>
+<!-- [zeeguu/core/model/article_difficulty_feedback.py]&#45;&#45;[zeeguu/core/model/user_article.py] -->
+<g id="edge74" class="edge">
+<title>[zeeguu/core/model/article_difficulty_feedback.py]&#45;&#45;[zeeguu/core/model/user_article.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M12207.17,-711.31C12180.15,-701.37 12153.31,-685.81 12137.25,-661.5 12105.27,-613.07 12181.25,-574.83 12238.46,-553.96"/>
+<text xml:space="preserve" text-anchor="middle" x="12147" y="-639.23" font-family="Arial" font-size="12.00"> 28 </text>
+</g>
+<!-- [zeeguu/core/model/starred_article.py] -->
+<g id="node132" class="node">
+<title>[zeeguu/core/model/starred_article.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="12423.5,-661.5 12166,-661.5 12166,-625.5 12423.5,-625.5 12423.5,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="12294.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/starred_article.py]</text>
+</g>
+<!-- [zeeguu/core/model/article_difficulty_feedback.py]&#45;&#45;[zeeguu/core/model/starred_article.py] -->
+<g id="edge131" class="edge">
+<title>[zeeguu/core/model/article_difficulty_feedback.py]&#45;&#45;[zeeguu/core/model/starred_article.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M12294.75,-711.29C12294.75,-696.83 12294.75,-676.39 12294.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="12304.5" y="-682.35" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/model/personal_copy.py] -->
+<g id="node162" class="node">
+<title>[zeeguu/core/model/personal_copy.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="12697.75,-661.5 12441.75,-661.5 12441.75,-625.5 12697.75,-625.5 12697.75,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="12569.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/personal_copy.py]</text>
+</g>
+<!-- [zeeguu/core/model/article_difficulty_feedback.py]&#45;&#45;[zeeguu/core/model/personal_copy.py] -->
+<g id="edge185" class="edge">
+<title>[zeeguu/core/model/article_difficulty_feedback.py]&#45;&#45;[zeeguu/core/model/personal_copy.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M12351.73,-711.29C12398.93,-696.83 12465.67,-676.39 12512.84,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="12458.46" y="-682.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/user_word_integrity/_check_and_fix_user_word_integrity.py] -->
+<g id="node89" class="node">
+<title>[tools/user_word_integrity/_check_and_fix_user_word_integrity.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="18901,-747.75 18472.5,-747.75 18472.5,-711.75 18901,-711.75 18901,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="18686.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/user_word_integrity/_check_and_fix_user_word_integrity.py]</text>
+</g>
+<!-- [tools/user_word_integrity/_daily_user_word_integrity_check.py] -->
+<g id="node90" class="node">
+<title>[tools/user_word_integrity/_daily_user_word_integrity_check.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="18509.12,-661.5 18096.38,-661.5 18096.38,-625.5 18509.12,-625.5 18509.12,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="18302.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/user_word_integrity/_daily_user_word_integrity_check.py]</text>
+</g>
+<!-- [tools/user_word_integrity/_check_and_fix_user_word_integrity.py]&#45;&#45;[tools/user_word_integrity/_daily_user_word_integrity_check.py] -->
+<g id="edge75" class="edge">
+<title>[tools/user_word_integrity/_check_and_fix_user_word_integrity.py]&#45;&#45;[tools/user_word_integrity/_daily_user_word_integrity_check.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M18607.18,-711.29C18541.28,-696.83 18448.09,-676.39 18382.21,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="18527.49" y="-682.35" font-family="Arial" font-size="12.00"> 28 </text>
+</g>
+<!-- [tools/user_word_integrity/_cleanup_orphaned_user_words.py] -->
+<g id="node138" class="node">
+<title>[tools/user_word_integrity/_cleanup_orphaned_user_words.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="18930.62,-661.5 18526.88,-661.5 18526.88,-625.5 18930.62,-625.5 18930.62,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="18728.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/user_word_integrity/_cleanup_orphaned_user_words.py]</text>
+</g>
+<!-- [tools/user_word_integrity/_check_and_fix_user_word_integrity.py]&#45;&#45;[tools/user_word_integrity/_cleanup_orphaned_user_words.py] -->
+<g id="edge127" class="edge">
+<title>[tools/user_word_integrity/_check_and_fix_user_word_integrity.py]&#45;&#45;[tools/user_word_integrity/_cleanup_orphaned_user_words.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M18695.45,-711.29C18702.66,-696.83 18712.85,-676.39 18720.06,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="18720.01" y="-682.35" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [tools/migrations/25&#45;02&#45;28&#45;&#45;03&#45;update&#45;user&#45;activity&#45;data.sql] -->
+<g id="node91" class="node">
+<title>[tools/migrations/25&#45;02&#45;28&#45;&#45;03&#45;update&#45;user&#45;activity&#45;data.sql]</title>
+<polygon fill="#00b2ee" stroke="white" points="11178.12,-747.75 10789.38,-747.75 10789.38,-711.75 11178.12,-711.75 11178.12,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="10983.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/migrations/25&#45;02&#45;28&#45;&#45;03&#45;update&#45;user&#45;activity&#45;data.sql]</text>
+</g>
+<!-- [tools/migrations/25&#45;02&#45;28&#45;&#45;03&#45;update&#45;user&#45;activity&#45;data.sql]&#45;&#45;[tools/migrations/25&#45;02&#45;28&#45;&#45;04&#45;delete&#45;unused&#45;columns&#45;article.sql] -->
+<g id="edge76" class="edge">
+<title>[tools/migrations/25&#45;02&#45;28&#45;&#45;03&#45;update&#45;user&#45;activity&#45;data.sql]&#45;&#45;[tools/migrations/25&#45;02&#45;28&#45;&#45;04&#45;delete&#45;unused&#45;columns&#45;article.sql]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M10983.75,-711.29C10983.75,-696.83 10983.75,-676.39 10983.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="10993.5" y="-682.35" font-family="Arial" font-size="12.00"> 26 </text>
+</g>
+<!-- [zeeguu/core/model/article_fragment_context.py] -->
+<g id="node92" class="node">
+<title>[zeeguu/core/model/article_fragment_context.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="8037.75,-747.75 7715.75,-747.75 7715.75,-711.75 8037.75,-711.75 8037.75,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="7876.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/article_fragment_context.py]</text>
+</g>
+<!-- [zeeguu/core/model/article_fragment_context.py]&#45;&#45;[zeeguu/core/model/article_summary_context.py] -->
+<g id="edge80" class="edge">
+<title>[zeeguu/core/model/article_fragment_context.py]&#45;&#45;[zeeguu/core/model/article_summary_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M7920.05,-711.29C7955.92,-696.83 8006.65,-676.39 8042.5,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="8003.51" y="-682.35" font-family="Arial" font-size="12.00"> 26 </text>
+</g>
+<!-- [zeeguu/core/model/article_fragment_context.py]&#45;&#45;[zeeguu/core/model/article_title_context.py] -->
+<g id="edge77" class="edge">
+<title>[zeeguu/core/model/article_fragment_context.py]&#45;&#45;[zeeguu/core/model/article_title_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8037.93,-717.43C8107.48,-708.23 8188.38,-691.6 8256.75,-661.5 8317.13,-634.92 8375.37,-581.48 8403.02,-553.88"/>
+<text xml:space="preserve" text-anchor="middle" x="8328.5" y="-639.23" font-family="Arial" font-size="12.00"> 26 </text>
+</g>
+<!-- [zeeguu/core/model/article_fragment_context.py]&#45;&#45;[zeeguu/core/model/video_caption_context.py] -->
+<g id="edge78" class="edge">
+<title>[zeeguu/core/model/article_fragment_context.py]&#45;&#45;[zeeguu/core/model/video_caption_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M7860.66,-711.51C7847.4,-695.44 7830.75,-670.16 7830.75,-644.5 7830.75,-644.5 7830.75,-644.5 7830.75,-405.12 7830.75,-315.88 7922.19,-241.44 7969.34,-208.98"/>
+<text xml:space="preserve" text-anchor="middle" x="7840.5" y="-444.98" font-family="Arial" font-size="12.00"> 26 </text>
+</g>
+<!-- [zeeguu/core/model/article_fragment_context.py]&#45;&#45;[zeeguu/core/model/example_sentence_context.py] -->
+<g id="edge129" class="edge">
+<title>[zeeguu/core/model/article_fragment_context.py]&#45;&#45;[zeeguu/core/model/example_sentence_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M7876.54,-711.42C7876.94,-672.56 7882.92,-577.22 7929.25,-517.5 7985.32,-445.22 8085.33,-402.75 8150.59,-381.44"/>
+<text xml:space="preserve" text-anchor="middle" x="7939" y="-531.23" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/model/article_fragment_context.py]&#45;&#45;[zeeguu/core/model/video_title_context.py] -->
+<g id="edge144" class="edge">
+<title>[zeeguu/core/model/article_fragment_context.py]&#45;&#45;[zeeguu/core/model/video_title_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M7832.75,-711.25C7806.31,-697.53 7777.75,-675.53 7777.75,-644.5 7777.75,-644.5 7777.75,-644.5 7777.75,-189.5 7777.75,-135.21 7920.63,-115.72 8035.6,-108.82"/>
+<text xml:space="preserve" text-anchor="middle" x="7787.5" y="-401.85" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/model/search_filter.py] -->
+<g id="node93" class="node">
+<title>[zeeguu/core/model/search_filter.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="19214,-747.75 18971.5,-747.75 18971.5,-711.75 19214,-711.75 19214,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="19092.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/search_filter.py]</text>
+</g>
+<!-- [zeeguu/core/model/search_subscription.py] -->
+<g id="node94" class="node">
+<title>[zeeguu/core/model/search_subscription.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="19237.25,-661.5 18948.25,-661.5 18948.25,-625.5 19237.25,-625.5 19237.25,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="19092.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/search_subscription.py]</text>
+</g>
+<!-- [zeeguu/core/model/search_filter.py]&#45;&#45;[zeeguu/core/model/search_subscription.py] -->
+<g id="edge82" class="edge">
+<title>[zeeguu/core/model/search_filter.py]&#45;&#45;[zeeguu/core/model/search_subscription.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M19092.75,-711.29C19092.75,-696.83 19092.75,-676.39 19092.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="19102.5" y="-682.35" font-family="Arial" font-size="12.00"> 24 </text>
+</g>
+<!-- [zeeguu/core/model/domain_name.py] -->
+<g id="node95" class="node">
+<title>[zeeguu/core/model/domain_name.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="9411.75,-381 9155.75,-381 9155.75,-345 9411.75,-345 9411.75,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="9283.75" y="-358.32" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/domain_name.py]</text>
+</g>
+<!-- [zeeguu/core/model/domain_name.py]&#45;&#45;[zeeguu/core/model/source_text.py] -->
+<g id="edge181" class="edge">
+<title>[zeeguu/core/model/domain_name.py]&#45;&#45;[zeeguu/core/model/source_text.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M9243.14,-344.54C9209.5,-330.08 9161.93,-309.64 9128.31,-295.18"/>
+<text xml:space="preserve" text-anchor="middle" x="9207.23" y="-315.6" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/url.py] -->
+<g id="node96" class="node">
+<title>[zeeguu/core/model/url.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="9494.12,-122.25 9309.38,-122.25 9309.38,-86.25 9494.12,-86.25 9494.12,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="9401.75" y="-99.58" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/url.py]</text>
+</g>
+<!-- [zeeguu/core/model/domain_name.py]&#45;&#45;[zeeguu/core/model/url.py] -->
+<g id="edge83" class="edge">
+<title>[zeeguu/core/model/domain_name.py]&#45;&#45;[zeeguu/core/model/url.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M9412,-349.75C9445.88,-339.98 9478.8,-323.22 9499.75,-294.75 9542.56,-236.58 9463.29,-157.08 9423.08,-122.49"/>
+<text xml:space="preserve" text-anchor="middle" x="9519.75" y="-229.35" font-family="Arial" font-size="12.00"> 24 </text>
+</g>
+<!-- [zeeguu/core/model/domain_name.py]&#45;&#45;[zeeguu/core/model/text.py] -->
+<g id="edge140" class="edge">
+<title>[zeeguu/core/model/domain_name.py]&#45;&#45;[zeeguu/core/model/text.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M9276,-344.7C9265.33,-322.47 9244.26,-283.76 9216.75,-258.75 9192.92,-237.09 9160.83,-220.32 9134.62,-208.95"/>
+<text xml:space="preserve" text-anchor="middle" x="9256.73" y="-272.48" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/llm_services/translation_validator.py] -->
+<g id="node97" class="node">
+<title>[zeeguu/core/llm_services/translation_validator.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="19592,-747.75 19265.5,-747.75 19265.5,-711.75 19592,-711.75 19592,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="19428.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/llm_services/translation_validator.py]</text>
+</g>
+<!-- [zeeguu/core/llm_services/translation_validator.py]&#45;&#45;[zeeguu/core/llm_services/translation_validator.py] -->
+<g id="edge84" class="edge">
+<title>[zeeguu/core/llm_services/translation_validator.py]&#45;&#45;[zeeguu/core/llm_services/translation_validator.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M19592.42,-735.55C19603.36,-734.21 19610,-732.28 19610,-729.75 19610,-727.22 19603.36,-725.29 19592.42,-723.95"/>
+<text xml:space="preserve" text-anchor="middle" x="19619.75" y="-725.48" font-family="Arial" font-size="12.00"> 24 </text>
+</g>
+<!-- [zeeguu/core/model/meaning_frequency_classifier.py] -->
+<g id="node178" class="node">
+<title>[zeeguu/core/model/meaning_frequency_classifier.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="19602.5,-661.5 19255,-661.5 19255,-625.5 19602.5,-625.5 19602.5,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="19428.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/meaning_frequency_classifier.py]</text>
+</g>
+<!-- [zeeguu/core/llm_services/translation_validator.py]&#45;&#45;[zeeguu/core/model/meaning_frequency_classifier.py] -->
+<g id="edge199" class="edge">
+<title>[zeeguu/core/llm_services/translation_validator.py]&#45;&#45;[zeeguu/core/model/meaning_frequency_classifier.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M19428.75,-711.29C19428.75,-696.83 19428.75,-676.39 19428.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="19438.5" y="-682.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/feedback_component.py] -->
+<g id="node99" class="node">
+<title>[zeeguu/core/model/feedback_component.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="8637.88,-208.5 8337.62,-208.5 8337.62,-172.5 8637.88,-172.5 8637.88,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="8487.75" y="-185.82" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/feedback_component.py]</text>
+</g>
+<!-- [zeeguu/core/model/search.py] -->
+<g id="node100" class="node">
+<title>[zeeguu/core/model/search.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="8885.5,-122.25 8676,-122.25 8676,-86.25 8885.5,-86.25 8885.5,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="8780.75" y="-99.58" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/search.py]</text>
+</g>
+<!-- [zeeguu/core/model/feedback_component.py]&#45;&#45;[zeeguu/core/model/search.py] -->
+<g id="edge86" class="edge">
+<title>[zeeguu/core/model/feedback_component.py]&#45;&#45;[zeeguu/core/model/search.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8548.46,-172.04C8598.75,-157.58 8669.85,-137.14 8720.12,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="8661.54" y="-143.1" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/core/model/topic.py] -->
+<g id="node115" class="node">
+<title>[zeeguu/core/model/topic.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="8879.88,-36 8681.62,-36 8681.62,0 8879.88,0 8879.88,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="8780.75" y="-13.32" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/topic.py]</text>
+</g>
+<!-- [zeeguu/core/model/feedback_component.py]&#45;&#45;[zeeguu/core/model/topic.py] -->
+<g id="edge107" class="edge">
+<title>[zeeguu/core/model/feedback_component.py]&#45;&#45;[zeeguu/core/model/topic.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8512.91,-172C8543.91,-150.73 8598.46,-114.22 8647.25,-86.25 8679.11,-67.99 8716.53,-49.37 8743.64,-36.36"/>
+<text xml:space="preserve" text-anchor="middle" x="8657" y="-99.97" font-family="Arial" font-size="12.00"> 18 </text>
+</g>
+<!-- [zeeguu/core/model/search.py]&#45;&#45;[zeeguu/core/model/topic.py] -->
+<g id="edge105" class="edge">
+<title>[zeeguu/core/model/search.py]&#45;&#45;[zeeguu/core/model/topic.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8780.75,-85.79C8780.75,-71.33 8780.75,-50.89 8780.75,-36.43"/>
+<text xml:space="preserve" text-anchor="middle" x="8790.5" y="-56.85" font-family="Arial" font-size="12.00"> 18 </text>
+</g>
+<!-- [zeeguu/core/model/example_sentence_context.py]&#45;&#45;[zeeguu/core/model/video_caption_context.py] -->
+<g id="edge95" class="edge">
+<title>[zeeguu/core/model/example_sentence_context.py]&#45;&#45;[zeeguu/core/model/video_caption_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8188.06,-344.54C8180.18,-339.04 8171.53,-332.87 8163.75,-327 8109.65,-286.2 8048.32,-235.14 8017.2,-208.88"/>
+<text xml:space="preserve" text-anchor="middle" x="8129.43" y="-272.48" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/core/model/example_sentence_context.py]&#45;&#45;[zeeguu/core/model/video_title_context.py] -->
+<g id="edge96" class="edge">
+<title>[zeeguu/core/model/example_sentence_context.py]&#45;&#45;[zeeguu/core/model/video_title_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8206.4,-344.74C8196.99,-321.58 8181.17,-278.94 8175.25,-240.75 8168.73,-198.67 8172.68,-148.36 8175.55,-122.49"/>
+<text xml:space="preserve" text-anchor="middle" x="8185" y="-229.35" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/core/model/example_sentence_context.py]&#45;&#45;[zeeguu/core/model/text.py] -->
+<g id="edge155" class="edge">
+<title>[zeeguu/core/model/example_sentence_context.py]&#45;&#45;[zeeguu/core/model/text.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8381.87,-350.93C8509.03,-340.57 8671.81,-322.48 8732.75,-294.75 8774.37,-275.81 8767.92,-244.98 8809.75,-226.5 8878.44,-196.16 8903.29,-218.24 8977.75,-208.5 8982.16,-207.92 8986.66,-207.31 8991.21,-206.68"/>
+<text xml:space="preserve" text-anchor="middle" x="8782.1" y="-272.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/example_sentence_context.py]&#45;&#45;[zeeguu/core/model/feed.py] -->
+<g id="edge198" class="edge">
+<title>[zeeguu/core/model/example_sentence_context.py]&#45;&#45;[zeeguu/core/model/feed.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8258.94,-344.55C8288.05,-333.92 8326.91,-320.88 8362.25,-312.75 8416.22,-300.33 8477.49,-291.87 8527.36,-286.38"/>
+<text xml:space="preserve" text-anchor="middle" x="8372" y="-315.6" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/api/endpoints/session_history.py] -->
+<g id="node103" class="node">
+<title>[zeeguu/api/endpoints/session_history.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="19919.62,-747.75 19647.88,-747.75 19647.88,-711.75 19919.62,-711.75 19919.62,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="19783.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/session_history.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/session_history.py]&#45;&#45;[zeeguu/api/endpoints/session_history.py] -->
+<g id="edge91" class="edge">
+<title>[zeeguu/api/endpoints/session_history.py]&#45;&#45;[zeeguu/api/endpoints/session_history.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M19919.81,-735.94C19930.81,-734.59 19937.62,-732.53 19937.62,-729.75 19937.62,-726.97 19930.81,-724.91 19919.81,-723.56"/>
+<text xml:space="preserve" text-anchor="middle" x="19947.38" y="-725.48" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [tools/migrations/25&#45;08&#45;09&#45;&#45;comprehensive_userword_consolidation.py] -->
+<g id="node104" class="node">
+<title>[tools/migrations/25&#45;08&#45;09&#45;&#45;comprehensive_userword_consolidation.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="20431.88,-747.75 19975.62,-747.75 19975.62,-711.75 20431.88,-711.75 20431.88,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="20203.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/migrations/25&#45;08&#45;09&#45;&#45;comprehensive_userword_consolidation.py]</text>
+</g>
+<!-- [tools/migrations/25&#45;08&#45;09&#45;&#45;consolidate_duplicate_meanings.py] -->
+<g id="node105" class="node">
+<title>[tools/migrations/25&#45;08&#45;09&#45;&#45;consolidate_duplicate_meanings.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="20408.62,-661.5 19998.88,-661.5 19998.88,-625.5 20408.62,-625.5 20408.62,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="20203.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/migrations/25&#45;08&#45;09&#45;&#45;consolidate_duplicate_meanings.py]</text>
+</g>
+<!-- [tools/migrations/25&#45;08&#45;09&#45;&#45;comprehensive_userword_consolidation.py]&#45;&#45;[tools/migrations/25&#45;08&#45;09&#45;&#45;consolidate_duplicate_meanings.py] -->
+<g id="edge92" class="edge">
+<title>[tools/migrations/25&#45;08&#45;09&#45;&#45;comprehensive_userword_consolidation.py]&#45;&#45;[tools/migrations/25&#45;08&#45;09&#45;&#45;consolidate_duplicate_meanings.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M20203.75,-711.29C20203.75,-696.83 20203.75,-676.39 20203.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="20213.5" y="-682.35" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- [zeeguu/core/model/text.py]&#45;&#45;[zeeguu/core/model/url.py] -->
+<g id="edge168" class="edge">
+<title>[zeeguu/core/model/text.py]&#45;&#45;[zeeguu/core/model/url.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M9152.81,-172.04C9206.7,-157.58 9282.91,-137.14 9336.77,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="9273.3" y="-143.1" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/text.py]&#45;&#45;[zeeguu/core/model/text.py] -->
+<g id="edge108" class="edge">
+<title>[zeeguu/core/model/text.py]&#45;&#45;[zeeguu/core/model/text.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M9184.33,-197.3C9194.99,-196.01 9201.88,-193.74 9201.88,-190.5 9201.88,-187.26 9194.99,-184.99 9184.33,-183.7"/>
+<text xml:space="preserve" text-anchor="middle" x="9211.62" y="-186.22" font-family="Arial" font-size="12.00"> 18 </text>
+</g>
+<!-- [tools/old/tag_existing_articles.py] -->
+<g id="node107" class="node">
+<title>[tools/old/tag_existing_articles.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="20675.75,-747.75 20449.75,-747.75 20449.75,-711.75 20675.75,-711.75 20675.75,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="20562.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/old/tag_existing_articles.py]</text>
+</g>
+<!-- [tools/old/tag_topics_in_danish.py] -->
+<g id="node108" class="node">
+<title>[tools/old/tag_topics_in_danish.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="20666.25,-661.5 20437.25,-661.5 20437.25,-625.5 20666.25,-625.5 20666.25,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="20551.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/old/tag_topics_in_danish.py]</text>
+</g>
+<!-- [tools/old/tag_existing_articles.py]&#45;&#45;[tools/old/tag_topics_in_danish.py] -->
+<g id="edge97" class="edge">
+<title>[tools/old/tag_existing_articles.py]&#45;&#45;[tools/old/tag_topics_in_danish.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M20560.47,-711.29C20558.58,-696.83 20555.91,-676.39 20554.03,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="20567.66" y="-682.35" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [tools/old/update_particular_tag.py] -->
+<g id="node140" class="node">
+<title>[tools/old/update_particular_tag.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="20921,-661.5 20684.5,-661.5 20684.5,-625.5 20921,-625.5 20921,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="20802.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/old/update_particular_tag.py]</text>
+</g>
+<!-- [tools/old/tag_existing_articles.py]&#45;&#45;[tools/old/update_particular_tag.py] -->
+<g id="edge134" class="edge">
+<title>[tools/old/tag_existing_articles.py]&#45;&#45;[tools/old/update_particular_tag.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M20612.48,-711.29C20653.67,-696.83 20711.91,-676.39 20753.09,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="20706.87" y="-682.35" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [tools/old/es_v8_migration/set_new_topics_from_url_keyword.py] -->
+<g id="node109" class="node">
+<title>[tools/old/es_v8_migration/set_new_topics_from_url_keyword.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="21274.88,-747.75 20854.62,-747.75 20854.62,-711.75 21274.88,-711.75 21274.88,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="21064.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/old/es_v8_migration/set_new_topics_from_url_keyword.py]</text>
+</g>
+<!-- [tools/set_new_topics_article.py] -->
+<g id="node110" class="node">
+<title>[tools/set_new_topics_article.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="21128.62,-553.5 20910.88,-553.5 20910.88,-517.5 21128.62,-517.5 21128.62,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="21019.75" y="-530.83" font-family="Tahoma" font-size="14.00">[tools/set_new_topics_article.py]</text>
+</g>
+<!-- [tools/old/es_v8_migration/set_new_topics_from_url_keyword.py]&#45;&#45;[tools/set_new_topics_article.py] -->
+<g id="edge98" class="edge">
+<title>[tools/old/es_v8_migration/set_new_topics_from_url_keyword.py]&#45;&#45;[tools/set_new_topics_article.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M21021.99,-711.26C21001.16,-700.29 20978.1,-683.93 20966.25,-661.5 20946.63,-624.35 20980.16,-578.43 21002.41,-553.89"/>
+<text xml:space="preserve" text-anchor="middle" x="20976" y="-639.23" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [tools/old/es_v8_migration/set_url_keywords_article.py] -->
+<g id="node112" class="node">
+<title>[tools/old/es_v8_migration/set_url_keywords_article.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="21353.12,-661.5 20994.38,-661.5 20994.38,-625.5 21353.12,-625.5 21353.12,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="21173.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/old/es_v8_migration/set_url_keywords_article.py]</text>
+</g>
+<!-- [tools/old/es_v8_migration/set_new_topics_from_url_keyword.py]&#45;&#45;[tools/old/es_v8_migration/set_url_keywords_article.py] -->
+<g id="edge102" class="edge">
+<title>[tools/old/es_v8_migration/set_new_topics_from_url_keyword.py]&#45;&#45;[tools/old/es_v8_migration/set_url_keywords_article.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M21087.33,-711.29C21106.04,-696.83 21132.49,-676.39 21151.19,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="21135.53" y="-682.35" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [zeeguu/core/model/phrase.py] -->
+<g id="node111" class="node">
+<title>[zeeguu/core/model/phrase.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="21502.5,-747.75 21293,-747.75 21293,-711.75 21502.5,-711.75 21502.5,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="21397.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/phrase.py]</text>
+</g>
+<!-- [zeeguu/core/model/phrase.py]&#45;&#45;[zeeguu/core/model/phrase.py] -->
+<g id="edge99" class="edge">
+<title>[zeeguu/core/model/phrase.py]&#45;&#45;[zeeguu/core/model/phrase.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M21502.95,-736.4C21513.66,-735.08 21520.5,-732.87 21520.5,-729.75 21520.5,-726.63 21513.66,-724.42 21502.95,-723.1"/>
+<text xml:space="preserve" text-anchor="middle" x="21530.25" y="-725.48" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [tools/old/es_v8_migration/set_url_keywords_article.py]&#45;&#45;[tools/set_new_topics_article.py] -->
+<g id="edge100" class="edge">
+<title>[tools/old/es_v8_migration/set_url_keywords_article.py]&#45;&#45;[tools/set_new_topics_article.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M21148.66,-625.23C21120.11,-605.58 21073.73,-573.66 21045.08,-553.94"/>
+<text xml:space="preserve" text-anchor="middle" x="21129.29" y="-585.23" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [zeeguu/core/youtube_api/youtube_api.py] -->
+<g id="node113" class="node">
+<title>[zeeguu/core/youtube_api/youtube_api.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="21837.75,-747.75 21557.75,-747.75 21557.75,-711.75 21837.75,-711.75 21837.75,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="21697.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/youtube_api/youtube_api.py]</text>
+</g>
+<!-- [zeeguu/core/youtube_api/youtube_api.py]&#45;&#45;[zeeguu/core/youtube_api/youtube_api.py] -->
+<g id="edge101" class="edge">
+<title>[zeeguu/core/youtube_api/youtube_api.py]&#45;&#45;[zeeguu/core/youtube_api/youtube_api.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M21838.22,-735.85C21849.06,-734.5 21855.75,-732.47 21855.75,-729.75 21855.75,-727.03 21849.06,-725 21838.22,-723.65"/>
+<text xml:space="preserve" text-anchor="middle" x="21865.5" y="-725.48" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [tools/simplify_article.py] -->
+<g id="node114" class="node">
+<title>[tools/simplify_article.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="22062.62,-747.75 21892.88,-747.75 21892.88,-711.75 22062.62,-711.75 22062.62,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="21977.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/simplify_article.py]</text>
+</g>
+<!-- [tools/simplify_article.py]&#45;&#45;[tools/simplify_article.py] -->
+<g id="edge103" class="edge">
+<title>[tools/simplify_article.py]&#45;&#45;[tools/simplify_article.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M22062.9,-736.79C22073.59,-735.55 22080.62,-733.2 22080.62,-729.75 22080.62,-726.3 22073.59,-723.95 22062.9,-722.71"/>
+<text xml:space="preserve" text-anchor="middle" x="22090.38" y="-725.48" font-family="Arial" font-size="12.00"> 20 </text>
+</g>
+<!-- [zeeguu/core/model/meaning.py] -->
+<g id="node116" class="node">
+<title>[zeeguu/core/model/meaning.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="22339.5,-747.75 22118,-747.75 22118,-711.75 22339.5,-711.75 22339.5,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="22228.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/meaning.py]</text>
+</g>
+<!-- [zeeguu/core/model/meaning.py]&#45;&#45;[zeeguu/core/model/meaning.py] -->
+<g id="edge106" class="edge">
+<title>[zeeguu/core/model/meaning.py]&#45;&#45;[zeeguu/core/model/meaning.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M22340,-736.29C22350.71,-734.96 22357.5,-732.78 22357.5,-729.75 22357.5,-726.72 22350.71,-724.54 22340,-723.21"/>
+<text xml:space="preserve" text-anchor="middle" x="22367.25" y="-725.48" font-family="Arial" font-size="12.00"> 18 </text>
+</g>
+<!-- [zeeguu/core/model/grammar_correction_log.py] -->
+<g id="node117" class="node">
+<title>[zeeguu/core/model/grammar_correction_log.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="22714.62,-747.75 22394.88,-747.75 22394.88,-711.75 22714.62,-711.75 22714.62,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="22554.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/grammar_correction_log.py]</text>
+</g>
+<!-- [zeeguu/core/model/grammar_correction_log.py]&#45;&#45;[zeeguu/core/model/grammar_correction_log.py] -->
+<g id="edge109" class="edge">
+<title>[zeeguu/core/model/grammar_correction_log.py]&#45;&#45;[zeeguu/core/model/grammar_correction_log.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M22715.1,-735.59C22726,-734.24 22732.62,-732.3 22732.62,-729.75 22732.62,-727.2 22726,-725.26 22715.1,-723.91"/>
+<text xml:space="preserve" text-anchor="middle" x="22742.38" y="-725.48" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/core/model/feed.py]&#45;&#45;[zeeguu/core/model/video_caption_context.py] -->
+<g id="edge193" class="edge">
+<title>[zeeguu/core/model/feed.py]&#45;&#45;[zeeguu/core/model/video_caption_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8527.55,-268.49C8456.44,-262.63 8358.14,-253.3 8272.25,-240.75 8239.32,-235.94 8231.48,-232.51 8198.75,-226.5 8166.72,-220.62 8131.78,-214.47 8100.1,-209"/>
+<text xml:space="preserve" text-anchor="middle" x="8282" y="-229.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/feed.py]&#45;&#45;[zeeguu/core/model/feedback_component.py] -->
+<g id="edge157" class="edge">
+<title>[zeeguu/core/model/feed.py]&#45;&#45;[zeeguu/core/model/feedback_component.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8597.16,-258.29C8573.47,-243.83 8539.98,-223.39 8516.31,-208.93"/>
+<text xml:space="preserve" text-anchor="middle" x="8574.76" y="-229.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/feed.py]&#45;&#45;[zeeguu/core/model/search.py] -->
+<g id="edge188" class="edge">
+<title>[zeeguu/core/model/feed.py]&#45;&#45;[zeeguu/core/model/search.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8656.99,-258.47C8682.02,-244.68 8713.49,-227.51 8716.75,-226.5 8753.46,-215.14 8863.03,-237.05 8888.75,-208.5 8917.57,-176.51 8863.6,-142.59 8822.1,-122.7"/>
+<text xml:space="preserve" text-anchor="middle" x="8906.61" y="-186.22" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/feed.py]&#45;&#45;[zeeguu/core/model/video_title_context.py] -->
+<g id="edge158" class="edge">
+<title>[zeeguu/core/model/feed.py]&#45;&#45;[zeeguu/core/model/video_title_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8527.55,-263.53C8448.09,-252.09 8343.9,-233.08 8309.25,-208.5 8280.29,-187.96 8294.96,-163.06 8267.75,-140.25 8259.27,-133.14 8249.18,-127.37 8238.88,-122.72"/>
+<text xml:space="preserve" text-anchor="middle" x="8319" y="-186.22" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/feed.py]&#45;&#45;[zeeguu/core/model/text.py] -->
+<g id="edge174" class="edge">
+<title>[zeeguu/core/model/feed.py]&#45;&#45;[zeeguu/core/model/text.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8691.59,-258.33C8707.32,-253.36 8723.86,-247.45 8738.75,-240.75 8749.89,-235.74 8750.63,-230.28 8762.25,-226.5 8853.66,-196.79 8882.31,-219.85 8977.75,-208.5 8982.16,-207.98 8986.67,-207.41 8991.22,-206.81"/>
+<text xml:space="preserve" text-anchor="middle" x="8772" y="-229.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/feed.py]&#45;&#45;[zeeguu/core/model/topic.py] -->
+<g id="edge153" class="edge">
+<title>[zeeguu/core/model/feed.py]&#45;&#45;[zeeguu/core/model/topic.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8671.76,-258.38C8685.39,-252.98 8700.27,-246.85 8713.75,-240.75 8726.47,-235 8728.35,-230.43 8741.75,-226.5 8780.11,-215.24 8893.93,-238.15 8920.75,-208.5 8944.26,-182.5 8914.31,-111.17 8894.75,-86.25 8877.23,-63.92 8850.08,-47.49 8826.68,-36.45"/>
+<text xml:space="preserve" text-anchor="middle" x="8935.44" y="-143.1" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/language.py] -->
+<g id="node119" class="node">
+<title>[zeeguu/core/model/language.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="8880,-208.5 8655.5,-208.5 8655.5,-172.5 8880,-172.5 8880,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="8767.75" y="-185.82" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/language.py]</text>
+</g>
+<!-- [zeeguu/core/model/feed.py]&#45;&#45;[zeeguu/core/model/language.py] -->
+<g id="edge111" class="edge">
+<title>[zeeguu/core/model/feed.py]&#45;&#45;[zeeguu/core/model/language.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8637.34,-258.69C8645.26,-248.15 8656.58,-235.06 8669.25,-226.5 8679.7,-219.44 8691.74,-213.63 8703.73,-208.92"/>
+<text xml:space="preserve" text-anchor="middle" x="8679" y="-229.35" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/api/endpoints/accounts.py] -->
+<g id="node120" class="node">
+<title>[zeeguu/api/endpoints/accounts.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="7259.25,-747.75 7024.25,-747.75 7024.25,-711.75 7259.25,-711.75 7259.25,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="7141.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/accounts.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/accounts.py]&#45;&#45;[zeeguu/core/account_management/user_account_creation.py] -->
+<g id="edge112" class="edge">
+<title>[zeeguu/api/endpoints/accounts.py]&#45;&#45;[zeeguu/core/account_management/user_account_creation.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M7141.75,-711.29C7141.75,-696.83 7141.75,-676.39 7141.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="7151.5" y="-682.35" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/api/endpoints/teacher_dashboard/article_management.py] -->
+<g id="node121" class="node">
+<title>[zeeguu/api/endpoints/teacher_dashboard/article_management.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="23199.75,-747.75 22769.75,-747.75 22769.75,-711.75 23199.75,-711.75 23199.75,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="22984.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/teacher_dashboard/article_management.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/teacher_dashboard/cohorts.py] -->
+<g id="node122" class="node">
+<title>[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="23371.25,-661.5 23022.25,-661.5 23022.25,-625.5 23371.25,-625.5 23371.25,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="23196.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/teacher_dashboard/article_management.py]&#45;&#45;[zeeguu/api/endpoints/teacher_dashboard/cohorts.py] -->
+<g id="edge113" class="edge">
+<title>[zeeguu/api/endpoints/teacher_dashboard/article_management.py]&#45;&#45;[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M23028.68,-711.29C23065.06,-696.83 23116.51,-676.39 23152.88,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="23113.19" y="-682.35" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/api/endpoints/teacher_dashboard/helpers.py] -->
+<g id="node171" class="node">
+<title>[zeeguu/api/endpoints/teacher_dashboard/helpers.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="23219.88,-553.5 22871.62,-553.5 22871.62,-517.5 23219.88,-517.5 23219.88,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="23045.75" y="-530.83" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/teacher_dashboard/helpers.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/teacher_dashboard/article_management.py]&#45;&#45;[zeeguu/api/endpoints/teacher_dashboard/helpers.py] -->
+<g id="edge184" class="edge">
+<title>[zeeguu/api/endpoints/teacher_dashboard/article_management.py]&#45;&#45;[zeeguu/api/endpoints/teacher_dashboard/helpers.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M22983.85,-711.49C22983.28,-690.61 22983.99,-654.64 22993.25,-625.5 23001.83,-598.49 23019.82,-570.92 23032.33,-553.77"/>
+<text xml:space="preserve" text-anchor="middle" x="23003" y="-639.23" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/api/endpoints/teacher_dashboard/cohorts.py]&#45;&#45;[zeeguu/api/endpoints/teacher_dashboard/cohorts.py] -->
+<g id="edge139" class="edge">
+<title>[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]&#45;&#45;[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M23371.73,-649.17C23382.66,-647.83 23389.25,-645.94 23389.25,-643.5 23389.25,-641.06 23382.66,-639.17 23371.73,-637.83"/>
+<text xml:space="preserve" text-anchor="middle" x="23399" y="-639.23" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/api/endpoints/teacher_dashboard/cohorts.py]&#45;&#45;[zeeguu/api/endpoints/teacher_dashboard/helpers.py] -->
+<g id="edge180" class="edge">
+<title>[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]&#45;&#45;[zeeguu/api/endpoints/teacher_dashboard/helpers.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M23172.15,-625.23C23144.16,-605.58 23098.68,-573.66 23070.59,-553.94"/>
+<text xml:space="preserve" text-anchor="middle" x="23153.35" y="-585.23" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/sql/exercise_corectness.sql] -->
+<g id="node123" class="node">
+<title>[tools/sql/exercise_corectness.sql]</title>
+<polygon fill="#00b2ee" stroke="white" points="23843.75,-747.75 23617.75,-747.75 23617.75,-711.75 23843.75,-711.75 23843.75,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="23730.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/sql/exercise_corectness.sql]</text>
+</g>
+<!-- [tools/sql/user_exercise_history.sql] -->
+<g id="node124" class="node">
+<title>[tools/sql/user_exercise_history.sql]</title>
+<polygon fill="#00b2ee" stroke="white" points="23847.88,-661.5 23613.62,-661.5 23613.62,-625.5 23847.88,-625.5 23847.88,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="23730.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/sql/user_exercise_history.sql]</text>
+</g>
+<!-- [tools/sql/exercise_corectness.sql]&#45;&#45;[tools/sql/user_exercise_history.sql] -->
+<g id="edge114" class="edge">
+<title>[tools/sql/exercise_corectness.sql]&#45;&#45;[tools/sql/user_exercise_history.sql]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M23730.75,-711.29C23730.75,-696.83 23730.75,-676.39 23730.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="23740.5" y="-682.35" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/core/language/strategies/default_difficulty_estimator.py] -->
+<g id="node125" class="node">
+<title>[zeeguu/core/language/strategies/default_difficulty_estimator.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="16403.88,-747.75 15989.62,-747.75 15989.62,-711.75 16403.88,-711.75 16403.88,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="16196.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/language/strategies/default_difficulty_estimator.py]</text>
+</g>
+<!-- [zeeguu/core/language/strategies/default_difficulty_estimator.py]&#45;&#45;[zeeguu/core/language/strategies/word_rank_difficulty_estimator.py] -->
+<g id="edge115" class="edge">
+<title>[zeeguu/core/language/strategies/default_difficulty_estimator.py]&#45;&#45;[zeeguu/core/language/strategies/word_rank_difficulty_estimator.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M16147.02,-711.29C16105.83,-696.83 16047.59,-676.39 16006.41,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="16100.87" y="-682.35" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [tools/cleanup_broken_summaries.py] -->
+<g id="node126" class="node">
+<title>[tools/cleanup_broken_summaries.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="24111.75,-747.75 23861.75,-747.75 23861.75,-711.75 24111.75,-711.75 24111.75,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="23986.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/cleanup_broken_summaries.py]</text>
+</g>
+<!-- [tools/cleanup_broken_summaries.py]&#45;&#45;[tools/cleanup_broken_summaries.py] -->
+<g id="edge116" class="edge">
+<title>[tools/cleanup_broken_summaries.py]&#45;&#45;[tools/cleanup_broken_summaries.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M24111.77,-736.12C24122.82,-734.78 24129.75,-732.66 24129.75,-729.75 24129.75,-726.84 24122.82,-724.72 24111.77,-723.38"/>
+<text xml:space="preserve" text-anchor="middle" x="24139.5" y="-725.48" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [zeeguu/core/model/notification.py] -->
+<g id="node127" class="node">
+<title>[zeeguu/core/model/notification.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="24402.62,-747.75 24166.88,-747.75 24166.88,-711.75 24402.62,-711.75 24402.62,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="24284.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/notification.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_notification.py] -->
+<g id="node128" class="node">
+<title>[zeeguu/core/model/user_notification.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="24419.5,-661.5 24150,-661.5 24150,-625.5 24419.5,-625.5 24419.5,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="24284.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_notification.py]</text>
+</g>
+<!-- [zeeguu/core/model/notification.py]&#45;&#45;[zeeguu/core/model/user_notification.py] -->
+<g id="edge117" class="edge">
+<title>[zeeguu/core/model/notification.py]&#45;&#45;[zeeguu/core/model/user_notification.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M24284.75,-711.29C24284.75,-696.83 24284.75,-676.39 24284.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="24294.5" y="-682.35" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- [tools/old/consolidate_accounts.py] -->
+<g id="node129" class="node">
+<title>[tools/old/consolidate_accounts.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="24755.75,-747.75 24523.75,-747.75 24523.75,-711.75 24755.75,-711.75 24755.75,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="24639.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/old/consolidate_accounts.py]</text>
+</g>
+<!-- [zeeguu/core/account_management/user_account_deletion.py] -->
+<g id="node130" class="node">
+<title>[zeeguu/core/account_management/user_account_deletion.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="24842.38,-661.5 24437.12,-661.5 24437.12,-625.5 24842.38,-625.5 24842.38,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="24639.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/account_management/user_account_deletion.py]</text>
+</g>
+<!-- [tools/old/consolidate_accounts.py]&#45;&#45;[zeeguu/core/account_management/user_account_deletion.py] -->
+<g id="edge119" class="edge">
+<title>[tools/old/consolidate_accounts.py]&#45;&#45;[zeeguu/core/account_management/user_account_deletion.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M24639.75,-711.29C24639.75,-696.83 24639.75,-676.39 24639.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="24649.5" y="-682.35" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/model/starred_article.py]&#45;&#45;[zeeguu/core/model/user_article.py] -->
+<g id="edge121" class="edge">
+<title>[zeeguu/core/model/starred_article.py]&#45;&#45;[zeeguu/core/model/user_article.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M12294.75,-625.47C12294.75,-605.81 12294.75,-573.63 12294.75,-553.84"/>
+<text xml:space="preserve" text-anchor="middle" x="12304.5" y="-585.23" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/api/app.py] -->
+<g id="node133" class="node">
+<title>[zeeguu/api/app.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="24913.62,-747.75 24773.88,-747.75 24773.88,-711.75 24913.62,-711.75 24913.62,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="24843.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/api/app.py]</text>
+</g>
+<!-- [zeeguu/api/app.py]&#45;&#45;[zeeguu/api/app.py] -->
+<g id="edge122" class="edge">
+<title>[zeeguu/api/app.py]&#45;&#45;[zeeguu/api/app.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M24914.08,-737.09C24924.54,-735.94 24931.62,-733.5 24931.62,-729.75 24931.62,-726 24924.54,-723.56 24914.08,-722.41"/>
+<text xml:space="preserve" text-anchor="middle" x="24941.38" y="-725.48" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/model/bookmark.py] -->
+<g id="node134" class="node">
+<title>[zeeguu/core/model/bookmark.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="25198.62,-747.75 24968.88,-747.75 24968.88,-711.75 25198.62,-711.75 25198.62,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="25083.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/bookmark.py]</text>
+</g>
+<!-- [zeeguu/core/model/bookmark.py]&#45;&#45;[zeeguu/core/model/bookmark.py] -->
+<g id="edge159" class="edge">
+<title>[zeeguu/core/model/bookmark.py]&#45;&#45;[zeeguu/core/model/bookmark.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M25199.02,-736.23C25209.81,-734.9 25216.62,-732.74 25216.62,-729.75 25216.62,-726.76 25209.81,-724.6 25199.02,-723.27"/>
+<text xml:space="preserve" text-anchor="middle" x="25226.38" y="-725.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/user_word.py] -->
+<g id="node135" class="node">
+<title>[zeeguu/core/model/user_word.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="25200.5,-661.5 24967,-661.5 24967,-625.5 25200.5,-625.5 25200.5,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="25083.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_word.py]</text>
+</g>
+<!-- [zeeguu/core/model/bookmark.py]&#45;&#45;[zeeguu/core/model/user_word.py] -->
+<g id="edge124" class="edge">
+<title>[zeeguu/core/model/bookmark.py]&#45;&#45;[zeeguu/core/model/user_word.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M25083.75,-711.29C25083.75,-696.83 25083.75,-676.39 25083.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="25093.5" y="-682.35" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/content_cleaning/content_cleaner.py] -->
+<g id="node136" class="node">
+<title>[zeeguu/core/content_cleaning/content_cleaner.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="25585.25,-747.75 25254.25,-747.75 25254.25,-711.75 25585.25,-711.75 25585.25,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="25419.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/content_cleaning/content_cleaner.py]</text>
+</g>
+<!-- [zeeguu/core/content_cleaning/content_cleaner.py]&#45;&#45;[zeeguu/core/content_cleaning/content_cleaner.py] -->
+<g id="edge125" class="edge">
+<title>[zeeguu/core/content_cleaning/content_cleaner.py]&#45;&#45;[zeeguu/core/content_cleaning/content_cleaner.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M25585.73,-735.52C25596.64,-734.18 25603.25,-732.26 25603.25,-729.75 25603.25,-727.24 25596.64,-725.32 25585.73,-723.98"/>
+<text xml:space="preserve" text-anchor="middle" x="25613" y="-725.48" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [tools/cleanup_greek_audio_lessons.py] -->
+<g id="node137" class="node">
+<title>[tools/cleanup_greek_audio_lessons.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="25900.62,-747.75 25640.88,-747.75 25640.88,-711.75 25900.62,-711.75 25900.62,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="25770.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/cleanup_greek_audio_lessons.py]</text>
+</g>
+<!-- [tools/cleanup_greek_audio_lessons.py]&#45;&#45;[tools/cleanup_greek_audio_lessons.py] -->
+<g id="edge126" class="edge">
+<title>[tools/cleanup_greek_audio_lessons.py]&#45;&#45;[tools/cleanup_greek_audio_lessons.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M25901.02,-736C25911.87,-734.65 25918.62,-732.57 25918.62,-729.75 25918.62,-726.93 25911.87,-724.85 25901.02,-723.5"/>
+<text xml:space="preserve" text-anchor="middle" x="25928.38" y="-725.48" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [tools/user_word_integrity/_delete_unvalidatable_bookmarks.py] -->
+<g id="node164" class="node">
+<title>[tools/user_word_integrity/_delete_unvalidatable_bookmarks.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="18935.12,-553.5 18522.38,-553.5 18522.38,-517.5 18935.12,-517.5 18935.12,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="18728.75" y="-530.83" font-family="Tahoma" font-size="14.00">[tools/user_word_integrity/_delete_unvalidatable_bookmarks.py]</text>
+</g>
+<!-- [tools/user_word_integrity/_cleanup_orphaned_user_words.py]&#45;&#45;[tools/user_word_integrity/_delete_unvalidatable_bookmarks.py] -->
+<g id="edge182" class="edge">
+<title>[tools/user_word_integrity/_cleanup_orphaned_user_words.py]&#45;&#45;[tools/user_word_integrity/_delete_unvalidatable_bookmarks.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M18728.75,-625.47C18728.75,-605.81 18728.75,-573.63 18728.75,-553.84"/>
+<text xml:space="preserve" text-anchor="middle" x="18738.5" y="-585.23" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/api/endpoints/search.py] -->
+<g id="node139" class="node">
+<title>[zeeguu/api/endpoints/search.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="26177.5,-747.75 25956,-747.75 25956,-711.75 26177.5,-711.75 26177.5,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="26066.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/search.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/search.py]&#45;&#45;[zeeguu/api/endpoints/search.py] -->
+<g id="edge130" class="edge">
+<title>[zeeguu/api/endpoints/search.py]&#45;&#45;[zeeguu/api/endpoints/search.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M26178,-736.29C26188.71,-734.96 26195.5,-732.78 26195.5,-729.75 26195.5,-726.72 26188.71,-724.54 26178,-723.21"/>
+<text xml:space="preserve" text-anchor="middle" x="26205.25" y="-725.48" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/model/context_identifier.py] -->
+<g id="node142" class="node">
+<title>[zeeguu/core/model/context_identifier.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="26506,-747.75 26233.5,-747.75 26233.5,-711.75 26506,-711.75 26506,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="26369.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/context_identifier.py]</text>
+</g>
+<!-- [zeeguu/core/model/context_identifier.py]&#45;&#45;[zeeguu/core/model/context_identifier.py] -->
+<g id="edge136" class="edge">
+<title>[zeeguu/core/model/context_identifier.py]&#45;&#45;[zeeguu/core/model/context_identifier.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M26506.14,-735.94C26517.16,-734.59 26524,-732.53 26524,-729.75 26524,-726.97 26517.16,-724.91 26506.14,-723.56"/>
+<text xml:space="preserve" text-anchor="middle" x="26533.75" y="-725.48" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [tools/untag_simplified_and_user_articles.py] -->
+<g id="node143" class="node">
+<title>[tools/untag_simplified_and_user_articles.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="26854.12,-747.75 26561.38,-747.75 26561.38,-711.75 26854.12,-711.75 26854.12,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="26707.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/untag_simplified_and_user_articles.py]</text>
+</g>
+<!-- [tools/untag_simplified_and_user_articles.py]&#45;&#45;[tools/untag_simplified_and_user_articles.py] -->
+<g id="edge138" class="edge">
+<title>[tools/untag_simplified_and_user_articles.py]&#45;&#45;[tools/untag_simplified_and_user_articles.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M26854.41,-735.78C26865.38,-734.44 26872.12,-732.42 26872.12,-729.75 26872.12,-727.08 26865.38,-725.06 26854.41,-723.72"/>
+<text xml:space="preserve" text-anchor="middle" x="26881.88" y="-725.48" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/model/article.py] -->
+<g id="node144" class="node">
+<title>[zeeguu/core/model/article.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="27116,-747.75 26909.5,-747.75 26909.5,-711.75 27116,-711.75 27116,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="27012.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/article.py]</text>
+</g>
+<!-- [zeeguu/core/model/video.py] -->
+<g id="node145" class="node">
+<title>[zeeguu/core/model/video.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="27113.38,-661.5 26912.12,-661.5 26912.12,-625.5 27113.38,-625.5 27113.38,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="27012.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/video.py]</text>
+</g>
+<!-- [zeeguu/core/model/article.py]&#45;&#45;[zeeguu/core/model/video.py] -->
+<g id="edge143" class="edge">
+<title>[zeeguu/core/model/article.py]&#45;&#45;[zeeguu/core/model/video.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M27012.75,-711.29C27012.75,-696.83 27012.75,-676.39 27012.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="27022.5" y="-682.35" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [tools/fix_simplified_articles_html.py] -->
+<g id="node146" class="node">
+<title>[tools/fix_simplified_articles_html.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="27377.38,-747.75 27134.12,-747.75 27134.12,-711.75 27377.38,-711.75 27377.38,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="27255.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/fix_simplified_articles_html.py]</text>
+</g>
+<!-- [tools/fix_simplified_articles_html.py]&#45;&#45;[tools/fix_simplified_articles_html.py] -->
+<g id="edge145" class="edge">
+<title>[tools/fix_simplified_articles_html.py]&#45;&#45;[tools/fix_simplified_articles_html.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M27377.82,-736.12C27388.61,-734.78 27395.38,-732.66 27395.38,-729.75 27395.38,-726.84 27388.61,-724.72 27377.82,-723.38"/>
+<text xml:space="preserve" text-anchor="middle" x="27405.12" y="-725.48" font-family="Arial" font-size="12.00"> 14 </text>
+</g>
+<!-- [zeeguu/core/llm_services/grammar_correction_service.py] -->
+<g id="node147" class="node">
+<title>[zeeguu/core/llm_services/grammar_correction_service.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="3657.38,-747.75 3276.12,-747.75 3276.12,-711.75 3657.38,-711.75 3657.38,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="3466.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/llm_services/grammar_correction_service.py]</text>
+</g>
+<!-- [zeeguu/core/llm_services/grammar_correction_service.py]&#45;&#45;[zeeguu/core/llm_services/simplification_and_classification.py] -->
+<g id="edge146" class="edge">
+<title>[zeeguu/core/llm_services/grammar_correction_service.py]&#45;&#45;[zeeguu/core/llm_services/simplification_and_classification.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M3486.43,-711.29C3502.74,-696.83 3525.79,-676.39 3542.09,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="3529.69" y="-682.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/llm_services/mwe_translation_service.py] -->
+<g id="node148" class="node">
+<title>[zeeguu/core/llm_services/mwe_translation_service.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="9661,-747.75 9304.5,-747.75 9304.5,-711.75 9661,-711.75 9661,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="9482.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/llm_services/mwe_translation_service.py]</text>
+</g>
+<!-- [zeeguu/core/llm_services/mwe_translation_service.py]&#45;&#45;[zeeguu/core/mwe/llm_mwe_detector.py] -->
+<g id="edge147" class="edge">
+<title>[zeeguu/core/llm_services/mwe_translation_service.py]&#45;&#45;[zeeguu/core/mwe/llm_mwe_detector.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M9482.75,-711.29C9482.75,-696.83 9482.75,-676.39 9482.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="9492.5" y="-682.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/recalculate_all_word_ranks.py] -->
+<g id="node149" class="node">
+<title>[tools/recalculate_all_word_ranks.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="27678.12,-747.75 27433.38,-747.75 27433.38,-711.75 27678.12,-711.75 27678.12,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="27555.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/recalculate_all_word_ranks.py]</text>
+</g>
+<!-- [tools/recalculate_all_word_ranks.py]&#45;&#45;[tools/recalculate_all_word_ranks.py] -->
+<g id="edge148" class="edge">
+<title>[tools/recalculate_all_word_ranks.py]&#45;&#45;[tools/recalculate_all_word_ranks.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M27678.48,-736.12C27689.33,-734.78 27696.12,-732.66 27696.12,-729.75 27696.12,-726.84 27689.33,-724.72 27678.48,-723.38"/>
+<text xml:space="preserve" text-anchor="middle" x="27705.88" y="-725.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/crawler/video_crawler.py] -->
+<g id="node150" class="node">
+<title>[tools/crawler/video_crawler.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="27945.62,-747.75 27733.88,-747.75 27733.88,-711.75 27945.62,-711.75 27945.62,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="27839.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/crawler/video_crawler.py]</text>
+</g>
+<!-- [zeeguu/operations/crawler/video_crawler.py] -->
+<g id="node151" class="node">
+<title>[zeeguu/operations/crawler/video_crawler.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="27987.25,-661.5 27692.25,-661.5 27692.25,-625.5 27987.25,-625.5 27987.25,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="27839.75" y="-638.83" font-family="Tahoma" font-size="14.00">[zeeguu/operations/crawler/video_crawler.py]</text>
+</g>
+<!-- [tools/crawler/video_crawler.py]&#45;&#45;[zeeguu/operations/crawler/video_crawler.py] -->
+<g id="edge149" class="edge">
+<title>[tools/crawler/video_crawler.py]&#45;&#45;[zeeguu/operations/crawler/video_crawler.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M27839.75,-711.29C27839.75,-696.83 27839.75,-676.39 27839.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="27849.5" y="-682.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/audio&#45;engleza/generate_audio.py] -->
+<g id="node152" class="node">
+<title>[tools/audio&#45;engleza/generate_audio.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="28271.5,-747.75 28008,-747.75 28008,-711.75 28271.5,-711.75 28271.5,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="28139.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/audio&#45;engleza/generate_audio.py]</text>
+</g>
+<!-- [tools/audio&#45;engleza/generate_lesson.py] -->
+<g id="node153" class="node">
+<title>[tools/audio&#45;engleza/generate_lesson.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="28273.75,-661.5 28005.75,-661.5 28005.75,-625.5 28273.75,-625.5 28273.75,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="28139.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/audio&#45;engleza/generate_lesson.py]</text>
+</g>
+<!-- [tools/audio&#45;engleza/generate_audio.py]&#45;&#45;[tools/audio&#45;engleza/generate_lesson.py] -->
+<g id="edge150" class="edge">
+<title>[tools/audio&#45;engleza/generate_audio.py]&#45;&#45;[tools/audio&#45;engleza/generate_lesson.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M28139.75,-711.29C28139.75,-696.83 28139.75,-676.39 28139.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="28149.5" y="-682.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/api/endpoints/cefr_assessment.py] -->
+<g id="node154" class="node">
+<title>[zeeguu/api/endpoints/cefr_assessment.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="28572.25,-747.75 28289.25,-747.75 28289.25,-711.75 28572.25,-711.75 28572.25,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="28430.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/cefr_assessment.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/cefr_assessment.py]&#45;&#45;[zeeguu/api/endpoints/cefr_assessment.py] -->
+<g id="edge151" class="edge">
+<title>[zeeguu/api/endpoints/cefr_assessment.py]&#45;&#45;[zeeguu/api/endpoints/cefr_assessment.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M28572.55,-735.85C28583.5,-734.5 28590.25,-732.47 28590.25,-729.75 28590.25,-727.03 28583.5,-725 28572.55,-723.65"/>
+<text xml:space="preserve" text-anchor="middle" x="28600" y="-725.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/bookmark_context.py]&#45;&#45;[zeeguu/core/model/video_caption_context.py] -->
+<g id="edge197" class="edge">
+<title>[zeeguu/core/model/bookmark_context.py]&#45;&#45;[zeeguu/core/model/video_caption_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8201.78,-430.78C8109.57,-417.29 8000.87,-398.12 7986.75,-381 7945.34,-330.82 7973.77,-245.28 7988.93,-208.8"/>
+<text xml:space="preserve" text-anchor="middle" x="7975.66" y="-315.6" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/bookmark_context.py]&#45;&#45;[zeeguu/core/model/example_sentence_context.py] -->
+<g id="edge167" class="edge">
+<title>[zeeguu/core/model/bookmark_context.py]&#45;&#45;[zeeguu/core/model/example_sentence_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8309.68,-430.79C8288.91,-416.33 8259.55,-395.89 8238.79,-381.43"/>
+<text xml:space="preserve" text-anchor="middle" x="8291.24" y="-401.85" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/bookmark_context.py]&#45;&#45;[zeeguu/core/model/video_title_context.py] -->
+<g id="edge173" class="edge">
+<title>[zeeguu/core/model/bookmark_context.py]&#45;&#45;[zeeguu/core/model/video_title_context.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8355.11,-431.08C8376.45,-410.88 8405.03,-376.14 8390.75,-345 8375.96,-312.74 8295.32,-265.36 8269.75,-240.75 8255.65,-227.17 8251.52,-224.14 8239.75,-208.5 8218.25,-179.93 8197.81,-143.46 8186.61,-122.39"/>
+<text xml:space="preserve" text-anchor="middle" x="8350.23" y="-272.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/bookmark_context.py]&#45;&#45;[zeeguu/core/model/text.py] -->
+<g id="edge165" class="edge">
+<title>[zeeguu/core/model/bookmark_context.py]&#45;&#45;[zeeguu/core/model/text.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8392.58,-430.83C8411.16,-425.23 8431.83,-418.98 8450.75,-413.25 8605.11,-366.48 8669.3,-397.34 8793.75,-294.75 8821.05,-272.24 8805.22,-246 8834.75,-226.5 8841.49,-222.05 8922.56,-211.32 8991.15,-202.91"/>
+<text xml:space="preserve" text-anchor="middle" x="8778.47" y="-315.6" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/bookmark_context.py]&#45;&#45;[zeeguu/core/model/feed.py] -->
+<g id="edge152" class="edge">
+<title>[zeeguu/core/model/bookmark_context.py]&#45;&#45;[zeeguu/core/model/feed.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M8384.56,-430.85C8397.57,-425.72 8411.4,-419.72 8423.75,-413.25 8492.76,-377.08 8567.22,-322.67 8603.43,-295.09"/>
+<text xml:space="preserve" text-anchor="middle" x="8543.11" y="-358.73" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/api/endpoints/teacher_dashboard/_permissions.py] -->
+<g id="node156" class="node">
+<title>[zeeguu/api/endpoints/teacher_dashboard/_permissions.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="23600.12,-747.75 23217.38,-747.75 23217.38,-711.75 23600.12,-711.75 23600.12,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="23408.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/teacher_dashboard/_permissions.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/teacher_dashboard/_permissions.py]&#45;&#45;[zeeguu/api/endpoints/teacher_dashboard/cohorts.py] -->
+<g id="edge154" class="edge">
+<title>[zeeguu/api/endpoints/teacher_dashboard/_permissions.py]&#45;&#45;[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M23364.82,-711.29C23328.44,-696.83 23276.99,-676.39 23240.62,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="23325.19" y="-682.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/audio_lessons/word_selector.py] -->
+<g id="node157" class="node">
+<title>[zeeguu/core/audio_lessons/word_selector.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="28927.5,-747.75 28628,-747.75 28628,-711.75 28927.5,-711.75 28927.5,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="28777.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/audio_lessons/word_selector.py]</text>
+</g>
+<!-- [zeeguu/core/audio_lessons/word_selector.py]&#45;&#45;[zeeguu/core/audio_lessons/word_selector.py] -->
+<g id="edge160" class="edge">
+<title>[zeeguu/core/audio_lessons/word_selector.py]&#45;&#45;[zeeguu/core/audio_lessons/word_selector.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M28927.94,-735.72C28938.83,-734.37 28945.5,-732.38 28945.5,-729.75 28945.5,-727.12 28938.83,-725.13 28927.94,-723.78"/>
+<text xml:space="preserve" text-anchor="middle" x="28955.25" y="-725.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/fix_audio_lesson_teacher_language.py] -->
+<g id="node158" class="node">
+<title>[tools/fix_audio_lesson_teacher_language.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="29278.62,-747.75 28982.88,-747.75 28982.88,-711.75 29278.62,-711.75 29278.62,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="29130.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/fix_audio_lesson_teacher_language.py]</text>
+</g>
+<!-- [tools/fix_audio_lesson_teacher_language.py]&#45;&#45;[tools/fix_audio_lesson_teacher_language.py] -->
+<g id="edge161" class="edge">
+<title>[tools/fix_audio_lesson_teacher_language.py]&#45;&#45;[tools/fix_audio_lesson_teacher_language.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M29279.01,-735.75C29289.93,-734.4 29296.62,-732.4 29296.62,-729.75 29296.62,-727.1 29289.93,-725.1 29279.01,-723.75"/>
+<text xml:space="preserve" text-anchor="middle" x="29306.38" y="-725.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/one_time/fix_tokenization_cache_html_entities.py] -->
+<g id="node159" class="node">
+<title>[tools/one_time/fix_tokenization_cache_html_entities.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="29699.12,-747.75 29334.38,-747.75 29334.38,-711.75 29699.12,-711.75 29699.12,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="29516.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/one_time/fix_tokenization_cache_html_entities.py]</text>
+</g>
+<!-- [tools/one_time/reindex_articles_with_quotes.py] -->
+<g id="node160" class="node">
+<title>[tools/one_time/reindex_articles_with_quotes.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="29675.88,-661.5 29357.62,-661.5 29357.62,-625.5 29675.88,-625.5 29675.88,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="29516.75" y="-638.83" font-family="Tahoma" font-size="14.00">[tools/one_time/reindex_articles_with_quotes.py]</text>
+</g>
+<!-- [tools/one_time/fix_tokenization_cache_html_entities.py]&#45;&#45;[tools/one_time/reindex_articles_with_quotes.py] -->
+<g id="edge162" class="edge">
+<title>[tools/one_time/fix_tokenization_cache_html_entities.py]&#45;&#45;[tools/one_time/reindex_articles_with_quotes.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M29516.75,-711.29C29516.75,-696.83 29516.75,-676.39 29516.75,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="29526.5" y="-682.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/extract_validation_for_topics.py] -->
+<g id="node161" class="node">
+<title>[tools/extract_validation_for_topics.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="29970.62,-747.75 29716.88,-747.75 29716.88,-711.75 29970.62,-711.75 29970.62,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="29843.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/extract_validation_for_topics.py]</text>
+</g>
+<!-- [tools/extract_validation_for_topics.py]&#45;&#45;[tools/extract_validation_for_topics.py] -->
+<g id="edge163" class="edge">
+<title>[tools/extract_validation_for_topics.py]&#45;&#45;[tools/extract_validation_for_topics.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M29970.9,-736.06C29981.81,-734.72 29988.62,-732.61 29988.62,-729.75 29988.62,-726.89 29981.81,-724.78 29970.9,-723.44"/>
+<text xml:space="preserve" text-anchor="middle" x="29998.38" y="-725.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/personal_copy.py]&#45;&#45;[zeeguu/core/model/user_article.py] -->
+<g id="edge164" class="edge">
+<title>[zeeguu/core/model/personal_copy.py]&#45;&#45;[zeeguu/core/model/user_article.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M12524.65,-625.11C12473.6,-605.44 12390.93,-573.57 12339.88,-553.89"/>
+<text xml:space="preserve" text-anchor="middle" x="12482.7" y="-585.23" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/delete_bookmarks_word_not_in_context.py] -->
+<g id="node163" class="node">
+<title>[tools/delete_bookmarks_word_not_in_context.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="6160,-747.75 5833.5,-747.75 5833.5,-711.75 6160,-711.75 6160,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="5996.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/delete_bookmarks_word_not_in_context.py]</text>
+</g>
+<!-- [tools/delete_bookmarks_word_not_in_context.py]&#45;&#45;[zeeguu/api/endpoints/bookmarks_and_words.py] -->
+<g id="edge169" class="edge">
+<title>[tools/delete_bookmarks_word_not_in_context.py]&#45;&#45;[zeeguu/api/endpoints/bookmarks_and_words.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M5995.71,-711.29C5994.86,-696.83 5993.64,-676.39 5992.78,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="6004.3" y="-682.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/user_word_integrity/_fix_multiword_bookmark_positions.py] -->
+<g id="node165" class="node">
+<title>[tools/user_word_integrity/_fix_multiword_bookmark_positions.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="18940.75,-467.25 18516.75,-467.25 18516.75,-431.25 18940.75,-431.25 18940.75,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="18728.75" y="-444.57" font-family="Tahoma" font-size="14.00">[tools/user_word_integrity/_fix_multiword_bookmark_positions.py]</text>
+</g>
+<!-- [tools/user_word_integrity/_delete_unvalidatable_bookmarks.py]&#45;&#45;[tools/user_word_integrity/_fix_multiword_bookmark_positions.py] -->
+<g id="edge170" class="edge">
+<title>[tools/user_word_integrity/_delete_unvalidatable_bookmarks.py]&#45;&#45;[tools/user_word_integrity/_fix_multiword_bookmark_positions.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M18728.75,-517.04C18728.75,-502.58 18728.75,-482.14 18728.75,-467.68"/>
+<text xml:space="preserve" text-anchor="middle" x="18738.5" y="-488.1" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/source.py] -->
+<g id="node166" class="node">
+<title>[zeeguu/core/model/source.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="9490.5,-294.75 9281,-294.75 9281,-258.75 9490.5,-258.75 9490.5,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="9385.75" y="-272.07" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/source.py]</text>
+</g>
+<!-- [zeeguu/core/model/source.py]&#45;&#45;[zeeguu/core/model/text.py] -->
+<g id="edge171" class="edge">
+<title>[zeeguu/core/model/source.py]&#45;&#45;[zeeguu/core/model/text.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M9345.41,-258.27C9320.5,-247.97 9287.68,-235.27 9257.75,-226.5 9234.18,-219.59 9208.39,-213.53 9184.18,-208.49"/>
+<text xml:space="preserve" text-anchor="middle" x="9306.85" y="-229.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/fix_long_summaries.py] -->
+<g id="node167" class="node">
+<title>[tools/fix_long_summaries.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="3876,-747.75 3675.5,-747.75 3675.5,-711.75 3876,-711.75 3876,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="3775.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/fix_long_summaries.py]</text>
+</g>
+<!-- [tools/fix_long_summaries.py]&#45;&#45;[zeeguu/core/llm_services/simplification_and_classification.py] -->
+<g id="edge176" class="edge">
+<title>[tools/fix_long_summaries.py]&#45;&#45;[zeeguu/core/llm_services/simplification_and_classification.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M3731.41,-711.29C3694.68,-696.83 3642.75,-676.39 3606.03,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="3691.31" y="-682.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/tokenization/word_position_finder.py] -->
+<g id="node169" class="node">
+<title>[zeeguu/core/tokenization/word_position_finder.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="30355.5,-747.75 30026,-747.75 30026,-711.75 30355.5,-711.75 30355.5,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="30190.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/tokenization/word_position_finder.py]</text>
+</g>
+<!-- [zeeguu/core/tokenization/word_position_finder.py]&#45;&#45;[zeeguu/core/tokenization/word_position_finder.py] -->
+<g id="edge178" class="edge">
+<title>[zeeguu/core/tokenization/word_position_finder.py]&#45;&#45;[zeeguu/core/tokenization/word_position_finder.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M30355.78,-735.55C30366.81,-734.21 30373.5,-732.28 30373.5,-729.75 30373.5,-727.22 30366.81,-725.29 30355.78,-723.95"/>
+<text xml:space="preserve" text-anchor="middle" x="30383.25" y="-725.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/validation_log.py] -->
+<g id="node170" class="node">
+<title>[zeeguu/core/model/validation_log.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="30662.88,-747.75 30410.62,-747.75 30410.62,-711.75 30662.88,-711.75 30662.88,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="30536.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/validation_log.py]</text>
+</g>
+<!-- [zeeguu/core/model/validation_log.py]&#45;&#45;[zeeguu/core/model/validation_log.py] -->
+<g id="edge179" class="edge">
+<title>[zeeguu/core/model/validation_log.py]&#45;&#45;[zeeguu/core/model/validation_log.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M30663.24,-736.06C30674.1,-734.72 30680.88,-732.61 30680.88,-729.75 30680.88,-726.89 30674.1,-724.78 30663.24,-723.44"/>
+<text xml:space="preserve" text-anchor="middle" x="30690.62" y="-725.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/example_sentence.py] -->
+<g id="node172" class="node">
+<title>[zeeguu/core/model/example_sentence.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="31001.25,-747.75 30718.25,-747.75 30718.25,-711.75 31001.25,-711.75 31001.25,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="30859.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/example_sentence.py]</text>
+</g>
+<!-- [zeeguu/core/model/example_sentence.py]&#45;&#45;[zeeguu/core/model/example_sentence.py] -->
+<g id="edge186" class="edge">
+<title>[zeeguu/core/model/example_sentence.py]&#45;&#45;[zeeguu/core/model/example_sentence.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M31001.55,-735.85C31012.5,-734.5 31019.25,-732.47 31019.25,-729.75 31019.25,-727.03 31012.5,-725 31001.55,-723.65"/>
+<text xml:space="preserve" text-anchor="middle" x="31029" y="-725.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/stiri&#45;simple/generate_news_page.py] -->
+<g id="node173" class="node">
+<title>[tools/stiri&#45;simple/generate_news_page.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="31337.12,-747.75 31056.38,-747.75 31056.38,-711.75 31337.12,-711.75 31337.12,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="31196.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/stiri&#45;simple/generate_news_page.py]</text>
+</g>
+<!-- [tools/stiri&#45;simple/generate_news_page.py]&#45;&#45;[tools/stiri&#45;simple/generate_news_page.py] -->
+<g id="edge187" class="edge">
+<title>[tools/stiri&#45;simple/generate_news_page.py]&#45;&#45;[tools/stiri&#45;simple/generate_news_page.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M31337.55,-735.85C31348.42,-734.5 31355.12,-732.47 31355.12,-729.75 31355.12,-727.03 31348.42,-725 31337.55,-723.65"/>
+<text xml:space="preserve" text-anchor="middle" x="31364.88" y="-725.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [install_stanza_models.py] -->
+<g id="node174" class="node">
+<title>[install_stanza_models.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="13721.38,-661.5 13544.12,-661.5 13544.12,-625.5 13721.38,-625.5 13721.38,-661.5"/>
+<text xml:space="preserve" text-anchor="middle" x="13632.75" y="-638.83" font-family="Tahoma" font-size="14.00">[install_stanza_models.py]</text>
+</g>
+<!-- [install_stanza_models.py]&#45;&#45;[stanza_service/install_models.py] -->
+<g id="edge190" class="edge">
+<title>[install_stanza_models.py]&#45;&#45;[stanza_service/install_models.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M13617.97,-625.47C13600.9,-605.81 13572.98,-573.63 13555.8,-553.84"/>
+<text xml:space="preserve" text-anchor="middle" x="13610.12" y="-585.23" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/api/endpoints/translation.py] -->
+<g id="node175" class="node">
+<title>[zeeguu/api/endpoints/translation.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="31636.75,-747.75 31392.75,-747.75 31392.75,-711.75 31636.75,-711.75 31636.75,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="31514.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/api/endpoints/translation.py]</text>
+</g>
+<!-- [zeeguu/api/endpoints/translation.py]&#45;&#45;[zeeguu/api/endpoints/translation.py] -->
+<g id="edge191" class="edge">
+<title>[zeeguu/api/endpoints/translation.py]&#45;&#45;[zeeguu/api/endpoints/translation.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M31637.15,-736.12C31647.97,-734.78 31654.75,-732.66 31654.75,-729.75 31654.75,-726.84 31647.97,-724.72 31637.15,-723.38"/>
+<text xml:space="preserve" text-anchor="middle" x="31664.5" y="-725.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [zeeguu/core/model/user_activitiy_data.py] -->
+<g id="node176" class="node">
+<title>[zeeguu/core/model/user_activitiy_data.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="31975.25,-747.75 31692.25,-747.75 31692.25,-711.75 31975.25,-711.75 31975.25,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="31833.75" y="-725.08" font-family="Tahoma" font-size="14.00">[zeeguu/core/model/user_activitiy_data.py]</text>
+</g>
+<!-- [zeeguu/core/model/user_activitiy_data.py]&#45;&#45;[zeeguu/core/model/user_activitiy_data.py] -->
+<g id="edge192" class="edge">
+<title>[zeeguu/core/model/user_activitiy_data.py]&#45;&#45;[zeeguu/core/model/user_activitiy_data.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M31975.55,-735.85C31986.5,-734.5 31993.25,-732.47 31993.25,-729.75 31993.25,-727.03 31986.5,-725 31975.55,-723.65"/>
+<text xml:space="preserve" text-anchor="middle" x="32003" y="-725.48" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/create_article_fragments_and_sources.py] -->
+<g id="node177" class="node">
+<title>[tools/create_article_fragments_and_sources.py]</title>
+<polygon fill="#00b2ee" stroke="white" points="10771.75,-747.75 10455.75,-747.75 10455.75,-711.75 10771.75,-711.75 10771.75,-747.75"/>
+<text xml:space="preserve" text-anchor="middle" x="10613.75" y="-725.08" font-family="Tahoma" font-size="14.00">[tools/create_article_fragments_and_sources.py]</text>
+</g>
+<!-- [tools/create_article_fragments_and_sources.py]&#45;&#45;[tools/mysql_to_elastic_for_articles.py] -->
+<g id="edge200" class="edge">
+<title>[tools/create_article_fragments_and_sources.py]&#45;&#45;[tools/mysql_to_elastic_for_articles.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M10588.89,-711.29C10568.29,-696.83 10539.17,-676.39 10518.58,-661.93"/>
+<text xml:space="preserve" text-anchor="middle" x="10570.68" y="-682.35" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+<!-- [tools/create_article_fragments_and_sources.py]&#45;&#45;[tools/update_elastic_with_source_ids.py] -->
+<g id="edge196" class="edge">
+<title>[tools/create_article_fragments_and_sources.py]&#45;&#45;[tools/update_elastic_with_source_ids.py]</title>
+<path fill="none" stroke="#dc143c" stroke-opacity="0.298039" d="M10618.96,-711.5C10622.82,-698.01 10627.9,-678.73 10630.75,-661.5 10642.55,-590.17 10646.25,-503.88 10647.33,-467.62"/>
+<text xml:space="preserve" text-anchor="middle" x="10651.14" y="-585.23" font-family="Arial" font-size="12.00"> 12 </text>
+</g>
+</g>
+</svg>

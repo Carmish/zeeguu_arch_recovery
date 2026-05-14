@@ -1,0 +1,119 @@
+<html>
+<head>
+    <title>def main()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def main()</h3>
+<p style="margin-top: 4px">in <i>tools/fix_feed.py [0:0]</i></p>
+<ul>
+    <li><b>78</b> lines of code</li>
+    <li><b>33</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def main():
+    parser = argparse.ArgumentParser(description=&quot;Fix broken feeds&quot;)
+    parser.add_argument(&quot;--domain&quot;, type=str, help=&quot;Search for feeds by domain (partial match)&quot;)
+    parser.add_argument(&quot;--title&quot;, type=str, help=&quot;Search for feeds by title (partial match, case-insensitive)&quot;)
+    parser.add_argument(&quot;--id&quot;, type=int, help=&quot;Find feed by ID&quot;)
+    parser.add_argument(&quot;--dry-run&quot;, action=&quot;store_true&quot;, help=&quot;Show what would be done without making changes&quot;)
+    parser.add_argument(&quot;--auto&quot;, action=&quot;store_true&quot;, help=&quot;Automatically apply first valid RSS URL found&quot;)
+    parser.add_argument(&quot;--deactivate&quot;, action=&quot;store_true&quot;, help=&quot;Deactivate the feed(s)&quot;)
+    parser.add_argument(&quot;--activate&quot;, action=&quot;store_true&quot;, help=&quot;Activate the feed(s)&quot;)
+    parser.add_argument(&quot;--discover&quot;, type=str, help=&quot;Domain to search for RSS feeds (e.g. 'elpais.es')&quot;)
+    args = parser.parse_args()
+
+    if args.deactivate and args.activate:
+        parser.error(&quot;Cannot use both --deactivate and --activate&quot;)
+
+    if not args.domain and not args.id and not args.title:
+        parser.error(&quot;One of --domain, --title, or --id is required&quot;)
+
+    # Find feeds
+    if args.id:
+        feed = find_feed_by_id(args.id)
+        feeds = [feed] if feed else []
+    elif args.title:
+        feeds = find_feeds_by_title(args.title)
+    else:
+        feeds = find_feeds_by_domain(args.domain)
+
+    if not feeds:
+        print(f&quot;No feeds found matching query&quot;)
+        return
+
+    for feed in feeds:
+        print(f&quot;\n{'='*60}&quot;)
+        print(f&quot;Feed: {feed.title} (id={feed.id})&quot;)
+        print(f&quot;  Language: {feed.language.code}&quot;)
+        print(f&quot;  Type: {FEED_TYPE_NAMES.get(feed.feed_type, f'Unknown({feed.feed_type})')}&quot;)
+        print(f&quot;  Deactivated: {bool(feed.deactivated)}&quot;)
+        print(f&quot;  Current URL: {feed.url.as_string() if feed.url else 'None'}&quot;)
+
+        # Handle deactivate/activate commands
+        if args.deactivate:
+            deactivate_feed(feed, args.dry_run)
+            continue
+        if args.activate:
+            activate_feed(feed, args.dry_run)
+            continue
+
+        current_valid = False
+        if feed.url:
+            # Check current URL
+            current_valid, current_status = check_rss_url(feed.url.as_string())
+            status_icon = &quot;✓&quot; if current_valid else &quot;✗&quot;
+            print(f&quot;  Current URL status: {status_icon} {current_status}&quot;)
+
+        # If current URL works and no explicit --discover, skip
+        if current_valid and not args.discover:
+            print(f&quot;\n  ✓ Feed is healthy, no action needed.&quot;)
+            continue
+
+        # Get base domain for discovery
+        if args.discover:
+            base_domain = args.discover
+            if not base_domain.startswith('http'):
+                base_domain = f&quot;https://{base_domain}&quot;
+        elif feed.url:
+            parsed = urlparse(feed.url.as_string())
+            base_domain = f&quot;{parsed.scheme}://{parsed.netloc}&quot;
+        else:
+            continue
+
+        print(f&quot;\n  Discovering RSS feeds at {base_domain}...&quot;)
+        results = discover_rss_feeds(base_domain)
+
+        valid_urls = []
+        for url, is_valid, status in results:
+            icon = &quot;✓&quot; if is_valid else &quot;✗&quot;
+            print(f&quot;    {icon} {url} ({status})&quot;)
+            if is_valid:
+                valid_urls.append(url)
+
+        if not valid_urls:
+            print(f&quot;\n  ⚠ No valid RSS feeds found at {base_domain}.&quot;)
+            print(f&quot;     Try: python -m tools.fix_feed --id {feed.id} --discover &lt;other-domain&gt;&quot;)
+            continue
+
+        if args.auto and valid_urls:
+            update_feed_url(feed, valid_urls[0], args.dry_run)
+        elif valid_urls and not args.dry_run:
+            print(f&quot;\n  Valid RSS URLs found:&quot;)
+            for i, url in enumerate(valid_urls, 1):
+                print(f&quot;    {i}. {url}&quot;)
+
+            choice = input(f&quot;\n  Update feed to use which URL? (1-{len(valid_urls)}, or 'n' to skip): &quot;)
+            if choice.isdigit() and 1 &lt;= int(choice) &lt;= len(valid_urls):
+                update_feed_url(feed, valid_urls[int(choice) - 1], args.dry_run)
+            else:
+                print(&quot;  Skipped.&quot;)
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

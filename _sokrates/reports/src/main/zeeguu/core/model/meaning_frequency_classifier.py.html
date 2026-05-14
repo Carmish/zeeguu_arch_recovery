@@ -1,0 +1,322 @@
+<html>
+<head>
+    <title>zeeguu/core/model/meaning_frequency_classifier.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/meaning_frequency_classifier.py (<b>149</b> lines of code) (<a href="meaning_frequency_classifier.py">raw</a>):</h3>
+<div id="editor">&quot;&quot;&quot;
+Service for classifying meaning frequencies using Anthropic API.
+&quot;&quot;&quot;
+
+import os
+
+from anthropic import Anthropic
+
+from zeeguu.core.llm_services.prompts.meaning_frequency_classifier import (
+    create_meaning_frequency_and_type_prompt,
+    create_batch_meaning_frequency_and_type_prompt,
+)
+from zeeguu.core.model.meaning import MeaningFrequency
+from zeeguu.core.model.meaning import PhraseType
+from zeeguu.logging import log
+
+
+class MeaningFrequencyClassifier:
+    &quot;&quot;&quot;Classifies meaning frequencies using Claude API.&quot;&quot;&quot;
+
+    MODEL_NAME = &quot;claude-sonnet-4-5-20250929&quot;  # Latest model (September 2025)
+
+    def __init__(self):
+        &quot;&quot;&quot;Initialize with Anthropic client.&quot;&quot;&quot;
+        api_key = os.environ.get(&quot;ANTHROPIC_WORD_CLASSIFICATION_KEY&quot;)
+        if not api_key:
+            raise ValueError(
+                &quot;ANTHROPIC_WORD_CLASSIFICATION_KEY environment variable not set&quot;
+            )
+        self.client = Anthropic(api_key=api_key)
+
+    def classify_meanings_batch(self, meanings):
+        &quot;&quot;&quot;
+        Classify multiple meanings' frequency and phrase type in a single API call.
+
+        Args:
+            meanings: List of Meaning objects to classify
+
+        Returns:
+            list: List of tuples (MeaningFrequency, PhraseType) or (None, None) for failed items
+                  Order matches input meanings list
+        &quot;&quot;&quot;
+        if not meanings:
+            return []
+
+        try:
+            prompt = create_batch_meaning_frequency_and_type_prompt(meanings)
+
+            # Calculate tokens needed: ~15 tokens per result line
+            max_tokens = len(meanings) * 20
+
+            response = self.client.messages.create(
+                model=self.MODEL_NAME,
+                max_tokens=max_tokens,
+                temperature=0,  # Deterministic
+                messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}],
+            )
+
+            # Extract and validate response
+            result_text = response.content[0].text.strip()
+            result_lines = [
+                line.strip() for line in result_text.split(&quot;\n&quot;) if line.strip()
+            ]
+
+            if len(result_lines) != len(meanings):
+                log(
+                    f&quot;Batch classification: Expected {len(meanings)} lines, got {len(result_lines)}&quot;
+                )
+                # Return None for all if count mismatch
+                return [(None, None)] * len(meanings)
+
+            # Parse each line
+            results = []
+            for i, line in enumerate(result_lines):
+                if &quot;,&quot; not in line:
+                    log(
+                        f&quot;Batch classification line {i+1}: Invalid format (no comma): {line}&quot;
+                    )
+                    results.append((None, None))
+                    continue
+
+                frequency_str, phrase_type_str = line.split(&quot;,&quot;, 1)
+
+                frequency = MeaningFrequency.from_string(frequency_str)
+                phrase_type = PhraseType.from_string(phrase_type_str)
+
+                if frequency is None:
+                    log(
+                        f&quot;Batch classification line {i+1}: Invalid frequency: {frequency_str}&quot;
+                    )
+                if phrase_type is None:
+                    log(
+                        f&quot;Batch classification line {i+1}: Invalid phrase type: {phrase_type_str}&quot;
+                    )
+
+                results.append((frequency, phrase_type))
+
+            return results
+
+        except Exception as e:
+            log(f&quot;Error in batch classification: {str(e)}&quot;)
+            return [(None, None)] * len(meanings)
+
+    def classify_meaning(self, meaning):
+        &quot;&quot;&quot;
+        Classify a single meaning's frequency and phrase type.
+        Uses dedicated single-item prompt for better reliability.
+
+        Args:
+            meaning: Meaning object to classify
+
+        Returns:
+            tuple: (MeaningFrequency, PhraseType) or (None, None) if classification fails
+        &quot;&quot;&quot;
+        try:
+            prompt = create_meaning_frequency_and_type_prompt(meaning)
+
+            response = self.client.messages.create(
+                model=self.MODEL_NAME,
+                max_tokens=20,  # Need space for &quot;frequency,phrase_type&quot;
+                temperature=0,  # Deterministic
+                messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}],
+            )
+
+            # Extract and validate response
+            result = response.content[0].text.strip().lower()
+
+            # Parse comma-separated response
+            if &quot;,&quot; not in result:
+                log(f&quot;Invalid response format (no comma): {result}&quot;)
+                return None, None
+
+            frequency_str, phrase_type_str = result.split(&quot;,&quot;, 1)
+
+            frequency = MeaningFrequency.from_string(frequency_str)
+            phrase_type = PhraseType.from_string(phrase_type_str)
+
+            if frequency is None:
+                log(f&quot;Invalid frequency response: {frequency_str}&quot;)
+            if phrase_type is None:
+                log(f&quot;Invalid phrase type response: {phrase_type_str}&quot;)
+
+            return frequency, phrase_type
+
+        except Exception as e:
+            log(f&quot;Error classifying meaning: {str(e)}&quot;)
+            return None, None
+
+    def classify_and_update_meanings_batch(self, meanings, session):
+        &quot;&quot;&quot;
+        Classify and update multiple meanings in a single API call.
+
+        Args:
+            meanings: List of Meaning objects to classify and update
+            session: Database session
+
+        Returns:
+            dict: Statistics about the batch classification
+        &quot;&quot;&quot;
+        stats = {
+            &quot;total&quot;: len(meanings),
+            &quot;classified&quot;: 0,
+            &quot;failed&quot;: 0,
+            &quot;arbitrary_multi_word&quot;: 0,
+        }
+
+        # Classify all meanings in one API call
+        results = self.classify_meanings_batch(meanings)
+
+        # Update each meaning with its result
+        for meaning, (frequency, phrase_type) in zip(meanings, results):
+            if frequency and phrase_type:
+                meaning.frequency = frequency
+                meaning.phrase_type = phrase_type
+                meaning.frequency_manually_validated = False
+
+                session.add(meaning)
+                stats[&quot;classified&quot;] += 1
+
+                # Track arbitrary multi-word
+                if phrase_type == PhraseType.ARBITRARY_MULTI_WORD:
+                    stats[&quot;arbitrary_multi_word&quot;] += 1
+
+            elif frequency:
+                # Update only frequency if phrase type failed
+                meaning.frequency = frequency
+                meaning.frequency_manually_validated = False
+
+                session.add(meaning)
+                stats[&quot;classified&quot;] += 1
+            else:
+                stats[&quot;failed&quot;] += 1
+
+        # Commit all updates
+        if stats[&quot;classified&quot;] &gt; 0:
+            session.commit()
+
+            # Update fit_for_study for all user words referencing these meanings
+            for meaning in meanings:
+                if meaning.frequency or meaning.phrase_type:
+                    self._update_user_words_fit_for_study(meaning, session)
+
+        return stats
+
+    def classify_and_update_meaning(self, meaning, session):
+        &quot;&quot;&quot;
+        Classify and update a meaning's frequency and phrase type in the database.
+        Also updates fit_for_study for all user words that reference this meaning.
+
+        Args:
+            meaning: Meaning object to classify and update
+            session: Database session
+
+        Returns:
+            bool: True if successfully classified and updated
+        &quot;&quot;&quot;
+        frequency, phrase_type = self.classify_meaning(meaning)
+
+        if frequency and phrase_type:
+            meaning.frequency = frequency
+            meaning.phrase_type = phrase_type
+            meaning.frequency_manually_validated = False
+
+            session.add(meaning)
+            session.commit()
+
+            # Update fit_for_study for all user words that reference this meaning
+            self._update_user_words_fit_for_study(meaning, session)
+
+            return True
+        elif frequency:
+            # Update only frequency if phrase type failed
+            meaning.frequency = frequency
+            meaning.frequency_manually_validated = False
+
+            session.add(meaning)
+            session.commit()
+
+            # Update fit_for_study for all user words that reference this meaning
+            self._update_user_words_fit_for_study(meaning, session)
+
+            return True
+
+        return False
+
+    def _update_user_words_fit_for_study(self, meaning, session):
+        &quot;&quot;&quot;
+        Update fit_for_study for all user words that reference this meaning.
+
+        Args:
+            meaning: Meaning object that was updated
+            session: Database session
+        &quot;&quot;&quot;
+        from zeeguu.core.model.user_word import UserWord
+
+        # Find all user words that reference this meaning
+        user_words = (
+            session.query(UserWord).filter(UserWord.meaning_id == meaning.id).all()
+        )
+
+        for user_word in user_words:
+            user_word.update_fit_for_study(session)
+
+        if user_words:
+            session.commit()
+
+    def mark_as_validated(self, meaning, session):
+        &quot;&quot;&quot;
+        Mark a meaning's frequency as manually validated.
+
+        Args:
+            meaning: Meaning object to mark as validated
+            session: Database session
+        &quot;&quot;&quot;
+        meaning.frequency_manually_validated = True
+        session.add(meaning)
+        session.commit()
+        log(f&quot;Marked meaning {meaning.id} frequency as manually validated&quot;)
+
+
+# Example batch processing script:
+&quot;&quot;&quot;
+from zeeguu.core.model import db, Meaning
+from zeeguu.core.model.meaning_frequency_classifier import MeaningFrequencyClassifier
+
+classifier = MeaningFrequencyClassifier()
+
+# Process meanings without frequency or phrase type
+unclassified = Meaning.query.filter(
+    (Meaning.frequency.is_(None)) | (Meaning.phrase_type.is_(None))
+).limit(100).all()
+
+for meaning in unclassified:
+    classifier.classify_and_update_meaning(meaning, db.session)
+    # Add delay to respect rate limits if needed
+&quot;&quot;&quot;
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

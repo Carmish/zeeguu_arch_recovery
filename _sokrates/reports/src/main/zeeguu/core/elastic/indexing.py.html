@@ -1,0 +1,297 @@
+<html>
+<head>
+    <title>zeeguu/core/elastic/indexing.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/elastic/indexing.py (<b>200</b> lines of code) (<a href="indexing.py">raw</a>):</h3>
+<div id="editor">from zeeguu.core.model import UrlKeyword, Topic
+from zeeguu.core.model.article_url_keyword_map import ArticleUrlKeywordMap
+from zeeguu.core.model.article_topic_map import TopicOriginType, ArticleTopicMap
+from zeeguu.core.model.article_classification import ArticleClassification, ClassificationType
+
+from elasticsearch import Elasticsearch
+from zeeguu.core.elastic.settings import ES_CONN_STRING, ES_ZINDEX
+from zeeguu.core.elastic.basic_ops import es_update, es_index, es_exists, es_delete
+from zeeguu.core.semantic_vector_api import (
+    get_embedding_from_article,
+    get_embedding_from_video,
+)
+from zeeguu.core.model.video_topic_map import VideoTopicMap
+from zeeguu.core.model.video import MAX_CHAR_COUNT_IN_SUMMARY
+from elasticsearch_dsl import Search, Q
+
+
+def get_doc_in_es(es_id: str, get_source_dict=True, verbose=False):
+    &quot;&quot;&quot;
+    Provides a document source (or the doc object) by ES id.
+    Zeeguu used to use article_ids as a way to index articles, but we have changed to
+    allowing ES to auto assign documents. It seems the generated ids can be alphanumeric,
+    resembling hashes rather than integers.
+    &quot;&quot;&quot;
+    es = Elasticsearch(ES_CONN_STRING)
+    if es.exists(index=ES_ZINDEX, id=es_id):
+        doc = es.get(index=ES_ZINDEX, id=es_id)
+        return doc[&quot;_source&quot;] if get_source_dict else doc
+    else:
+        if verbose:
+            print(f&quot;ES doc with id: '{es_id}' not found&quot;)
+        return None
+
+
+def get_article_hit_in_es(article_id, verbose=False):
+    &quot;&quot;&quot;
+    Returns the article from ElasticSearch. The DSL returns a hit object, which can
+    be coverted to a dict using the .to_dict() method. However, the hit object
+    can be used as an object with the keys as attributes, it also features &quot;in&quot;
+    so something like:
+     &gt;&gt;&gt; &quot;article_id&quot; in hit
+     &gt;   True
+    &quot;&quot;&quot;
+    es = Elasticsearch(ES_CONN_STRING)
+    s = Search(using=es, index=ES_ZINDEX).query(&quot;match&quot;, article_id=article_id)
+    response = s.execute()
+    if len(response) &gt; 1:
+        print(f&quot;WARNING: More than one document found for article id: {article_id}...&quot;)
+        if verbose:
+            print(f&quot;Returning the first match...&quot;)
+    elif len(response) == 0:
+        if verbose:
+            print(f&quot;No document found for article id: {article_id}...&quot;)
+    return response[0] if len(response) &gt;= 1 else None
+
+
+def find_topics_article(article_id, session):
+    article_topics = (
+        session.query(Topic)
+        .join(ArticleTopicMap)
+        .filter(ArticleTopicMap.article_id == article_id)
+        .filter(ArticleTopicMap.origin_type != TopicOriginType.INFERRED.value)
+        .all()
+    )
+    inferred_article_topics = (
+        session.query(Topic)
+        .join(ArticleTopicMap)
+        .filter(ArticleTopicMap.article_id == article_id)
+        .filter(ArticleTopicMap.origin_type == TopicOriginType.INFERRED.value)
+        .all()
+    )
+    return article_topics, inferred_article_topics
+
+
+def find_topics_video(video_id, session):
+    video_topics = (
+        session.query(Topic)
+        .join(VideoTopicMap)
+        .filter(VideoTopicMap.video_id == video_id)
+        .filter(VideoTopicMap.origin_type != TopicOriginType.INFERRED.value)
+        .all()
+    )
+    inferred_video_topics = (
+        session.query(Topic)
+        .join(VideoTopicMap)
+        .filter(VideoTopicMap.video_id == video_id)
+        .filter(VideoTopicMap.origin_type == TopicOriginType.INFERRED.value)
+        .all()
+    )
+    return video_topics, inferred_video_topics
+
+
+def find_filter_url_keywords(article_id, session):
+    article_url_keywords = (
+        session.query(UrlKeyword)
+        .join(ArticleUrlKeywordMap)
+        .filter(ArticleUrlKeywordMap.article_id == article_id)
+    )
+    topic_kewyords = [
+        str(t_key.keyword)
+        for t_key in article_url_keywords
+        if t_key not in UrlKeyword.EXCLUDE_TOPICS
+    ]
+    return topic_kewyords
+
+
+def document_from_video(video, session, current_doc=None):
+    topics, topics_inferred = find_topics_video(video.id, session)
+    embedding_generation_required = True
+    video_text = video.get_content()
+    summary = video_text[:MAX_CHAR_COUNT_IN_SUMMARY]
+    doc = {
+        &quot;video_id&quot;: video.id,
+        &quot;source_id&quot;: video.source_id,
+        &quot;title&quot;: video.title,
+        &quot;channel&quot;: video.channel.name,
+        &quot;content&quot;: video_text,
+        &quot;summary&quot;: summary,
+        &quot;description&quot;: video.description,
+        &quot;word_count&quot;: video.source.word_count,
+        &quot;published_time&quot;: video.published_time,
+        &quot;crawled_time&quot;: video.crawled_at,
+        &quot;topics&quot;: [t.title for t in topics],
+        &quot;topics_inferred&quot;: [t.title for t in topics_inferred],
+        &quot;language&quot;: video.language.name,
+        &quot;fk_difficulty&quot;: video.source.fk_difficulty,
+    }
+    if not embedding_generation_required and current_doc is not None:
+        doc[&quot;sem_vec&quot;] = current_doc[&quot;sem_vec&quot;]
+    else:
+        doc[&quot;sem_vec&quot;] = get_embedding_from_video(video)
+
+    return doc
+
+
+def document_from_article(article, session, current_doc=None):
+    topics, topics_inferred = find_topics_article(article.id, session)
+    embedding_generation_required = current_doc is None
+    # Embeddings only need to be re-computed if the document
+    # doesn't exist or the text is updated.
+    # This is the most expensive operation in the indexing process, so it
+    # saves time by skipping it.
+    if current_doc is not None:
+        embedding_generation_required = current_doc[&quot;content&quot;] != article.get_content()
+
+    # Check if article has disturbing content classification
+    is_disturbing = ArticleClassification.has_classification(
+        article, ClassificationType.DISTURBING
+    )
+
+    # Compute available CEFR levels (original + simplified versions)
+    # Only original articles should be indexed; simplified versions share semantics
+    available_cefr_levels = []
+    if article.parent_article_id is None:
+        # This is an original article - collect its level + all simplified versions
+        if article.cefr_level:
+            available_cefr_levels.append(article.cefr_level)
+        for simplified in article.simplified_versions:
+            if simplified.cefr_level:
+                available_cefr_levels.append(simplified.cefr_level)
+    else:
+        # This is a simplified article - shouldn't be indexed, but handle gracefully
+        if article.cefr_level:
+            available_cefr_levels.append(article.cefr_level)
+
+    doc = {
+        &quot;article_id&quot;: article.id,
+        &quot;source_id&quot;: article.source_id,
+        &quot;title&quot;: article.title,
+        &quot;author&quot;: article.authors,
+        &quot;content&quot;: article.get_content(),
+        &quot;summary&quot;: article.summary,
+        &quot;word_count&quot;: article.get_word_count(),
+        &quot;published_time&quot;: article.published_time,
+        &quot;topics&quot;: [t.title for t in topics],
+        # We need to avoid using these as a way to classify further documents
+        # (we should rely on the human labels to classify further articles)
+        # rather than infer on inferences.
+        &quot;topics_inferred&quot;: [t.title for t in topics_inferred],
+        &quot;language&quot;: article.language.name,
+        &quot;fk_difficulty&quot;: article.get_fk_difficulty(),
+        &quot;url&quot;: article.url.as_string(),
+        &quot;video&quot;: article.video,
+        &quot;is_disturbing&quot;: is_disturbing,
+        &quot;available_cefr_levels&quot;: available_cefr_levels,
+    }
+    if not embedding_generation_required and current_doc is not None:
+        doc[&quot;sem_vec&quot;] = list(current_doc[&quot;sem_vec&quot;])
+    else:
+        doc[&quot;sem_vec&quot;] = get_embedding_from_article(article)
+    return doc
+
+
+def create_or_update_article(article, session):
+
+    pre_existing_hit = get_article_hit_in_es(article.id)
+
+    if pre_existing_hit:
+        doc = document_from_article(article, session, pre_existing_hit.to_dict())
+        # Note, this might be replaced with delete + index given that update is for specific fields
+        res = es_update(id=pre_existing_hit.meta.id, body={&quot;doc&quot;: doc})
+    else:
+        doc = document_from_article(article, session)
+        res = es_index(body=doc)
+
+    return res
+
+
+def index_video(video, session):
+
+    doc = document_from_video(video, session)
+    res = es_index(body=doc)
+    return res
+
+
+def update_doc_with_source_id(hit, source_id):
+    res = es_update(id=hit[&quot;_id&quot;], body={&quot;doc&quot;: {&quot;source_id&quot;: source_id}})
+    return res
+
+
+def create_or_update_doc_for_bulk(article, session):
+    doc = {}
+    doc[&quot;_index&quot;] = ES_ZINDEX
+    hit = get_article_hit_in_es(article.id)
+    if not hit:
+        # If we don't find by article id, try by using ES id
+        hit = get_doc_in_es(article.id, get_source_dict=False)
+    if hit:
+        # hit can be DSL hit object (from get_article_hit_in_es) or raw dict (from get_doc_in_es)
+        if hasattr(hit, 'to_dict'):
+            # DSL hit object
+            current_doc = hit.to_dict()
+            es_id = hit.meta.id
+        else:
+            # Raw ES response dict
+            current_doc = hit[&quot;_source&quot;]
+            es_id = hit[&quot;_id&quot;]
+        doc_data = document_from_article(article, session, current_doc=current_doc)
+        doc[&quot;_id&quot;] = es_id
+        doc[&quot;_op_type&quot;] = &quot;update&quot;
+        doc[&quot;_source&quot;] = {&quot;doc&quot;: doc_data}
+    else:
+        doc_data = document_from_article(article, session)
+        doc[&quot;_op_type&quot;] = &quot;create&quot;
+        doc[&quot;_source&quot;] = doc_data
+    return doc
+
+
+def index_in_elasticsearch(new_article, session):
+
+    try:
+        doc = document_from_article(new_article, session)
+        es_index(doc)
+
+    except Exception as e:
+        from sentry_sdk import capture_exception
+
+        capture_exception(e)
+        import traceback
+
+        traceback.print_exc()
+
+
+def remove_from_index(article):
+
+    hit = get_article_hit_in_es(article.id)
+    es_id = hit[&quot;_id&quot;]
+    if es_exists(id=es_id):
+        print(&quot;Found in ES Index&quot;)
+        es_delete(id=es_id)
+        print(&quot;After deletion from the index.&quot;)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

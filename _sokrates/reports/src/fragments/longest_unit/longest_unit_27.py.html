@@ -1,0 +1,146 @@
+<html>
+<head>
+    <title>def crawl_stats()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def crawl_stats()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/api/endpoints/crawl_stats.py [0:0]</i></p>
+<ul>
+    <li><b>93</b> lines of code</li>
+    <li><b>11</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def crawl_stats():
+    &quot;&quot;&quot;
+    Get crawl statistics for today (or specified number of days).
+
+    Query params:
+        days: Number of days to look back (default: 1 = today only)
+
+    Returns JSON with:
+        - by_language: Articles per language
+        - by_feed: Articles per feed (grouped by language)
+        - by_topic: Simplified articles per topic
+        - summary: Overall totals
+    &quot;&quot;&quot;
+    days = int(request.args.get(&quot;days&quot;, 1))
+    cutoff = datetime.now() - timedelta(days=days)
+    today_start = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+
+    result = {
+        &quot;period&quot;: {
+            &quot;days&quot;: days,
+            &quot;since&quot;: cutoff.isoformat(),
+            &quot;today_start&quot;: today_start.isoformat(),
+        },
+        &quot;by_language&quot;: {},
+        &quot;by_feed&quot;: {},
+        &quot;by_topic&quot;: {},
+        &quot;summary&quot;: {
+            &quot;total_articles&quot;: 0,
+            &quot;total_simplified&quot;: 0,
+            &quot;total_feeds_with_articles&quot;: 0,
+        }
+    }
+
+    # Get all available languages
+    languages = Language.available_languages()
+
+    for language in languages:
+        # Count original articles per language (parent_article_id is NULL)
+        article_count = (
+            db_session.query(func.count(Article.id))
+            .filter(Article.language_id == language.id)
+            .filter(Article.published_time &gt;= cutoff)
+            .filter(Article.broken == 0)
+            .filter(Article.parent_article_id == None)
+            .scalar() or 0
+        )
+
+        # Count simplified articles per language (parent_article_id is NOT NULL)
+        simplified_count = (
+            db_session.query(func.count(Article.id))
+            .filter(Article.language_id == language.id)
+            .filter(Article.published_time &gt;= cutoff)
+            .filter(Article.parent_article_id != None)
+            .scalar() or 0
+        )
+
+        if article_count &gt; 0 or simplified_count &gt; 0:
+            result[&quot;by_language&quot;][language.code] = {
+                &quot;name&quot;: language.name,
+                &quot;articles&quot;: article_count,
+                &quot;simplified&quot;: simplified_count,
+            }
+            result[&quot;summary&quot;][&quot;total_articles&quot;] += article_count
+            result[&quot;summary&quot;][&quot;total_simplified&quot;] += simplified_count
+
+        # Get feeds for this language with article counts (original articles only)
+        feeds_with_counts = (
+            db_session.query(
+                Feed.id,
+                Feed.title,
+                func.count(Article.id).label(&quot;article_count&quot;)
+            )
+            .join(Article, Article.feed_id == Feed.id)
+            .filter(Feed.language_id == language.id)
+            .filter(Article.published_time &gt;= cutoff)
+            .filter(Article.broken == 0)
+            .filter(Article.parent_article_id == None)
+            .group_by(Feed.id, Feed.title)
+            .order_by(func.count(Article.id).desc())
+            .all()
+        )
+
+        if feeds_with_counts:
+            result[&quot;by_feed&quot;][language.code] = []
+            for feed_id, feed_title, count in feeds_with_counts:
+                result[&quot;by_feed&quot;][language.code].append({
+                    &quot;id&quot;: feed_id,
+                    &quot;title&quot;: feed_title,
+                    &quot;articles&quot;: count,
+                })
+                result[&quot;summary&quot;][&quot;total_feeds_with_articles&quot;] += 1
+
+    # Get simplified articles by topic (today only for daily cap tracking)
+    # Join: SimplifiedArticle -&gt; Parent Article -&gt; ArticleTopicMap -&gt; Topic
+    # Simplified articles have parent_article_id set
+    ParentArticle = db_session.query(Article).subquery()
+
+    topic_counts = (
+        db_session.query(
+            Topic.id,
+            Topic.title,
+            func.count(Article.id).label(&quot;count&quot;)
+        )
+        .join(ParentArticle, Article.parent_article_id == ParentArticle.c.id)
+        .join(ArticleTopicMap, ArticleTopicMap.article_id == ParentArticle.c.id)
+        .join(Topic, Topic.id == ArticleTopicMap.topic_id)
+        .filter(Article.published_time &gt;= today_start)
+        .filter(Article.parent_article_id != None)
+        .group_by(Topic.id, Topic.title)
+        .order_by(func.count(Article.id).desc())
+        .all()
+    )
+
+    from zeeguu.core.content_retriever.article_downloader import get_max_simplified_for_language, MAX_SIMPLIFIED_POPULAR, MAX_SIMPLIFIED_DEFAULT
+
+    for topic_id, topic_title, count in topic_counts:
+        result[&quot;by_topic&quot;][topic_title] = {
+            &quot;id&quot;: topic_id,
+            &quot;simplified_today&quot;: count,
+            &quot;daily_cap_popular&quot;: MAX_SIMPLIFIED_POPULAR,
+            &quot;daily_cap_default&quot;: MAX_SIMPLIFIED_DEFAULT,
+        }
+
+    return result
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

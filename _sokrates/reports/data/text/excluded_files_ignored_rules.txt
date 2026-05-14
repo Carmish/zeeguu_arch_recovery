@@ -1,0 +1,87 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Too long lines (1000+ characters)
+25 files:
+
+zeeguu/core/test/test_data/lemonde_formation.txt
+zeeguu/core/test/test_data/propublica_investing.html
+zeeguu/core/test/test_data/jp_article_example.html
+zeeguu/core/test/test_data/onion_us_military.html
+zeeguu/core/test/test_data/faz_leichtathletik.html
+zeeguu/core/test/test_data/lemonde_formation.json
+zeeguu/core/test/test_data/verdensbedste_jorde.html
+zeeguu/core/test/test_data/blinden_und_elefant.html
+zeeguu/core/test/test_data/spiegel_venezuela.html
+zeeguu/core/test/test_data/spiegel_nancy.html
+zeeguu/core/test/test_data/der_kleine_prinz.json
+zeeguu/core/test/test_data/verdensbedste_indonesien.html
+zeeguu/core/test/test_data/lemonde_vols_americans.html
+zeeguu/core/test/test_data/session_fixture.json
+zeeguu/core/test/test_data/verdensbedste_indonesien.json
+zeeguu/core/test/test_data/der_kleine_prinz.html
+zeeguu/core/test/test_data/spiegel_nancy.json
+zeeguu/core/test/test_data/newscientist_fish.html
+zeeguu/core/test/test_data/spiegel_venezuela.json
+zeeguu/core/test/test_data/verdensbedste.html
+zeeguu/core/test/test_data/verdensbedste_jorde.json
+zeeguu/core/test/test_data/faz_leichtathletik.json
+zeeguu/core/test/test_data/jp_article_example.json
+zeeguu/core/test/test_data/cnn_kathmandu.json
+tools/run_knn_classification_with_text.py
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Documentation
+path like ".*/docs/.*"
+7 files:
+
+docs/adr/template.md
+docs/adr/0001-multi-provider-tts.md
+docs/adr/0003-buildkit-cache-mounts.md
+docs/adr/0002-docker-layer-caching-in-ci.md
+docs/adr/README.md
+docs/apple-family-controls-entitlement-request.md
+docs/BOOKMARK_POSITION_TRACKING.md
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Hidden files and folders
+path like ".*/[.][a-zA-Z0-9_]+.*"
+5 files:
+
+zeeguu/operations/crawler/.gitignore
+zeeguu/operations/report_generator/.gitignore
+tools/report_generator/.gitignore
+.gitignore
+.git-truck.json
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Too long file (1000000+ bytes)
+4 files:
+
+zeeguu/core/word_filter/data/person-names.txt
+zeeguu/core/test/test_data/cnn_kathmandu.html
+articles-w-markdown-in-summaries.txt
+git-history.txt
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Too many lines (10000)
+1 files:
+
+zeeguu/core/word_filter/data/city-names.txt
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+

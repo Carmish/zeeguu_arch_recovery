@@ -1,0 +1,136 @@
+<html>
+<head>
+    <title>zeeguu/core/constants.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/constants.py (<b>78</b> lines of code) (<a href="constants.py">raw</a>):</h3>
+<div id="editor">JSON_TIME_FORMAT = &quot;%Y-%m-%dT%H:%M:%S.%fZ&quot;
+SIMPLE_TIME_FORMAT = &quot;%Y-%m-%dT%H:%M:%S%z&quot;
+SIMPLE_DATE_FORMAT = &quot;%Y-%m-%d&quot;
+
+# Event names for the UserActivityData table
+EVENT_OPEN_ARTICLE = &quot;OPEN ARTICLE&quot;
+EVENT_ARTICLE_FOCUSED = &quot;ARTICLE FOCUSED&quot;
+EVENT_ARTICLE_CLOSED = &quot;ARTICLE CLOSED&quot;
+
+EVENT_TRANSLATE_TEXT = &quot;TRANSLATE TEXT&quot;
+EVENT_SPEAK_TEXT = &quot;SPEAK TEXT&quot;
+EVENT_SEND_SUGGESTION = &quot;SEND SUGGESTION&quot;
+EVENT_STAR_ARTICLE = &quot;STAR ARTICLE&quot;
+EVENT_LIKE_ARTICLE = &quot;LIKE ARTICLE&quot;
+
+EVENT_ARTICLE_LOST_FOCUS = &quot;ARTICLE LOST FOCUS&quot;
+EVENT_EXERCISE_FOCUSED = &quot;EXERCISE FOCUSED&quot;
+EVENT_EXERCISE_LOST_FOCUS = &quot;EXERCISE LOST FOCUS&quot;
+EVENT_USER_FEEDBACK = &quot;USER FEEDBACK&quot;
+EVENT_USER_SCROLL = &quot;SCROLL&quot;
+EVENT_USER_CLICKED_ARTICLE = &quot;CLICKED ARTICLE&quot;
+
+
+# these are not saved since 2021-04. why?
+EVENT_OPEN_ALTERMENU = &quot;OPEN ALTERMENU&quot;
+EVENT_CLOSE_ALTERMENU = &quot;CLOSE ALTERMENU&quot;
+EVENT_UNDO_TEXT_TRANSLATION = &quot;UNDO TEXT TRANSLATION&quot;
+EVENT_CHANGE_ORIENTATION = &quot;CHANGE ORIENTATION&quot;
+EVENT_UNFOLLOW_FEED = &quot;UNFOLLOW FEED&quot;
+EVENT_ARTICLES_REQUESTED_FROM_ZEEGUU = &quot;ARTICLES REQUESTED FROM ZEEGUU&quot;
+
+# not used since een longer
+STARRED_ARTICLE_ACTION = &quot;OPEN STARRED ARTICLE&quot;
+
+# never used?
+WORDS_REVIEW = &quot;WORDS REVIEW&quot;
+
+
+OPENING_ACTIONS = [
+    EVENT_OPEN_ARTICLE,
+    STARRED_ARTICLE_ACTION,
+    EVENT_ARTICLE_FOCUSED,
+]
+
+LEGACY_OPENING = [&quot;UMR - &quot; + e for e in OPENING_ACTIONS]
+
+
+INTERACTION_ACTIONS = [
+    EVENT_TRANSLATE_TEXT,
+    EVENT_SPEAK_TEXT,
+    EVENT_OPEN_ALTERMENU,
+    EVENT_CLOSE_ALTERMENU,
+    EVENT_UNDO_TEXT_TRANSLATION,
+    EVENT_SEND_SUGGESTION,
+    EVENT_CHANGE_ORIENTATION,
+    EVENT_USER_SCROLL,
+    EVENT_STAR_ARTICLE,
+    EVENT_LIKE_ARTICLE,
+    EVENT_USER_FEEDBACK,
+]
+
+LEGACY_INTERACTION = [&quot;UMR - &quot; + e for e in INTERACTION_ACTIONS]
+
+
+CLOSING_ACTIONS = [EVENT_ARTICLE_CLOSED, EVENT_ARTICLES_REQUESTED_FROM_ZEEGUU]
+
+LEGACY_CLOSING = [&quot;UMR - &quot; + e for e in CLOSING_ACTIONS]
+
+ALL_ARTICLE_INTERACTION_ACTIONS = (
+    OPENING_ACTIONS + INTERACTION_ACTIONS + [EVENT_ARTICLE_CLOSED]
+)
+
+# Parameter that controls after how much time (in minutes) the session is expired
+READING_SESSION_TIMEOUT = 2
+WATCHING_SESSION_TIMEOUT = 2
+
+
+# Event types for word_knowledge/WordInteractionHistory
+WIH_READ_CLICKED = 0
+WIH_READ_NOT_CLICKED_IN_SENTENCE = 1
+WIH_READ_NOT_CLICKED_OUT_SENTENCE = 2
+WIH_CORRECT_EX_RECOGNIZE = 3
+WIH_CORRECT_EX_TRANSLATE = 4
+WIH_CORRECT_EX_CHOICE = 5
+WIH_CORRECT_EX_MATCH = 6
+WIH_WRONG_EX_RECOGNIZE = 7
+WIH_WRONG_EX_TRANSLATE = 8
+WIH_WRONG_EX_CHOICE = 9
+WIH_WRONG_EX_MATCH = 10
+
+# time delta in which consecutive bookmarks are merged together
+TIMEDELTA = 120
+
+# Platform identifiers for tracking where accounts were created and activity happens
+# Keep in sync with frontend: js/web/src/utils/misc/browserDetection.js
+PLATFORM_UNKNOWN = 0
+PLATFORM_WEB_DESKTOP = 1
+PLATFORM_WEB_MOBILE = 2
+PLATFORM_IOS_APP = 3
+PLATFORM_ANDROID_APP = 4
+PLATFORM_EXTENSION = 5
+
+PLATFORM_NAMES = {
+    PLATFORM_UNKNOWN: &quot;unknown&quot;,
+    PLATFORM_WEB_DESKTOP: &quot;web_desktop&quot;,
+    PLATFORM_WEB_MOBILE: &quot;web_mobile&quot;,
+    PLATFORM_IOS_APP: &quot;ios_app&quot;,
+    PLATFORM_ANDROID_APP: &quot;android_app&quot;,
+    PLATFORM_EXTENSION: &quot;extension&quot;,
+}
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

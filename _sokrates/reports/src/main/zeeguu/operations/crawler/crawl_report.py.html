@@ -1,0 +1,288 @@
+<html>
+<head>
+    <title>zeeguu/operations/crawler/crawl_report.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/operations/crawler/crawl_report.py (<b>218</b> lines of code) (<a href="crawl_report.py">raw</a>):</h3>
+<div id="editor">from collections import Counter
+import datetime
+import os
+import inspect
+import json
+import pathlib
+
+STR_DATETIME_FORMAT = &quot;%d_%m_%y_%H_%M_%S&quot;
+CRAWL_REPORT_DATA = os.environ.get(
+    &quot;CRAWL_REPORT_DATA&quot;,
+    os.path.join(pathlib.Path(__file__).parent.resolve(), &quot;crawl_data&quot;),
+)
+
+
+class CrawlReport:
+    def __init__(self) -&gt; None:
+        self.save_dir = CRAWL_REPORT_DATA
+        # Create the directory if it doesn't exist
+        os.makedirs(self.save_dir, exist_ok=True)
+        self.data = {&quot;lang&quot;: {}}
+        self.crawl_report_date = datetime.datetime.now()
+
+    def get_days_from_crawl_report_date(self):
+        return (datetime.datetime.now() - self.crawl_report_date).days
+
+    def __convert_str_to_dt(self, str_datetime):
+        dt_parsed = datetime.datetime.strptime(str_datetime, STR_DATETIME_FORMAT)
+        return dt_parsed
+
+    def __convert_dt_to_str(self, datetime):
+        return datetime.strftime(STR_DATETIME_FORMAT)
+
+    def _get_feed_dict(self, feed):
+        lang_code = feed.language.code
+        feed_id = feed.id
+        return self.data[&quot;lang&quot;][lang_code][&quot;feeds&quot;][feed_id]
+
+    def add_language(self, lang_code: str):
+        self.data[&quot;lang&quot;][lang_code] = {&quot;feeds&quot;: {}, &quot;total_time&quot;: None}
+
+    def add_feed(self, feed):
+        lang_code = feed.language.code
+        feed_id = feed.id
+        if lang_code not in self.data[&quot;lang&quot;]:
+            self.add_language(lang_code)
+        self.data[&quot;lang&quot;][lang_code][&quot;feeds&quot;][feed_id] = {
+            &quot;article_report&quot;: {
+                &quot;sents_removed&quot;: {},
+                &quot;quality_error&quot;: {},
+                &quot;quality_to_url&quot;: {},
+                &quot;sents_to_url&quot;: {},
+            },
+            &quot;last_article_date&quot;: None,
+            &quot;feed_errors&quot;: [],
+            &quot;crawl_time&quot;: None,
+            &quot;total_articles&quot;: None,
+            &quot;total_downloaded&quot;: None,
+            &quot;total_low_quality&quot;: None,
+            &quot;total_in_db&quot;: None,
+            &quot;total_skipped_unprocessed&quot;: None,
+            &quot;total_readability_timeout&quot;: None,
+        }
+
+    def set_total_time(self, lang_code: str, total_time):
+        self.data[&quot;lang&quot;][lang_code][&quot;total_time&quot;] = total_time
+
+    def add_feed_error(self, feed, error: str):
+        feed_dict = self._get_feed_dict(feed)
+        feed_dict[&quot;feed_errors&quot;].append(error)
+
+    def set_feed_crawl_time(self, feed, crawl_time):
+        feed_dict = self._get_feed_dict(feed)
+        feed_dict[&quot;crawl_time&quot;] = crawl_time
+
+    def set_feed_last_article_date(self, feed, last_article_date):
+        feed_dict = self._get_feed_dict(feed)
+        feed_dict[&quot;last_article_date&quot;] = self.__convert_dt_to_str(last_article_date)
+
+    def set_feed_total_articles(self, feed, total_articles):
+        feed_dict = self._get_feed_dict(feed)
+        feed_dict[&quot;total_articles&quot;] = total_articles
+
+    def set_feed_total_downloaded(self, feed, total_downloaded):
+        feed_dict = self._get_feed_dict(feed)
+        feed_dict[&quot;total_downloaded&quot;] = total_downloaded
+
+    def set_feed_total_low_quality(self, feed, total_low_quality):
+        feed_dict = self._get_feed_dict(feed)
+        feed_dict[&quot;total_low_quality&quot;] = total_low_quality
+
+    def set_feed_total_in_db(self, feed, total_in_db):
+        feed_dict = self._get_feed_dict(feed)
+        feed_dict[&quot;total_in_db&quot;] = total_in_db
+
+    def set_feed_total_skipped_unprocessed(self, feed, total_skipped_unprocessed):
+        feed_dict = self._get_feed_dict(feed)
+        feed_dict[&quot;total_skipped_unprocessed&quot;] = total_skipped_unprocessed
+
+    def set_feed_total_readability_timeout(self, feed, total_readability_timeout):
+        feed_dict = self._get_feed_dict(feed)
+        feed_dict[&quot;total_readability_timeout&quot;] = total_readability_timeout
+
+    def set_non_quality_reason(self, feed, non_quality_reason_counts: dict):
+        feed_dict = self._get_feed_dict(feed)
+        feed_dict[&quot;article_report&quot;][&quot;quality_error&quot;] = Counter(
+            non_quality_reason_counts
+        )
+
+    def set_sent_removed(self, feed, sent_removed_count: dict):
+        feed_dict = self._get_feed_dict(feed)
+        feed_dict[&quot;article_report&quot;][&quot;sents_removed&quot;] = Counter(sent_removed_count)
+
+    def add_non_quality_reason(self, feed, non_quality_reason, url=None):
+        feed_dict = self._get_feed_dict(feed)
+        feed_dict[&quot;article_report&quot;][&quot;quality_error&quot;][non_quality_reason] = (
+            feed_dict[&quot;article_report&quot;][&quot;quality_error&quot;].get(non_quality_reason, 0) + 1
+        )
+        if url is not None:
+            feed_dict[&quot;article_report&quot;][&quot;quality_to_url&quot;][non_quality_reason] = (
+                feed_dict[&quot;article_report&quot;][&quot;quality_to_url&quot;].get(
+                    non_quality_reason, []
+                )
+                + [url]
+            )
+
+    def add_sent_removed(self, feed, sent_removed, url=None):
+        feed_dict = self._get_feed_dict(feed)
+        feed_dict[&quot;article_report&quot;][&quot;sents_removed&quot;][sent_removed] = (
+            feed_dict[&quot;article_report&quot;][&quot;sents_removed&quot;].get(sent_removed, 0) + 1
+        )
+        if url is not None:
+            feed_dict[&quot;article_report&quot;][&quot;sents_to_url&quot;][sent_removed] = feed_dict[
+                &quot;article_report&quot;
+            ][&quot;sents_to_url&quot;].get(sent_removed, []) + [url]
+
+    def save_crawl_report(self):
+        timestamp_str = self.__convert_dt_to_str(self.crawl_report_date)
+        if not os.path.exists(self.save_dir):
+            os.mkdir(self.save_dir)
+        for lang in self.data[&quot;lang&quot;]:
+            filename = f&quot;{lang}-crawl-{timestamp_str}.json&quot;
+            output_dir = os.path.join(self.save_dir, lang)
+            if not os.path.exists(output_dir):
+                os.mkdir(output_dir)
+            with open(os.path.join(output_dir, filename), &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+                json.dump(self.data[&quot;lang&quot;][lang], f)
+
+    def load_crawl_report_data(self, day_period: int, report_dir_path=None):
+        if report_dir_path is None:
+            report_dir_path = self.save_dir
+        for lang in os.listdir(report_dir_path):
+            for file in os.listdir(os.path.join(report_dir_path, lang)):
+                lang, _, date = file.split(&quot;.&quot;)[0].split(&quot;-&quot;)
+                date = self.__convert_str_to_dt(date)
+
+                day_diff = (date.now() - date).days
+                if day_diff &gt; day_period:
+                    print(
+                        f&quot;File '{file}' outside of day range of '{day_period}', was: '{day_diff}'&quot;
+                    )
+                    continue
+                try:
+                    self.crawl_report_date = min(self.crawl_report_date, date)
+                    with open(
+                        os.path.join(report_dir_path, lang, file), &quot;r&quot;, encoding=&quot;utf-8&quot;
+                    ) as f:
+                        loaded_data = json.load(f)
+                        if lang not in self.data[&quot;lang&quot;]:
+                            self.add_language(lang)
+                        lang_dict = self.data[&quot;lang&quot;][lang]
+                        for feed in loaded_data[&quot;feeds&quot;]:
+                            if feed not in lang_dict[&quot;feeds&quot;]:
+                                # We have not loaded any feeds yet:
+                                lang_dict[&quot;feeds&quot;][feed] = loaded_data[&quot;feeds&quot;][feed]
+                            else:
+                                feed_dict = lang_dict[&quot;feeds&quot;][feed]
+                                feed_dict[&quot;article_report&quot;][&quot;sents_removed&quot;] = Counter(
+                                    feed_dict[&quot;article_report&quot;][&quot;sents_removed&quot;]
+                                ) + Counter(
+                                    loaded_data[&quot;feeds&quot;][feed][&quot;article_report&quot;][
+                                        &quot;sents_removed&quot;
+                                    ]
+                                )
+                                feed_dict[&quot;article_report&quot;][&quot;quality_error&quot;] = Counter(
+                                    feed_dict[&quot;article_report&quot;][&quot;quality_error&quot;]
+                                ) + Counter(
+                                    loaded_data[&quot;feeds&quot;][feed][&quot;article_report&quot;][
+                                        &quot;quality_error&quot;
+                                    ]
+                                )
+                        print(f&quot;LOADED File (d:{date}, l:{lang}): {file}&quot;)
+                except Exception as e:
+                    print(f&quot;Failed to load: '{file}', with: '{e} ({type(e)})'&quot;)
+
+    def __validate_lang(self, lang: str):
+        langs_available = set(self.data[&quot;lang&quot;].keys())
+        if lang not in langs_available:
+            raise ValueError(
+                f&quot;'{lang}' is not found in current loaded data. Available langs: '{list(langs_available)}'&quot;
+            )
+        return True
+
+    def __load_languages(self, langs_to_load: list[str] = None):
+        if langs_to_load is None:
+            langs_to_load = self.data[&quot;lang&quot;].keys()
+        else:
+            for lang in langs_to_load:
+                self.__validate_lang(lang)
+        return langs_to_load
+
+    def get_total_non_quality_counts(self, langs_to_load: list[str] = None):
+        langs_to_load = self.__load_languages(langs_to_load)
+
+        total_counts = Counter()
+        for lang in langs_to_load:
+            for feed in self.data[&quot;lang&quot;][lang][&quot;feeds&quot;]:
+                feed_dict = self.data[&quot;lang&quot;][lang][&quot;feeds&quot;][feed]
+                total_counts += Counter(feed_dict[&quot;article_report&quot;][&quot;quality_error&quot;])
+        return total_counts
+
+    def get_total_removed_sents_counts(self, langs_to_load: list[str] = None):
+        langs_to_load = self.__load_languages(langs_to_load)
+
+        total_counts = Counter()
+
+        for lang in langs_to_load:
+            for feed in self.data[&quot;lang&quot;][lang][&quot;feeds&quot;]:
+                feed_dict = self.data[&quot;lang&quot;][lang][&quot;feeds&quot;][feed]
+                try:
+                    total_counts += Counter(
+                        feed_dict[&quot;article_report&quot;][&quot;sents_removed&quot;]
+                    )
+                except Exception as e:
+                    from pprint import pprint
+
+                    pprint(feed_dict)
+                    print(e, type(e))
+                    input(&quot;Continue?&quot;)
+        return total_counts
+
+    def get_all_feed_errors(self, langs_to_load: list[str] = None):
+        &quot;&quot;&quot;
+        Get all feed errors grouped by feed.
+
+        Returns:
+            list of dicts with keys: lang, feed_id, errors (list of error strings)
+        &quot;&quot;&quot;
+        langs_to_load = self.__load_languages(langs_to_load)
+
+        all_errors = []
+        for lang in langs_to_load:
+            for feed_id in self.data[&quot;lang&quot;][lang][&quot;feeds&quot;]:
+                feed_dict = self.data[&quot;lang&quot;][lang][&quot;feeds&quot;][feed_id]
+                errors = feed_dict.get(&quot;feed_errors&quot;, [])
+                if errors:
+                    all_errors.append({
+                        &quot;lang&quot;: lang,
+                        &quot;feed_id&quot;: feed_id,
+                        &quot;errors&quot;: errors,
+                        &quot;error_count&quot;: len(errors),
+                    })
+        return all_errors
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

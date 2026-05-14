@@ -1,0 +1,414 @@
+[ {
+  "relativePath" : "stanza_service/requirements.txt",
+  "extension" : "txt",
+  "linesOfCode" : 7,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/word_filter/data/README.md",
+  "extension" : "md",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/word_filter/data/bad-words/README.md",
+  "extension" : "md",
+  "linesOfCode" : 45,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/word_filter/data/bad-words/USERS.md",
+  "extension" : "md",
+  "linesOfCode" : 24,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/test/test_data/spiegel_nancy.txt",
+  "extension" : "txt",
+  "linesOfCode" : 8,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/test/test_data/verdensbedste_jorde.txt",
+  "extension" : "txt",
+  "linesOfCode" : 35,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/test/test_data/der_kleine_prinz.txt",
+  "extension" : "txt",
+  "linesOfCode" : 38,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/test/test_data/random_emails.txt",
+  "extension" : "txt",
+  "linesOfCode" : 51,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/test/test_data/spiegel_venezuela.txt",
+  "extension" : "txt",
+  "linesOfCode" : 14,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/test/test_data/random_urls.txt",
+  "extension" : "txt",
+  "linesOfCode" : 60,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/test/test_data/jp_article_example.txt",
+  "extension" : "txt",
+  "linesOfCode" : 8,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/test/test_data/faz_leichtathletik.txt",
+  "extension" : "txt",
+  "linesOfCode" : 30,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/test/test_data/cnn_kathmandu.txt",
+  "extension" : "txt",
+  "linesOfCode" : 20,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/test/test_data/verdensbedste_indonesien.txt",
+  "extension" : "txt",
+  "linesOfCode" : 25,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/elastic/elastic_queries.md",
+  "extension" : "md",
+  "linesOfCode" : 172,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/audio_lessons/prompts/prompt_teacher_challenges_dialogue_only.txt",
+  "extension" : "txt",
+  "linesOfCode" : 42,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/audio_lessons/prompts/lesson_generation_prompt_v0.txt",
+  "extension" : "txt",
+  "linesOfCode" : 29,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/audio_lessons/prompts/meaning_lesson--teacher_challenges_both_dialogue_and_beyond.txt",
+  "extension" : "txt",
+  "linesOfCode" : 42,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/audio_lessons/prompts/dialogue_lesson--situation-v1.txt",
+  "extension" : "txt",
+  "linesOfCode" : 38,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/audio_lessons/prompts/meaning_lesson--teacher_challenges_both_dialogue_and_beyond-v2.txt",
+  "extension" : "txt",
+  "linesOfCode" : 40,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/audio_lessons/prompts/dialogue_lesson--topic-v1.txt",
+  "extension" : "txt",
+  "linesOfCode" : 36,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/diagrams/reading_sessions.svg",
+  "extension" : "svg",
+  "linesOfCode" : 63,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/language/ML_CLASSIFIER_README.md",
+  "extension" : "md",
+  "linesOfCode" : 105,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/language/PHASE_1_IMPLEMENTATION_COMPLETE.md",
+  "extension" : "md",
+  "linesOfCode" : 178,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/language/RECOMMENDATION_ML_AS_PRIMARY.md",
+  "extension" : "md",
+  "linesOfCode" : 238,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/language/IMPLEMENTATION_DECISIONS.md",
+  "extension" : "md",
+  "linesOfCode" : 511,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/language/README_ML_DIFFICULTY_EVALUATION.md",
+  "extension" : "md",
+  "linesOfCode" : 198,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/language/ML_VS_LLM_ANALYSIS.md",
+  "extension" : "md",
+  "linesOfCode" : 100,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/language/TEACHER_CEFR_OVERRIDE_FEATURE.md",
+  "extension" : "md",
+  "linesOfCode" : 164,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/language/EVALUATION_SUMMARY.md",
+  "extension" : "md",
+  "linesOfCode" : 106,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/model/BLOCKQUOTE_IMPLEMENTATION.md",
+  "extension" : "md",
+  "linesOfCode" : 209,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/content_cleaning/data/junk_patterns_found.json",
+  "extension" : "json",
+  "linesOfCode" : 1082,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/ml_models/binary/tfidf_multi_paywall_detect_metadata.json",
+  "extension" : "json",
+  "linesOfCode" : 9,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "archlens-new.json",
+  "extension" : "json",
+  "linesOfCode" : 127,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/README.md",
+  "extension" : "md",
+  "linesOfCode" : 9,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/audio-engleza/README.md",
+  "extension" : "md",
+  "linesOfCode" : 158,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/audio-engleza/basic_english_for_elderly_romanian.txt",
+  "extension" : "txt",
+  "linesOfCode" : 105,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/user_word_integrity/README_INTEGRITY_CHECKS.md",
+  "extension" : "md",
+  "linesOfCode" : 202,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "WORDSTATS_1.1.0_DEPLOYED.md",
+  "extension" : "md",
+  "linesOfCode" : 96,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "requirements.txt",
+  "extension" : "txt",
+  "linesOfCode" : 84,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "WORDSTATS_UPDATE.md",
+  "extension" : "md",
+  "linesOfCode" : 69,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "diagrams/old/zeeguu-api-top-level-view-depth-1.json",
+  "extension" : "json",
+  "linesOfCode" : 1541,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "diagrams/old/zeeguu-api-content-retrieval.json",
+  "extension" : "json",
+  "linesOfCode" : 171,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "diagrams/old/zeeguu-api-inside-core.json",
+  "extension" : "json",
+  "linesOfCode" : 423,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "diagrams/old/zeeguu-api-inside-api.json",
+  "extension" : "json",
+  "linesOfCode" : 641,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "test_durations.txt",
+  "extension" : "txt",
+  "linesOfCode" : 33,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "REFACTORINGS-TODO.md",
+  "extension" : "md",
+  "linesOfCode" : 26,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "FAQ.md",
+  "extension" : "md",
+  "linesOfCode" : 11,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "truckconfig.json",
+  "extension" : "json",
+  "linesOfCode" : 6,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "README.md",
+  "extension" : "md",
+  "linesOfCode" : 44,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "NICE-DECISIONS.md",
+  "extension" : "md",
+  "linesOfCode" : 27,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "archlens.json",
+  "extension" : "json",
+  "linesOfCode" : 148,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "UpdateToTopics.md",
+  "extension" : "md",
+  "linesOfCode" : 34,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "inprogress.md",
+  "extension" : "md",
+  "linesOfCode" : 70,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "CODING-GUIDELINES.md",
+  "extension" : "md",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "CHANGES-2025-11-04.md",
+  "extension" : "md",
+  "linesOfCode" : 360,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "CONTEXT_ARCHITECTURE.md",
+  "extension" : "md",
+  "linesOfCode" : 78,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "CLAUDE.md",
+  "extension" : "md",
+  "linesOfCode" : 117,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "TopicAssignments.md",
+  "extension" : "md",
+  "linesOfCode" : 56,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+} ]

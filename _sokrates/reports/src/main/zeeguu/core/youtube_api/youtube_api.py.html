@@ -1,0 +1,390 @@
+<html>
+<head>
+    <title>zeeguu/core/youtube_api/youtube_api.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/youtube_api/youtube_api.py (<b>276</b> lines of code) (<a href="youtube_api.py">raw</a>):</h3>
+<div id="editor">import html
+import json
+import os
+import re
+import isodate
+import requests
+
+from zeeguu.config import ZEEGUU_DATA_FOLDER
+from zeeguu.core.util.text import remove_emojis
+from langdetect import detect, LangDetectException
+from youtube_transcript_api import YouTubeTranscriptApi
+from youtube_transcript_api._errors import (
+    TranscriptsDisabled,
+    NoTranscriptFound,
+    VideoUnavailable,
+    CouldNotRetrieveTranscript,
+)
+
+YOUTUBE_API_KEY = os.getenv(&quot;YOUTUBE_API_KEY&quot;)
+if not YOUTUBE_API_KEY:
+    print(&quot;No YOUTUBE_API_KEY found in environment variables.&quot;)
+
+MAX_CHAR_COUNT_IN_SUMMARY = 297
+
+SOCIAL_MEDIA_WORDS = [
+    &quot;instagram&quot;,
+    &quot;facebook&quot;,
+    &quot;twitter&quot;,
+    &quot;snapchat&quot;,
+    &quot;tiktok&quot;,
+    &quot;pinterest&quot;,
+    &quot;linkedin&quot;,
+    &quot;youtube&quot;,
+    &quot;whatsapp&quot;,
+    &quot;reddit&quot;,
+    &quot;tumblr&quot;,
+    &quot;twitch&quot;,
+    &quot;x.com&quot;,
+    &quot;discord&quot;,
+    &quot;threads&quot;,
+    &quot;subscribe&quot;,
+    &quot;follow&quot;,
+    &quot;like&quot;,
+    &quot;share&quot;,
+    &quot;comment&quot;,
+]
+
+
+NO_CAPTIONS_AVAILABLE = 1
+NOT_IN_EXPECTED_LANGUAGE = 2
+DUBBED_AUDIO = 3
+CAPTIONS_TOO_SHORT = 4
+VIDEO_IS_MISSING_DURATION = 5
+
+SEARCH_URL = &quot;https://www.googleapis.com/youtube/v3/search&quot;
+
+
+def get_video_unique_keys(lang, category_id=None, topic_id=None, max_results=50):
+    &quot;&quot;&quot;
+    This provides a list of video ids (no video information is provided).
+
+    The actual data extraction is done at fetch_video_info
+    &quot;&quot;&quot;
+    if max_results &gt; 50:
+        print(
+            f&quot;max_results was higher than 50 ({max_results}), Youtube only allows a max of 50...&quot;
+        )
+
+    # see https://developers.google.com/youtube/v3/docs/search/list
+    # Quota: 100 units per call. Up to 50 videos per call
+
+    search_params = {
+        &quot;part&quot;: &quot;id&quot;,
+        &quot;videoCategoryId&quot;: category_id,
+        &quot;topicId&quot;: topic_id,
+        &quot;type&quot;: &quot;video&quot;,
+        &quot;videoCaption&quot;: &quot;closedCaption&quot;,
+        &quot;videoEmbeddable&quot;: &quot;true&quot;,
+        &quot;relevanceLanguage&quot;: lang,
+        &quot;videoDuration&quot;: &quot;medium&quot;,
+        &quot;maxResults&quot;: max_results,  # Max results is 50 (can be lower)
+        &quot;key&quot;: YOUTUBE_API_KEY,
+    }
+
+    response = requests.get(SEARCH_URL, params=search_params)
+    search_data = response.json()
+
+    video_ids = [item[&quot;id&quot;][&quot;videoId&quot;] for item in search_data.get(&quot;items&quot;, [])]
+    if not video_ids:
+        return []
+
+    return video_ids
+
+
+def fetch_video_info(video_unique_key, lang):
+    &quot;&quot;&quot;
+    video_unique_key is the video id, e.g. &quot;8-GrLwHK8SQ&quot;
+
+
+    &quot;&quot;&quot;
+
+    def _get_thumbnail(item):
+        return (
+            item[&quot;snippet&quot;][&quot;thumbnails&quot;].get(&quot;maxres&quot;, {}).get(&quot;url&quot;)
+            or item[&quot;snippet&quot;][&quot;thumbnails&quot;].get(&quot;high&quot;, {}).get(&quot;url&quot;)
+            or item[&quot;snippet&quot;][&quot;thumbnails&quot;].get(&quot;medium&quot;, {}).get(&quot;url&quot;)
+            or item[&quot;snippet&quot;][&quot;thumbnails&quot;]
+            .get(&quot;default&quot;, {})
+            .get(&quot;url&quot;, &quot;No thumbnail available&quot;)
+        )
+
+    VIDEO_URL = &quot;https://www.googleapis.com/youtube/v3/videos&quot;
+    # see https://developers.google.com/youtube/v3/docs/videos/list
+    # Quota: 1 unit per video
+
+    params = {
+        &quot;part&quot;: &quot;snippet,contentDetails&quot;,
+        &quot;id&quot;: video_unique_key,
+        &quot;key&quot;: YOUTUBE_API_KEY,
+    }
+
+    response = requests.get(VIDEO_URL, params=params)
+    video_data = response.json()
+
+    if &quot;items&quot; not in video_data or not video_data[&quot;items&quot;]:
+        raise ValueError(f&quot;Video {video_unique_key} not found, or API quota exceeded&quot;)
+
+    item = video_data[&quot;items&quot;][0]
+
+    video_info = {
+        &quot;video_unique_key&quot;: video_unique_key,
+        &quot;title&quot;: remove_emojis(item[&quot;snippet&quot;][&quot;title&quot;]),
+        &quot;description&quot;: remove_emojis(item[&quot;snippet&quot;].get(&quot;description&quot;, &quot;&quot;)),
+        &quot;publishedAt&quot;: isodate.parse_datetime(item[&quot;snippet&quot;][&quot;publishedAt&quot;]).replace(
+            tzinfo=None
+        ),
+        &quot;channelId&quot;: item[&quot;snippet&quot;][&quot;channelId&quot;],
+        &quot;thumbnail&quot;: _get_thumbnail(item),
+        &quot;tags&quot;: item[&quot;snippet&quot;].get(&quot;tags&quot;, []),
+        &quot;text&quot;: &quot;&quot;,
+        &quot;captions&quot;: [],
+        &quot;broken&quot;: 0,
+    }
+
+    # Check video duration: some videos don't have a duration because they are not released yet or are special videos like shorts.
+    try:
+        video_info[&quot;duration&quot;] = int(
+            isodate.parse_duration(item[&quot;contentDetails&quot;][&quot;duration&quot;]).total_seconds()
+        )
+    except KeyError:
+        print(
+            f&quot;Duration not found for video {video_unique_key}. Setting video to broken and its duration to 0.&quot;
+        )
+        video_info[&quot;duration&quot;] = 0
+        video_info[&quot;broken&quot;] = VIDEO_IS_MISSING_DURATION
+        return video_info
+
+    if not is_video_language_correct(
+        video_info[&quot;title&quot;], video_info[&quot;description&quot;], lang
+    ):
+        print(f&quot;Video {video_unique_key} is not in the expected language {lang}.&quot;)
+        video_info[&quot;broken&quot;] = NOT_IN_EXPECTED_LANGUAGE
+        return video_info
+
+    captions = get_captions_from_json(video_unique_key, lang)
+    if captions is None:
+        print(f&quot;Could not fetch captions for video {video_unique_key} in {lang}&quot;)
+        video_info[&quot;broken&quot;] = NO_CAPTIONS_AVAILABLE
+    elif is_captions_too_short(captions[&quot;text&quot;], video_info[&quot;duration&quot;]):
+        video_info[&quot;broken&quot;] = CAPTIONS_TOO_SHORT
+    else:
+        video_info[&quot;text&quot;] = captions[&quot;text&quot;]
+        video_info[&quot;captions&quot;] = captions[&quot;captions&quot;]
+
+    return video_info
+
+
+def get_captions_with_yttapi(video_unique_key, lang):
+    try:
+        print(f&quot;Fetching captions via Python Package: youtube_transcript_api...&quot;)
+        transcript_list = YouTubeTranscriptApi.list_transcripts(video_unique_key)
+        transcript = transcript_list.find_manually_created_transcript([lang])
+
+        transcript_data = transcript.fetch()
+        transcript_data = transcript.fetch()
+
+        caption_list = []
+        full_text = []
+        caption_list = []
+        full_text = []
+
+        for caption in transcript_data:
+            clean_text = text_cleaner(caption.text)
+            caption_list.append(
+                {
+                    &quot;time_start&quot;: caption.start * 1000,
+                    &quot;time_end&quot;: (caption.start + caption.duration) * 1000,
+                    &quot;text&quot;: clean_text,
+                }
+            )
+            full_text.append(clean_text)
+        for caption in transcript_data:
+            clean_text = text_cleaner(caption.text)
+            caption_list.append(
+                {
+                    &quot;time_start&quot;: caption.start * 1000,
+                    &quot;time_end&quot;: (caption.start + caption.duration) * 1000,
+                    &quot;text&quot;: clean_text,
+                }
+            )
+            full_text.append(clean_text)
+
+        return {
+            &quot;text&quot;: &quot;\n&quot;.join(full_text),
+            &quot;captions&quot;: caption_list,
+        }
+
+    except TranscriptsDisabled:
+        print(&quot;Transcript is disabled for this video.&quot;)
+        return None
+    except NoTranscriptFound:
+        print(
+            &quot;No manually added transcript was found for this video in the specified language.&quot;
+        )
+        return None
+    except VideoUnavailable:
+        print(&quot;Video is unavailable.&quot;)
+        return None
+    except CouldNotRetrieveTranscript as e:
+        print(f&quot;Could not retrieve transcript: {e}&quot;)
+        return None
+    except Exception as e:
+        print(f&quot;Error fetching captions for {video_unique_key}: {e}&quot;)
+        return None
+
+
+def get_captions_from_json(video_unique_key, lang):
+    &quot;&quot;&quot;
+    Temporary solution to fetch captions from uploaded file with captions (captions.json)
+    &quot;&quot;&quot;
+    try:
+        print(&quot;Fetching captions from captions.json...&quot;)
+        captions_path = os.path.join(ZEEGUU_DATA_FOLDER, &quot;video&quot;, &quot;captions.json&quot;)
+        print(f&quot;Looking for captions file at: {captions_path}&quot;)
+
+        with open(captions_path, &quot;r&quot;, encoding=&quot;utf-8&quot;) as f:
+            caption_data = json.load(f)
+        print(f&quot;Found {len(caption_data)} captions in captions.json&quot;)
+
+        caption_list = []
+        full_text = []
+
+        print(f&quot;Searching for video {video_unique_key} in captions.json...&quot;)
+        for caption in caption_data:
+            if caption[&quot;video_unique_key&quot;] == video_unique_key:
+
+                caption_list.append(
+                    {
+                        &quot;time_start&quot;: caption[&quot;time_start&quot;],
+                        &quot;time_end&quot;: caption[&quot;time_end&quot;],
+                        &quot;text&quot;: caption[&quot;text&quot;],
+                    }
+                )
+                full_text.append(caption[&quot;text&quot;])
+
+        print(
+            f&quot;FOUND {len(caption_list)} CAPTIONS FOR VIDEO {video_unique_key} IN captions.json&quot;
+        )
+
+        if len(caption_list) == 0:
+            return None
+        else:
+            return {
+                &quot;text&quot;: &quot;\n&quot;.join(full_text),
+                &quot;captions&quot;: caption_list,
+            }
+    except FileNotFoundError:
+        print(f&quot;Caption file not found at {captions_path}.&quot;)
+        return None
+
+
+def text_cleaner(text):
+    text = html.unescape(text)
+    text = remove_emojis(text)
+    return text
+
+
+def is_video_language_correct(title, description, language):
+    def _clean_description(description_text):
+        # remove hashtags
+        description_text = re.sub(r&quot;#\w+&quot;, &quot;&quot;, description_text)
+
+        # remove @mentions
+        description_text = re.sub(r&quot;@\w+&quot;, &quot;&quot;, description_text)
+
+        # remove social media words
+        for word in SOCIAL_MEDIA_WORDS:
+            description_text = re.sub(
+                rf&quot;\b{word}\b&quot;, &quot;&quot;, description_text, flags=re.IGNORECASE
+            )
+
+        # collapse multiple spaces and trim
+        description_text = re.sub(r&quot;\s+&quot;, &quot; &quot;, description_text).strip()
+
+        return description_text
+
+    try:
+        title_lang = detect(title) if title else None
+    except LangDetectException:
+        title_lang = None
+
+    try:
+        cleaned_description = _clean_description(description) if description else &quot;&quot;
+        desc_lang = detect(cleaned_description) if cleaned_description else None
+    except LangDetectException:
+        desc_lang = None
+
+    if (title_lang and title_lang == language) or (desc_lang and desc_lang == language):
+        return True
+    return False
+
+
+def fetch_channel_info(channel_id):
+    def _get_thumbnail(snippet):
+        return (
+            snippet[&quot;thumbnails&quot;].get(&quot;high&quot;, {}).get(&quot;url&quot;)
+            or snippet[&quot;thumbnails&quot;].get(&quot;medium&quot;, {}).get(&quot;url&quot;)
+            or snippet[&quot;thumbnails&quot;]
+            .get(&quot;default&quot;, {})
+            .get(&quot;url&quot;, &quot;No thumbnail available&quot;)
+        )
+
+    CHANNEL_URL = &quot;https://www.googleapis.com/youtube/v3/channels&quot;
+    # see https://developers.google.com/youtube/v3/docs/channels/list
+    # Quota: 1 unit per channel
+
+    channel_params = {
+        &quot;part&quot;: &quot;snippet,statistics&quot;,
+        &quot;id&quot;: channel_id,
+        &quot;key&quot;: YOUTUBE_API_KEY,
+    }
+
+    response = requests.get(CHANNEL_URL, params=channel_params)
+    channel_data = response.json()
+
+    channel = channel_data.get(&quot;items&quot;, [])[0]
+    snippet = channel[&quot;snippet&quot;]
+    statistics = channel[&quot;statistics&quot;]
+
+    channel_info = {
+        &quot;channelId&quot;: channel_id,
+        &quot;channelName&quot;: remove_emojis(snippet[&quot;title&quot;]),
+        &quot;description&quot;: remove_emojis(snippet.get(&quot;description&quot;, &quot;&quot;)),
+        &quot;viewCount&quot;: statistics[&quot;viewCount&quot;],
+        &quot;subscriberCount&quot;: statistics[&quot;subscriberCount&quot;],
+        &quot;thumbnail&quot;: _get_thumbnail(snippet),
+    }
+
+    return channel_info
+
+
+def is_captions_too_short(caption_text: str, video_duration_in_seconds: int) -&gt; bool:
+    # After consolidating different videos and captions, we have found that 1 word per second is a good threshold
+    return len(caption_text.split()) &lt; video_duration_in_seconds
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

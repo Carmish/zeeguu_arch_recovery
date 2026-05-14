@@ -1,0 +1,82 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/helpers/activity_sessions.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/helpers/activity_sessions.py (<b>30</b> lines of code) (<a href="activity_sessions.py">raw</a>):</h3>
+<div id="editor">&quot;&quot;&quot;
+    Function that captures a pattern that differs only in the name of the class
+    between UserExerciseSession and UserReadingSession
+&quot;&quot;&quot;
+
+import flask
+from datetime import datetime
+
+from zeeguu.core.model import User
+from zeeguu.core.model.user_language import UserLanguage
+
+
+def update_activity_session(session_class, request, db_session):
+    form = request.form
+    session_id = int(form.get(&quot;id&quot;, &quot;&quot;))
+    duration = int(form.get(&quot;duration&quot;, 0))
+
+    session = session_class.find_by_id(session_id)
+    session.duration = duration
+    session.last_action_time = datetime.now()
+    db_session.add(session)
+
+    if duration &gt;= MIN_STREAK_DURATION_MS:
+        _update_streak(db_session, session)
+
+    db_session.commit()
+
+    return session
+
+
+MIN_STREAK_DURATION_MS = 120_000  # 2 minutes in milliseconds (frontend sends ms)
+
+# Activity sessions belong to a language one of two ways: their content
+# (lesson/article/video) carries it, or &mdash; for exercise/browsing sessions
+# which have no content &mdash; they snapshot it at session start. The streak
+# must be attributed to *that* language so a tail update arriving after
+# the user toggles their learned_language can't be re-credited elsewhere.
+_CONTENT_RELATIONSHIPS = (&quot;daily_audio_lesson&quot;, &quot;article&quot;, &quot;video&quot;)
+
+
+def _session_language(session):
+    for attr in _CONTENT_RELATIONSHIPS:
+        content = getattr(session, attr, None)
+        if content is not None:
+            return content.language
+    # Snapshot column on UserExerciseSession / UserBrowsingSession.
+    # NULL on rows that predate migration 26-04-07.
+    return getattr(session, &quot;language&quot;, None)
+
+
+def _update_streak(db_session, session):
+    user = User.find_by_id(flask.g.user_id)
+    language = _session_language(session) or user.learned_language
+    if language is None:
+        return
+    UserLanguage.find_or_create(db_session, user, language).update_streak_if_needed(user, db_session)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

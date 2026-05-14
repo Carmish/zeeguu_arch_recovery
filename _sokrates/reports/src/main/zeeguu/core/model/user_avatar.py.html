@@ -1,0 +1,89 @@
+<html>
+<head>
+    <title>zeeguu/core/model/user_avatar.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/user_avatar.py (<b>43</b> lines of code) (<a href="user_avatar.py">raw</a>):</h3>
+<div id="editor">import random
+from typing import Optional
+
+from zeeguu.core.model.db import db
+
+
+
+class UserAvatar(db.Model):
+    __tablename__ = &quot;user_avatar&quot;
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(&quot;user.id&quot;), nullable=False)
+    image_name = db.Column(db.String(100))
+    character_color = db.Column(db.String(7))
+    background_color = db.Column(db.String(7))
+    # Colors for avatar character and background.
+    AVATAR_CHARACTER_COLORS = [&quot;#F6D110&quot;, &quot;#f09000&quot;, &quot;#EA2F14&quot;, &quot;#6367FF&quot;, &quot;#0D1A63&quot;, &quot;#008BFF&quot;, &quot;#005F02&quot;]
+    AVATAR_BACKGROUND_COLORS = [&quot;#FFF9C7&quot;, &quot;#ffe0b3&quot;, &quot;#ffc3b3&quot;, &quot;#C9BEFF&quot;, &quot;#81A6C6&quot;, &quot;#9CD5FF&quot;, &quot;#BCD9A2&quot;]
+
+    user = db.relationship(&quot;User&quot;)
+
+    def __init__(
+            self,
+            user_id,
+            image_name=None,
+            character_color=None,
+            background_color=None
+    ):
+        self.user_id = user_id
+        self.image_name = image_name
+        self.character_color = character_color
+        self.background_color = background_color
+
+    def __repr__(self):
+        return f&quot;&lt;UserAvatar User:{self.user_id}&gt;&quot;
+
+    @classmethod
+    def random_colors(cls):
+        &quot;&quot;&quot;Return a randomly paired (character_color, background_color) tuple.&quot;&quot;&quot;
+        idx = random.randrange(len(cls.AVATAR_CHARACTER_COLORS))
+        return cls.AVATAR_CHARACTER_COLORS[idx], cls.AVATAR_BACKGROUND_COLORS[idx]
+
+    @classmethod
+    def find(cls, user_id: int) -&gt; Optional[&quot;UserAvatar&quot;]:
+        &quot;&quot;&quot;
+        Return the corresponding avatar for the given user.
+        &quot;&quot;&quot;
+        return cls.query.filter_by(user_id=user_id).one_or_none()
+
+    @classmethod
+    def update_or_create(cls, user_id, image_name, character_color, background_color):
+        &quot;&quot;&quot;
+        Update an existing avatar or create a new one for the specified user.
+        Does not commit.
+        &quot;&quot;&quot;
+        user_avatar = cls.find(user_id)
+        if user_avatar:
+            user_avatar.image_name = image_name
+            user_avatar.character_color = character_color
+            user_avatar.background_color = background_color
+        else:
+            user_avatar = UserAvatar(user_id, image_name, character_color, background_color)
+        return user_avatar
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

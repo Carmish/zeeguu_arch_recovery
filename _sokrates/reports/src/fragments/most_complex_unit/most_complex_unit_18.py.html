@@ -1,0 +1,160 @@
+<html>
+<head>
+    <title>def user_stats_individual()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def user_stats_individual()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/api/endpoints/user_stats.py [0:0]</i></p>
+<ul>
+    <li><b>118</b> lines of code</li>
+    <li><b>28</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def user_stats_individual(user_id):
+    &quot;&quot;&quot;
+    Get detailed activity statistics for a specific user.
+
+    Query params:
+        period: &quot;yesterday&quot; (default) or &quot;week&quot;
+    &quot;&quot;&quot;
+    period = request.args.get(&quot;period&quot;, &quot;yesterday&quot;)
+    start, end, period_label = get_period_range(period)
+
+    user = User.find_by_id(user_id)
+    if not user:
+        return {&quot;error&quot;: &quot;User not found&quot;}, 404
+
+    cohort_name, cohort_id = get_user_cohort_info(user)
+
+    # Get exercise sessions with details
+    exercise_sessions = (
+        UserExerciseSession.query.filter(UserExerciseSession.user_id == user_id)
+        .filter(UserExerciseSession.start_time &gt;= start)
+        .filter(UserExerciseSession.start_time &lt; end)
+        .order_by(UserExerciseSession.start_time.desc())
+        .all()
+    )
+
+    exercise_session_details = []
+    for session in exercise_sessions:
+        exercises = Exercise.query.filter(Exercise.session_id == session.id).all()
+
+        words = []
+        session_lang = None
+        for ex in exercises:
+            if ex.user_word and ex.user_word.meaning:
+                origin = ex.user_word.meaning.origin
+                translation = ex.user_word.meaning.translation
+                if origin:
+                    if origin.language and not session_lang:
+                        session_lang = origin.language.code
+                    words.append(
+                        {
+                            &quot;word&quot;: origin.content if origin else &quot;?&quot;,
+                            &quot;translation&quot;: translation.content if translation else &quot;?&quot;,
+                            &quot;outcome&quot;: ex.outcome.outcome if ex.outcome else &quot;?&quot;,
+                            &quot;solving_speed_ms&quot;: ex.solving_speed,
+                        }
+                    )
+
+        exercise_session_details.append(
+            {
+                &quot;id&quot;: session.id,
+                &quot;start_time&quot;: session.start_time.isoformat(),
+                &quot;duration_min&quot;: round((session.duration or 0) / 60000, 1),
+                &quot;language&quot;: session_lang,
+                &quot;word_count&quot;: len(words),
+                &quot;words&quot;: words,
+            }
+        )
+
+    # Get reading sessions with details
+    reading_sessions = (
+        UserReadingSession.query.filter(UserReadingSession.user_id == user_id)
+        .filter(UserReadingSession.start_time &gt;= start)
+        .filter(UserReadingSession.start_time &lt; end)
+        .order_by(UserReadingSession.start_time.desc())
+        .all()
+    )
+
+    reading_session_details = []
+    for session in reading_sessions:
+        article = session.article
+        reading_session_details.append(
+            {
+                &quot;id&quot;: session.id,
+                &quot;start_time&quot;: session.start_time.isoformat(),
+                &quot;duration_min&quot;: round((session.duration or 0) / 60000, 1),
+                &quot;article_id&quot;: session.article_id,
+                &quot;article_title&quot;: article.title if article else &quot;Unknown&quot;,
+                &quot;article_language&quot;: (
+                    article.language.code if article and article.language else None
+                ),
+            }
+        )
+
+    # Get translations/bookmarks
+    bookmarks = (
+        Bookmark.query.join(UserWord, Bookmark.user_word_id == UserWord.id)
+        .filter(UserWord.user_id == user_id)
+        .filter(Bookmark.time &gt;= start)
+        .filter(Bookmark.time &lt; end)
+        .order_by(Bookmark.time.desc())
+        .all()
+    )
+
+    translation_details = []
+    for bm in bookmarks:
+        if bm.user_word and bm.user_word.meaning:
+            origin = bm.user_word.meaning.origin
+            translation = bm.user_word.meaning.translation
+            translation_details.append(
+                {
+                    &quot;word&quot;: origin.content if origin else &quot;?&quot;,
+                    &quot;translation&quot;: translation.content if translation else &quot;?&quot;,
+                    &quot;time&quot;: bm.time.isoformat() if bm.time else None,
+                    &quot;language&quot;: (
+                        origin.language.code if origin and origin.language else None
+                    ),
+                }
+            )
+
+    return {
+        &quot;period&quot;: {
+            &quot;name&quot;: period,
+            &quot;label&quot;: period_label,
+            &quot;start&quot;: start.isoformat(),
+            &quot;end&quot;: end.isoformat(),
+        },
+        &quot;user&quot;: {
+            &quot;id&quot;: user.id,
+            &quot;name&quot;: user.name,
+            &quot;email&quot;: user.email,
+            &quot;cohort_name&quot;: cohort_name,
+            &quot;cohort_id&quot;: cohort_id,
+        },
+        &quot;exercise_sessions&quot;: exercise_session_details,
+        &quot;reading_sessions&quot;: reading_session_details,
+        &quot;translations&quot;: translation_details,
+        &quot;summary&quot;: {
+            &quot;exercise_session_count&quot;: len(exercise_session_details),
+            &quot;exercise_minutes&quot;: round(
+                sum(s[&quot;duration_min&quot;] for s in exercise_session_details), 1
+            ),
+            &quot;reading_session_count&quot;: len(reading_session_details),
+            &quot;reading_minutes&quot;: round(
+                sum(s[&quot;duration_min&quot;] for s in reading_session_details), 1
+            ),
+            &quot;translation_count&quot;: len(translation_details),
+        },
+    }
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

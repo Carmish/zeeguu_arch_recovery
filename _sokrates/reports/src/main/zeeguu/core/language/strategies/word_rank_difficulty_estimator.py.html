@@ -1,0 +1,146 @@
+<html>
+<head>
+    <title>zeeguu/core/language/strategies/word_rank_difficulty_estimator.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/language/strategies/word_rank_difficulty_estimator.py (<b>78</b> lines of code) (<a href="word_rank_difficulty_estimator.py">raw</a>):</h3>
+<div id="editor">import string
+
+from zeeguu.core import model
+from zeeguu.core.language.difficulty_estimator_strategy import DifficultyEstimatorStrategy
+import nltk
+import math
+import re
+from wordstats import Word
+from textblob import TextBlob
+
+
+class WordRankDifficultyEstimator(DifficultyEstimatorStrategy):
+    &quot;&quot;&quot;
+    Difficulty estimator based on word-rank and sentence length
+    difficulty equation inspired by flesch-kincaid
+    &quot;&quot;&quot;
+
+    CUSTOM_NAMES = [&quot;wr&quot;, &quot;wrscore&quot;, &quot;word-rank-score&quot;]
+
+    #todo remove names from text
+    @classmethod
+    def estimate_difficulty(cls, text: str, language: 'model.Language', user: 'model.User'):
+        '''
+        Estimates the difficulty based on the word-rank.
+        :param text: See DifficultyEstimatorStrategy
+        :param language: See DifficultyEstimatorStrategy
+        :param user: See DifficultyEstimatorStrategy
+        :rtype: dict
+        :return: The dictionary contains the keys and return types
+                    normalized: float (0&lt;=normalized&lt;=1)
+                    discrete: string [EASY, MEDIUM, HARD]
+        '''
+        word_rank_score = cls.word_rank_readability_score(text, language)
+
+        difficulty_scores = dict(
+            normalized=cls.normalize_difficulty(word_rank_score),
+            discrete=cls.discrete_difficulty(word_rank_score)
+        )
+
+        return word_rank_score
+
+    @classmethod
+    def word_rank_readability_score(cls, text: str, language: 'model.Language'):
+
+        langtb = TextBlob(text).detect_language()
+        words = nltk.word_tokenize(text)
+
+        #detect and remove proper nouns
+        if 1 == 0:
+            words = []
+            sentences = nltk.sent_tokenize(text)
+            for s in sentences:
+                # print(s)
+                tokens = nltk.word_tokenize(s)
+                words.append(tokens[0])
+                for i in range(1, len(tokens)):
+                    if not str.isupper(tokens[i][0]):
+                        words.append(tokens[i])
+
+        #remove punctuation
+        words = [w for w in words if w not in string.punctuation]
+        #remove digits (or dates)
+        words = [w for w in words if re.search(&quot;\d&quot;, w) == None]
+
+        #translate tokens
+        words_trans = words.copy()
+        for i in range(len(words)):
+            try:
+                translation = TextBlob(words[i]).translate(from_lang=langtb, to='en')
+                words_trans[i] = translation
+                print(&quot;translated: &quot;, words[i], &quot;to: &quot;, words_trans[i])
+            except:
+                print(&quot;not translated: &quot;, words[i])
+
+
+        #remove equivalent words, assume they are cognates and therefore not difficult
+        words = [words[i] for i in range(len(words)) if words_trans[i].lower != words[i].lower()]
+
+
+        number_of_words = len(words)
+
+        number_of_sentences = len(nltk.sent_tokenize(text))
+
+        constants = cls.get_constants_for_language(language);
+
+        #calculate word rank per word
+        words_stat = [Word.stats(w, language.code) for w in words]
+        #throw away words that do not occur in the top 50k
+        difficulties = [w.difficulty for w in words_stat if w.frequency is not 0]
+        number_of_words = len(difficulties)
+
+        #index = constants[&quot;start&quot;] - constants[&quot;sentence&quot;] * (number_of_words / number_of_sentences) \
+        #        - constants[&quot;word&quot;] * (sum(difficulties) / number_of_words)
+        #average difficulty of text
+        return sum(difficulties) / number_of_words
+
+    @classmethod
+    def get_constants_for_language(cls, language: 'model.language'):
+        #if language.code == &quot;de&quot;:
+        #    return {&quot;start&quot;: 180, &quot;sentence&quot;: 1, &quot;word&quot;: 58.5}
+        #else:
+        return {&quot;start&quot;: 130.835, &quot;sentence&quot;: 1.015, &quot;word&quot;: 180.6}
+
+    @classmethod
+    def normalize_difficulty(cls, score: int):
+        if score &lt; 0:
+            return 1
+        elif score &gt; 100:
+            return 0
+        else:
+            return round(1 - (score * 0.01), 2)
+
+    @classmethod
+    def discrete_difficulty(cls, score: int):
+        if score &gt; 80:
+            return &quot;EASY&quot;
+        elif score &gt; 50:
+            return &quot;MEDIUM&quot;
+        else:
+            return &quot;HARD&quot;
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

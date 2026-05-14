@@ -1,0 +1,20 @@
+Path	Lines of Code
+tools/migrations/25-05-24--adding_the_user_word_table.sql	130
+tools/ml/cefr_trainers/train_cefr_classifiers_with_frequency.py	206
+zeeguu/api/endpoints/article.py	447
+zeeguu/api/endpoints/sessions.py	91
+zeeguu/api/endpoints/translation.py	460
+zeeguu/core/account_management/user_account_creation.py	169
+zeeguu/core/language/strategies/frequency_difficulty_estimator.py	71
+zeeguu/core/model/article_tokenization_cache.py	65
+zeeguu/core/model/bookmark.py	443
+zeeguu/core/model/exercise_outcome.py	66
+zeeguu/core/model/phrase.py	151
+zeeguu/core/model/source.py	68
+zeeguu/core/model/text.py	158
+zeeguu/core/model/user.py	1006
+zeeguu/core/model/user_activitiy_data.py	367
+zeeguu/core/model/video.py	246
+zeeguu/core/semantic_vector_api/retrieve_embeddings.py	38
+zeeguu/core/user_statistics/exercise_sessions.py	28
+zeeguu/core/word_scheduling/basicSR/basicSR.py	272

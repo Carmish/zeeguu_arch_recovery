@@ -1,0 +1,236 @@
+<html>
+<head>
+    <title>zeeguu/core/content_quality/disturbing_content_detection.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/content_quality/disturbing_content_detection.py (<b>140</b> lines of code) (<a href="disturbing_content_detection.py">raw</a>):</h3>
+<div id="editor">&quot;&quot;&quot;
+Detect disturbing content (violence, death, disaster, tragedy) in articles.
+
+This provides fast keyword-based detection before expensive LLM processing.
+Articles flagged here will still be saved but marked appropriately.
+&quot;&quot;&quot;
+
+# Keywords by language for detecting disturbing content
+# Focus on words that appear in headlines/titles about violent/tragic current events
+DISTURBING_KEYWORDS = {
+    &quot;en&quot;: [
+        # Violence &amp; Crime
+        &quot;killed&quot;, &quot;murder&quot;, &quot;murdered&quot;, &quot;shooting&quot;, &quot;shot dead&quot;, &quot;shot and killed&quot;,
+        &quot;stabbed&quot;, &quot;stabbing&quot;, &quot;stabbed to death&quot;,
+        &quot;assault&quot;, &quot;attacked&quot;, &quot;attack kills&quot;, &quot;deadly attack&quot;,
+        &quot;bombing&quot;, &quot;explosion kills&quot;, &quot;terrorist&quot;, &quot;terror attack&quot;,
+        &quot;mass shooting&quot;, &quot;gunman&quot;, &quot;shooter&quot;,
+        # Death &amp; Tragedy (specific contexts)
+        &quot;found dead&quot;, &quot;body found&quot;, &quot;bodies found&quot;,
+        &quot;fatal&quot;, &quot;fatality&quot;, &quot;fatalities&quot;, &quot;casualties&quot;,
+        &quot;multiple victims&quot;, &quot;mass casualties&quot;,
+        # War &amp; Conflict (specific violent contexts)
+        &quot;war crimes&quot;, &quot;airstrike&quot;, &quot;air strike&quot;, &quot;drone strike&quot;,
+        &quot;civilian casualties&quot;, &quot;civilians killed&quot;,
+        # Disasters &amp; Accidents (with casualties)
+        &quot;deadly crash&quot;, &quot;fatal crash&quot;, &quot;plane crash&quot;, &quot;train crash&quot;,
+        &quot;disaster kills&quot;, &quot;earthquake kills&quot;, &quot;tsunami kills&quot;,
+        &quot;building collapse&quot;, &quot;fire kills&quot;,
+    ],
+    &quot;fr&quot;: [
+        # Violence &amp; Crime
+        &quot;tu&eacute;&quot;, &quot;tu&eacute;e&quot;, &quot;tu&eacute;s&quot;, &quot;tu&eacute;es&quot;, &quot;abattu&quot;,
+        &quot;meurtre&quot;, &quot;assassinat&quot;, &quot;assassin&eacute;&quot;,
+        &quot;fusill&eacute;&quot;, &quot;fusillade&quot;,
+        &quot;poignard&eacute;&quot;, &quot;attentat&quot;, &quot;attaque terroriste&quot;,
+        &quot;tuerie&quot;, &quot;tueur&quot;,
+        # Death &amp; Tragedy (specific contexts)
+        &quot;retrouv&eacute; mort&quot;, &quot;corps retrouv&eacute;&quot;, &quot;cadavre&quot;,
+        &quot;victime mortelle&quot;, &quot;victimes&quot;, &quot;plusieurs victimes&quot;,
+        # War &amp; Conflict (specific violent contexts)
+        &quot;crimes de guerre&quot;, &quot;frappe a&eacute;rienne&quot;, &quot;bombardement&quot;,
+        &quot;civils tu&eacute;s&quot;, &quot;victimes civiles&quot;,
+        # Disasters &amp; Accidents (with casualties)
+        &quot;accident mortel&quot;, &quot;crash mortel&quot;,
+        &quot;catastrophe fait&quot;, &quot;incendie meurtrier&quot;, &quot;incendie mortel&quot;,
+        &quot;effondrement meurtrier&quot;,
+    ],
+    &quot;es&quot;: [
+        # Violence &amp; Crime
+        &quot;asesinado&quot;, &quot;asesinada&quot;, &quot;asesinato&quot;, &quot;asesinados&quot;,
+        &quot;matado&quot;, &quot;muerto a tiros&quot;, &quot;tiroteo&quot;,
+        &quot;apu&ntilde;alado&quot;, &quot;apu&ntilde;alamiento&quot;,
+        &quot;atentado&quot;, &quot;ataque terrorista&quot;, &quot;terrorista&quot;,
+        &quot;masacre&quot;, &quot;tirador&quot;,
+        # Death &amp; Tragedy (specific contexts)
+        &quot;hallado muerto&quot;, &quot;cuerpo hallado&quot;, &quot;cad&aacute;ver&quot;,
+        &quot;v&iacute;ctima mortal&quot;, &quot;v&iacute;ctimas&quot;, &quot;m&uacute;ltiples v&iacute;ctimas&quot;,
+        # War &amp; Conflict (specific violent contexts)
+        &quot;cr&iacute;menes de guerra&quot;, &quot;ataque a&eacute;reo&quot;, &quot;bombardeo&quot;,
+        &quot;civiles muertos&quot;, &quot;v&iacute;ctimas civiles&quot;,
+        # Disasters &amp; Accidents (with casualties)
+        &quot;accidente mortal&quot;, &quot;choque mortal&quot;,
+        &quot;desastre deja&quot;, &quot;incendio mortal&quot;,
+        &quot;derrumbe mortal&quot;,
+    ],
+    &quot;de&quot;: [
+        # Violence &amp; Crime
+        &quot;get&ouml;tet&quot;, &quot;ermordet&quot;, &quot;Mord&quot;, &quot;Mordanschlag&quot;,
+        &quot;erschossen&quot;, &quot;Schie&szlig;erei&quot;, &quot;erstochen&quot;,
+        &quot;Attentat&quot;, &quot;Terroranschlag&quot;, &quot;Terrorist&quot;,
+        &quot;Massaker&quot;, &quot;Sch&uuml;tze&quot;,
+        # Death &amp; Tragedy (specific contexts)
+        &quot;tot aufgefunden&quot;, &quot;Leiche gefunden&quot;,
+        &quot;Todesopfer&quot;, &quot;Opfer&quot;, &quot;mehrere Opfer&quot;,
+        # War &amp; Conflict (specific violent contexts)
+        &quot;Kriegsverbrechen&quot;, &quot;Luftangriff&quot;, &quot;Bombardierung&quot;,
+        &quot;Zivilisten get&ouml;tet&quot;, &quot;zivile Opfer&quot;,
+        # Disasters &amp; Accidents (with casualties)
+        &quot;t&ouml;dlicher Unfall&quot;, &quot;t&ouml;dlicher Absturz&quot;,
+        &quot;Katastrophe fordert&quot;, &quot;t&ouml;dlicher Brand&quot;,
+        &quot;Einsturz&quot;,
+    ],
+    &quot;da&quot;: [
+        # Violence &amp; Crime
+        &quot;dr&aelig;bt&quot;, &quot;myrdet&quot;, &quot;mord&quot;, &quot;drab&quot;,
+        &quot;skudt ned&quot;, &quot;skuddrab&quot;, &quot;stukket ned&quot;,
+        &quot;attentat&quot;, &quot;terrorangreb&quot;, &quot;terrorist&quot;,
+        &quot;massedrab&quot;, &quot;gerningsmand&quot;,
+        # Death &amp; Tragedy (specific contexts)
+        &quot;fundet d&oslash;d&quot;, &quot;lig fundet&quot;,
+        &quot;dr&aelig;bt&quot;, &quot;ofre&quot;, &quot;flere ofre&quot;,
+        # War &amp; Conflict (specific violent contexts)
+        &quot;krigsforbrydelser&quot;, &quot;luftangreb&quot;, &quot;bombing&quot;,
+        &quot;civile dr&aelig;bt&quot;, &quot;civile ofre&quot;,
+        # Disasters &amp; Accidents (with casualties)
+        &quot;d&oslash;dsulykke&quot;, &quot;d&oslash;dsstyrtet&quot;,
+        &quot;katastrofe koster&quot;, &quot;d&oslash;dsbrand&quot;,
+        &quot;sammenstyrtning&quot;,
+    ],
+    &quot;nl&quot;: [
+        # Violence &amp; Crime
+        &quot;gedood&quot;, &quot;vermoord&quot;, &quot;moord&quot;, &quot;doodgeschoten&quot;,
+        &quot;neergeschoten&quot;, &quot;schietpartij&quot;, &quot;neergestoken&quot;,
+        &quot;aanslag&quot;, &quot;terreuraanval&quot;, &quot;terrorist&quot;,
+        &quot;bloedbad&quot;, &quot;schutter&quot;,
+        # Death &amp; Tragedy (specific contexts)
+        &quot;dood aangetroffen&quot;, &quot;lichaam gevonden&quot;,
+        &quot;dodelijk slachtoffer&quot;, &quot;slachtoffers&quot;, &quot;meerdere slachtoffers&quot;,
+        # War &amp; Conflict (specific violent contexts)
+        &quot;oorlogsmisdaden&quot;, &quot;luchtaanval&quot;, &quot;bombardement&quot;,
+        &quot;burgers gedood&quot;, &quot;burgersslachtoffers&quot;,
+        # Disasters &amp; Accidents (with casualties)
+        &quot;dodelijk ongeluk&quot;, &quot;dodelijke crash&quot;,
+        &quot;ramp kost&quot;, &quot;dodelijke brand&quot;,
+        &quot;instorting&quot;,
+    ],
+    &quot;it&quot;: [
+        # Violence &amp; Crime
+        &quot;ucciso&quot;, &quot;uccisa&quot;, &quot;assassinato&quot;, &quot;omicidio&quot;,
+        &quot;sparato&quot;, &quot;sparatoria&quot;, &quot;accoltellato&quot;, &quot;accoltellamento&quot;,
+        &quot;attentato&quot;, &quot;attacco terroristico&quot;, &quot;terrorista&quot;,
+        &quot;strage&quot;, &quot;sparatore&quot;,
+        # Death &amp; Tragedy (specific contexts)
+        &quot;trovato morto&quot;, &quot;corpo trovato&quot;, &quot;cadavere&quot;,
+        &quot;vittima mortale&quot;, &quot;vittime&quot;, &quot;pi&ugrave; vittime&quot;,
+        # War &amp; Conflict (specific violent contexts)
+        &quot;crimini di guerra&quot;, &quot;attacco aereo&quot;, &quot;bombardamento&quot;,
+        &quot;civili uccisi&quot;, &quot;vittime civili&quot;,
+        # Disasters &amp; Accidents (with casualties)
+        &quot;incidente mortale&quot;, &quot;schianto mortale&quot;,
+        &quot;disastro causa&quot;, &quot;incendio mortale&quot;,
+        &quot;crollo&quot;,
+    ],
+    &quot;pt&quot;: [
+        # Violence &amp; Crime
+        &quot;assassinado&quot;, &quot;assassinada&quot;, &quot;assassinato&quot;, &quot;assassinados&quot;,
+        &quot;morto a tiros&quot;, &quot;baleado&quot;, &quot;tiroteio&quot;,
+        &quot;esfaqueado&quot;, &quot;esfaqueamento&quot;,
+        &quot;atentado&quot;, &quot;ataque terrorista&quot;, &quot;terrorista&quot;,
+        &quot;massacre&quot;, &quot;atirador&quot;,
+        # Death &amp; Tragedy (specific contexts)
+        &quot;encontrado morto&quot;, &quot;corpo encontrado&quot;, &quot;cad&aacute;ver&quot;,
+        &quot;v&iacute;tima fatal&quot;, &quot;v&iacute;timas&quot;, &quot;m&uacute;ltiplas v&iacute;timas&quot;,
+        # War &amp; Conflict (specific violent contexts)
+        &quot;crimes de guerra&quot;, &quot;ataque a&eacute;reo&quot;, &quot;bombardeio&quot;,
+        &quot;civis mortos&quot;, &quot;v&iacute;timas civis&quot;,
+        # Disasters &amp; Accidents (with casualties)
+        &quot;acidente fatal&quot;, &quot;acidente mortal&quot;,
+        &quot;desastre deixa&quot;, &quot;inc&ecirc;ndio mortal&quot;,
+        &quot;desabamento&quot;,
+    ],
+    &quot;ro&quot;: [
+        # Violence &amp; Crime
+        &quot;ucis&quot;, &quot;ucisă&quot;, &quot;asasinat&quot;, &quot;asasinați&quot;,
+        &quot;&icirc;mpușcat&quot;, &quot;&icirc;mpușcătură&quot;, &quot;&icirc;njunghiat&quot;, &quot;&icirc;njunghiere&quot;,
+        &quot;atentat&quot;, &quot;atac terorist&quot;, &quot;terorist&quot;,
+        &quot;masacru&quot;, &quot;atacator&quot;,
+        # Death &amp; Tragedy (specific contexts)
+        &quot;găsit mort&quot;, &quot;corp găsit&quot;, &quot;cadavru&quot;,
+        &quot;victimă mortală&quot;, &quot;victime&quot;, &quot;mai multe victime&quot;,
+        # War &amp; Conflict (specific violent contexts)
+        &quot;crime de război&quot;, &quot;atac aerian&quot;, &quot;bombardament&quot;,
+        &quot;civili uciși&quot;, &quot;victime civile&quot;,
+        # Disasters &amp; Accidents (with casualties)
+        &quot;accident mortal&quot;, &quot;accident fatal&quot;,
+        &quot;dezastru lasă&quot;, &quot;incendiu mortal&quot;,
+        &quot;prăbușire&quot;, &quot;colaps&quot;,
+    ],
+}
+
+
+def is_disturbing_content_based_on_keywords(title: str = None, content: str = None, language: str = &quot;en&quot;) -&gt; tuple[bool, str]:
+    &quot;&quot;&quot;
+    Check if article contains disturbing content (violence, death, disaster, tragedy).
+
+    Uses keyword detection for fast pre-LLM filtering.
+
+    Args:
+        title: Article title
+        content: Article content (first 500 chars recommended)
+        language: Language code (en, fr, es, de, da, nl, it, pt, ro)
+
+    Returns:
+        (is_disturbing, reason) tuple
+    &quot;&quot;&quot;
+    if not title and not content:
+        return False, &quot;&quot;
+
+    # Get keywords for this language, fallback to English
+    keywords = DISTURBING_KEYWORDS.get(language, DISTURBING_KEYWORDS[&quot;en&quot;])
+
+    # Combine title and content for checking
+    text_to_check = &quot;&quot;
+    if title:
+        text_to_check += title.lower()
+    if content:
+        # Only check first 500 chars of content to focus on headline/intro
+        text_to_check += &quot; &quot; + content[:500].lower()
+
+    # Check for disturbing keywords
+    matched_keywords = []
+    for keyword in keywords:
+        if keyword.lower() in text_to_check:
+            matched_keywords.append(keyword)
+
+    # Require at least one keyword match
+    if matched_keywords:
+        return True, f&quot;Disturbing content keywords: {', '.join(matched_keywords[:3])}&quot;
+
+    return False, &quot;&quot;
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

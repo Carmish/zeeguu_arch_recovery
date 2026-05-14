@@ -1,0 +1,254 @@
+<html>
+<head>
+    <title>tools/add_ml_assessment_to_recent_articles.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/add_ml_assessment_to_recent_articles.py (<b>143</b> lines of code) (<a href="add_ml_assessment_to_recent_articles.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python
+&quot;&quot;&quot;
+Add ML CEFR assessments to recent articles that have no CEFR level.
+
+This script finds articles from the last N days that:
+- Have no cefr_level set in the article table
+- Have no ArticleCefrAssessment record (or have one with no ML assessment)
+
+For these articles, it runs the ML CEFR classifier and stores the result.
+
+Usage:
+    source ~/.venvs/z_env/bin/activate &amp;&amp; python -m tools.add_ml_assessment_to_recent_articles [--days N] [--dry-run] [--limit N]
+
+Examples:
+    # Dry run - see what would be done for articles from last 30 days
+    python -m tools.add_ml_assessment_to_recent_articles --days 30 --dry-run
+
+    # Actually process articles from last 30 days
+    python -m tools.add_ml_assessment_to_recent_articles --days 30
+
+    # Process only 10 articles for testing
+    python -m tools.add_ml_assessment_to_recent_articles --days 30 --limit 10
+&quot;&quot;&quot;
+
+import argparse
+from datetime import datetime, timedelta
+
+from zeeguu.api.app import create_app
+from zeeguu.core.model import db, Article, ArticleCefrAssessment
+from zeeguu.core.language.ml_cefr_classifier import predict_cefr_level
+from zeeguu.logging import log
+
+# Create Flask app and push context
+app = create_app()
+app.app_context().push()
+
+db_session = db.session
+
+
+def add_ml_assessments(days=30, dry_run=False, limit=None):
+    &quot;&quot;&quot;
+    Add ML CEFR assessments to recent articles without CEFR levels.
+
+    Args:
+        days: Look at articles from the last N days (default: 30)
+        dry_run: If True, don't commit changes - just report what would be done
+        limit: Maximum number of articles to process (for testing)
+
+    Returns:
+        Dict with statistics
+    &quot;&quot;&quot;
+    log(&quot;=&quot; * 80)
+    log(&quot;ML CEFR Assessment Backfill Script&quot;)
+    log(&quot;=&quot; * 80)
+    log(
+        f&quot;Mode: {'DRY RUN (no changes will be saved)' if dry_run else 'LIVE (changes will be saved)'}&quot;
+    )
+    log(f&quot;Processing articles from the last {days} days&quot;)
+    log(&quot;&quot;)
+
+    # Calculate date threshold
+    date_threshold = datetime.now() - timedelta(days=days)
+
+    # Query articles without CEFR level from the last N days
+    query = (
+        db_session.query(Article)
+        .filter(Article.cefr_level.is_(None))
+        .filter(Article.published_time &gt;= date_threshold)
+        .filter(Article.broken == 0)  # Skip broken articles
+        .filter(Article.deleted == 0)  # Skip deleted articles
+        .filter(Article.parent_article_id.is_(None))  # Skip simplified versions
+        .order_by(Article.published_time.desc())
+    )
+
+    if limit:
+        query = query.limit(limit)
+        log(f&quot;Limiting to {limit} articles for testing&quot;)
+        log(&quot;&quot;)
+
+    articles = query.all()
+    log(f&quot;Found {len(articles)} articles without CEFR levels from the last {days} days&quot;)
+    log(&quot;&quot;)
+
+    stats = {
+        &quot;total_articles&quot;: len(articles),
+        &quot;ml_assessments_added&quot;: 0,
+        &quot;ml_assessments_failed&quot;: 0,
+        &quot;skipped_no_content&quot;: 0,
+        &quot;skipped_too_short&quot;: 0,
+        &quot;errors&quot;: 0,
+    }
+
+    for idx, article in enumerate(articles):
+        if idx % 10 == 0 and idx &gt; 0:
+            log(f&quot;  Processed {idx}/{len(articles)} articles...&quot;)
+
+        try:
+            # Skip articles without content
+            if not article.get_content():
+                stats[&quot;skipped_no_content&quot;] += 1
+                continue
+
+            # Skip very short articles (likely broken)
+            if article.get_word_count() &lt; 50:
+                stats[&quot;skipped_too_short&quot;] += 1
+                continue
+
+            # Check if assessment already exists
+            assessment = (
+                db_session.query(ArticleCefrAssessment)
+                .filter_by(article_id=article.id)
+                .first()
+            )
+
+            # Skip if ML assessment already exists
+            if assessment and assessment.ml_cefr_level:
+                continue
+
+            # Run ML CEFR prediction
+            try:
+                ml_level = predict_cefr_level(
+                    article.get_content(),
+                    article.language.code,
+                    article.get_fk_difficulty(),
+                    article.get_word_count(),
+                )
+
+                if ml_level:
+                    if not dry_run:
+                        # Create or update assessment record
+                        if not assessment:
+                            assessment = ArticleCefrAssessment(article_id=article.id)
+                            db_session.add(assessment)
+
+                        # Set ML assessment
+                        assessment.set_ml_assessment(ml_level, &quot;ml&quot;)
+
+                        # Also update legacy article.cefr_level if not set
+                        if not article.cefr_level:
+                            article.cefr_level = ml_level
+                            db_session.add(article)
+
+                    stats[&quot;ml_assessments_added&quot;] += 1
+
+                    if idx &lt; 5 or (idx % 50 == 0):  # Log details for first few and every 50th
+                        log(
+                            f&quot;  Article {article.id}: '{article.title[:50]}...' -&gt; {ml_level}&quot;
+                        )
+                else:
+                    stats[&quot;ml_assessments_failed&quot;] += 1
+
+            except Exception as e:
+                log(f&quot;  ERROR predicting CEFR for article {article.id}: {str(e)}&quot;)
+                stats[&quot;ml_assessments_failed&quot;] += 1
+                continue
+
+            # Commit every 50 articles to avoid huge transactions
+            if not dry_run and idx &gt; 0 and idx % 50 == 0:
+                db_session.commit()
+
+        except Exception as e:
+            log(f&quot;  ERROR processing article {article.id}: {str(e)}&quot;)
+            stats[&quot;errors&quot;] += 1
+            continue
+
+    # Final commit (if not dry run)
+    if not dry_run and stats[&quot;ml_assessments_added&quot;] &gt; 0:
+        log(&quot;&quot;)
+        log(f&quot;Committing {stats['ml_assessments_added']} new ML assessments to database...&quot;)
+        db_session.commit()
+        log(&quot;✓ Committed successfully&quot;)
+    elif dry_run:
+        log(&quot;&quot;)
+        log(&quot;DRY RUN - Rolling back (no changes saved)&quot;)
+        db_session.rollback()
+
+    # Print statistics
+    log(&quot;&quot;)
+    log(&quot;=&quot; * 80)
+    log(&quot;STATISTICS&quot;)
+    log(&quot;=&quot; * 80)
+    log(f&quot;Total articles found: {stats['total_articles']}&quot;)
+    log(f&quot;  - Skipped (no content): {stats['skipped_no_content']}&quot;)
+    log(f&quot;  - Skipped (too short): {stats['skipped_too_short']}&quot;)
+    log(&quot;&quot;)
+    log(f&quot;ML assessments added: {stats['ml_assessments_added']}&quot;)
+    log(f&quot;ML assessments failed: {stats['ml_assessments_failed']}&quot;)
+    log(f&quot;Other errors: {stats['errors']}&quot;)
+    log(&quot;&quot;)
+
+    if dry_run:
+        log(&quot;✓ DRY RUN COMPLETE - No changes were saved&quot;)
+        log(&quot;  Run without --dry-run to apply changes&quot;)
+    else:
+        log(&quot;✓ PROCESSING COMPLETE&quot;)
+
+    log(&quot;=&quot; * 80)
+
+    return stats
+
+
+if __name__ == &quot;__main__&quot;:
+    parser = argparse.ArgumentParser(
+        description=&quot;Add ML CEFR assessments to recent articles without CEFR levels&quot;
+    )
+
+    parser.add_argument(
+        &quot;--days&quot;,
+        type=int,
+        default=30,
+        help=&quot;Process articles from the last N days (default: 30)&quot;,
+    )
+
+    parser.add_argument(
+        &quot;--dry-run&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Run in dry-run mode (don't save changes, just report what would be done)&quot;,
+    )
+
+    parser.add_argument(
+        &quot;--limit&quot;,
+        type=int,
+        help=&quot;Limit number of articles to process (for testing)&quot;,
+    )
+
+    args = parser.parse_args()
+
+    add_ml_assessments(days=args.days, dry_run=args.dry_run, limit=args.limit)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

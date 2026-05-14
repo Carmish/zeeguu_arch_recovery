@@ -1,0 +1,133 @@
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+*. files (37):
+
+stanza_service/Dockerfile
+zeeguu/core/word_filter/data/bad-words/kab
+zeeguu/core/word_filter/data/bad-words/pl
+zeeguu/core/word_filter/data/bad-words/fr-CA-u-sd-caqc
+zeeguu/core/word_filter/data/bad-words/sv
+zeeguu/core/word_filter/data/bad-words/LICENSE
+zeeguu/core/word_filter/data/bad-words/da
+zeeguu/core/word_filter/data/bad-words/no
+zeeguu/core/word_filter/data/bad-words/ja
+zeeguu/core/word_filter/data/bad-words/it
+zeeguu/core/word_filter/data/bad-words/cs
+zeeguu/core/word_filter/data/bad-words/ru
+zeeguu/core/word_filter/data/bad-words/tlh
+zeeguu/core/word_filter/data/bad-words/pt
+zeeguu/core/word_filter/data/bad-words/zh
+zeeguu/core/word_filter/data/bad-words/ar
+zeeguu/core/word_filter/data/bad-words/hu
+zeeguu/core/word_filter/data/bad-words/nl
+zeeguu/core/word_filter/data/bad-words/fil
+zeeguu/core/word_filter/data/bad-words/hi
+zeeguu/core/word_filter/data/bad-words/de
+zeeguu/core/word_filter/data/bad-words/ko
+zeeguu/core/word_filter/data/bad-words/fi
+zeeguu/core/word_filter/data/bad-words/eo
+zeeguu/core/word_filter/data/bad-words/fr
+zeeguu/core/word_filter/data/bad-words/es
+zeeguu/core/word_filter/data/bad-words/en
+zeeguu/core/word_filter/data/bad-words/fa
+zeeguu/core/word_filter/data/bad-words/th
+zeeguu/core/word_filter/data/bad-words/tr
+zeeguu/operations/crontab
+.githooks/rules/routes_should_not_end_in_slash
+.githooks/pre-commit
+LICENSE
+Dockerfile
+experiments
+hooks/pre-push
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+*.png files (4):
+
+diagrams/old/zeeguu-api-completeView-depth-2-no-core-model.png
+diagrams/old/zeeguu-api-completeView-depth-2-w:model.png
+diagrams/old/zeeguu-api-completeView-depth-2.png
+diagrams/old/zeeguu-api-completeView.png
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+*.yaml files (4):
+
+.github/workflows/publish_docker_image.yml
+.github/workflows/test.yml
+.github/workflows/render-architectural-diff.yml
+docker-compose.yml
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+*.csv files (3):
+
+zeeguu/core/content_retriever/artificial_intelligence.csv
+zeeguu/core/content_retriever/global_warming.csv
+tools/old/es_v8_migration/url_topics_count_with_pred_to_db.csv
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+*.mp3 files (2):
+
+static/test.mp3
+static/simple-notification-152054.mp3
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+*.joblib files (1):
+
+zeeguu/core/ml_models/binary/tfidf_multi_paywall_detect.joblib
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+*.dat files (1):
+
+zeeguu/core/test/test_data/public_suffix_list.dat
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+*.jar files (1):
+
+sokrates/sokrates-LATEST.jar
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+*.env files (1):
+
+default.env
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+*.envrc files (1):
+
+.envrc
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+*.example files (1):
+
+zeeguu/api/machine_specific.py.example
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+

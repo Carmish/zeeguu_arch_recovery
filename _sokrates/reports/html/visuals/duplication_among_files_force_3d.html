@@ -1,0 +1,2289 @@
+<head>
+    <style> body {
+        margin: 0;
+    } </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/3d-force-graph"></script>
+</head>
+
+<body>
+<div id="3d-graph"></div>
+
+<script>
+    const gData = {
+  "nodes" : [ {
+    "id" : "[zeeguu/core/model/article_fragment_context.py]",
+    "size" : 5
+  }, {
+    "id" : "[zeeguu/core/model/monthly_activity_stats_cache.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/tokenization/word_position_finder.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/crawler/crawl_roundrobin.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/precompute_upcoming_meaning_lessons.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/prefetch_example_sentences_for_users.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]",
+    "size" : 5
+  }, {
+    "id" : "[zeeguu/core/model/article_difficulty_feedback.py]",
+    "size" : 3
+  }, {
+    "id" : "[tools/migrations/24-07-30--remove_articles_with_no_publish_time.sql]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/language.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/crawler/video_crawler.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/audio_lessons/word_selector.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/context_type.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/migrations/25-08-09--comprehensive_userword_consolidation.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/delete_bookmarks_word_not_in_context.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/operations/report_generator/generate_report.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/user_listening_session.py]",
+    "size" : 3
+  }, {
+    "id" : "[tools/old/update_particular_tag.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/user_statistics/exercise_corectness.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/endpoints/translation.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/old/es_v8_migration/set_new_topics_from_url_keyword.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/semantic_search/elastic_semantic_search.py]",
+    "size" : 2
+  }, {
+    "id" : "[install_stanza_models.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/language/ml_cefr_classifier.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/video_title_context.py]",
+    "size" : 8
+  }, {
+    "id" : "[tools/update_es_based_on_url_keyword.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/meaning_frequency_classifier.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "size" : 5
+  }, {
+    "id" : "[tools/migrations/25-10-22--recalculate_all_multiword_phrase_ranks.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/bookmark.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/content_cleaning/content_cleaner.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/old/es_v8_migration/set_url_keywords_article.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/remove_unreferenced_articles.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/text.py]",
+    "size" : 14
+  }, {
+    "id" : "[tools/old/tag_existing_articles.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/user_article.py]",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/api/endpoints/search.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/backfill_cefr_assessments.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/article_upload.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/add_ml_assessment_to_recent_articles.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/update_elastic_with_source_ids.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/article.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/article_topic_map.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/stiri-simple/generate_news_page.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/report_generator/explore_report_notebook.ipynb]",
+    "size" : 3
+  }, {
+    "id" : "[tools/ml/cefr_trainers/train_cefr_classifiers_with_frequency.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/cleanup_broken_summaries.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/extract_validation_for_topics.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/user_word.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/own_texts.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/user_word_integrity/_cleanup_orphaned_user_words.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/old/tag_topics_in_danish.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/ml/cefr_trainers/train_cefr_classifiers.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/recalculate_all_word_ranks.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/search_subscription.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/user_word_integrity/_delete_unvalidatable_bookmarks.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/endpoints/crawl_stats.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/endpoints/accounts.py]",
+    "size" : 3
+  }, {
+    "id" : "[tools/tag_advertorials.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "size" : 3
+  }, {
+    "id" : "[tools/report_generator/generate_report.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/operations/crawler/crawl.py]",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/fix_compound_examples.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/api/endpoints/session_history.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/domain_name.py]",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/core/model/search_filter.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/sql/learner/words.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/operations/crawler/article_crawler.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "size" : 6
+  }, {
+    "id" : "[zeeguu/core/llm_services/anthropic_service.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/fix_underscore_examples.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/topic_filter.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/llm_services/mwe_translation_service.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/elastic/elastic_query_builder.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/feedback_component.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/phrase.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/user_watching_session.py]",
+    "size" : 6
+  }, {
+    "id" : "[tools/mark_broken_articles.py]",
+    "size" : 3
+  }, {
+    "id" : "[tools/audio-engleza/generate_audio.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/update_elastic_ids.py]",
+    "size" : 4
+  }, {
+    "id" : "[tools/old/remove_unreferenced_articles.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/sql/exercise_corectness.sql]",
+    "size" : 1
+  }, {
+    "id" : "[tools/audio-engleza/generate_script.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/video.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/migrations/24-11-04--updating-url-keyword-mapping.sql]",
+    "size" : 2
+  }, {
+    "id" : "[tools/crawler/crawl_summary/crawl_report.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/cefr_assessment.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/endpoints/user_stats.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/personal_copy.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/llm_services/translation_validator.py]",
+    "size" : 3
+  }, {
+    "id" : "[tools/mysql_to_elastic_for_articles.py]",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/core/model/notification.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/teacher_dashboard/helpers.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/operations/crawler/crawl_report.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/video_caption_context.py]",
+    "size" : 8
+  }, {
+    "id" : "[zeeguu/core/llm_services/deepseek_service.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/user_word_integrity/_fix_multiword_bookmark_positions.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/crawler/crawl.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/migrations/25-02-28--04-delete-unused-columns-article.sql]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/article_title_context.py]",
+    "size" : 8
+  }, {
+    "id" : "[tools/fix_long_summaries.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/word_scheduling/basicSR/basicSR.py]",
+    "size" : 3
+  }, {
+    "id" : "[tools/create_article_fragments_and_sources.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/user_browsing_session.py]",
+    "size" : 6
+  }, {
+    "id" : "[stanza_service/app.py]",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/core/model/grammar_correction_log.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/bookmark_context.py]",
+    "size" : 7
+  }, {
+    "id" : "[zeeguu/core/llm_services/grammar_correction_service.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/user_feedback.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/youtube_api/youtube_api.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/audio-engleza/generate_lesson.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/user_video.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/article_summary_context.py]",
+    "size" : 8
+  }, {
+    "id" : "[zeeguu/api/app.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/fix_simplified_articles_html.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/cleanup_greek_audio_lessons.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/user.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/api/endpoints/article.py]",
+    "size" : 3
+  }, {
+    "id" : "[stanza_service/install_models.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/crawler/article_crawler.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/content_recommender/elastic_recommender.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/tokenization/stanza_tokenizer.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/operations/crawler/feed_retrieval.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/migrations/25-08-09--consolidate_duplicate_meanings.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/starred_article.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/operations/crawler/video_crawler.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/tokenization/nltk_tokenizer.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/sql/user_exercise_history.sql]",
+    "size" : 1
+  }, {
+    "id" : "[tools/one_time/reindex_articles_with_quotes.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/report_generator/data_extractor.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/source_text.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/source_type.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/mwe/stanza_mwe_detector.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/endpoints/user_articles.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/migrations/25-07-31--recalculate_multiword_phrase_ranks.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/diagnose_recommendations.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/llm_services/simplification_service.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/source.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/operations/report_generator/explore_report_notebook.ipynb]",
+    "size" : 3
+  }, {
+    "id" : "[tools/one_time/fix_tokenization_cache_html_entities.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/set_new_topics_article.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/migrations/25-10-22--recalculate_single_word_phrase_ranks.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/context_identifier.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/old/consolidate_accounts.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/translation_services/translator.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/language/strategies/word_rank_difficulty_estimator.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/user_notification.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/language/strategies/flesch_kincaid_difficulty_estimator.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/untag_simplified_and_user_articles.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/topic.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/url.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/search.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/endpoints/bookmarks_and_words.py]",
+    "size" : 4
+  }, {
+    "id" : "[zeeguu/core/model/meaning.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/new_text.py]",
+    "size" : 3
+  }, {
+    "id" : "[tools/simplify_article.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/topic_subscription.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/example_sentence.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/sql/learner/exercises_history.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/user_activitiy_data.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/user_word_integrity/_daily_user_word_integrity_check.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/mwe/llm_mwe_detector.py]",
+    "size" : 3
+  }, {
+    "id" : "[zeeguu/core/model/user_reading_session.py]",
+    "size" : 5
+  }, {
+    "id" : "[zeeguu/core/model/monthly_active_users_cache.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/friendship.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/user_word_integrity/_check_and_fix_user_word_integrity.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/run_knn_similarity_search.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/operations/report_generator/data_extractor.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/tokenization/stanza_client.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/language/strategies/default_difficulty_estimator.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/feed.py]",
+    "size" : 11
+  }, {
+    "id" : "[zeeguu/api/endpoints/teacher_dashboard/article_management.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/validation_log.py]",
+    "size" : 2
+  }, {
+    "id" : "[tools/crawler/feed_retrieval.py]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/model/example_sentence_context.py]",
+    "size" : 8
+  }, {
+    "id" : "[tools/migrations/25-02-28--03-update-user-activity-data.sql]",
+    "size" : 1
+  }, {
+    "id" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "size" : 1
+  }, {
+    "id" : "[tools/fix_audio_lesson_teacher_language.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/core/model/user_exercise_session.py]",
+    "size" : 2
+  }, {
+    "id" : "[zeeguu/api/endpoints/teacher_dashboard/_permissions.py]",
+    "size" : 1
+  } ],
+  "links" : [ {
+    "source" : "[tools/report_generator/explore_report_notebook.ipynb]",
+    "target" : "[zeeguu/operations/report_generator/explore_report_notebook.ipynb]",
+    "count" : 17990
+  }, {
+    "source" : "[zeeguu/operations/report_generator/explore_report_notebook.ipynb]",
+    "target" : "[tools/report_generator/explore_report_notebook.ipynb]",
+    "count" : 17990
+  }, {
+    "source" : "[tools/report_generator/generate_report.py]",
+    "target" : "[zeeguu/operations/report_generator/generate_report.py]",
+    "count" : 1204
+  }, {
+    "source" : "[zeeguu/operations/report_generator/generate_report.py]",
+    "target" : "[tools/report_generator/generate_report.py]",
+    "count" : 1204
+  }, {
+    "source" : "[zeeguu/operations/report_generator/explore_report_notebook.ipynb]",
+    "target" : "[zeeguu/operations/report_generator/explore_report_notebook.ipynb]",
+    "count" : 4660
+  }, {
+    "source" : "[zeeguu/operations/report_generator/explore_report_notebook.ipynb]",
+    "target" : "[zeeguu/operations/report_generator/explore_report_notebook.ipynb]",
+    "count" : 4660
+  }, {
+    "source" : "[tools/report_generator/explore_report_notebook.ipynb]",
+    "target" : "[tools/report_generator/explore_report_notebook.ipynb]",
+    "count" : 4660
+  }, {
+    "source" : "[tools/report_generator/explore_report_notebook.ipynb]",
+    "target" : "[tools/report_generator/explore_report_notebook.ipynb]",
+    "count" : 4660
+  }, {
+    "source" : "[tools/crawler/crawl_summary/crawl_report.py]",
+    "target" : "[zeeguu/operations/crawler/crawl_report.py]",
+    "count" : 390
+  }, {
+    "source" : "[zeeguu/operations/crawler/crawl_report.py]",
+    "target" : "[tools/crawler/crawl_summary/crawl_report.py]",
+    "count" : 390
+  }, {
+    "source" : "[tools/report_generator/data_extractor.py]",
+    "target" : "[zeeguu/operations/report_generator/data_extractor.py]",
+    "count" : 342
+  }, {
+    "source" : "[zeeguu/operations/report_generator/data_extractor.py]",
+    "target" : "[tools/report_generator/data_extractor.py]",
+    "count" : 342
+  }, {
+    "source" : "[tools/crawler/feed_retrieval.py]",
+    "target" : "[zeeguu/operations/crawler/feed_retrieval.py]",
+    "count" : 124
+  }, {
+    "source" : "[zeeguu/operations/crawler/feed_retrieval.py]",
+    "target" : "[tools/crawler/feed_retrieval.py]",
+    "count" : 124
+  }, {
+    "source" : "[tools/crawler/crawl.py]",
+    "target" : "[tools/crawler/crawl_roundrobin.py]",
+    "count" : 146
+  }, {
+    "source" : "[tools/crawler/crawl_roundrobin.py]",
+    "target" : "[tools/crawler/crawl.py]",
+    "count" : 146
+  }, {
+    "source" : "[tools/crawler/crawl_roundrobin.py]",
+    "target" : "[zeeguu/operations/crawler/crawl.py]",
+    "count" : 286
+  }, {
+    "source" : "[zeeguu/operations/crawler/crawl.py]",
+    "target" : "[tools/crawler/crawl_roundrobin.py]",
+    "count" : 286
+  }, {
+    "source" : "[zeeguu/api/endpoints/user_stats.py]",
+    "target" : "[zeeguu/api/endpoints/user_stats.py]",
+    "count" : 210
+  }, {
+    "source" : "[zeeguu/api/endpoints/user_stats.py]",
+    "target" : "[zeeguu/api/endpoints/user_stats.py]",
+    "count" : 210
+  }, {
+    "source" : "[zeeguu/core/model/article_summary_context.py]",
+    "target" : "[zeeguu/core/model/article_title_context.py]",
+    "count" : 86
+  }, {
+    "source" : "[zeeguu/core/model/article_title_context.py]",
+    "target" : "[zeeguu/core/model/article_summary_context.py]",
+    "count" : 86
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_service.py]",
+    "target" : "[zeeguu/core/llm_services/simplification_service.py]",
+    "count" : 168
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_service.py]",
+    "target" : "[zeeguu/core/llm_services/simplification_service.py]",
+    "count" : 168
+  }, {
+    "source" : "[tools/old/remove_unreferenced_articles.py]",
+    "target" : "[tools/remove_unreferenced_articles.py]",
+    "count" : 120
+  }, {
+    "source" : "[tools/remove_unreferenced_articles.py]",
+    "target" : "[tools/old/remove_unreferenced_articles.py]",
+    "count" : 120
+  }, {
+    "source" : "[tools/ml/cefr_trainers/train_cefr_classifiers.py]",
+    "target" : "[tools/ml/cefr_trainers/train_cefr_classifiers_with_frequency.py]",
+    "count" : 290
+  }, {
+    "source" : "[tools/ml/cefr_trainers/train_cefr_classifiers_with_frequency.py]",
+    "target" : "[tools/ml/cefr_trainers/train_cefr_classifiers.py]",
+    "count" : 290
+  }, {
+    "source" : "[zeeguu/core/elastic/elastic_query_builder.py]",
+    "target" : "[zeeguu/core/elastic/elastic_query_builder.py]",
+    "count" : 86
+  }, {
+    "source" : "[zeeguu/core/elastic/elastic_query_builder.py]",
+    "target" : "[zeeguu/core/elastic/elastic_query_builder.py]",
+    "count" : 86
+  }, {
+    "source" : "[zeeguu/core/mwe/llm_mwe_detector.py]",
+    "target" : "[zeeguu/core/mwe/llm_mwe_detector.py]",
+    "count" : 64
+  }, {
+    "source" : "[zeeguu/core/mwe/llm_mwe_detector.py]",
+    "target" : "[zeeguu/core/mwe/llm_mwe_detector.py]",
+    "count" : 64
+  }, {
+    "source" : "[tools/mark_broken_articles.py]",
+    "target" : "[tools/mark_broken_articles.py]",
+    "count" : 46
+  }, {
+    "source" : "[tools/mark_broken_articles.py]",
+    "target" : "[tools/mark_broken_articles.py]",
+    "count" : 46
+  }, {
+    "source" : "[zeeguu/core/mwe/stanza_mwe_detector.py]",
+    "target" : "[zeeguu/core/mwe/stanza_mwe_detector.py]",
+    "count" : 376
+  }, {
+    "source" : "[zeeguu/core/mwe/stanza_mwe_detector.py]",
+    "target" : "[zeeguu/core/mwe/stanza_mwe_detector.py]",
+    "count" : 376
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 90
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 90
+  }, {
+    "source" : "[tools/report_generator/generate_report.py]",
+    "target" : "[tools/report_generator/generate_report.py]",
+    "count" : 42
+  }, {
+    "source" : "[tools/report_generator/generate_report.py]",
+    "target" : "[tools/report_generator/generate_report.py]",
+    "count" : 42
+  }, {
+    "source" : "[zeeguu/operations/report_generator/generate_report.py]",
+    "target" : "[zeeguu/operations/report_generator/generate_report.py]",
+    "count" : 42
+  }, {
+    "source" : "[zeeguu/operations/report_generator/generate_report.py]",
+    "target" : "[zeeguu/operations/report_generator/generate_report.py]",
+    "count" : 42
+  }, {
+    "source" : "[zeeguu/core/model/user_browsing_session.py]",
+    "target" : "[zeeguu/core/model/user_reading_session.py]",
+    "count" : 126
+  }, {
+    "source" : "[zeeguu/core/model/user_reading_session.py]",
+    "target" : "[zeeguu/core/model/user_browsing_session.py]",
+    "count" : 126
+  }, {
+    "source" : "[tools/mark_broken_articles.py]",
+    "target" : "[tools/tag_advertorials.py]",
+    "count" : 160
+  }, {
+    "source" : "[tools/tag_advertorials.py]",
+    "target" : "[tools/mark_broken_articles.py]",
+    "count" : 160
+  }, {
+    "source" : "[zeeguu/core/llm_services/anthropic_service.py]",
+    "target" : "[zeeguu/core/llm_services/deepseek_service.py]",
+    "count" : 38
+  }, {
+    "source" : "[zeeguu/core/llm_services/deepseek_service.py]",
+    "target" : "[zeeguu/core/llm_services/anthropic_service.py]",
+    "count" : 38
+  }, {
+    "source" : "[zeeguu/core/model/user_browsing_session.py]",
+    "target" : "[zeeguu/core/model/user_listening_session.py]",
+    "count" : 76
+  }, {
+    "source" : "[zeeguu/core/model/user_listening_session.py]",
+    "target" : "[zeeguu/core/model/user_browsing_session.py]",
+    "count" : 76
+  }, {
+    "source" : "[zeeguu/core/model/user_listening_session.py]",
+    "target" : "[zeeguu/core/model/user_reading_session.py]",
+    "count" : 64
+  }, {
+    "source" : "[zeeguu/core/model/user_reading_session.py]",
+    "target" : "[zeeguu/core/model/user_listening_session.py]",
+    "count" : 64
+  }, {
+    "source" : "[tools/mysql_to_elastic_for_articles.py]",
+    "target" : "[tools/update_elastic_ids.py]",
+    "count" : 58
+  }, {
+    "source" : "[tools/update_elastic_ids.py]",
+    "target" : "[tools/mysql_to_elastic_for_articles.py]",
+    "count" : 58
+  }, {
+    "source" : "[zeeguu/api/endpoints/crawl_stats.py]",
+    "target" : "[zeeguu/api/endpoints/crawl_stats.py]",
+    "count" : 50
+  }, {
+    "source" : "[zeeguu/api/endpoints/crawl_stats.py]",
+    "target" : "[zeeguu/api/endpoints/crawl_stats.py]",
+    "count" : 50
+  }, {
+    "source" : "[zeeguu/core/language/strategies/flesch_kincaid_difficulty_estimator.py]",
+    "target" : "[zeeguu/core/language/strategies/word_rank_difficulty_estimator.py]",
+    "count" : 32
+  }, {
+    "source" : "[zeeguu/core/language/strategies/word_rank_difficulty_estimator.py]",
+    "target" : "[zeeguu/core/language/strategies/flesch_kincaid_difficulty_estimator.py]",
+    "count" : 32
+  }, {
+    "source" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "target" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "count" : 110
+  }, {
+    "source" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "target" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "count" : 110
+  }, {
+    "source" : "[zeeguu/core/semantic_search/elastic_semantic_search.py]",
+    "target" : "[zeeguu/core/semantic_search/elastic_semantic_search.py]",
+    "count" : 90
+  }, {
+    "source" : "[zeeguu/core/semantic_search/elastic_semantic_search.py]",
+    "target" : "[zeeguu/core/semantic_search/elastic_semantic_search.py]",
+    "count" : 90
+  }, {
+    "source" : "[tools/fix_compound_examples.py]",
+    "target" : "[tools/fix_underscore_examples.py]",
+    "count" : 120
+  }, {
+    "source" : "[tools/fix_underscore_examples.py]",
+    "target" : "[tools/fix_compound_examples.py]",
+    "count" : 120
+  }, {
+    "source" : "[zeeguu/core/tokenization/stanza_client.py]",
+    "target" : "[zeeguu/core/tokenization/stanza_tokenizer.py]",
+    "count" : 30
+  }, {
+    "source" : "[zeeguu/core/tokenization/stanza_tokenizer.py]",
+    "target" : "[zeeguu/core/tokenization/stanza_client.py]",
+    "count" : 30
+  }, {
+    "source" : "[zeeguu/core/word_scheduling/basicSR/basicSR.py]",
+    "target" : "[zeeguu/core/word_scheduling/basicSR/basicSR.py]",
+    "count" : 44
+  }, {
+    "source" : "[zeeguu/core/word_scheduling/basicSR/basicSR.py]",
+    "target" : "[zeeguu/core/word_scheduling/basicSR/basicSR.py]",
+    "count" : 44
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "[zeeguu/core/word_scheduling/basicSR/basicSR.py]",
+    "count" : 114
+  }, {
+    "source" : "[zeeguu/core/word_scheduling/basicSR/basicSR.py]",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 114
+  }, {
+    "source" : "[zeeguu/core/model/new_text.py]",
+    "target" : "[zeeguu/core/model/source_text.py]",
+    "count" : 70
+  }, {
+    "source" : "[zeeguu/core/model/source_text.py]",
+    "target" : "[zeeguu/core/model/new_text.py]",
+    "count" : 70
+  }, {
+    "source" : "[zeeguu/core/model/context_type.py]",
+    "target" : "[zeeguu/core/model/source_type.py]",
+    "count" : 44
+  }, {
+    "source" : "[zeeguu/core/model/source_type.py]",
+    "target" : "[zeeguu/core/model/context_type.py]",
+    "count" : 44
+  }, {
+    "source" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "target" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "count" : 142
+  }, {
+    "source" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "target" : "[zeeguu/core/audio_lessons/daily_lesson_generator.py]",
+    "count" : 142
+  }, {
+    "source" : "[zeeguu/api/endpoints/bookmarks_and_words.py]",
+    "target" : "[zeeguu/api/endpoints/bookmarks_and_words.py]",
+    "count" : 24
+  }, {
+    "source" : "[zeeguu/api/endpoints/bookmarks_and_words.py]",
+    "target" : "[zeeguu/api/endpoints/bookmarks_and_words.py]",
+    "count" : 24
+  }, {
+    "source" : "[tools/add_ml_assessment_to_recent_articles.py]",
+    "target" : "[tools/backfill_cefr_assessments.py]",
+    "count" : 40
+  }, {
+    "source" : "[tools/backfill_cefr_assessments.py]",
+    "target" : "[tools/add_ml_assessment_to_recent_articles.py]",
+    "count" : 40
+  }, {
+    "source" : "[tools/crawler/crawl.py]",
+    "target" : "[zeeguu/operations/crawler/crawl.py]",
+    "count" : 90
+  }, {
+    "source" : "[zeeguu/operations/crawler/crawl.py]",
+    "target" : "[tools/crawler/crawl.py]",
+    "count" : 90
+  }, {
+    "source" : "[zeeguu/core/model/search_filter.py]",
+    "target" : "[zeeguu/core/model/search_subscription.py]",
+    "count" : 24
+  }, {
+    "source" : "[zeeguu/core/model/search_subscription.py]",
+    "target" : "[zeeguu/core/model/search_filter.py]",
+    "count" : 24
+  }, {
+    "source" : "[tools/migrations/25-07-31--recalculate_multiword_phrase_ranks.py]",
+    "target" : "[tools/migrations/25-10-22--recalculate_all_multiword_phrase_ranks.py]",
+    "count" : 36
+  }, {
+    "source" : "[tools/migrations/25-10-22--recalculate_all_multiword_phrase_ranks.py]",
+    "target" : "[tools/migrations/25-07-31--recalculate_multiword_phrase_ranks.py]",
+    "count" : 36
+  }, {
+    "source" : "[zeeguu/core/model/feedback_component.py]",
+    "target" : "[zeeguu/core/model/search.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/search.py]",
+    "target" : "[zeeguu/core/model/feedback_component.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/article_title_context.py]",
+    "target" : "[zeeguu/core/model/example_sentence_context.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/example_sentence_context.py]",
+    "target" : "[zeeguu/core/model/article_title_context.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/article_title_context.py]",
+    "target" : "[zeeguu/core/model/video_caption_context.py]",
+    "count" : 34
+  }, {
+    "source" : "[zeeguu/core/model/video_caption_context.py]",
+    "target" : "[zeeguu/core/model/article_title_context.py]",
+    "count" : 34
+  }, {
+    "source" : "[zeeguu/core/model/article_title_context.py]",
+    "target" : "[zeeguu/core/model/video_title_context.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/video_title_context.py]",
+    "target" : "[zeeguu/core/model/article_title_context.py]",
+    "count" : 22
+  }, {
+    "source" : "[tools/precompute_upcoming_meaning_lessons.py]",
+    "target" : "[tools/precompute_upcoming_meaning_lessons.py]",
+    "count" : 38
+  }, {
+    "source" : "[tools/precompute_upcoming_meaning_lessons.py]",
+    "target" : "[tools/precompute_upcoming_meaning_lessons.py]",
+    "count" : 38
+  }, {
+    "source" : "[zeeguu/api/endpoints/user_articles.py]",
+    "target" : "[zeeguu/core/content_recommender/elastic_recommender.py]",
+    "count" : 34
+  }, {
+    "source" : "[zeeguu/core/content_recommender/elastic_recommender.py]",
+    "target" : "[zeeguu/api/endpoints/user_articles.py]",
+    "count" : 34
+  }, {
+    "source" : "[zeeguu/core/model/article_summary_context.py]",
+    "target" : "[zeeguu/core/model/video_title_context.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/video_title_context.py]",
+    "target" : "[zeeguu/core/model/article_summary_context.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/article_summary_context.py]",
+    "target" : "[zeeguu/core/model/example_sentence_context.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/example_sentence_context.py]",
+    "target" : "[zeeguu/core/model/article_summary_context.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/api/endpoints/session_history.py]",
+    "target" : "[zeeguu/api/endpoints/session_history.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/api/endpoints/session_history.py]",
+    "target" : "[zeeguu/api/endpoints/session_history.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/translation_services/translator.py]",
+    "target" : "[zeeguu/core/translation_services/translator.py]",
+    "count" : 338
+  }, {
+    "source" : "[zeeguu/core/translation_services/translator.py]",
+    "target" : "[zeeguu/core/translation_services/translator.py]",
+    "count" : 338
+  }, {
+    "source" : "[tools/migrations/25-08-09--comprehensive_userword_consolidation.py]",
+    "target" : "[tools/migrations/25-08-09--consolidate_duplicate_meanings.py]",
+    "count" : 22
+  }, {
+    "source" : "[tools/migrations/25-08-09--consolidate_duplicate_meanings.py]",
+    "target" : "[tools/migrations/25-08-09--comprehensive_userword_consolidation.py]",
+    "count" : 22
+  }, {
+    "source" : "[stanza_service/app.py]",
+    "target" : "[zeeguu/core/tokenization/stanza_tokenizer.py]",
+    "count" : 40
+  }, {
+    "source" : "[zeeguu/core/tokenization/stanza_tokenizer.py]",
+    "target" : "[stanza_service/app.py]",
+    "count" : 40
+  }, {
+    "source" : "[zeeguu/core/model/user_reading_session.py]",
+    "target" : "[zeeguu/core/model/user_watching_session.py]",
+    "count" : 68
+  }, {
+    "source" : "[zeeguu/core/model/user_watching_session.py]",
+    "target" : "[zeeguu/core/model/user_reading_session.py]",
+    "count" : 68
+  }, {
+    "source" : "[zeeguu/core/model/video_caption_context.py]",
+    "target" : "[zeeguu/core/model/video_title_context.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/video_title_context.py]",
+    "target" : "[zeeguu/core/model/video_caption_context.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/source_text.py]",
+    "target" : "[zeeguu/core/model/text.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/text.py]",
+    "target" : "[zeeguu/core/model/source_text.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/article_summary_context.py]",
+    "target" : "[zeeguu/core/model/video_caption_context.py]",
+    "count" : 34
+  }, {
+    "source" : "[zeeguu/core/model/video_caption_context.py]",
+    "target" : "[zeeguu/core/model/article_summary_context.py]",
+    "count" : 34
+  }, {
+    "source" : "[zeeguu/core/model/example_sentence_context.py]",
+    "target" : "[zeeguu/core/model/video_caption_context.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/video_caption_context.py]",
+    "target" : "[zeeguu/core/model/example_sentence_context.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 54
+  }, {
+    "source" : "[zeeguu/core/model/user.py]",
+    "target" : "[zeeguu/core/model/user.py]",
+    "count" : 54
+  }, {
+    "source" : "[zeeguu/core/model/example_sentence_context.py]",
+    "target" : "[zeeguu/core/model/video_title_context.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/video_title_context.py]",
+    "target" : "[zeeguu/core/model/example_sentence_context.py]",
+    "count" : 22
+  }, {
+    "source" : "[zeeguu/core/model/user_browsing_session.py]",
+    "target" : "[zeeguu/core/model/user_exercise_session.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/model/user_exercise_session.py]",
+    "target" : "[zeeguu/core/model/user_browsing_session.py]",
+    "count" : 48
+  }, {
+    "source" : "[zeeguu/core/user_statistics/exercise_corectness.py]",
+    "target" : "[zeeguu/core/user_statistics/exercise_corectness.py]",
+    "count" : 120
+  }, {
+    "source" : "[zeeguu/core/user_statistics/exercise_corectness.py]",
+    "target" : "[zeeguu/core/user_statistics/exercise_corectness.py]",
+    "count" : 120
+  }, {
+    "source" : "[zeeguu/core/model/topic_filter.py]",
+    "target" : "[zeeguu/core/model/topic_subscription.py]",
+    "count" : 64
+  }, {
+    "source" : "[zeeguu/core/model/topic_subscription.py]",
+    "target" : "[zeeguu/core/model/topic_filter.py]",
+    "count" : 64
+  }, {
+    "source" : "[tools/old/tag_existing_articles.py]",
+    "target" : "[tools/old/tag_topics_in_danish.py]",
+    "count" : 20
+  }, {
+    "source" : "[tools/old/tag_topics_in_danish.py]",
+    "target" : "[tools/old/tag_existing_articles.py]",
+    "count" : 20
+  }, {
+    "source" : "[tools/old/es_v8_migration/set_new_topics_from_url_keyword.py]",
+    "target" : "[tools/set_new_topics_article.py]",
+    "count" : 20
+  }, {
+    "source" : "[tools/set_new_topics_article.py]",
+    "target" : "[tools/old/es_v8_migration/set_new_topics_from_url_keyword.py]",
+    "count" : 20
+  }, {
+    "source" : "[tools/migrations/24-07-30--remove_articles_with_no_publish_time.sql]",
+    "target" : "[tools/migrations/24-07-30--remove_articles_with_no_publish_time.sql]",
+    "count" : 60
+  }, {
+    "source" : "[tools/migrations/24-07-30--remove_articles_with_no_publish_time.sql]",
+    "target" : "[tools/migrations/24-07-30--remove_articles_with_no_publish_time.sql]",
+    "count" : 60
+  }, {
+    "source" : "[zeeguu/core/content_recommender/elastic_recommender.py]",
+    "target" : "[zeeguu/core/content_recommender/elastic_recommender.py]",
+    "count" : 66
+  }, {
+    "source" : "[zeeguu/core/content_recommender/elastic_recommender.py]",
+    "target" : "[zeeguu/core/content_recommender/elastic_recommender.py]",
+    "count" : 66
+  }, {
+    "source" : "[zeeguu/core/model/phrase.py]",
+    "target" : "[zeeguu/core/model/phrase.py]",
+    "count" : 20
+  }, {
+    "source" : "[zeeguu/core/model/phrase.py]",
+    "target" : "[zeeguu/core/model/phrase.py]",
+    "count" : 20
+  }, {
+    "source" : "[tools/old/es_v8_migration/set_url_keywords_article.py]",
+    "target" : "[tools/set_new_topics_article.py]",
+    "count" : 20
+  }, {
+    "source" : "[tools/set_new_topics_article.py]",
+    "target" : "[tools/old/es_v8_migration/set_url_keywords_article.py]",
+    "count" : 20
+  }, {
+    "source" : "[zeeguu/core/youtube_api/youtube_api.py]",
+    "target" : "[zeeguu/core/youtube_api/youtube_api.py]",
+    "count" : 20
+  }, {
+    "source" : "[zeeguu/core/youtube_api/youtube_api.py]",
+    "target" : "[zeeguu/core/youtube_api/youtube_api.py]",
+    "count" : 20
+  }, {
+    "source" : "[tools/old/es_v8_migration/set_new_topics_from_url_keyword.py]",
+    "target" : "[tools/old/es_v8_migration/set_url_keywords_article.py]",
+    "count" : 20
+  }, {
+    "source" : "[tools/old/es_v8_migration/set_url_keywords_article.py]",
+    "target" : "[tools/old/es_v8_migration/set_new_topics_from_url_keyword.py]",
+    "count" : 20
+  }, {
+    "source" : "[tools/migrations/25-02-28--04-delete-unused-columns-article.sql]",
+    "target" : "[tools/migrations/25-02-28--04-delete-unused-columns-article.sql]",
+    "count" : 56
+  }, {
+    "source" : "[tools/migrations/25-02-28--04-delete-unused-columns-article.sql]",
+    "target" : "[tools/migrations/25-02-28--04-delete-unused-columns-article.sql]",
+    "count" : 56
+  }, {
+    "source" : "[zeeguu/api/endpoints/bookmarks_and_words.py]",
+    "target" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "count" : 56
+  }, {
+    "source" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "target" : "[zeeguu/api/endpoints/bookmarks_and_words.py]",
+    "count" : 56
+  }, {
+    "source" : "[zeeguu/core/model/user_listening_session.py]",
+    "target" : "[zeeguu/core/model/user_watching_session.py]",
+    "count" : 32
+  }, {
+    "source" : "[zeeguu/core/model/user_watching_session.py]",
+    "target" : "[zeeguu/core/model/user_listening_session.py]",
+    "count" : 32
+  }, {
+    "source" : "[tools/simplify_article.py]",
+    "target" : "[tools/simplify_article.py]",
+    "count" : 20
+  }, {
+    "source" : "[tools/simplify_article.py]",
+    "target" : "[tools/simplify_article.py]",
+    "count" : 20
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "target" : "[zeeguu/core/llm_services/simplification_service.py]",
+    "count" : 44
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_service.py]",
+    "target" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "count" : 44
+  }, {
+    "source" : "[tools/migrations/24-11-04--updating-url-keyword-mapping.sql]",
+    "target" : "[tools/migrations/24-11-04--updating-url-keyword-mapping.sql]",
+    "count" : 30
+  }, {
+    "source" : "[tools/migrations/24-11-04--updating-url-keyword-mapping.sql]",
+    "target" : "[tools/migrations/24-11-04--updating-url-keyword-mapping.sql]",
+    "count" : 30
+  }, {
+    "source" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "target" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "count" : 30
+  }, {
+    "source" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "target" : "[zeeguu/api/endpoints/leaderboards.py]",
+    "count" : 30
+  }, {
+    "source" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "target" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "count" : 54
+  }, {
+    "source" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "target" : "[zeeguu/core/leaderboards/leaderboards.py]",
+    "count" : 54
+  }, {
+    "source" : "[zeeguu/core/tokenization/nltk_tokenizer.py]",
+    "target" : "[zeeguu/core/tokenization/stanza_client.py]",
+    "count" : 18
+  }, {
+    "source" : "[zeeguu/core/tokenization/stanza_client.py]",
+    "target" : "[zeeguu/core/tokenization/nltk_tokenizer.py]",
+    "count" : 18
+  }, {
+    "source" : "[zeeguu/api/endpoints/article.py]",
+    "target" : "[zeeguu/api/endpoints/article_upload.py]",
+    "count" : 30
+  }, {
+    "source" : "[zeeguu/api/endpoints/article_upload.py]",
+    "target" : "[zeeguu/api/endpoints/article.py]",
+    "count" : 30
+  }, {
+    "source" : "[zeeguu/core/model/search.py]",
+    "target" : "[zeeguu/core/model/topic.py]",
+    "count" : 18
+  }, {
+    "source" : "[zeeguu/core/model/topic.py]",
+    "target" : "[zeeguu/core/model/search.py]",
+    "count" : 18
+  }, {
+    "source" : "[zeeguu/core/model/meaning.py]",
+    "target" : "[zeeguu/core/model/meaning.py]",
+    "count" : 18
+  }, {
+    "source" : "[zeeguu/core/model/meaning.py]",
+    "target" : "[zeeguu/core/model/meaning.py]",
+    "count" : 18
+  }, {
+    "source" : "[zeeguu/core/model/feedback_component.py]",
+    "target" : "[zeeguu/core/model/topic.py]",
+    "count" : 18
+  }, {
+    "source" : "[zeeguu/core/model/topic.py]",
+    "target" : "[zeeguu/core/model/feedback_component.py]",
+    "count" : 18
+  }, {
+    "source" : "[zeeguu/core/tokenization/nltk_tokenizer.py]",
+    "target" : "[zeeguu/core/tokenization/stanza_tokenizer.py]",
+    "count" : 32
+  }, {
+    "source" : "[zeeguu/core/tokenization/stanza_tokenizer.py]",
+    "target" : "[zeeguu/core/tokenization/nltk_tokenizer.py]",
+    "count" : 32
+  }, {
+    "source" : "[zeeguu/core/model/user_browsing_session.py]",
+    "target" : "[zeeguu/core/model/user_watching_session.py]",
+    "count" : 30
+  }, {
+    "source" : "[zeeguu/core/model/user_watching_session.py]",
+    "target" : "[zeeguu/core/model/user_browsing_session.py]",
+    "count" : 30
+  }, {
+    "source" : "[zeeguu/core/model/text.py]",
+    "target" : "[zeeguu/core/model/text.py]",
+    "count" : 18
+  }, {
+    "source" : "[zeeguu/core/model/text.py]",
+    "target" : "[zeeguu/core/model/text.py]",
+    "count" : 18
+  }, {
+    "source" : "[zeeguu/core/sql/learner/exercises_history.py]",
+    "target" : "[zeeguu/core/sql/learner/words.py]",
+    "count" : 34
+  }, {
+    "source" : "[zeeguu/core/sql/learner/words.py]",
+    "target" : "[zeeguu/core/sql/learner/exercises_history.py]",
+    "count" : 34
+  }, {
+    "source" : "[zeeguu/core/model/monthly_active_users_cache.py]",
+    "target" : "[zeeguu/core/model/monthly_activity_stats_cache.py]",
+    "count" : 28
+  }, {
+    "source" : "[zeeguu/core/model/monthly_activity_stats_cache.py]",
+    "target" : "[zeeguu/core/model/monthly_active_users_cache.py]",
+    "count" : 28
+  }, {
+    "source" : "[zeeguu/core/model/grammar_correction_log.py]",
+    "target" : "[zeeguu/core/model/grammar_correction_log.py]",
+    "count" : 16
+  }, {
+    "source" : "[zeeguu/core/model/grammar_correction_log.py]",
+    "target" : "[zeeguu/core/model/grammar_correction_log.py]",
+    "count" : 16
+  }, {
+    "source" : "[tools/diagnose_recommendations.py]",
+    "target" : "[tools/diagnose_recommendations.py]",
+    "count" : 28
+  }, {
+    "source" : "[tools/diagnose_recommendations.py]",
+    "target" : "[tools/diagnose_recommendations.py]",
+    "count" : 28
+  }, {
+    "source" : "[zeeguu/core/sql/learner/words.py]",
+    "target" : "[zeeguu/core/sql/learner/words.py]",
+    "count" : 16
+  }, {
+    "source" : "[zeeguu/core/sql/learner/words.py]",
+    "target" : "[zeeguu/core/sql/learner/words.py]",
+    "count" : 16
+  }, {
+    "source" : "[tools/update_elastic_ids.py]",
+    "target" : "[tools/update_es_based_on_url_keyword.py]",
+    "count" : 28
+  }, {
+    "source" : "[tools/update_es_based_on_url_keyword.py]",
+    "target" : "[tools/update_elastic_ids.py]",
+    "count" : 28
+  }, {
+    "source" : "[zeeguu/core/model/user_reading_session.py]",
+    "target" : "[zeeguu/core/model/user_reading_session.py]",
+    "count" : 40
+  }, {
+    "source" : "[zeeguu/core/model/user_reading_session.py]",
+    "target" : "[zeeguu/core/model/user_reading_session.py]",
+    "count" : 40
+  }, {
+    "source" : "[tools/prefetch_example_sentences_for_users.py]",
+    "target" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "count" : 30
+  }, {
+    "source" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "target" : "[tools/prefetch_example_sentences_for_users.py]",
+    "count" : 30
+  }, {
+    "source" : "[zeeguu/core/model/user_article.py]",
+    "target" : "[zeeguu/core/model/user_video.py]",
+    "count" : 42
+  }, {
+    "source" : "[zeeguu/core/model/user_video.py]",
+    "target" : "[zeeguu/core/model/user_article.py]",
+    "count" : 42
+  }, {
+    "source" : "[zeeguu/core/model/feed.py]",
+    "target" : "[zeeguu/core/model/language.py]",
+    "count" : 16
+  }, {
+    "source" : "[zeeguu/core/model/language.py]",
+    "target" : "[zeeguu/core/model/feed.py]",
+    "count" : 16
+  }, {
+    "source" : "[zeeguu/api/endpoints/accounts.py]",
+    "target" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "count" : 16
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_creation.py]",
+    "target" : "[zeeguu/api/endpoints/accounts.py]",
+    "count" : 16
+  }, {
+    "source" : "[tools/crawler/article_crawler.py]",
+    "target" : "[zeeguu/operations/crawler/article_crawler.py]",
+    "count" : 32
+  }, {
+    "source" : "[zeeguu/operations/crawler/article_crawler.py]",
+    "target" : "[tools/crawler/article_crawler.py]",
+    "count" : 32
+  }, {
+    "source" : "[zeeguu/api/endpoints/teacher_dashboard/article_management.py]",
+    "target" : "[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]",
+    "count" : 16
+  }, {
+    "source" : "[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]",
+    "target" : "[zeeguu/api/endpoints/teacher_dashboard/article_management.py]",
+    "count" : 16
+  }, {
+    "source" : "[zeeguu/core/model/article_difficulty_feedback.py]",
+    "target" : "[zeeguu/core/model/user_article.py]",
+    "count" : 28
+  }, {
+    "source" : "[zeeguu/core/model/user_article.py]",
+    "target" : "[zeeguu/core/model/article_difficulty_feedback.py]",
+    "count" : 28
+  }, {
+    "source" : "[tools/sql/exercise_corectness.sql]",
+    "target" : "[tools/sql/user_exercise_history.sql]",
+    "count" : 16
+  }, {
+    "source" : "[tools/sql/user_exercise_history.sql]",
+    "target" : "[tools/sql/exercise_corectness.sql]",
+    "count" : 16
+  }, {
+    "source" : "[zeeguu/core/language/strategies/default_difficulty_estimator.py]",
+    "target" : "[zeeguu/core/language/strategies/word_rank_difficulty_estimator.py]",
+    "count" : 16
+  }, {
+    "source" : "[zeeguu/core/language/strategies/word_rank_difficulty_estimator.py]",
+    "target" : "[zeeguu/core/language/strategies/default_difficulty_estimator.py]",
+    "count" : 16
+  }, {
+    "source" : "[tools/cleanup_broken_summaries.py]",
+    "target" : "[tools/cleanup_broken_summaries.py]",
+    "count" : 16
+  }, {
+    "source" : "[tools/cleanup_broken_summaries.py]",
+    "target" : "[tools/cleanup_broken_summaries.py]",
+    "count" : 16
+  }, {
+    "source" : "[zeeguu/core/model/notification.py]",
+    "target" : "[zeeguu/core/model/user_notification.py]",
+    "count" : 16
+  }, {
+    "source" : "[zeeguu/core/model/user_notification.py]",
+    "target" : "[zeeguu/core/model/notification.py]",
+    "count" : 16
+  }, {
+    "source" : "[zeeguu/core/model/user_browsing_session.py]",
+    "target" : "[zeeguu/core/model/user_browsing_session.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/user_browsing_session.py]",
+    "target" : "[zeeguu/core/model/user_browsing_session.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/migrations/25-02-28--03-update-user-activity-data.sql]",
+    "target" : "[tools/migrations/25-02-28--04-delete-unused-columns-article.sql]",
+    "count" : 26
+  }, {
+    "source" : "[tools/migrations/25-02-28--04-delete-unused-columns-article.sql]",
+    "target" : "[tools/migrations/25-02-28--03-update-user-activity-data.sql]",
+    "count" : 26
+  }, {
+    "source" : "[zeeguu/core/model/article_fragment_context.py]",
+    "target" : "[zeeguu/core/model/article_title_context.py]",
+    "count" : 26
+  }, {
+    "source" : "[zeeguu/core/model/article_title_context.py]",
+    "target" : "[zeeguu/core/model/article_fragment_context.py]",
+    "count" : 26
+  }, {
+    "source" : "[tools/old/consolidate_accounts.py]",
+    "target" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/account_management/user_account_deletion.py]",
+    "target" : "[tools/old/consolidate_accounts.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/update_elastic_ids.py]",
+    "target" : "[tools/update_elastic_with_source_ids.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/update_elastic_with_source_ids.py]",
+    "target" : "[tools/update_elastic_ids.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/starred_article.py]",
+    "target" : "[zeeguu/core/model/user_article.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/user_article.py]",
+    "target" : "[zeeguu/core/model/starred_article.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/app.py]",
+    "target" : "[zeeguu/api/app.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/app.py]",
+    "target" : "[zeeguu/api/app.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/fix_underscore_examples.py]",
+    "target" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/generated_examples.py]",
+    "target" : "[tools/fix_underscore_examples.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/bookmark.py]",
+    "target" : "[zeeguu/core/model/user_word.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/user_word.py]",
+    "target" : "[zeeguu/core/model/bookmark.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/content_cleaning/content_cleaner.py]",
+    "target" : "[zeeguu/core/content_cleaning/content_cleaner.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/content_cleaning/content_cleaner.py]",
+    "target" : "[zeeguu/core/content_cleaning/content_cleaner.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/cleanup_greek_audio_lessons.py]",
+    "target" : "[tools/cleanup_greek_audio_lessons.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/cleanup_greek_audio_lessons.py]",
+    "target" : "[tools/cleanup_greek_audio_lessons.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/user_word_integrity/_check_and_fix_user_word_integrity.py]",
+    "target" : "[tools/user_word_integrity/_cleanup_orphaned_user_words.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/user_word_integrity/_cleanup_orphaned_user_words.py]",
+    "target" : "[tools/user_word_integrity/_check_and_fix_user_word_integrity.py]",
+    "count" : 14
+  }, {
+    "source" : "[stanza_service/app.py]",
+    "target" : "[stanza_service/app.py]",
+    "count" : 14
+  }, {
+    "source" : "[stanza_service/app.py]",
+    "target" : "[stanza_service/app.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/article_fragment_context.py]",
+    "target" : "[zeeguu/core/model/example_sentence_context.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/example_sentence_context.py]",
+    "target" : "[zeeguu/core/model/article_fragment_context.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/search.py]",
+    "target" : "[zeeguu/api/endpoints/search.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/search.py]",
+    "target" : "[zeeguu/api/endpoints/search.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/article_difficulty_feedback.py]",
+    "target" : "[zeeguu/core/model/starred_article.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/starred_article.py]",
+    "target" : "[zeeguu/core/model/article_difficulty_feedback.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/article.py]",
+    "target" : "[zeeguu/api/endpoints/article.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/article.py]",
+    "target" : "[zeeguu/api/endpoints/article.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/operations/crawler/crawl.py]",
+    "target" : "[zeeguu/operations/crawler/crawl.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/operations/crawler/crawl.py]",
+    "target" : "[zeeguu/operations/crawler/crawl.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/article_fragment_context.py]",
+    "target" : "[zeeguu/core/model/video_caption_context.py]",
+    "count" : 26
+  }, {
+    "source" : "[zeeguu/core/model/video_caption_context.py]",
+    "target" : "[zeeguu/core/model/article_fragment_context.py]",
+    "count" : 26
+  }, {
+    "source" : "[tools/old/tag_existing_articles.py]",
+    "target" : "[tools/old/update_particular_tag.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/old/update_particular_tag.py]",
+    "target" : "[tools/old/tag_existing_articles.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/user_word_integrity/_check_and_fix_user_word_integrity.py]",
+    "target" : "[tools/user_word_integrity/_daily_user_word_integrity_check.py]",
+    "count" : 28
+  }, {
+    "source" : "[tools/user_word_integrity/_daily_user_word_integrity_check.py]",
+    "target" : "[tools/user_word_integrity/_check_and_fix_user_word_integrity.py]",
+    "count" : 28
+  }, {
+    "source" : "[stanza_service/app.py]",
+    "target" : "[stanza_service/install_models.py]",
+    "count" : 14
+  }, {
+    "source" : "[stanza_service/install_models.py]",
+    "target" : "[stanza_service/app.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/user_exercise_session.py]",
+    "target" : "[zeeguu/core/model/user_watching_session.py]",
+    "count" : 26
+  }, {
+    "source" : "[zeeguu/core/model/user_watching_session.py]",
+    "target" : "[zeeguu/core/model/user_exercise_session.py]",
+    "count" : 26
+  }, {
+    "source" : "[zeeguu/core/model/context_identifier.py]",
+    "target" : "[zeeguu/core/model/context_identifier.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/context_identifier.py]",
+    "target" : "[zeeguu/core/model/context_identifier.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/mysql_to_elastic_for_articles.py]",
+    "target" : "[tools/update_elastic_with_source_ids.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/update_elastic_with_source_ids.py]",
+    "target" : "[tools/mysql_to_elastic_for_articles.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/friendship.py]",
+    "target" : "[zeeguu/core/model/friendship.py]",
+    "count" : 38
+  }, {
+    "source" : "[zeeguu/core/model/friendship.py]",
+    "target" : "[zeeguu/core/model/friendship.py]",
+    "count" : 38
+  }, {
+    "source" : "[zeeguu/core/model/article_fragment_context.py]",
+    "target" : "[zeeguu/core/model/article_summary_context.py]",
+    "count" : 26
+  }, {
+    "source" : "[zeeguu/core/model/article_summary_context.py]",
+    "target" : "[zeeguu/core/model/article_fragment_context.py]",
+    "count" : 26
+  }, {
+    "source" : "[tools/untag_simplified_and_user_articles.py]",
+    "target" : "[tools/untag_simplified_and_user_articles.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/untag_simplified_and_user_articles.py]",
+    "target" : "[tools/untag_simplified_and_user_articles.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]",
+    "target" : "[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]",
+    "target" : "[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/domain_name.py]",
+    "target" : "[zeeguu/core/model/text.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/text.py]",
+    "target" : "[zeeguu/core/model/domain_name.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/new_text.py]",
+    "target" : "[zeeguu/core/model/text.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/text.py]",
+    "target" : "[zeeguu/core/model/new_text.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/mysql_to_elastic_for_articles.py]",
+    "target" : "[tools/update_es_based_on_url_keyword.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/update_es_based_on_url_keyword.py]",
+    "target" : "[tools/mysql_to_elastic_for_articles.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/article.py]",
+    "target" : "[zeeguu/core/model/video.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/video.py]",
+    "target" : "[zeeguu/core/model/article.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/article_fragment_context.py]",
+    "target" : "[zeeguu/core/model/video_title_context.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/model/video_title_context.py]",
+    "target" : "[zeeguu/core/model/article_fragment_context.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/fix_simplified_articles_html.py]",
+    "target" : "[tools/fix_simplified_articles_html.py]",
+    "count" : 14
+  }, {
+    "source" : "[tools/fix_simplified_articles_html.py]",
+    "target" : "[tools/fix_simplified_articles_html.py]",
+    "count" : 14
+  }, {
+    "source" : "[zeeguu/core/llm_services/grammar_correction_service.py]",
+    "target" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "target" : "[zeeguu/core/llm_services/grammar_correction_service.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/llm_services/mwe_translation_service.py]",
+    "target" : "[zeeguu/core/mwe/llm_mwe_detector.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/mwe/llm_mwe_detector.py]",
+    "target" : "[zeeguu/core/llm_services/mwe_translation_service.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/recalculate_all_word_ranks.py]",
+    "target" : "[tools/recalculate_all_word_ranks.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/recalculate_all_word_ranks.py]",
+    "target" : "[tools/recalculate_all_word_ranks.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/crawler/video_crawler.py]",
+    "target" : "[zeeguu/operations/crawler/video_crawler.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/operations/crawler/video_crawler.py]",
+    "target" : "[tools/crawler/video_crawler.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/domain_name.py]",
+    "target" : "[zeeguu/core/model/url.py]",
+    "count" : 24
+  }, {
+    "source" : "[zeeguu/core/model/url.py]",
+    "target" : "[zeeguu/core/model/domain_name.py]",
+    "count" : 24
+  }, {
+    "source" : "[tools/audio-engleza/generate_audio.py]",
+    "target" : "[tools/audio-engleza/generate_lesson.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/audio-engleza/generate_lesson.py]",
+    "target" : "[tools/audio-engleza/generate_audio.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/cefr_assessment.py]",
+    "target" : "[zeeguu/api/endpoints/cefr_assessment.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/cefr_assessment.py]",
+    "target" : "[zeeguu/api/endpoints/cefr_assessment.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/bookmark_context.py]",
+    "target" : "[zeeguu/core/model/feed.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/feed.py]",
+    "target" : "[zeeguu/core/model/bookmark_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/feed.py]",
+    "target" : "[zeeguu/core/model/topic.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/topic.py]",
+    "target" : "[zeeguu/core/model/feed.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/teacher_dashboard/_permissions.py]",
+    "target" : "[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]",
+    "target" : "[zeeguu/api/endpoints/teacher_dashboard/_permissions.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/example_sentence_context.py]",
+    "target" : "[zeeguu/core/model/text.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/text.py]",
+    "target" : "[zeeguu/core/model/example_sentence_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/fix_compound_examples.py]",
+    "target" : "[tools/fix_compound_examples.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/fix_compound_examples.py]",
+    "target" : "[tools/fix_compound_examples.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/feed.py]",
+    "target" : "[zeeguu/core/model/feedback_component.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/feedback_component.py]",
+    "target" : "[zeeguu/core/model/feed.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/feed.py]",
+    "target" : "[zeeguu/core/model/video_title_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/video_title_context.py]",
+    "target" : "[zeeguu/core/model/feed.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/bookmark.py]",
+    "target" : "[zeeguu/core/model/bookmark.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/bookmark.py]",
+    "target" : "[zeeguu/core/model/bookmark.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/audio_lessons/word_selector.py]",
+    "target" : "[zeeguu/core/audio_lessons/word_selector.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/audio_lessons/word_selector.py]",
+    "target" : "[zeeguu/core/audio_lessons/word_selector.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/fix_audio_lesson_teacher_language.py]",
+    "target" : "[tools/fix_audio_lesson_teacher_language.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/fix_audio_lesson_teacher_language.py]",
+    "target" : "[tools/fix_audio_lesson_teacher_language.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/one_time/fix_tokenization_cache_html_entities.py]",
+    "target" : "[tools/one_time/reindex_articles_with_quotes.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/one_time/reindex_articles_with_quotes.py]",
+    "target" : "[tools/one_time/fix_tokenization_cache_html_entities.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/extract_validation_for_topics.py]",
+    "target" : "[tools/extract_validation_for_topics.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/extract_validation_for_topics.py]",
+    "target" : "[tools/extract_validation_for_topics.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/personal_copy.py]",
+    "target" : "[zeeguu/core/model/user_article.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/user_article.py]",
+    "target" : "[zeeguu/core/model/personal_copy.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/bookmark_context.py]",
+    "target" : "[zeeguu/core/model/text.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/text.py]",
+    "target" : "[zeeguu/core/model/bookmark_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/article_summary_context.py]",
+    "target" : "[zeeguu/core/model/bookmark_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/bookmark_context.py]",
+    "target" : "[zeeguu/core/model/article_summary_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/bookmark_context.py]",
+    "target" : "[zeeguu/core/model/example_sentence_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/example_sentence_context.py]",
+    "target" : "[zeeguu/core/model/bookmark_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/llm_services/translation_validator.py]",
+    "target" : "[zeeguu/core/llm_services/translation_validator.py]",
+    "count" : 24
+  }, {
+    "source" : "[zeeguu/core/llm_services/translation_validator.py]",
+    "target" : "[zeeguu/core/llm_services/translation_validator.py]",
+    "count" : 24
+  }, {
+    "source" : "[zeeguu/core/model/text.py]",
+    "target" : "[zeeguu/core/model/url.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/url.py]",
+    "target" : "[zeeguu/core/model/text.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/delete_bookmarks_word_not_in_context.py]",
+    "target" : "[zeeguu/api/endpoints/bookmarks_and_words.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/bookmarks_and_words.py]",
+    "target" : "[tools/delete_bookmarks_word_not_in_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/user_word_integrity/_delete_unvalidatable_bookmarks.py]",
+    "target" : "[tools/user_word_integrity/_fix_multiword_bookmark_positions.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/user_word_integrity/_fix_multiword_bookmark_positions.py]",
+    "target" : "[tools/user_word_integrity/_delete_unvalidatable_bookmarks.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/source.py]",
+    "target" : "[zeeguu/core/model/text.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/text.py]",
+    "target" : "[zeeguu/core/model/source.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/migrations/25-10-22--recalculate_all_multiword_phrase_ranks.py]",
+    "target" : "[tools/migrations/25-10-22--recalculate_single_word_phrase_ranks.py]",
+    "count" : 24
+  }, {
+    "source" : "[tools/migrations/25-10-22--recalculate_single_word_phrase_ranks.py]",
+    "target" : "[tools/migrations/25-10-22--recalculate_all_multiword_phrase_ranks.py]",
+    "count" : 24
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "target" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "target" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/bookmark_context.py]",
+    "target" : "[zeeguu/core/model/video_title_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/video_title_context.py]",
+    "target" : "[zeeguu/core/model/bookmark_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/feed.py]",
+    "target" : "[zeeguu/core/model/text.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/text.py]",
+    "target" : "[zeeguu/core/model/feed.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/article_title_context.py]",
+    "target" : "[zeeguu/core/model/text.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/text.py]",
+    "target" : "[zeeguu/core/model/article_title_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/fix_long_summaries.py]",
+    "target" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "target" : "[tools/fix_long_summaries.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/topic_subscription.py]",
+    "target" : "[zeeguu/core/model/user_feedback.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/user_feedback.py]",
+    "target" : "[zeeguu/core/model/topic_subscription.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/tokenization/word_position_finder.py]",
+    "target" : "[zeeguu/core/tokenization/word_position_finder.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/tokenization/word_position_finder.py]",
+    "target" : "[zeeguu/core/tokenization/word_position_finder.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/validation_log.py]",
+    "target" : "[zeeguu/core/model/validation_log.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/validation_log.py]",
+    "target" : "[zeeguu/core/model/validation_log.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]",
+    "target" : "[zeeguu/api/endpoints/teacher_dashboard/helpers.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/teacher_dashboard/helpers.py]",
+    "target" : "[zeeguu/api/endpoints/teacher_dashboard/cohorts.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/domain_name.py]",
+    "target" : "[zeeguu/core/model/source_text.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/source_text.py]",
+    "target" : "[zeeguu/core/model/domain_name.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/user_word_integrity/_cleanup_orphaned_user_words.py]",
+    "target" : "[tools/user_word_integrity/_delete_unvalidatable_bookmarks.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/user_word_integrity/_delete_unvalidatable_bookmarks.py]",
+    "target" : "[tools/user_word_integrity/_cleanup_orphaned_user_words.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/article_title_context.py]",
+    "target" : "[zeeguu/core/model/feed.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/feed.py]",
+    "target" : "[zeeguu/core/model/article_title_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/teacher_dashboard/article_management.py]",
+    "target" : "[zeeguu/api/endpoints/teacher_dashboard/helpers.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/teacher_dashboard/helpers.py]",
+    "target" : "[zeeguu/api/endpoints/teacher_dashboard/article_management.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/article_difficulty_feedback.py]",
+    "target" : "[zeeguu/core/model/personal_copy.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/personal_copy.py]",
+    "target" : "[zeeguu/core/model/article_difficulty_feedback.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/example_sentence.py]",
+    "target" : "[zeeguu/core/model/example_sentence.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/example_sentence.py]",
+    "target" : "[zeeguu/core/model/example_sentence.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/stiri-simple/generate_news_page.py]",
+    "target" : "[tools/stiri-simple/generate_news_page.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/stiri-simple/generate_news_page.py]",
+    "target" : "[tools/stiri-simple/generate_news_page.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/feed.py]",
+    "target" : "[zeeguu/core/model/search.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/search.py]",
+    "target" : "[zeeguu/core/model/feed.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/article_title_context.py]",
+    "target" : "[zeeguu/core/model/bookmark_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/bookmark_context.py]",
+    "target" : "[zeeguu/core/model/article_title_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[install_stanza_models.py]",
+    "target" : "[stanza_service/install_models.py]",
+    "count" : 12
+  }, {
+    "source" : "[stanza_service/install_models.py]",
+    "target" : "[install_stanza_models.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/translation.py]",
+    "target" : "[zeeguu/api/endpoints/translation.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/translation.py]",
+    "target" : "[zeeguu/api/endpoints/translation.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/user_activitiy_data.py]",
+    "target" : "[zeeguu/core/model/user_activitiy_data.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/user_activitiy_data.py]",
+    "target" : "[zeeguu/core/model/user_activitiy_data.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/feed.py]",
+    "target" : "[zeeguu/core/model/video_caption_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/video_caption_context.py]",
+    "target" : "[zeeguu/core/model/feed.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/article_summary_context.py]",
+    "target" : "[zeeguu/core/model/feed.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/feed.py]",
+    "target" : "[zeeguu/core/model/article_summary_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/article_summary_context.py]",
+    "target" : "[zeeguu/core/model/text.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/text.py]",
+    "target" : "[zeeguu/core/model/article_summary_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/create_article_fragments_and_sources.py]",
+    "target" : "[tools/update_elastic_with_source_ids.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/update_elastic_with_source_ids.py]",
+    "target" : "[tools/create_article_fragments_and_sources.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/bookmark_context.py]",
+    "target" : "[zeeguu/core/model/video_caption_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/video_caption_context.py]",
+    "target" : "[zeeguu/core/model/bookmark_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/example_sentence_context.py]",
+    "target" : "[zeeguu/core/model/feed.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/feed.py]",
+    "target" : "[zeeguu/core/model/example_sentence_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/llm_services/translation_validator.py]",
+    "target" : "[zeeguu/core/model/meaning_frequency_classifier.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/meaning_frequency_classifier.py]",
+    "target" : "[zeeguu/core/llm_services/translation_validator.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/create_article_fragments_and_sources.py]",
+    "target" : "[tools/mysql_to_elastic_for_articles.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/mysql_to_elastic_for_articles.py]",
+    "target" : "[tools/create_article_fragments_and_sources.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/domain_name.py]",
+    "target" : "[zeeguu/core/model/new_text.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/new_text.py]",
+    "target" : "[zeeguu/core/model/domain_name.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/run_knn_similarity_search.py]",
+    "target" : "[tools/run_knn_similarity_search.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/run_knn_similarity_search.py]",
+    "target" : "[tools/run_knn_similarity_search.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/text.py]",
+    "target" : "[zeeguu/core/model/video_caption_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/video_caption_context.py]",
+    "target" : "[zeeguu/core/model/text.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/source.py]",
+    "target" : "[zeeguu/core/model/user_video.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/user_video.py]",
+    "target" : "[zeeguu/core/model/source.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/user_watching_session.py]",
+    "target" : "[zeeguu/core/model/user_watching_session.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/user_watching_session.py]",
+    "target" : "[zeeguu/core/model/user_watching_session.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/accounts.py]",
+    "target" : "[zeeguu/api/endpoints/accounts.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/accounts.py]",
+    "target" : "[zeeguu/api/endpoints/accounts.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/text.py]",
+    "target" : "[zeeguu/core/model/video_title_context.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/video_title_context.py]",
+    "target" : "[zeeguu/core/model/text.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/migrations/25-07-31--recalculate_multiword_phrase_ranks.py]",
+    "target" : "[tools/migrations/25-10-22--recalculate_single_word_phrase_ranks.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/migrations/25-10-22--recalculate_single_word_phrase_ranks.py]",
+    "target" : "[tools/migrations/25-07-31--recalculate_multiword_phrase_ranks.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/article_topic_map.py]",
+    "target" : "[zeeguu/core/model/article_topic_map.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/article_topic_map.py]",
+    "target" : "[zeeguu/core/model/article_topic_map.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/audio-engleza/generate_lesson.py]",
+    "target" : "[tools/audio-engleza/generate_script.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/audio-engleza/generate_script.py]",
+    "target" : "[tools/audio-engleza/generate_lesson.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "target" : "[zeeguu/core/model/article.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/model/article.py]",
+    "target" : "[zeeguu/core/llm_services/simplification_and_classification.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/api/endpoints/own_texts.py]",
+    "target" : "[zeeguu/core/language/ml_cefr_classifier.py]",
+    "count" : 12
+  }, {
+    "source" : "[zeeguu/core/language/ml_cefr_classifier.py]",
+    "target" : "[zeeguu/api/endpoints/own_texts.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/create_article_fragments_and_sources.py]",
+    "target" : "[tools/update_elastic_ids.py]",
+    "count" : 12
+  }, {
+    "source" : "[tools/update_elastic_ids.py]",
+    "target" : "[tools/create_article_fragments_and_sources.py]",
+    "count" : 12
+  } ]
+}
+
+    const maxNodeSize = gData.nodes.map(n => n.size).reduce((a, b) => Math.max(a, b));
+    const maxCount = gData.links.map(l => l.count).reduce((a, b) => Math.max(a, b));
+
+    gData.links = gData.links.map(l => { return {source: l.target, target: l.source, count: l.count} });
+
+    const Graph = ForceGraph3D()
+    (document.getElementById('3d-graph'))
+        .graphData(gData)
+        .nodeRelSize(4)
+        .nodeVal(n => Math.max(20 * n.size / maxNodeSize, 0.001))
+        .nodeLabel(n => n.id + " (" + n.size + ")")
+        .nodeColor(n => n.id.startsWith("[") ? "skyblue" : "")
+        .linkDirectionalParticles(6)
+        .linkDirectionalParticleSpeed(d => d.count / maxCount * 0.01)
+        .linkOpacity(0.1)
+        .linkWidth(d => 3 * d.count / maxCount + 0.1);
+
+</script>
+</body>

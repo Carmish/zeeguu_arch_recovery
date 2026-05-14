@@ -1,0 +1,528 @@
+<html>
+<head>
+    <title>stanza_service/app.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">stanza_service/app.py (<b>312</b> lines of code) (<a href="app.py">raw</a>):</h3>
+<div id="editor">&quot;&quot;&quot;
+Stanza Tokenization Microservice
+
+A lightweight Flask service that wraps Stanza NLP pipelines for tokenization.
+Designed to be run with gunicorn's preload_app=True for memory-efficient
+model sharing across workers via copy-on-write.
+
+Endpoints:
+- POST /tokenize - Tokenize text into structured tokens
+- POST /sentences - Extract sentences from text
+- GET /health - Health check
+- GET /languages - List supported languages
+- GET /stats - Request statistics (for monitoring)
+&quot;&quot;&quot;
+
+import os
+import re
+import time
+import threading
+import psutil
+from flask import Flask, request, jsonify
+import stanza
+
+# Monitoring - track request stats
+_stats_lock = threading.Lock()
+_request_stats = {
+    &quot;total_requests&quot;: 0,
+    &quot;slow_requests&quot;: 0,  # &gt; 5s
+    &quot;errors&quot;: 0,
+    &quot;total_chars_processed&quot;: 0,
+    &quot;by_language&quot;: {},
+}
+
+SLOW_REQUEST_THRESHOLD = 5.0  # seconds
+
+# Configuration
+STANZA_RESOURCE_DIR = os.environ.get(&quot;STANZA_RESOURCE_DIR&quot;, &quot;/stanza_resources&quot;)
+
+# Supported languages (must match languages with downloaded models)
+SUPPORTED_LANGUAGES = [
+    &quot;de&quot;, &quot;es&quot;, &quot;fr&quot;, &quot;nl&quot;, &quot;en&quot;, &quot;it&quot;, &quot;da&quot;, &quot;pl&quot;, &quot;sv&quot;, &quot;ru&quot;, &quot;no&quot;, &quot;hu&quot;, &quot;pt&quot;, &quot;ro&quot;, &quot;el&quot;
+]
+
+# Language code mapping for Stanza compatibility
+STANZA_LANG_MAP = {
+    'no': 'nb',  # Norwegian -&gt; Norwegian Bokmal
+}
+
+# Model types
+MODEL_TOKEN_ONLY = &quot;token_only&quot;
+MODEL_TOKEN_POS = &quot;token_pos&quot;
+MODEL_TOKEN_POS_DEP = &quot;token_pos_dep&quot;  # Default - includes dependency parsing
+
+PROCESSORS_MAP = {
+    MODEL_TOKEN_ONLY: &quot;tokenize&quot;,
+    MODEL_TOKEN_POS: &quot;tokenize,pos&quot;,
+    MODEL_TOKEN_POS_DEP: &quot;tokenize,pos,lemma,depparse&quot;,
+}
+
+# Regex patterns
+STANZA_PARAGRAPH_DELIMITER = re.compile(r&quot;((\s?)+\\n+)&quot;)
+PARTICLE_WITH_APOSTROPHE = re.compile(r&quot;(\w+('|'))&quot;)
+
+# Punctuation definitions (matching Token class)
+from string import punctuation as _std_punctuation
+PUNCTUATION = &quot;\u00bb\u00ab&quot; + _std_punctuation + &quot;\u2013\u2014\u201c\u2018\u201d\u201d\u2019\u201e\u00bf\u00bb\u00ab&quot;
+LEFT_PUNCTUATION = &quot;({#\u201e\u00bf[\u201c&quot;
+RIGHT_PUNCTUATION = &quot;)}\u201d]\u201d&quot;
+
+# Global pipeline cache - loaded once in master, shared via COW after fork
+CACHED_PIPELINES = {}
+_PIPELINE_LOAD_LOCK = threading.Lock()
+
+
+def get_stanza_code(lang_code):
+    &quot;&quot;&quot;Map language code to Stanza-compatible code.&quot;&quot;&quot;
+    return STANZA_LANG_MAP.get(lang_code, lang_code)
+
+
+def get_pipeline(lang_code, model_type):
+    &quot;&quot;&quot;Get or create a Stanza pipeline for the given language and model type.&quot;&quot;&quot;
+    stanza_code = get_stanza_code(lang_code)
+    key = (stanza_code, model_type)
+
+    if key not in CACHED_PIPELINES:
+        with _PIPELINE_LOAD_LOCK:
+            if key not in CACHED_PIPELINES:
+                processors = PROCESSORS_MAP.get(model_type, PROCESSORS_MAP[MODEL_TOKEN_POS_DEP])
+                print(f&quot;Loading Stanza pipeline: {stanza_code} with {processors}&quot;)
+                pipeline = stanza.Pipeline(
+                    lang=stanza_code,
+                    processors=processors,
+                    download_method=None,
+                    model_dir=STANZA_RESOURCE_DIR,
+                )
+                CACHED_PIPELINES[key] = pipeline
+                print(f&quot;Loaded Stanza pipeline: {stanza_code}&quot;)
+
+    return CACHED_PIPELINES[key]
+
+
+def preload_all_models():
+    &quot;&quot;&quot;Preload all language models. Called before forking workers.&quot;&quot;&quot;
+    print(&quot;Preloading Stanza models for all languages...&quot;)
+    for lang_code in SUPPORTED_LANGUAGES:
+        try:
+            get_pipeline(lang_code, MODEL_TOKEN_POS_DEP)
+        except Exception as e:
+            print(f&quot;Warning: Failed to load model for {lang_code}: {e}&quot;)
+    print(f&quot;Preloaded {len(CACHED_PIPELINES)} Stanza pipelines&quot;)
+
+
+def tokenize_text(text, lang_code, model_type=MODEL_TOKEN_POS_DEP,
+                  flatten=True, start_token_i=0, start_sentence_i=0, start_paragraph_i=0):
+    &quot;&quot;&quot;
+    Tokenize text using Stanza.
+
+    Returns a list of token dictionaries with structure matching the Token class.
+    &quot;&quot;&quot;
+    pipeline = get_pipeline(lang_code, model_type)
+    doc = pipeline(text)
+
+    paragraphs = []
+    current_paragraph = []
+    s_i = 0
+
+    for sentence in doc.sentences:
+        sent_list = []
+        is_new_paragraph = False
+        accumulator = &quot;&quot;
+        t_i = 0
+
+        for i, token in enumerate(sentence.tokens):
+            t_details = token.to_dict()[0]
+            token_text = t_details[&quot;text&quot;]
+
+            # Handle French/Italian particles with apostrophes (l'auteur -&gt; l'auteur)
+            particle_match = PARTICLE_WITH_APOSTROPHE.match(token_text)
+            has_space = not (&quot;SpaceAfter=No&quot; in t_details.get(&quot;misc&quot;, &quot;&quot;))
+
+            if (particle_match
+                and particle_match.group(0) == token_text
+                and i + 1 &lt; len(sentence.tokens)
+                and sentence.tokens[i + 1].text not in PUNCTUATION
+                and not has_space):
+                accumulator += token_text
+                continue
+
+            if accumulator:
+                token_text = accumulator + token_text
+                accumulator = &quot;&quot;
+
+            # Process punctuation (revert tokenizer changes)
+            token_text = token_text.replace(&quot;``&quot;, '&quot;').replace(&quot;''&quot;, '&quot;')
+
+            # Build token dictionary
+            token_dict = {
+                &quot;text&quot;: token_text,
+                &quot;par_i&quot;: len(paragraphs) + start_paragraph_i,
+                &quot;sent_i&quot;: s_i + start_sentence_i,
+                &quot;token_i&quot;: t_i + start_token_i,
+                &quot;has_space&quot;: has_space,
+                &quot;pos&quot;: t_details.get(&quot;upos&quot;),
+                &quot;dep&quot;: t_details.get(&quot;deprel&quot;),
+                &quot;head&quot;: t_details.get(&quot;head&quot;),
+                &quot;lemma&quot;: t_details.get(&quot;lemma&quot;),
+                # Computed fields (matching Token class behavior)
+                &quot;is_sent_start&quot;: t_i == 0,
+                &quot;is_punct&quot;: token_text in PUNCTUATION or token_text in (&quot;...&quot;, &quot;&hellip;&quot;),
+                &quot;is_left_punct&quot;: token_text in LEFT_PUNCTUATION,
+                &quot;is_right_punct&quot;: token_text in RIGHT_PUNCTUATION,
+            }
+
+            sent_list.append(token_dict)
+            t_i += 1
+
+            if STANZA_PARAGRAPH_DELIMITER.search(t_details.get(&quot;misc&quot;, &quot;&quot;)):
+                is_new_paragraph = True
+
+        current_paragraph.append(sent_list)
+        s_i += 1
+
+        if is_new_paragraph:
+            paragraphs.append(current_paragraph)
+            current_paragraph = []
+            s_i = 0
+
+    paragraphs.append(current_paragraph)
+
+    if flatten:
+        # Flatten: paragraphs &gt; sentences &gt; tokens -&gt; flat list of tokens
+        return [token for para in paragraphs for sent in para for token in sent]
+
+    return paragraphs
+
+
+def get_sentences(text, lang_code, model_type=MODEL_TOKEN_POS_DEP):
+    &quot;&quot;&quot;Extract sentences from text.&quot;&quot;&quot;
+    pipeline = get_pipeline(lang_code, model_type)
+    doc = pipeline(text)
+    return [&quot; &quot;.join([token.text for token in sent.tokens]) for sent in doc.sentences]
+
+
+# Flask application
+app = Flask(__name__)
+
+
+def log_request(endpoint, language, chars, elapsed, is_error=False):
+    &quot;&quot;&quot;Track request statistics for monitoring.&quot;&quot;&quot;
+    with _stats_lock:
+        _request_stats[&quot;total_requests&quot;] += 1
+        _request_stats[&quot;total_chars_processed&quot;] += chars
+
+        if is_error:
+            _request_stats[&quot;errors&quot;] += 1
+        elif elapsed &gt; SLOW_REQUEST_THRESHOLD:
+            _request_stats[&quot;slow_requests&quot;] += 1
+            print(f&quot;STANZA-SLOW: {endpoint} took {elapsed:.1f}s for {chars} chars ({language})&quot;)
+
+        # Track by language
+        if language not in _request_stats[&quot;by_language&quot;]:
+            _request_stats[&quot;by_language&quot;][language] = {&quot;requests&quot;: 0, &quot;chars&quot;: 0, &quot;slow&quot;: 0}
+        _request_stats[&quot;by_language&quot;][language][&quot;requests&quot;] += 1
+        _request_stats[&quot;by_language&quot;][language][&quot;chars&quot;] += chars
+        if elapsed &gt; SLOW_REQUEST_THRESHOLD:
+            _request_stats[&quot;by_language&quot;][language][&quot;slow&quot;] += 1
+
+
+@app.route(&quot;/health&quot;, methods=[&quot;GET&quot;])
+def health():
+    &quot;&quot;&quot;Health check endpoint with memory info.&quot;&quot;&quot;
+    process = psutil.Process()
+    mem_info = process.memory_info()
+    return jsonify({
+        &quot;status&quot;: &quot;ok&quot;,
+        &quot;pipelines_loaded&quot;: len(CACHED_PIPELINES),
+        &quot;memory_mb&quot;: round(mem_info.rss / 1024 / 1024, 1),
+        &quot;memory_percent&quot;: round(process.memory_percent(), 1),
+    })
+
+
+@app.route(&quot;/stats&quot;, methods=[&quot;GET&quot;])
+def stats():
+    &quot;&quot;&quot;Request statistics for monitoring Stanza health.&quot;&quot;&quot;
+    process = psutil.Process()
+    mem_info = process.memory_info()
+    with _stats_lock:
+        return jsonify({
+            &quot;requests&quot;: _request_stats.copy(),
+            &quot;memory_mb&quot;: round(mem_info.rss / 1024 / 1024, 1),
+            &quot;memory_percent&quot;: round(process.memory_percent(), 1),
+            &quot;pipelines_loaded&quot;: len(CACHED_PIPELINES),
+            &quot;languages_loaded&quot;: list(set(k[0] for k in CACHED_PIPELINES.keys())),
+        })
+
+
+@app.route(&quot;/languages&quot;, methods=[&quot;GET&quot;])
+def languages():
+    &quot;&quot;&quot;List supported languages.&quot;&quot;&quot;
+    return jsonify({
+        &quot;languages&quot;: SUPPORTED_LANGUAGES,
+        &quot;loaded&quot;: list(set(k[0] for k in CACHED_PIPELINES.keys()))
+    })
+
+
+@app.route(&quot;/tokenize&quot;, methods=[&quot;POST&quot;])
+def tokenize_endpoint():
+    &quot;&quot;&quot;
+    Tokenize text.
+
+    Request JSON:
+        {
+            &quot;text&quot;: &quot;Text to tokenize&quot;,
+            &quot;language&quot;: &quot;en&quot;,
+            &quot;model&quot;: &quot;token_pos_dep&quot;,  // optional, default: token_pos_dep
+            &quot;flatten&quot;: true,           // optional, default: true
+            &quot;start_token_i&quot;: 0,        // optional
+            &quot;start_sentence_i&quot;: 0,     // optional
+            &quot;start_paragraph_i&quot;: 0     // optional
+        }
+
+    Response JSON:
+        {
+            &quot;tokens&quot;: [...]
+        }
+    &quot;&quot;&quot;
+    start_time = time.time()
+    data = request.get_json()
+
+    if not data:
+        return jsonify({&quot;error&quot;: &quot;JSON body required&quot;}), 400
+
+    text = data.get(&quot;text&quot;, &quot;&quot;)
+    language = data.get(&quot;language&quot;)
+    model = data.get(&quot;model&quot;, MODEL_TOKEN_POS_DEP)
+    flatten = data.get(&quot;flatten&quot;, True)
+    start_token_i = data.get(&quot;start_token_i&quot;, 0)
+    start_sentence_i = data.get(&quot;start_sentence_i&quot;, 0)
+    start_paragraph_i = data.get(&quot;start_paragraph_i&quot;, 0)
+
+    if not language:
+        return jsonify({&quot;error&quot;: &quot;language is required&quot;}), 400
+
+    if language not in SUPPORTED_LANGUAGES:
+        return jsonify({&quot;error&quot;: f&quot;Unsupported language: {language}&quot;}), 400
+
+    if not text:
+        return jsonify({&quot;tokens&quot;: []})
+
+    try:
+        tokens = tokenize_text(
+            text, language, model, flatten,
+            start_token_i, start_sentence_i, start_paragraph_i
+        )
+        elapsed = time.time() - start_time
+        log_request(&quot;tokenize&quot;, language, len(text), elapsed)
+        return jsonify({&quot;tokens&quot;: tokens})
+    except Exception as e:
+        elapsed = time.time() - start_time
+        log_request(&quot;tokenize&quot;, language, len(text), elapsed, is_error=True)
+        print(f&quot;STANZA-ERROR: tokenize failed for {language} ({len(text)} chars): {e}&quot;)
+        return jsonify({&quot;error&quot;: str(e)}), 500
+
+
+@app.route(&quot;/tokenize_batch&quot;, methods=[&quot;POST&quot;])
+def tokenize_batch_endpoint():
+    &quot;&quot;&quot;
+    Tokenize multiple texts in a single request.
+
+    This is much more efficient than calling /tokenize multiple times
+    because all texts are processed in sequence without HTTP overhead.
+
+    Request JSON:
+        {
+            &quot;texts&quot;: [&quot;Text 1&quot;, &quot;Text 2&quot;, ...],
+            &quot;language&quot;: &quot;da&quot;,
+            &quot;model&quot;: &quot;token_pos_dep&quot;,  // optional
+            &quot;flatten&quot;: false           // optional, default: false for batch
+        }
+
+    Response JSON:
+        {
+            &quot;results&quot;: [
+                {&quot;tokens&quot;: [...]},
+                {&quot;tokens&quot;: [...]},
+                ...
+            ]
+        }
+    &quot;&quot;&quot;
+    start_time = time.time()
+    data = request.get_json()
+
+    if not data:
+        return jsonify({&quot;error&quot;: &quot;JSON body required&quot;}), 400
+
+    texts = data.get(&quot;texts&quot;, [])
+    language = data.get(&quot;language&quot;)
+    model = data.get(&quot;model&quot;, MODEL_TOKEN_POS_DEP)
+    flatten = data.get(&quot;flatten&quot;, False)
+
+    if not language:
+        return jsonify({&quot;error&quot;: &quot;language is required&quot;}), 400
+
+    if language not in SUPPORTED_LANGUAGES:
+        return jsonify({&quot;error&quot;: f&quot;Unsupported language: {language}&quot;}), 400
+
+    if not texts:
+        return jsonify({&quot;results&quot;: []})
+
+    total_chars = sum(len(t) for t in texts if t)
+
+    try:
+        results = []
+        for text in texts:
+            if not text:
+                results.append({&quot;tokens&quot;: []})
+            else:
+                tokens = tokenize_text(text, language, model, flatten)
+                results.append({&quot;tokens&quot;: tokens})
+        elapsed = time.time() - start_time
+        log_request(&quot;tokenize_batch&quot;, language, total_chars, elapsed)
+        if elapsed &gt; SLOW_REQUEST_THRESHOLD:
+            print(f&quot;STANZA-SLOW: tokenize_batch took {elapsed:.1f}s for {len(texts)} texts, {total_chars} chars ({language})&quot;)
+        return jsonify({&quot;results&quot;: results})
+    except Exception as e:
+        elapsed = time.time() - start_time
+        log_request(&quot;tokenize_batch&quot;, language, total_chars, elapsed, is_error=True)
+        print(f&quot;STANZA-ERROR: tokenize_batch failed for {language} ({len(texts)} texts): {e}&quot;)
+        return jsonify({&quot;error&quot;: str(e)}), 500
+
+
+@app.route(&quot;/metrics&quot;, methods=[&quot;GET&quot;])
+def prometheus_metrics():
+    &quot;&quot;&quot;Prometheus-format metrics for scraping.&quot;&quot;&quot;
+    process = psutil.Process()
+    mem_info = process.memory_info()
+
+    lines = [
+        &quot;# HELP stanza_requests_total Total number of tokenization requests&quot;,
+        &quot;# TYPE stanza_requests_total counter&quot;,
+        f&quot;stanza_requests_total {_request_stats['total_requests']}&quot;,
+        &quot;&quot;,
+        &quot;# HELP stanza_slow_requests_total Requests taking longer than 5 seconds&quot;,
+        &quot;# TYPE stanza_slow_requests_total counter&quot;,
+        f&quot;stanza_slow_requests_total {_request_stats['slow_requests']}&quot;,
+        &quot;&quot;,
+        &quot;# HELP stanza_errors_total Total number of failed requests&quot;,
+        &quot;# TYPE stanza_errors_total counter&quot;,
+        f&quot;stanza_errors_total {_request_stats['errors']}&quot;,
+        &quot;&quot;,
+        &quot;# HELP stanza_chars_processed_total Total characters processed&quot;,
+        &quot;# TYPE stanza_chars_processed_total counter&quot;,
+        f&quot;stanza_chars_processed_total {_request_stats['total_chars_processed']}&quot;,
+        &quot;&quot;,
+        &quot;# HELP stanza_memory_bytes Memory usage in bytes&quot;,
+        &quot;# TYPE stanza_memory_bytes gauge&quot;,
+        f&quot;stanza_memory_bytes {mem_info.rss}&quot;,
+        &quot;&quot;,
+        &quot;# HELP stanza_pipelines_loaded Number of loaded language pipelines&quot;,
+        &quot;# TYPE stanza_pipelines_loaded gauge&quot;,
+        f&quot;stanza_pipelines_loaded {len(CACHED_PIPELINES)}&quot;,
+    ]
+
+    # Per-language metrics
+    with _stats_lock:
+        if _request_stats[&quot;by_language&quot;]:
+            lines.extend([
+                &quot;&quot;,
+                &quot;# HELP stanza_requests_by_language Requests per language&quot;,
+                &quot;# TYPE stanza_requests_by_language counter&quot;,
+            ])
+            for lang, stats in _request_stats[&quot;by_language&quot;].items():
+                lines.append(f'stanza_requests_by_language{{language=&quot;{lang}&quot;}} {stats[&quot;requests&quot;]}')
+
+            lines.extend([
+                &quot;&quot;,
+                &quot;# HELP stanza_slow_by_language Slow requests per language&quot;,
+                &quot;# TYPE stanza_slow_by_language counter&quot;,
+            ])
+            for lang, stats in _request_stats[&quot;by_language&quot;].items():
+                lines.append(f'stanza_slow_by_language{{language=&quot;{lang}&quot;}} {stats[&quot;slow&quot;]}')
+
+    return &quot;\n&quot;.join(lines) + &quot;\n&quot;, 200, {&quot;Content-Type&quot;: &quot;text/plain; charset=utf-8&quot;}
+
+
+@app.route(&quot;/sentences&quot;, methods=[&quot;POST&quot;])
+def sentences_endpoint():
+    &quot;&quot;&quot;
+    Extract sentences from text.
+
+    Request JSON:
+        {
+            &quot;text&quot;: &quot;Text with multiple sentences.&quot;,
+            &quot;language&quot;: &quot;en&quot;
+        }
+
+    Response JSON:
+        {
+            &quot;sentences&quot;: [&quot;Text with multiple sentences.&quot;]
+        }
+    &quot;&quot;&quot;
+    start_time = time.time()
+    data = request.get_json()
+
+    if not data:
+        return jsonify({&quot;error&quot;: &quot;JSON body required&quot;}), 400
+
+    text = data.get(&quot;text&quot;, &quot;&quot;)
+    language = data.get(&quot;language&quot;)
+    model = data.get(&quot;model&quot;, MODEL_TOKEN_POS_DEP)
+
+    if not language:
+        return jsonify({&quot;error&quot;: &quot;language is required&quot;}), 400
+
+    if language not in SUPPORTED_LANGUAGES:
+        return jsonify({&quot;error&quot;: f&quot;Unsupported language: {language}&quot;}), 400
+
+    if not text:
+        return jsonify({&quot;sentences&quot;: []})
+
+    try:
+        sentences = get_sentences(text, language, model)
+        elapsed = time.time() - start_time
+        log_request(&quot;sentences&quot;, language, len(text), elapsed)
+        return jsonify({&quot;sentences&quot;: sentences})
+    except Exception as e:
+        elapsed = time.time() - start_time
+        log_request(&quot;sentences&quot;, language, len(text), elapsed, is_error=True)
+        print(f&quot;STANZA-ERROR: sentences failed for {language} ({len(text)} chars): {e}&quot;)
+        return jsonify({&quot;error&quot;: str(e)}), 500
+
+
+# NOTE: Models are loaded lazily on first request per language
+# preload_all_models() is NOT called at import time because:
+# - With preload_app=True: PyTorch hangs after fork
+# - With preload_app=False: Each worker loads on demand (more reliable)
+
+
+if __name__ == &quot;__main__&quot;:
+    # For development only - preload then run
+    preload_all_models()
+    app.run(host=&quot;0.0.0.0&quot;, port=5001, debug=True)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

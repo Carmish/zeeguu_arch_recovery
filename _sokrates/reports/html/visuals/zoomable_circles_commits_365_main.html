@@ -1,0 +1,2773 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+    .node {
+        cursor: pointer;
+    }
+
+    .node:hover {
+        stroke: #000;
+        stroke-width: 1.5px;
+    }
+
+    .node--leaf {
+        fill: white;
+    }
+
+    .label {
+        font: 11px "Helvetica Neue", Helvetica, Arial, sans-serif;
+        text-anchor: middle;
+        text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+    }
+
+    .label,
+    .node--root,
+    .node--leaf {
+        pointer-events: none;
+    }
+
+</style>
+<svg width="960" height="960"></svg>
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script>
+
+    var svg = d3.select("svg"),
+        margin = 20,
+        diameter = +svg.attr("width"),
+        g = svg.append("g").attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
+
+    var color = d3.scaleLinear()
+        .domain([-1, 5])
+        .range(["hsl(152,80%,100%)", "hsl(228,30%,40%)"])
+        .interpolate(d3.interpolateHcl);
+
+    var pack = d3.pack()
+        .size([diameter - margin, diameter - margin])
+        .padding(2);
+
+
+    var root = {
+        "name": "cluster",
+        "children": [ {
+  "name" : "stanza_service",
+  "color" : "",
+  "size" : 0,
+  "children" : [ {
+    "name" : "install_models.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "gunicorn.conf.py (3)",
+    "color" : "",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "app.py (6)",
+    "color" : "",
+    "size" : 6,
+    "children" : [ ]
+  } ]
+}, {
+  "name" : "zeeguu",
+  "color" : "",
+  "size" : 0,
+  "children" : [ {
+    "name" : "core",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "account_management",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "user_account_creation.py (39)",
+        "color" : "",
+        "size" : 39,
+        "children" : [ ]
+      }, {
+        "name" : "user_account_deletion.py (18)",
+        "color" : "",
+        "size" : 18,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "bookmark_operations",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "__init__.py (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      }, {
+        "name" : "update_bookmark.py (11)",
+        "color" : "",
+        "size" : 11,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "word_scheduling",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "basicSR",
+        "color" : "",
+        "size" : 0,
+        "children" : [ {
+          "name" : "four_levels_per_word.py (31)",
+          "color" : "",
+          "size" : 31,
+          "children" : [ ]
+        }, {
+          "name" : "basicSR.py (29)",
+          "color" : "",
+          "size" : 29,
+          "children" : [ ]
+        } ]
+      }, {
+        "name" : "__init__.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "behavioral_modeling",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "scroll_last_reading_percentage.py (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "util",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "time.py (7)",
+        "color" : "",
+        "size" : 7,
+        "children" : [ ]
+      }, {
+        "name" : "hash.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      }, {
+        "name" : "compute_fk_word_count.py (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "elastic",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "elastic_query_builder.py (8)",
+        "color" : "",
+        "size" : 8,
+        "children" : [ ]
+      }, {
+        "name" : "basic_ops.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "indexing.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "audio_lessons",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "voice_synthesizer.py (25)",
+        "color" : "",
+        "size" : 25,
+        "children" : [ ]
+      }, {
+        "name" : "script_generator.py (35)",
+        "color" : "",
+        "size" : 35,
+        "children" : [ ]
+      }, {
+        "name" : "suggestion_validator.py (7)",
+        "color" : "",
+        "size" : 7,
+        "children" : [ ]
+      }, {
+        "name" : "daily_lesson_generator.py (86)",
+        "color" : "",
+        "size" : 86,
+        "children" : [ ]
+      }, {
+        "name" : "lesson_builder.py (16)",
+        "color" : "",
+        "size" : 16,
+        "children" : [ ]
+      }, {
+        "name" : "word_selector.py (8)",
+        "color" : "",
+        "size" : 8,
+        "children" : [ ]
+      }, {
+        "name" : "__init__.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "azure_voice_synthesizer.py (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      }, {
+        "name" : "voice_config.py (19)",
+        "color" : "",
+        "size" : 19,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "constants.py (4)",
+      "color" : "",
+      "size" : 4,
+      "children" : [ ]
+    }, {
+      "name" : "content_recommender",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "elastic_recommender.py (25)",
+        "color" : "",
+        "size" : 25,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "content_quality",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "advertorial_detection.py (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      }, {
+        "name" : "quality_filter.py (8)",
+        "color" : "",
+        "size" : 8,
+        "children" : [ ]
+      }, {
+        "name" : "disturbing_content_detection.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "content_retriever",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "parse_with_newspaper.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "crawler_exceptions.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      }, {
+        "name" : "__init__.py (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      }, {
+        "name" : "parse_with_readability_server.py (12)",
+        "color" : "",
+        "size" : 12,
+        "children" : [ ]
+      }, {
+        "name" : "article_downloader.py (47)",
+        "color" : "",
+        "size" : 47,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "utils",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "__init__.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "caching.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "language",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "strategies",
+        "color" : "",
+        "size" : 0,
+        "children" : [ {
+          "name" : "flesch_kincaid_difficulty_estimator.py (2)",
+          "color" : "",
+          "size" : 2,
+          "children" : [ ]
+        } ]
+      }, {
+        "name" : "difficulty_estimator_factory.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "ml_cefr_classifier.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "tokenization",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "token.py (6)",
+        "color" : "",
+        "size" : 6,
+        "children" : [ ]
+      }, {
+        "name" : "stanza_client.py (6)",
+        "color" : "",
+        "size" : 6,
+        "children" : [ ]
+      }, {
+        "name" : "word_position_finder.py (7)",
+        "color" : "",
+        "size" : 7,
+        "children" : [ ]
+      }, {
+        "name" : "zeeguu_tokenizer.py (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      }, {
+        "name" : "__init__.py (7)",
+        "color" : "",
+        "size" : 7,
+        "children" : [ ]
+      }, {
+        "name" : "stanza_tokenizer.py (7)",
+        "color" : "",
+        "size" : 7,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "semantic_vector_api",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "retrieve_embeddings.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "exercises",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "similar_words.py (9)",
+        "color" : "",
+        "size" : 9,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "user_feature_toggles.py (51)",
+      "color" : "",
+      "size" : 51,
+      "children" : [ ]
+    }, {
+      "name" : "user_statistics",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "exercise_corectness.py (9)",
+        "color" : "",
+        "size" : 9,
+        "children" : [ ]
+      }, {
+        "name" : "exercise_sessions.py (7)",
+        "color" : "",
+        "size" : 7,
+        "children" : [ ]
+      }, {
+        "name" : "student_overview.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "reading_sessions.py (9)",
+        "color" : "",
+        "size" : 9,
+        "children" : [ ]
+      }, {
+        "name" : "activity.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "model",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "starred_article.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "user_word_interaction_history.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "user_article_broken_report.py (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      }, {
+        "name" : "db.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "user.py (133)",
+        "color" : "",
+        "size" : 133,
+        "children" : [ ]
+      }, {
+        "name" : "article_cefr_assessment.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "user_language.py (53)",
+        "color" : "",
+        "size" : 53,
+        "children" : [ ]
+      }, {
+        "name" : "article_topic_user_feedback.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "url_keyword.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      }, {
+        "name" : "user_cohort_map.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "teacher.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "article_summary_context.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "bookmark_user_preference.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      }, {
+        "name" : "teacher_cohort_map.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "friendship.py (9)",
+        "color" : "",
+        "size" : 9,
+        "children" : [ ]
+      }, {
+        "name" : "cohort.py (6)",
+        "color" : "",
+        "size" : 6,
+        "children" : [ ]
+      }, {
+        "name" : "personal_copy.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "article_fragment_context.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      }, {
+        "name" : "article_difficulty_feedback.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "article_tokenization_cache.py (14)",
+        "color" : "",
+        "size" : 14,
+        "children" : [ ]
+      }, {
+        "name" : "difficulty_lingo_rank.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "user_browsing_session.py (9)",
+        "color" : "",
+        "size" : 9,
+        "children" : [ ]
+      }, {
+        "name" : "notification.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "article_url_keyword_map.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "user_article.py (40)",
+        "color" : "",
+        "size" : 40,
+        "children" : [ ]
+      }, {
+        "name" : "article_topic_map.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "exercise_outcome.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      }, {
+        "name" : "user_video.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "yt_channel.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "sorted_exercise_log.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      }, {
+        "name" : "cohort_article_map.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      }, {
+        "name" : "video_tag.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "source_type.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "article_classification.py (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      }, {
+        "name" : "session.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "meaning_frequency_classifier.py (13)",
+        "color" : "",
+        "size" : 13,
+        "children" : [ ]
+      }, {
+        "name" : "user_notification.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "audio_lesson_meaning.py (27)",
+        "color" : "",
+        "size" : 27,
+        "children" : [ ]
+      }, {
+        "name" : "__init__.py (58)",
+        "color" : "",
+        "size" : 58,
+        "children" : [ ]
+      }, {
+        "name" : "example_sentence.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "monthly_activity_stats_cache.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "search_filter.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "feed.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "phrase.py (10)",
+        "color" : "",
+        "size" : 10,
+        "children" : [ ]
+      }, {
+        "name" : "badge.py (23)",
+        "color" : "",
+        "size" : 23,
+        "children" : [ ]
+      }, {
+        "name" : "user_preference.py (8)",
+        "color" : "",
+        "size" : 8,
+        "children" : [ ]
+      }, {
+        "name" : "article_title_context.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      }, {
+        "name" : "grammar_correction_log.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      }, {
+        "name" : "user_activitiy_data.py (8)",
+        "color" : "",
+        "size" : 8,
+        "children" : [ ]
+      }, {
+        "name" : "monthly_active_users_cache.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "feedback_component.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      }, {
+        "name" : "daily_audio_lesson_segment.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      }, {
+        "name" : "user_reading_session.py (7)",
+        "color" : "",
+        "size" : 7,
+        "children" : [ ]
+      }, {
+        "name" : "friend_request.py (43)",
+        "color" : "",
+        "size" : 43,
+        "children" : [ ]
+      }, {
+        "name" : "user_badge_progress.py (9)",
+        "color" : "",
+        "size" : 9,
+        "children" : [ ]
+      }, {
+        "name" : "bookmark.py (43)",
+        "color" : "",
+        "size" : 43,
+        "children" : [ ]
+      }, {
+        "name" : "search_subscription.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      }, {
+        "name" : "meaning.py (38)",
+        "color" : "",
+        "size" : 38,
+        "children" : [ ]
+      }, {
+        "name" : "audio_lesson_dialogue.py (11)",
+        "color" : "",
+        "size" : 11,
+        "children" : [ ]
+      }, {
+        "name" : "url.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "caption.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      }, {
+        "name" : "user_word.py (46)",
+        "color" : "",
+        "size" : 46,
+        "children" : [ ]
+      }, {
+        "name" : "meaning_report.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      }, {
+        "name" : "exercise.py (6)",
+        "color" : "",
+        "size" : 6,
+        "children" : [ ]
+      }, {
+        "name" : "article_fragment.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "example_sentence_context.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "badge_category.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      }, {
+        "name" : "context_identifier.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      }, {
+        "name" : "daily_audio_lesson_wrapper.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "article_broken_code_map.py (6)",
+        "color" : "",
+        "size" : 6,
+        "children" : [ ]
+      }, {
+        "name" : "daily_audio_lesson.py (28)",
+        "color" : "",
+        "size" : 28,
+        "children" : [ ]
+      }, {
+        "name" : "text.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      }, {
+        "name" : "video_topic_map.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "language.py (6)",
+        "color" : "",
+        "size" : 6,
+        "children" : [ ]
+      }, {
+        "name" : "topic.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      }, {
+        "name" : "user_exercise_session.py (10)",
+        "color" : "",
+        "size" : 10,
+        "children" : [ ]
+      }, {
+        "name" : "user_mwe_override.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "search.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      }, {
+        "name" : "source_text.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "context_type.py (6)",
+        "color" : "",
+        "size" : 6,
+        "children" : [ ]
+      }, {
+        "name" : "new_text.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "ai_generator.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      }, {
+        "name" : "user_avatar.py (15)",
+        "color" : "",
+        "size" : 15,
+        "children" : [ ]
+      }, {
+        "name" : "video_caption_context.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      }, {
+        "name" : "user_badge.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      }, {
+        "name" : "topic_subscription.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "video_tag_map.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "exercise_source.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "exercise_report.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      }, {
+        "name" : "domain_name.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "validation_log.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "video_title_context.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      }, {
+        "name" : "video.py (6)",
+        "color" : "",
+        "size" : 6,
+        "children" : [ ]
+      }, {
+        "name" : "topic_filter.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "source.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      }, {
+        "name" : "translation_search.py (7)",
+        "color" : "",
+        "size" : 7,
+        "children" : [ ]
+      }, {
+        "name" : "user_listening_session.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      }, {
+        "name" : "audio_lesson_generation_progress.py (20)",
+        "color" : "",
+        "size" : 20,
+        "children" : [ ]
+      }, {
+        "name" : "user_watching_session.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      }, {
+        "name" : "unique_code.py (10)",
+        "color" : "",
+        "size" : 10,
+        "children" : [ ]
+      }, {
+        "name" : "article_upload.py (9)",
+        "color" : "",
+        "size" : 9,
+        "children" : [ ]
+      }, {
+        "name" : "bookmark_context.py (6)",
+        "color" : "",
+        "size" : 6,
+        "children" : [ ]
+      }, {
+        "name" : "article.py (75)",
+        "color" : "",
+        "size" : 75,
+        "children" : [ ]
+      }, {
+        "name" : "user_feedback.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "leaderboards",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "__init__.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      }, {
+        "name" : "leaderboards.py (16)",
+        "color" : "",
+        "size" : 16,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "content_cleaning",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "unicode_normalization.py (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      }, {
+        "name" : "content_cleaner.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "crowd_translations",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "__init__.py (6)",
+        "color" : "",
+        "size" : 6,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "nlp_pipeline",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "spacy_wrapper.py (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "bookmark_quality",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "fit_for_study.py (9)",
+        "color" : "",
+        "size" : 9,
+        "children" : [ ]
+      }, {
+        "name" : "__init__.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "negative_qualities.py (20)",
+        "color" : "",
+        "size" : 20,
+        "children" : [ ]
+      }, {
+        "name" : "positive_qualities.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "friends",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "friend_streak.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      }, {
+        "name" : "listeners.py (13)",
+        "color" : "",
+        "size" : 13,
+        "children" : [ ]
+      }, {
+        "name" : "__init__.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "semantic_search",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "elastic_semantic_search.py (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "mwe",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "llm_mwe_detector.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "stanza_mwe_detector.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      }, {
+        "name" : "__init__.py (9)",
+        "color" : "",
+        "size" : 9,
+        "children" : [ ]
+      }, {
+        "name" : "enricher.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "events",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "__init__.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "translation_services",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "__init__.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "azure_alignment.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "translator.py (7)",
+        "color" : "",
+        "size" : 7,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "emailer",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "email_confirmation.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "zeeguu_mailer.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      }, {
+        "name" : "user_activity.py (8)",
+        "color" : "",
+        "size" : 8,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "badges",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "listeners.py (21)",
+        "color" : "",
+        "size" : 21,
+        "children" : [ ]
+      }, {
+        "name" : "__init__.py (6)",
+        "color" : "",
+        "size" : 6,
+        "children" : [ ]
+      }, {
+        "name" : "badge_progress.py (26)",
+        "color" : "",
+        "size" : 26,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "feed_handler",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "rssfeed.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      }, {
+        "name" : "newspaperfeed.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "llm_services",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "simplification_and_classification.py (21)",
+        "color" : "",
+        "size" : 21,
+        "children" : [ ]
+      }, {
+        "name" : "__init__.py (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      }, {
+        "name" : "simplification_service.py (17)",
+        "color" : "",
+        "size" : 17,
+        "children" : [ ]
+      }, {
+        "name" : "llm_service.py (6)",
+        "color" : "",
+        "size" : 6,
+        "children" : [ ]
+      }, {
+        "name" : "translation_validator.py (10)",
+        "color" : "",
+        "size" : 10,
+        "children" : [ ]
+      }, {
+        "name" : "grammar_correction_service.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "anthropic_service.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      }, {
+        "name" : "prompts",
+        "color" : "",
+        "size" : 0,
+        "children" : [ {
+          "name" : "grammar_correction.py (2)",
+          "color" : "",
+          "size" : 2,
+          "children" : [ ]
+        }, {
+          "name" : "meaning_frequency_classifier.py (3)",
+          "color" : "",
+          "size" : 3,
+          "children" : [ ]
+        }, {
+          "name" : "__init__.py (1)",
+          "color" : "grey",
+          "size" : 1,
+          "children" : [ ]
+        }, {
+          "name" : "example_generation.py (6)",
+          "color" : "",
+          "size" : 6,
+          "children" : [ ]
+        }, {
+          "name" : "translation_validator.py (13)",
+          "color" : "",
+          "size" : 13,
+          "children" : [ ]
+        }, {
+          "name" : "article_simplification.py (14)",
+          "color" : "",
+          "size" : 14,
+          "children" : [ ]
+        }, {
+          "name" : "learning_card_generator.py (2)",
+          "color" : "",
+          "size" : 2,
+          "children" : [ ]
+        } ]
+      }, {
+        "name" : "deepseek_service.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "mwe_translation_service.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      }, {
+        "name" : "validation_service.py (14)",
+        "color" : "",
+        "size" : 14,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "sql",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "query_building.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "learner",
+        "color" : "",
+        "size" : 0,
+        "children" : [ {
+          "name" : "exercises_history.py (7)",
+          "color" : "",
+          "size" : 7,
+          "children" : [ ]
+        }, {
+          "name" : "words.py (8)",
+          "color" : "",
+          "size" : 8,
+          "children" : [ ]
+        } ]
+      } ]
+    } ]
+  }, {
+    "name" : "operations",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "crawler",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "crawl.py (10)",
+        "color" : "",
+        "size" : 10,
+        "children" : [ ]
+      }, {
+        "name" : "article_crawler.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "feed_retrieval.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "video_crawler.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "crawl_report.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "__init__.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "monitoring",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "__init__.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "report_generator",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "data_extractor.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      }, {
+        "name" : "__init__.py (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      }, {
+        "name" : "generate_report.py (5)",
+        "color" : "",
+        "size" : 5,
+        "children" : [ ]
+      }, {
+        "name" : "explore_report_notebook.ipynb (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      } ]
+    } ]
+  }, {
+    "name" : "api",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "endpoints",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "user_articles.py (20)",
+        "color" : "",
+        "size" : 20,
+        "children" : [ ]
+      }, {
+        "name" : "user_stats.py (22)",
+        "color" : "",
+        "size" : 22,
+        "children" : [ ]
+      }, {
+        "name" : "user.py (75)",
+        "color" : "",
+        "size" : 75,
+        "children" : [ ]
+      }, {
+        "name" : "user_preferences.py (12)",
+        "color" : "",
+        "size" : 12,
+        "children" : [ ]
+      }, {
+        "name" : "user_notifications.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "exercise_sessions.py (9)",
+        "color" : "",
+        "size" : 9,
+        "children" : [ ]
+      }, {
+        "name" : "sessions.py (12)",
+        "color" : "",
+        "size" : 12,
+        "children" : [ ]
+      }, {
+        "name" : "crawl_stats.py (9)",
+        "color" : "",
+        "size" : 9,
+        "children" : [ ]
+      }, {
+        "name" : "cefr_assessment.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "own_texts.py (9)",
+        "color" : "",
+        "size" : 9,
+        "children" : [ ]
+      }, {
+        "name" : "friends.py (85)",
+        "color" : "",
+        "size" : 85,
+        "children" : [ ]
+      }, {
+        "name" : "browsing_sessions.py (10)",
+        "color" : "",
+        "size" : 10,
+        "children" : [ ]
+      }, {
+        "name" : "listening_sessions.py (14)",
+        "color" : "",
+        "size" : 14,
+        "children" : [ ]
+      }, {
+        "name" : "reading_sessions.py (15)",
+        "color" : "",
+        "size" : 15,
+        "children" : [ ]
+      }, {
+        "name" : "accounts.py (22)",
+        "color" : "",
+        "size" : 22,
+        "children" : [ ]
+      }, {
+        "name" : "daily_streak.py (58)",
+        "color" : "",
+        "size" : 58,
+        "children" : [ ]
+      }, {
+        "name" : "teacher_dashboard",
+        "color" : "",
+        "size" : 0,
+        "children" : [ {
+          "name" : "cohorts.py (5)",
+          "color" : "",
+          "size" : 5,
+          "children" : [ ]
+        }, {
+          "name" : "student_readings.py (2)",
+          "color" : "",
+          "size" : 2,
+          "children" : [ ]
+        }, {
+          "name" : "student_overviews.py (2)",
+          "color" : "",
+          "size" : 2,
+          "children" : [ ]
+        }, {
+          "name" : "article_management.py (2)",
+          "color" : "",
+          "size" : 2,
+          "children" : [ ]
+        }, {
+          "name" : "student_exercises.py (2)",
+          "color" : "",
+          "size" : 2,
+          "children" : [ ]
+        }, {
+          "name" : "student.py (3)",
+          "color" : "",
+          "size" : 3,
+          "children" : [ ]
+        }, {
+          "name" : "student_words.py (2)",
+          "color" : "",
+          "size" : 2,
+          "children" : [ ]
+        }, {
+          "name" : "general.py (5)",
+          "color" : "",
+          "size" : 5,
+          "children" : [ ]
+        } ]
+      }, {
+        "name" : "user_article.py (10)",
+        "color" : "",
+        "size" : 10,
+        "children" : [ ]
+      }, {
+        "name" : "feature_toggles.py (15)",
+        "color" : "",
+        "size" : 15,
+        "children" : [ ]
+      }, {
+        "name" : "generated_examples.py (35)",
+        "color" : "",
+        "size" : 35,
+        "children" : [ ]
+      }, {
+        "name" : "__init__.py (35)",
+        "color" : "",
+        "size" : 35,
+        "children" : [ ]
+      }, {
+        "name" : "session_history.py (8)",
+        "color" : "",
+        "size" : 8,
+        "children" : [ ]
+      }, {
+        "name" : "leaderboards.py (13)",
+        "color" : "",
+        "size" : 13,
+        "children" : [ ]
+      }, {
+        "name" : "article_simplification.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      }, {
+        "name" : "translation.py (80)",
+        "color" : "",
+        "size" : 80,
+        "children" : [ ]
+      }, {
+        "name" : "audio_lessons.py (46)",
+        "color" : "",
+        "size" : 46,
+        "children" : [ ]
+      }, {
+        "name" : "user_languages.py (6)",
+        "color" : "",
+        "size" : 6,
+        "children" : [ ]
+      }, {
+        "name" : "badges.py (53)",
+        "color" : "",
+        "size" : 53,
+        "children" : [ ]
+      }, {
+        "name" : "search.py (8)",
+        "color" : "",
+        "size" : 8,
+        "children" : [ ]
+      }, {
+        "name" : "article_cefr_recompute.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "speech.py (9)",
+        "color" : "",
+        "size" : 9,
+        "children" : [ ]
+      }, {
+        "name" : "activity_tracking.py (17)",
+        "color" : "",
+        "size" : 17,
+        "children" : [ ]
+      }, {
+        "name" : "exercises.py (34)",
+        "color" : "",
+        "size" : 34,
+        "children" : [ ]
+      }, {
+        "name" : "helpers",
+        "color" : "",
+        "size" : 0,
+        "children" : [ {
+          "name" : "activity_sessions.py (20)",
+          "color" : "",
+          "size" : 20,
+          "children" : [ ]
+        } ]
+      }, {
+        "name" : "user_watching_session.py (6)",
+        "color" : "",
+        "size" : 6,
+        "children" : [ ]
+      }, {
+        "name" : "article_upload.py (11)",
+        "color" : "",
+        "size" : 11,
+        "children" : [ ]
+      }, {
+        "name" : "bookmarks_and_words.py (46)",
+        "color" : "",
+        "size" : 46,
+        "children" : [ ]
+      }, {
+        "name" : "article.py (28)",
+        "color" : "",
+        "size" : 28,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "utils",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "background.py (9)",
+        "color" : "",
+        "size" : 9,
+        "children" : [ ]
+      }, {
+        "name" : "rate_limiter.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      }, {
+        "name" : "__init__.py (7)",
+        "color" : "",
+        "size" : 7,
+        "children" : [ ]
+      }, {
+        "name" : "session_helpers.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "caching_decorator.py (4)",
+        "color" : "",
+        "size" : 4,
+        "children" : [ ]
+      }, {
+        "name" : "route_wrappers.py (30)",
+        "color" : "",
+        "size" : 30,
+        "children" : [ ]
+      }, {
+        "name" : "security_checks.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      }, {
+        "name" : "json_result.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "app.py (35)",
+      "color" : "",
+      "size" : 35,
+      "children" : [ ]
+    } ]
+  }, {
+    "name" : "logging",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "__init__.py (4)",
+      "color" : "",
+      "size" : 4,
+      "children" : [ ]
+    } ]
+  } ]
+}, {
+  "name" : "tools",
+  "color" : "",
+  "size" : 0,
+  "children" : [ {
+    "name" : "one_time",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "fix_html_entities_in_articles.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "reindex_articles_with_quotes.py (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "fix_tokenization_cache_html_entities.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "reindex_articles_with_html_entities.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "fix_postillon_topics.py (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "reindex_single_article.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    } ]
+  }, {
+    "name" : "download_feed.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "delete_daily_lesson.py (4)",
+    "color" : "",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "add_videos_and_captions_from_file.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "migrations",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "25-07-31--recalculate_multiword_phrase_ranks.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-12-05--add_is_admin_to_user.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "25-12-11--add_reading_session_id_to_bookmark.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "25-08-13--optimize_viewport_data_format.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-08-02--add_last_seen_to_users.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-10-03-a--add_content_simhash_to_article.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-24-friendship_system.sql (35)",
+      "color" : "",
+      "size" : 35,
+      "children" : [ ]
+    }, {
+      "name" : "25-11-04--add_bookmark_context_userword_index.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-12-a--add_meaning_report.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-22-a--add_translation_explanation.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "26-04-03-c--add_audio_lesson_dialogue.sql (9)",
+      "color" : "",
+      "size" : 9,
+      "children" : [ ]
+    }, {
+      "name" : "25-07-08--add_meaning_frequency_and_phrase_type.sql (4)",
+      "color" : "",
+      "size" : 4,
+      "children" : [ ]
+    }, {
+      "name" : "25-05-23--removed_learning_cycle_column.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-01--add_is_mwe_to_bookmark.sql (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "25-05-21--rename_user_word_to_phrase.sql (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "25-07-09-a--populate_language_id_for_existing_lessons.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-11-22--add_cascade_delete_cohort_article_map.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-10-22--recalculate_single_word_phrase_ranks.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-13--add_exercise_report.sql (4)",
+      "color" : "",
+      "size" : 4,
+      "children" : [ ]
+    }, {
+      "name" : "25-08-09--consolidate_duplicate_meanings.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-11-22-b--drop_user_cohort_id_column.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-08-20--fix_ai_generator_foreign_key.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-01-a--add_mwe_partner_token_i_to_bookmark.sql (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "25-07-09--add_language_to_daily_audio_lesson.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-06--add_email_verified.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-17--simplify_translation_search.sql (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "25-12-11--backfill_reading_session_id_on_bookmarks.py (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "25-08-09--comprehensive_userword_consolidation.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-20--add_platform_to_session_tables.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-16--security_fixes.sql (4)",
+      "color" : "",
+      "size" : 4,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-15--add_learned_time_index.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-03-31--add_topic_suggestion_to_audio_lessons.sql (4)",
+      "color" : "",
+      "size" : 4,
+      "children" : [ ]
+    }, {
+      "name" : "25-08-28--add_article_summary_context.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-08-28-a--add_translation_source_to_bookmark.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-08-12--add_is_user_added_to_user_word.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "26-04-14--add_article_upload.sql (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "25-07-31--add_generated_example_context.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-20--add_exercise_validation.sql (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "25-12-11--add_reading_source_to_session.sql (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "26-04-15--update_user_name_email_collation.sql (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-16-b--set_existing_users_verified.sql (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "25-05-20--migrate_to_word_meaning.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-03--add_tokenized_content_to_cache.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "25-07-16--remove_article_duplicates.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-12-09--add_grammar_correction_log.sql (5)",
+      "color" : "",
+      "size" : 5,
+      "children" : [ ]
+    }, {
+      "name" : "24-12-17--add_article_type.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-12--add_meaning_level_note.sql (4)",
+      "color" : "",
+      "size" : 4,
+      "children" : [ ]
+    }, {
+      "name" : "25-12-05-a--add_browsing_session_id_to_bookmark.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-03-13--fix_exercise_report_reason_enum.sql (4)",
+      "color" : "",
+      "size" : 4,
+      "children" : [ ]
+    }, {
+      "name" : "25-11-11--add-bookmark-position-constraints-strict.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-02-05--add_teacher_language_to_audio_lesson_meaning.sql (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-24-a--add_username.sql (6)",
+      "color" : "",
+      "size" : 6,
+      "children" : [ ]
+    }, {
+      "name" : "25-10-22--recalculate_all_multiword_phrase_ranks.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-02-06--add_audio_lesson_generation_progress.sql (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "25-12-05--add_user_browsing_session.sql (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "25-10-15--add_cefr_assessment_system.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "25-05-24--adding_the_user_word_table.sql (9)",
+      "color" : "",
+      "size" : 9,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-24-b--add_username.py (16)",
+      "color" : "",
+      "size" : 16,
+      "children" : [ ]
+    }, {
+      "name" : "26-03-13--add_user_avatar.sql (5)",
+      "color" : "",
+      "size" : 5,
+      "children" : [ ]
+    }, {
+      "name" : "26-04-07--add_language_id_to_exercise_and_browsing_sessions.sql (4)",
+      "color" : "",
+      "size" : 4,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-22-b--add_literal_meaning.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-22--add_validation_log.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-10--add_monthly_active_users_cache.sql (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "25-12-24--add_user_listening_session.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-04-05--drop_suggestion_from_audio_lesson_meaning.sql (8)",
+      "color" : "",
+      "size" : 8,
+      "children" : [ ]
+    }, {
+      "name" : "25-10-06--add_user_article_broken_report.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-11-22--add_user_created_at.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-07--add_phrase_content_lower_index.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-24-c--add_username.sql (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "26-04-03-b--rename_topic_suggestion_to_suggestion.sql (4)",
+      "color" : "",
+      "size" : 4,
+      "children" : [ ]
+    }, {
+      "name" : "25-07-25--add_user_article_completion_tracking.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-19-a--add_badges.sql (10)",
+      "color" : "",
+      "size" : 10,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-05--add_user_mwe_override.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "25-11-04-a--add_cached_tokenization.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-07-01--add_audio_lesson_tables.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "25-05-21--remove_word_form.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "25-10-07--add_article_classification.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-06--add_cached_tokenized_to_bookmark_context.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "25-08-20-b--fix_remaining_ai_models_foreign_keys.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-07-12--add_simplified_content_fields.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-27--add_daily_streak.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-26--add_max_streak_to_user_language.sql (7)",
+      "color" : "",
+      "size" : 7,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-10-a--add_monthly_activity_stats_cache.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-04-11--add_user_timezone.sql (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "25-10-03--add_performance_indexes.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-19-b--insert_default_badges.sql (11)",
+      "color" : "",
+      "size" : 11,
+      "children" : [ ]
+    }, {
+      "name" : "26-04-03--add_suggestion_type.sql (4)",
+      "color" : "",
+      "size" : 4,
+      "children" : [ ]
+    }, {
+      "name" : "25-09-08--add_hidden_column_to_user_article.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "25-08-13--cleanup_malformed_scroll_data.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-27--add_user_word_interaction_history.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "26-02-09--add_streak_to_user_language.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "25-10-22--fix_codeline_collation.sql (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "26-01-12--add_platform_tracking.sql (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    } ]
+  }, {
+    "name" : "diagnose_recommendations.py (3)",
+    "color" : "",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "delete_bookmarks_word_not_in_context.py (3)",
+    "color" : "",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "fix_feed.py (5)",
+    "color" : "",
+    "size" : 5,
+    "children" : [ ]
+  }, {
+    "name" : "_test_validation.py (1)",
+    "color" : "grey",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "analyze_classroom_recommendations.py (1)",
+    "color" : "grey",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "add_feed.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "delete_portuguese_audio_lessons.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "_playground.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "remove_wrong_videos.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "feed_health_check.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "crawler",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "crawl.py (8)",
+      "color" : "",
+      "size" : 8,
+      "children" : [ ]
+    }, {
+      "name" : "crawl_summary",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "__init__.py (1)",
+        "color" : "grey",
+        "size" : 1,
+        "children" : [ ]
+      }, {
+        "name" : "crawl_report.py (3)",
+        "color" : "",
+        "size" : 3,
+        "children" : [ ]
+      } ]
+    }, {
+      "name" : "article_crawler.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "crawl_roundrobin.py (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "feed_retrieval.py (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "video_crawler.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    } ]
+  }, {
+    "name" : "delete_broken_videos_from_ES.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "update_meaning_frequencies.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "cleanup_todays_examples.py (4)",
+    "color" : "",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "reduce_number_of_studied_bookmarks.py (13)",
+    "color" : "",
+    "size" : 13,
+    "children" : [ ]
+  }, {
+    "name" : "generate_audio_lesson.py (5)",
+    "color" : "",
+    "size" : 5,
+    "children" : [ ]
+  }, {
+    "name" : "delete_user_deleted_articles.py (1)",
+    "color" : "grey",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "delete_duplicate_articles.py (4)",
+    "color" : "",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "cleanup_empty_exercise_sessions.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "regenerate_test_fixture.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "fix_long_summaries.py (3)",
+    "color" : "",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "migrate_daily_streak.py (1)",
+    "color" : "grey",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "old",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "remove_text_duplicates.py (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "add_word_rank.py (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "bookmark_info.py (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "remove_unreferenced_articles.py (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "flatten_unicode_characters.py (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "cleanup_non_content_bits.py (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    } ]
+  }, {
+    "name" : "fix_simplified_articles_html.py (3)",
+    "color" : "",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "cleanup_tokenization_cache.py (1)",
+    "color" : "grey",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "mark_broken_articles.py (6)",
+    "color" : "",
+    "size" : 6,
+    "children" : [ ]
+  }, {
+    "name" : "simplify_article.py (6)",
+    "color" : "",
+    "size" : 6,
+    "children" : [ ]
+  }, {
+    "name" : "untag_simplified_and_user_articles.py (1)",
+    "color" : "grey",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "audio-engleza",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "generate_lesson.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "deploy_lessons.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "generate_script.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "generate_audio.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    } ]
+  }, {
+    "name" : "fix_audio_lesson_teacher_language.py (5)",
+    "color" : "",
+    "size" : 5,
+    "children" : [ ]
+  }, {
+    "name" : "upgrade_to_teacher.py (4)",
+    "color" : "",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "remove_unreferenced_articles.py (5)",
+    "color" : "",
+    "size" : 5,
+    "children" : [ ]
+  }, {
+    "name" : "add_captions_from_file.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "notify_search_subscribers.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "backfill_cefr_assessments.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "tag_advertorials.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "ml",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "__init__.py (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "cefr_trainers",
+      "color" : "",
+      "size" : 0,
+      "children" : [ {
+        "name" : "__init__.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "train_cefr_classifiers_with_frequency.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      }, {
+        "name" : "train_cefr_classifiers.py (2)",
+        "color" : "",
+        "size" : 2,
+        "children" : [ ]
+      } ]
+    } ]
+  }, {
+    "name" : "prefetch_example_sentences_for_users.py (9)",
+    "color" : "",
+    "size" : 9,
+    "children" : [ ]
+  }, {
+    "name" : "user_word_integrity",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "_daily_user_word_integrity_check.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "_delete_unvalidatable_bookmarks.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "_fix_multiword_bookmark_positions.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    }, {
+      "name" : "_check_and_fix_user_word_integrity.py (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "_cleanup_orphaned_user_words.py (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    }, {
+      "name" : "_test_integrity_validation.py (1)",
+      "color" : "grey",
+      "size" : 1,
+      "children" : [ ]
+    } ]
+  }, {
+    "name" : "precompute_upcoming_meaning_lessons.py (11)",
+    "color" : "",
+    "size" : 11,
+    "children" : [ ]
+  }, {
+    "name" : "add_ml_assessment_to_recent_articles.py (1)",
+    "color" : "grey",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "remove_sub_bookmarks_from_text.py (6)",
+    "color" : "",
+    "size" : 6,
+    "children" : [ ]
+  }, {
+    "name" : "manual_test_user_report.py (1)",
+    "color" : "grey",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "cleanup_broken_summaries.py (1)",
+    "color" : "grey",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "fix_underscore_examples.py (3)",
+    "color" : "",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "fix_compound_examples.py (3)",
+    "color" : "",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "reclassify_unclassified_phrases.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "cleanup_empty_broken_articles.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "fix_user_over_limit.py (1)",
+    "color" : "grey",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "update_es_available_cefr_levels.py (4)",
+    "color" : "",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "cleanup_greek_audio_lessons.py (4)",
+    "color" : "",
+    "size" : 4,
+    "children" : [ ]
+  }, {
+    "name" : "validate_and_clean_examples.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "cleanup_summary_formatting.py (2)",
+    "color" : "",
+    "size" : 2,
+    "children" : [ ]
+  }, {
+    "name" : "delete_article_by_url.py (5)",
+    "color" : "",
+    "size" : 5,
+    "children" : [ ]
+  }, {
+    "name" : "activity_monitor.py (3)",
+    "color" : "",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "validate_scheduled_meanings.py (7)",
+    "color" : "",
+    "size" : 7,
+    "children" : [ ]
+  }, {
+    "name" : "anonymize_users.py (3)",
+    "color" : "",
+    "size" : 3,
+    "children" : [ ]
+  }, {
+    "name" : "report_generator",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "data_extractor.py (8)",
+      "color" : "",
+      "size" : 8,
+      "children" : [ ]
+    }, {
+      "name" : "generate_report.py (2)",
+      "color" : "",
+      "size" : 2,
+      "children" : [ ]
+    } ]
+  }, {
+    "name" : "stiri-simple",
+    "color" : "",
+    "size" : 0,
+    "children" : [ {
+      "name" : "generate_news_page.py (3)",
+      "color" : "",
+      "size" : 3,
+      "children" : [ ]
+    }, {
+      "name" : "deploy_to_news.py (7)",
+      "color" : "",
+      "size" : 7,
+      "children" : [ ]
+    } ]
+  }, {
+    "name" : "recalculate_all_word_ranks.py (1)",
+    "color" : "grey",
+    "size" : 1,
+    "children" : [ ]
+  }, {
+    "name" : "update_bookmark_pointers.py (7)",
+    "color" : "",
+    "size" : 7,
+    "children" : [ ]
+  } ]
+}, {
+  "name" : "pyproject.toml (5)",
+  "color" : "",
+  "size" : 5,
+  "children" : [ ]
+}, {
+  "name" : "install_stanza_models.py (2)",
+  "color" : "",
+  "size" : 2,
+  "children" : [ ]
+}, {
+  "name" : "default_api.cfg (6)",
+  "color" : "",
+  "size" : 6,
+  "children" : [ ]
+} ]
+    }
+
+    root = d3.hierarchy(root)
+        .sum(function (d) {
+            return d.size;
+        })
+        .sort(function (a, b) {
+            return b.value - a.value;
+        });
+
+    var focus = root,
+        nodes = pack(root).descendants(),
+        view;
+
+    var circle = g.selectAll("circle")
+        .data(nodes)
+        .enter().append("circle")
+        .attr("class", function (d) {
+            return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root";
+        })
+        .style("fill", function (d) {
+            return d.children ? color(d.depth) : (d.data.color ? d.data.color : null);
+        })
+        .on("click", function (d) {
+            if (focus !== d) zoom(d), d3.event.stopPropagation();
+        });
+
+    var text = g.selectAll("text")
+        .data(nodes)
+        .enter().append("text")
+        .attr("class", "label")
+        .style("fill-opacity", function (d) {
+            return d.parent === root ? 1 : 0;
+        })
+        .style("display", function (d) {
+            return d.parent === root ? "inline" : "none";
+        })
+        .text(function (d) {
+            return d.data.name.length > 33 ? (d.data.name.substr(0, 14) + "..." + d.data.name.substr(d.data.name.length - 14))  : d.data.name;
+        });
+
+    var node = g.selectAll("circle,text");
+
+    svg
+        .style("background", color(-1))
+        .on("click", function () {
+            zoom(root);
+        });
+
+    zoomTo([root.x, root.y, root.r * 2 + margin]);
+
+    function zoom(d) {
+        var focus0 = focus;
+        focus = d;
+
+        var transition = d3.transition()
+            .duration(d3.event.altKey ? 7500 : 750)
+            .tween("zoom", function (d) {
+                var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
+                return function (t) {
+                    zoomTo(i(t));
+                };
+            });
+
+        transition.selectAll("text")
+            .filter(function (d) {
+                return d.parent === focus || this.style.display === "inline";
+            })
+            .style("fill-opacity", function (d) {
+                return d.parent === focus ? 1 : 0;
+            })
+            .on("start", function (d) {
+                if (d.parent === focus) this.style.display = "inline";
+            })
+            .on("end", function (d) {
+                if (d.parent !== focus) this.style.display = "none";
+            });
+    }
+
+    function zoomTo(v) {
+        var k = diameter / v[2];
+        view = v;
+        node.attr("transform", function (d) {
+            return "translate(" + (d.x - v[0]) * k + "," + (d.y - v[1]) * k + ")";
+        });
+        circle.attr("r", function (d) {
+            return d.r * k;
+        });
+    }
+
+</script>

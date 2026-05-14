@@ -1,0 +1,149 @@
+<html>
+<head>
+    <title>def update_bookmark_full()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def update_bookmark_full()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/api/endpoints/translation.py [0:0]</i></p>
+<ul>
+    <li><b>73</b> lines of code</li>
+    <li><b>27</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def update_bookmark_full(bookmark_id):
+    &quot;&quot;&quot;
+    Full bookmark update - can change word, translation, and/or context.
+
+    Used from WordEditForm where user can edit everything.
+
+    This endpoint handles complex logic including:
+    - Switching to new UserWord if meaning changed
+    - Transferring learning progress (schedule, exercises, preferences)
+    - Cleaning up orphaned UserWords
+    - Validating word position in context
+
+    See docs/BOOKMARK_UPDATE_LOGIC.md for detailed documentation.
+
+    :param bookmark_id: ID of bookmark to update
+    :return: Updated bookmark as JSON, or error response
+    &quot;&quot;&quot;
+    from zeeguu.core.bookmark_operations.update_bookmark import (
+        parse_update_params,
+        find_or_create_meaning,
+        find_or_create_context,
+        transfer_learning_progress,
+        cleanup_old_user_word,
+        validate_and_update_position,
+        format_response,
+        BookmarkValidationError,
+    )
+
+    print(f&quot;[UPDATE_BOOKMARK] ========== START: bookmark_id={bookmark_id} ==========&quot;)
+
+    # Step 1: Parse and validate input
+    bookmark = Bookmark.find(bookmark_id)
+    params = parse_update_params(request.json, bookmark)
+
+    # Unpack variables for readability
+    word_str = params['word_str']
+    translation_str = params['translation_str']
+    context_str = params['context_str']
+    context_type = params['context_type']
+    origin_lang_code = params['origin_lang_code']
+    translation_lang_code = params['translation_lang_code']
+
+    # Step 2: Find or create new meaning (word/translation pair)
+    meaning = find_or_create_meaning(
+        db_session, word_str, origin_lang_code, translation_str, translation_lang_code
+    )
+
+    # Step 3: Check if word or context changed
+    # If both unchanged, we skip context recreation to preserve position data
+    old_user_word = bookmark.user_word
+    word_unchanged = old_user_word.meaning.origin.content == word_str
+    context_unchanged = bookmark.context and bookmark.context.text.content == context_str
+
+    if word_unchanged and context_unchanged:
+        # Translation-only update: keep existing text and context
+        print(f&quot;[UPDATE_BOOKMARK] Word and context unchanged, keeping existing to preserve position&quot;)
+        text = bookmark.text
+        context = bookmark.context
+    else:
+        # Word or context changed: need to find/create new text and context
+        text, context = find_or_create_context(db_session, context_str, context_type, bookmark)
+
+    # Step 4: Find or create UserWord for new meaning
+    # Save original context/text info BEFORE reassigning (needed for change detection later)
+    old_context_id = bookmark.context_id
+    old_text_id = bookmark.text_id
+    print(
+        f&quot;[UPDATE_BOOKMARK] Old UserWord: {old_user_word.id}, word: '{old_user_word.meaning.origin.content}'&quot;
+    )
+
+    new_user_word = UserWord.find_or_create(
+        db_session, bookmark.user_word.user, meaning
+    )
+    print(
+        f&quot;[UPDATE_BOOKMARK] New UserWord: {new_user_word.id}, word: '{new_user_word.meaning.origin.content}'&quot;
+    )
+
+    # Step 5: Transfer learning progress if UserWord changed
+    if new_user_word.id != old_user_word.id:
+        transfer_learning_progress(db_session, old_user_word, new_user_word, bookmark)
+
+    # Step 6: Reassign bookmark to new entities
+    bookmark.user_word_id = new_user_word.id
+    bookmark.text = text
+    bookmark.context = context
+    db_session.add(bookmark)
+    # Flush bookmark reassignment BEFORE setting preferred_bookmark_id
+    # This ensures the validation sees the updated user_word_id
+    db_session.flush()
+    print(f&quot;[UPDATE_BOOKMARK] Reassigned bookmark to UserWord {new_user_word.id}&quot;)
+
+    # Set preferred_bookmark_id AFTER reassignment (if UserWord changed and doesn't have one)
+    if new_user_word.id != old_user_word.id and not new_user_word.preferred_bookmark:
+        new_user_word.preferred_bookmark_id = bookmark.id
+        db_session.add(new_user_word)
+        print(f&quot;[UPDATE_BOOKMARK] Set preferred_bookmark_id to {bookmark.id}&quot;)
+
+    # Step 7: Clean up old UserWord
+    if new_user_word.id != old_user_word.id:
+        cleanup_old_user_word(db_session, old_user_word, bookmark)
+    else:
+        print(
+            f&quot;[UPDATE_BOOKMARK] Same UserWord (ID: {new_user_word.id}), no cleanup needed&quot;
+        )
+
+    # Step 8: Validate word position if word OR context changed
+    # We skip validation only for pure translation-only changes because:
+    # 1. The bookmark already has valid position data (sentence_i, token_i, total_tokens)
+    # 2. Re-tokenization is fragile (e.g., &quot;l-a&quot; vs &quot;l-&quot; + &quot;a&quot; tokenization differences)
+    # 3. Context string reconstruction from tokens may differ from stored context
+    if not (word_unchanged and context_unchanged):
+        print(f&quot;[UPDATE_BOOKMARK] Word or context changed, validating position...&quot;)
+        try:
+            validate_and_update_position(bookmark, word_str, context_str)
+        except BookmarkValidationError as e:
+            return json_result(e.as_dict(), status=400)
+    else:
+        print(f&quot;[UPDATE_BOOKMARK] Word and context unchanged, skipping position validation&quot;)
+
+    # Step 9: Commit changes and return response
+    db_session.add(bookmark)
+    db_session.commit()
+
+    # Refresh to get latest fit_for_study status
+    db_session.refresh(new_user_word)
+
+    return json_result(format_response(bookmark, new_user_word))
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

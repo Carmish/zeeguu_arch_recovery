@@ -1,0 +1,236 @@
+[ {
+  "key" : "primary",
+  "components" : [ {
+    "name" : "stanza_service",
+    "filesCount" : 3,
+    "linesOfCode" : 362,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 3,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 362,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "zeeguu",
+    "filesCount" : 351,
+    "linesOfCode" : 38002,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 349,
+      "description" : [ ]
+    }, {
+      "name" : "  *.ipynb",
+      "value" : 1,
+      "description" : [ ]
+    }, {
+      "name" : "  *.sql",
+      "value" : 1,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 33648,
+      "description" : [ ]
+    }, {
+      "name" : "  *.ipynb",
+      "value" : 4327,
+      "description" : [ ]
+    }, {
+      "name" : "  *.sql",
+      "value" : 27,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "tools",
+    "filesCount" : 285,
+    "linesOfCode" : 19746,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 149,
+      "description" : [ ]
+    }, {
+      "name" : "  *.ipynb",
+      "value" : 1,
+      "description" : [ ]
+    }, {
+      "name" : "  *.sql",
+      "value" : 135,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 13019,
+      "description" : [ ]
+    }, {
+      "name" : "  *.ipynb",
+      "value" : 4327,
+      "description" : [ ]
+    }, {
+      "name" : "  *.sql",
+      "value" : 2400,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "ROOT",
+    "filesCount" : 11,
+    "linesOfCode" : 203,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 4,
+      "description" : [ ]
+    }, {
+      "name" : "  *.cfg",
+      "value" : 5,
+      "description" : [ ]
+    }, {
+      "name" : "  *.toml",
+      "value" : 1,
+      "description" : [ ]
+    }, {
+      "name" : "  *.in",
+      "value" : 1,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 100,
+      "description" : [ ]
+    }, {
+      "name" : "  *.cfg",
+      "value" : 64,
+      "description" : [ ]
+    }, {
+      "name" : "  *.toml",
+      "value" : 38,
+      "description" : [ ]
+    }, {
+      "name" : "  *.in",
+      "value" : 1,
+      "description" : [ ]
+    } ]
+  } ],
+  "componentDependencies" : [ ],
+  "componentDependenciesErrors" : [ ],
+  "logicalDecomposition" : {
+    "name" : "primary",
+    "scope" : "main",
+    "filters" : [ ],
+    "componentsFolderDepth" : 1,
+    "minComponentsCount" : 0,
+    "components" : [ {
+      "name" : "stanza_service",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./stanza_service/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "zeeguu",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./zeeguu/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "tools",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./tools/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "ROOT",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      }, {
+        "pathPattern" : "./stanza_service/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./zeeguu/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    } ],
+    "metaComponents" : [ ],
+    "groups" : [ ],
+    "includeRemainingFiles" : true,
+    "dependenciesFinder" : {
+      "useBuiltInDependencyFinders" : true,
+      "rules" : [ ],
+      "metaRules" : [ ]
+    },
+    "renderingOptions" : {
+      "orientation" : "TB",
+      "maxNumberOfDependencies" : 100,
+      "renderComponentsWithoutDependencies" : true,
+      "renderIndirectDependencies" : false,
+      "renderInternalIndirectDependencies" : false,
+      "reverseDirection" : false
+    },
+    "includeExternalComponents" : true,
+    "dependencyLinkThreshold" : 1,
+    "duplicationLinkThreshold" : 50,
+    "temporalLinkThreshold" : 1,
+    "maxSearchDepthLines" : 200
+  },
+  "fileCountPerComponent" : [ {
+    "name" : "stanza_service",
+    "value" : 3,
+    "description" : [ ]
+  }, {
+    "name" : "zeeguu",
+    "value" : 351,
+    "description" : [ ]
+  }, {
+    "name" : "tools",
+    "value" : 285,
+    "description" : [ ]
+  }, {
+    "name" : "ROOT",
+    "value" : 11,
+    "description" : [ ]
+  } ],
+  "linesOfCodePerComponent" : [ {
+    "name" : "stanza_service",
+    "value" : 362,
+    "description" : [ ]
+  }, {
+    "name" : "zeeguu",
+    "value" : 38002,
+    "description" : [ ]
+  }, {
+    "name" : "tools",
+    "value" : 19746,
+    "description" : [ ]
+  }, {
+    "name" : "ROOT",
+    "value" : 203,
+    "description" : [ ]
+  } ]
+} ]

@@ -1,0 +1,195 @@
+<html>
+<head>
+    <title>def main()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def main()</h3>
+<p style="margin-top: 4px">in <i>tools/validate_and_clean_examples.py [0:0]</i></p>
+<ul>
+    <li><b>135</b> lines of code</li>
+    <li><b>19</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def main():
+    &quot;&quot;&quot;Main function to validate and clean examples&quot;&quot;&quot;
+
+    print(&quot;Starting validation of example sentences...&quot;)
+    print(&quot;=&quot; * 60)
+
+    # Get total count
+    total_count = db_session.query(ExampleSentence).count()
+    print(f&quot;Total example sentences in database: {total_count}&quot;)
+
+    # Get all examples with their meanings
+    query = (
+        db_session.query(
+            ExampleSentence.id,
+            ExampleSentence.sentence,
+            ExampleSentence.translation,
+            Phrase.content.label(&quot;word&quot;),
+            Phrase.language_id,
+        )
+        .join(Meaning, ExampleSentence.meaning_id == Meaning.id)
+        .join(Phrase, Meaning.origin_id == Phrase.id)
+    )
+
+    # Also get the translation
+    translation_subquery = (
+        db_session.query(
+            Meaning.id.label(&quot;meaning_id&quot;), Phrase.content.label(&quot;translation_word&quot;)
+        ).join(Phrase, Meaning.translation_id == Phrase.id)
+    ).subquery()
+
+    examples = (
+        query.join(
+            translation_subquery,
+            ExampleSentence.meaning_id == translation_subquery.c.meaning_id,
+        )
+        .add_column(translation_subquery.c.translation_word)
+        .all()
+    )
+
+    print(f&quot;Retrieved {len(examples)} examples for validation&quot;)
+
+    # Initialize Anthropic client
+    client = get_anthropic_client()
+
+    # Import needed for checking bookmarks
+    from zeeguu.core.model import ExampleSentenceContext
+
+    # Process in batches
+    all_wrong_ids = set()
+    all_deleted_ids = set()
+    all_linked_ids = set()
+
+    for i in range(0, len(examples), BATCH_SIZE):
+        batch_examples = examples[i : i + BATCH_SIZE]
+        batch_num = (i // BATCH_SIZE) + 1
+        total_batches = (len(examples) + BATCH_SIZE - 1) // BATCH_SIZE
+
+        print(f&quot;\nProcessing batch {batch_num}/{total_batches}...&quot;)
+
+        # Prepare batch for validation
+        batch_data = []
+        batch_lookup = {}  # Map ID to full example data
+        for ex in batch_examples:
+            batch_data.append(
+                {
+                    &quot;id&quot;: ex.id,
+                    &quot;word&quot;: ex.word,
+                    &quot;translation&quot;: ex.translation_word,
+                    &quot;sentence&quot;: ex.sentence,
+                    &quot;sentence_translation&quot;: ex.translation,
+                }
+            )
+            batch_lookup[ex.id] = ex
+
+        # Validate this batch with retry logic for rate limits
+        retry_count = 0
+        max_retries = 3
+        wrong_ids = set()
+
+        while retry_count &lt; max_retries:
+            try:
+                wrong_ids = validate_examples_batch(client, batch_data)
+                break  # Success, exit retry loop
+            except Exception as e:
+                if &quot;rate_limit_error&quot; in str(e) or &quot;429&quot; in str(e):
+                    retry_count += 1
+                    if retry_count &lt; max_retries:
+                        wait_time = 60 * retry_count  # Wait 60s, 120s, 180s
+                        print(
+                            f&quot;  Rate limited. Waiting {wait_time} seconds before retry {retry_count}/{max_retries}...&quot;
+                        )
+                        time.sleep(wait_time)
+                    else:
+                        print(
+                            f&quot;  Skipping batch after {max_retries} rate limit retries&quot;
+                        )
+                        wrong_ids = set()
+                else:
+                    # Not a rate limit error, treat as validation failure
+                    wrong_ids = set()
+                    break
+
+        if wrong_ids:
+            print(f&quot;  Found {len(wrong_ids)} incorrect examples&quot;)
+            all_wrong_ids.update(wrong_ids)
+
+            # Check which ones are linked to bookmarks
+            linked_in_batch = set(
+                row[0]
+                for row in db_session.query(ExampleSentenceContext.example_sentence_id)
+                .filter(ExampleSentenceContext.example_sentence_id.in_(wrong_ids))
+                .all()
+            )
+
+            deletable_in_batch = wrong_ids - linked_in_batch
+
+            # Print details of incorrect examples before deleting
+            for wrong_id in wrong_ids:
+                if wrong_id in batch_lookup:
+                    ex = batch_lookup[wrong_id]
+                    print(f&quot;    ID {ex.id}: '{ex.word}' &rarr; '{ex.translation_word}'&quot;)
+                    print(f&quot;      Sentence: {ex.sentence}&quot;)
+                    if wrong_id in linked_in_batch:
+                        print(f&quot;      ⚠️  SKIPPED - linked to bookmark&quot;)
+                        all_linked_ids.add(wrong_id)
+                    else:
+                        print(f&quot;      ✗ DELETING - uses wrong meaning&quot;)
+
+            # Delete the incorrect examples that aren't linked
+            if deletable_in_batch:
+                deleted_count = (
+                    db_session.query(ExampleSentence)
+                    .filter(ExampleSentence.id.in_(deletable_in_batch))
+                    .delete(synchronize_session=False)
+                )
+                db_session.commit()
+                all_deleted_ids.update(deletable_in_batch)
+                print(f&quot;  ✓ Deleted {deleted_count} incorrect examples&quot;)
+        else:
+            print(f&quot;  All examples in this batch are correct&quot;)
+
+        # Add a small delay between batches to avoid rate limits
+        if i + BATCH_SIZE &lt; len(examples):  # Don't delay after the last batch
+            time.sleep(10)
+
+    print(&quot;\n&quot; + &quot;=&quot; * 60)
+    print(f&quot;Validation and cleanup complete!&quot;)
+    print(f&quot;\nSummary:&quot;)
+    print(f&quot;  Total incorrect examples found: {len(all_wrong_ids)}&quot;)
+    print(f&quot;  ✓ Deleted: {len(all_deleted_ids)} examples&quot;)
+    print(f&quot;  ⚠️  Preserved (linked to bookmarks): {len(all_linked_ids)} examples&quot;)
+
+    if all_linked_ids:
+        print(
+            f&quot;\nExamples that couldn't be deleted (linked to bookmarks): {sorted(all_linked_ids)}&quot;
+        )
+
+    if all_deleted_ids:
+        # Count affected meanings
+        print(f&quot;\nNext steps:&quot;)
+        print(
+            f&quot;1. Run the prefetch script to regenerate examples for affected meanings&quot;
+        )
+        print(f&quot;2. New examples will use the v3 prompt which prevents wrong meanings&quot;)
+    elif all_wrong_ids:
+        print(
+            f&quot;\nAll incorrect examples are linked to bookmarks and couldn't be deleted.&quot;
+        )
+        print(
+            f&quot;Consider manually updating these bookmarks or regenerating the examples.&quot;
+        )
+    else:
+        print(&quot;\nAll examples appear to be using the correct meanings!&quot;)
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

@@ -1,0 +1,96 @@
+<html>
+<head>
+    <title>def is_too_complex_or_long()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def is_too_complex_or_long()</h3>
+<p style="margin-top: 4px">in <i>tools/stiri-simple/generate_news_page.py [0:0]</i></p>
+<ul>
+    <li><b>45</b> lines of code</li>
+    <li><b>21</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def is_too_complex_or_long(article):
+    &quot;&quot;&quot;
+    Determina daca un articol este prea complex sau prea lung pentru nivelul A2.
+    &quot;&quot;&quot;
+    # Complex vocabulary that might be difficult for A2 learners
+    complex_keywords = [
+        # Political/Economic jargon
+        'restructurare', 'reorganizare', 'implementare', 'reglementare', 'legislație',
+        'amendament', 'constituțional', 'parlamentar', 'guvernamental', 'administrativ',
+        'bugetar', 'fiscal', 'monetary', 'investiții', 'finanțare', 'creditare',
+        'inflație', 'devaluare', 'recesiune', 'dezvoltare economică',
+        
+        # Legal/Administrative terms
+        'procedură', 'juridic', 'proces-verbal', 'hotăr&acirc;re judecătorească', 
+        'instanță', 'tribunal', 'curtea de apel', 'casație', 'normativ',
+        'ordonanță', 'metodologie', 'reglementări', 'legislativ',
+        'influențare', 'numiri', 'transparență', 'negocieri secrete',
+        
+        # Medical/Scientific terms
+        'diagnostic', 'tratament', 'terapie', 'medicație', 'patologie',
+        'chirurgie', 'intervenție', 'analize', 'investigații', 'tehnologii',
+        'cercetare', 'studiu clinic', 'metodă', 'procedeu', 'sistem',
+        
+        # Complex concepts
+        'strategie', 'implementare', 'dezvoltare', 'modernizare', 'digitalizare',
+        'transformare', 'optimizare', 'eficientizare', 'reorganizare',
+        'restructurare', 'consolidare', 'diversificare',
+        
+        # Foreign terms commonly used
+        'management', 'marketing', 'leadership', 'business', 'startup',
+        'corporate', 'networking', 'outsourcing', 'freelancer'
+    ]
+    
+    # Combine title, summary and first part of content
+    text_to_analyze = []
+    if article.title:
+        text_to_analyze.append(article.title.lower())
+    if article.summary:
+        text_to_analyze.append(article.summary.lower())
+    if article.content:
+        text_to_analyze.append(article.content[:300].lower())
+    
+    full_text = ' '.join(text_to_analyze)
+    
+    # Check length - title should be reasonable for A2
+    if article.title and len(article.title) &gt; 70:
+        return True
+        
+    # Check summary length - should be concise
+    if article.summary and len(article.summary) &gt; 180:
+        return True
+    
+    # Check content length - not too long for A2 readers
+    if article.content and len(article.content) &gt; 1500:
+        return True
+    
+    # Count complex words in the text
+    complex_word_count = 0
+    for keyword in complex_keywords:
+        if keyword in full_text:
+            complex_word_count += 1
+    
+    # If too many complex words, filter out
+    if complex_word_count &gt; 2:
+        return True
+    
+    # Check for very long sentences (might be too complex)
+    if article.content:
+        sentences = article.content.split('.')
+        for sentence in sentences[:3]:  # Check first 3 sentences
+            if len(sentence.strip()) &gt; 150:  # Very long sentence
+                return True
+    
+    return False
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

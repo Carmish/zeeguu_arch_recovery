@@ -1,0 +1,146 @@
+<html>
+<head>
+    <title>def _fix_bookmark()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def _fix_bookmark()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/llm_services/validation_service.py [0:0]</i></p>
+<ul>
+    <li><b>81</b> lines of code</li>
+    <li><b>5</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+    def _fix_bookmark(cls, db_session, user_word, bookmark, validation_result, context=None):
+        &quot;&quot;&quot;
+        Fix bookmark with corrected word/translation.
+
+        Returns the new user_word to use, or None if unfixable.
+        &quot;&quot;&quot;
+        from zeeguu.core.model import Meaning, UserWord
+        from zeeguu.core.model.meaning import MeaningFrequency, PhraseType
+        from zeeguu.core.model.validation_log import ValidationLog
+        from zeeguu.core.bookmark_operations.update_bookmark import (
+            transfer_learning_progress,
+            cleanup_old_user_word
+        )
+
+        old_meaning = user_word.meaning
+
+        # Determine what to fix
+        new_word = validation_result.corrected_word or old_meaning.origin.content
+        new_translation = validation_result.corrected_translation or old_meaning.translation.content
+
+        # If no actual correction was provided, mark as invalid but don't fix
+        if new_word == old_meaning.origin.content and new_translation == old_meaning.translation.content:
+            log(f&quot;[VALIDATION] No correction provided, marking as invalid&quot;)
+            old_meaning.validated = Meaning.INVALID
+            user_word.fit_for_study = False
+            db_session.add_all([old_meaning, user_word])
+
+            # Log the invalid result
+            ValidationLog.log_invalid(
+                db_session,
+                meaning=old_meaning,
+                user_word_id=user_word.id,
+                reason=validation_result.reason,
+                context=context
+            )
+
+            db_session.commit()
+            return None
+
+        log(f&quot;[VALIDATION] Fixing: '{old_meaning.origin.content}' -&gt; '{old_meaning.translation.content}'&quot;)
+        log(f&quot;[VALIDATION] To: '{new_word}' -&gt; '{new_translation}'&quot;)
+
+        # Create/find correct meaning
+        new_meaning = Meaning.find_or_create(
+            db_session,
+            new_word,
+            old_meaning.origin.language.code,
+            new_translation,
+            old_meaning.translation.language.code
+        )
+        new_meaning.validated = Meaning.VALID
+
+        # Set frequency, phrase_type, and explanation from validation result
+        if validation_result.frequency:
+            new_meaning.frequency = MeaningFrequency.from_string(validation_result.frequency)
+
+        if validation_result.phrase_type:
+            new_meaning.phrase_type = PhraseType.from_string(validation_result.phrase_type)
+
+        if validation_result.explanation:
+            new_meaning.translation_explanation = validation_result.explanation
+
+        if validation_result.literal_meaning:
+            new_meaning.literal_meaning = validation_result.literal_meaning
+
+        db_session.add(new_meaning)
+
+        # If meaning actually changed, update user's data
+        if new_meaning.id != old_meaning.id:
+            # Mark old meaning as invalid (only if it's a different meaning!)
+            old_meaning.validated = Meaning.INVALID
+            db_session.add(old_meaning)
+
+            # Log the fix
+            ValidationLog.log_fixed(
+                db_session,
+                old_meaning=old_meaning,
+                new_meaning=new_meaning,
+                user_word_id=user_word.id,
+                reason=validation_result.reason,
+                context=context
+            )
+
+            # Find or create UserWord for new meaning
+            new_user_word = UserWord.find_or_create(
+                db_session,
+                user_word.user,
+                new_meaning
+            )
+
+            # Transfer learning progress
+            old_user_word = user_word
+            transfer_learning_progress(db_session, old_user_word, new_user_word, bookmark)
+
+            # Update bookmark to point to new user_word
+            # Use ID to avoid circular dependency (Bookmark.user_word &lt;-&gt; UserWord.preferred_bookmark)
+            bookmark.user_word_id = new_user_word.id
+            db_session.add(bookmark)
+            db_session.flush()  # Flush bookmark first
+
+            new_user_word.preferred_bookmark_id = bookmark.id
+            db_session.add(new_user_word)
+
+            # Cleanup old user_word if orphaned
+            cleanup_old_user_word(db_session, old_user_word, bookmark)
+
+            db_session.commit()
+            log(f&quot;[VALIDATION] Fixed and moved to new UserWord {new_user_word.id}&quot;)
+            return new_user_word
+        else:
+            # Same meaning after case-insensitive lookup - LLM suggested case change
+            # that resolved to same semantic meaning. Mark as valid (already done above).
+            log(f&quot;[VALIDATION] LLM suggested case change that resolved to same meaning - marking as valid&quot;)
+
+            # Log as valid (not fixed, since meaning didn't actually change)
+            ValidationLog.log_valid(
+                db_session,
+                meaning=new_meaning,
+                user_word_id=user_word.id,
+                context=context
+            )
+
+            db_session.commit()
+            return user_word
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

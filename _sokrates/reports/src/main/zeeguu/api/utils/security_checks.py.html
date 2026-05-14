@@ -1,0 +1,130 @@
+<html>
+<head>
+    <title>zeeguu/api/utils/security_checks.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/utils/security_checks.py (<b>69</b> lines of code) (<a href="security_checks.py">raw</a>):</h3>
+<div id="editor"># Security checks for configuration validation
+import os
+import secrets
+from zeeguu.logging import warning
+
+
+# Known insecure default values that should be changed in production
+INSECURE_SECRET_KEYS = {
+    &quot;lalala&quot;, &quot;lalalal&quot;, &quot;lulu&quot;, &quot;secret&quot;, &quot;changeme&quot;, &quot;default&quot;,
+    &quot;test&quot;, &quot;development&quot;, &quot;dev&quot;, &quot;&quot;,
+}
+
+INSECURE_PASSWORDS = {
+    &quot;rootpass&quot;, &quot;zeeguu_test&quot;, &quot;zeeguutest&quot;, &quot;password&quot;, &quot;admin&quot;,
+    &quot;test&quot;, &quot;changeme&quot;, &quot;fmdtest&quot;, &quot;fmdadmin&quot;, &quot;akindofrice&quot;,
+}
+
+PLACEHOLDER_API_KEYS = {
+    &quot;blabla&quot;, &quot;blublu&quot;, &quot;blieblie&quot;, &quot;changeme&quot;, &quot;your-api-key-here&quot;,
+    &quot;CHANGE_ME&quot;, &quot;&quot;, &quot;test&quot;,
+}
+
+
+def check_security_config(app):
+    &quot;&quot;&quot;
+    Check for insecure configuration values and log warnings.
+    Call this during app startup in production.
+    &quot;&quot;&quot;
+    warnings_found = []
+
+    # Check SECRET_KEY
+    secret_key = app.config.get(&quot;SECRET_KEY&quot;, &quot;&quot;)
+    if secret_key.lower() in INSECURE_SECRET_KEYS or len(secret_key) &lt; 32:
+        warnings_found.append(
+            &quot;SECRET_KEY is insecure! Use a strong random key: &quot;
+            f&quot;python -c \&quot;import secrets; print(secrets.token_hex(32))\&quot;&quot;
+        )
+
+    # Check DEBUG mode
+    if app.config.get(&quot;DEBUG&quot;, False) and not app.testing:
+        warnings_found.append(
+            &quot;DEBUG=True in production exposes sensitive error information!&quot;
+        )
+
+    # Check database URI for hardcoded credentials
+    db_uri = app.config.get(&quot;SQLALCHEMY_DATABASE_URI&quot;, &quot;&quot;)
+    for insecure_pass in INSECURE_PASSWORDS:
+        if insecure_pass in db_uri:
+            warnings_found.append(
+                f&quot;Database URI contains insecure password '{insecure_pass}'! &quot;
+                &quot;Use environment variables for credentials.&quot;
+            )
+            break
+
+    # Check environment variables for API keys
+    env_checks = [
+        (&quot;MICROSOFT_TRANSLATE_API_KEY&quot;, &quot;Microsoft Translate&quot;),
+        (&quot;GOOGLE_TRANSLATE_API_KEY&quot;, &quot;Google Translate&quot;),
+        (&quot;WORDNIK_API_KEY&quot;, &quot;Wordnik&quot;),
+        (&quot;YOUTUBE_API_KEY&quot;, &quot;YouTube&quot;),
+        (&quot;DEEPSEEK_API_KEY&quot;, &quot;DeepSeek&quot;),
+        (&quot;ANTHROPIC_API_KEY&quot;, &quot;Anthropic&quot;),
+        (&quot;AZURE_SPEECH_KEY&quot;, &quot;Azure Speech&quot;),
+    ]
+
+    for env_var, service_name in env_checks:
+        value = os.environ.get(env_var, &quot;&quot;)
+        if value.lower() in PLACEHOLDER_API_KEYS:
+            warnings_found.append(
+                f&quot;{env_var} is a placeholder value! &quot;
+                f&quot;Set a real {service_name} API key or remove the service.&quot;
+            )
+
+    # Check SMTP credentials
+    smtp_pass = os.environ.get(&quot;SMTP_PASSWORD&quot;, &quot;&quot;) or app.config.get(&quot;SMTP_PASS&quot;, &quot;&quot;)
+    if smtp_pass.lower() in INSECURE_PASSWORDS:
+        warnings_found.append(
+            &quot;SMTP_PASSWORD is insecure! Use a strong password or app-specific password.&quot;
+        )
+
+    # Log all warnings
+    if warnings_found:
+        warning(&quot;=&quot; * 60)
+        warning(&quot;SECURITY CONFIGURATION WARNINGS:&quot;)
+        warning(&quot;=&quot; * 60)
+        for w in warnings_found:
+            warning(f&quot;  - {w}&quot;)
+        warning(&quot;=&quot; * 60)
+
+    return warnings_found
+
+
+def generate_secure_secret_key():
+    &quot;&quot;&quot;Generate a cryptographically secure secret key.&quot;&quot;&quot;
+    return secrets.token_hex(32)
+
+
+def is_production_ready(app):
+    &quot;&quot;&quot;
+    Check if the app configuration is ready for production.
+    Returns (is_ready, list_of_issues).
+    &quot;&quot;&quot;
+    issues = check_security_config(app)
+    return len(issues) == 0, issues
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

@@ -1,0 +1,295 @@
+<html>
+<head>
+    <title>tools/tag_advertorials.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/tag_advertorials.py (<b>179</b> lines of code) (<a href="tag_advertorials.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python
+
+&quot;&quot;&quot;
+Tool to scan existing articles and tag advertorials based on URL patterns and keywords.
+
+This helps:
+1. Identify existing advertorials in the database
+2. Fine-tune detection patterns by reviewing tagged articles
+3. Clean up existing data before new rules are applied
+
+Usage:
+    python -m tools.tag_advertorials [options]
+
+Options:
+    --dry-run          Show what would be tagged without modifying database
+    --limit N          Only process N articles (for testing)
+    --language CODE    Only process articles in specific language (e.g., 'fr')
+    --days N           Only process articles from last N days (default: 30, use 0 for all time)
+    --all              Process all articles including already broken ones
+    --no-stats         Don't show detailed statistics
+
+Examples:
+    # Dry run on last 30 days of French articles
+    python -m tools.tag_advertorials --dry-run --language fr
+
+    # Actually tag last 7 days
+    python -m tools.tag_advertorials --language fr --days 7
+
+    # Test on 100 articles
+    python -m tools.tag_advertorials --dry-run --limit 100
+&quot;&quot;&quot;
+
+import sys
+import argparse
+from collections import defaultdict
+from datetime import datetime, timedelta
+
+from zeeguu.api.app import create_app
+from zeeguu.core.model import Article, Language, Url, db
+from zeeguu.core.model.article_broken_code_map import LowQualityTypes, ArticleBrokenMap
+from zeeguu.core.content_quality.advertorial_detection import is_advertorial
+
+
+def tag_existing_advertorials(
+    dry_run=True,
+    limit=None,
+    language_code=None,
+    untagged_only=True,
+    show_stats=True,
+    days_back=None,
+):
+    &quot;&quot;&quot;
+    Scan existing articles and tag advertorials.
+
+    Args:
+        dry_run: If True, don't modify database
+        limit: Maximum number of articles to process
+        language_code: Only process specific language
+        untagged_only: Only process articles not marked as broken
+        show_stats: Print detailed statistics
+        days_back: Only process articles from last N days
+    &quot;&quot;&quot;
+
+    print(&quot;=&quot; * 80)
+    print(&quot;ADVERTORIAL TAGGING TOOL&quot;)
+    print(&quot;=&quot; * 80)
+    print(f&quot;Mode: {'DRY RUN (no changes)' if dry_run else 'LIVE (will modify DB)'}&quot;)
+    print(f&quot;Limit: {limit if limit else 'None (all articles)'}&quot;)
+    print(f&quot;Language filter: {language_code if language_code else 'All languages'}&quot;)
+    print(f&quot;Untagged only: {untagged_only}&quot;)
+    print(f&quot;Time range: {'Last %d days' % days_back if days_back else 'All time'}&quot;)
+    print(&quot;-&quot; * 80)
+
+    # Build query
+    query = Article.query
+
+    if language_code:
+        language = Language.find(language_code)
+        if not language:
+            print(f&quot;ERROR: Language '{language_code}' not found&quot;)
+            return
+        query = query.filter(Article.language_id == language.id)
+
+    if untagged_only:
+        # Only get articles that are not marked as broken (broken = 0 or NULL)
+        query = query.filter((Article.broken == 0) | (Article.broken == None))
+
+    if days_back:
+        # Only get articles from last N days
+        cutoff_date = datetime.now() - timedelta(days=days_back)
+        query = query.filter(Article.published_time &gt;= cutoff_date)
+        print(f&quot;Filtering articles published after: {cutoff_date.strftime('%Y-%m-%d %H:%M:%S')}&quot;)
+
+    # Order by most recent first
+    query = query.order_by(Article.published_time.desc())
+
+    if limit:
+        query = query.limit(limit)
+
+    articles = query.all()
+
+    print(f&quot;\nProcessing {len(articles)} articles...\n&quot;)
+
+    # Statistics
+    stats = {
+        &quot;total_processed&quot;: 0,
+        &quot;detected_advertorials&quot;: 0,
+        &quot;url_pattern_matches&quot;: 0,
+        &quot;title_keyword_matches&quot;: 0,
+        &quot;multiple_keyword_matches&quot;: 0,
+        &quot;already_tagged&quot;: 0,
+    }
+
+    detection_reasons = defaultdict(int)
+    detected_articles = []
+
+    for i, article in enumerate(articles):
+        if (i + 1) % 50 == 0:
+            print(f&quot;Progress: {i + 1}/{len(articles)} articles processed... (detected: {stats['detected_advertorials']})&quot;)
+
+        stats[&quot;total_processed&quot;] += 1
+
+        # Get article URL
+        url_string = article.url.as_string() if article.url else None
+
+        # Check if already tagged as advertorial (either pattern or LLM detected)
+        existing_tag = (
+            ArticleBrokenMap.query.filter(
+                ArticleBrokenMap.article_id == article.id,
+                ArticleBrokenMap.broken_code.in_([
+                    LowQualityTypes.ADVERTORIAL_PATTERN,
+                    LowQualityTypes.ADVERTORIAL_LLM
+                ])
+            )
+            .first()
+        )
+
+        if existing_tag:
+            stats[&quot;already_tagged&quot;] += 1
+            continue
+
+        # Check if advertorial
+        is_advert, reason = is_advertorial(
+            url=url_string,
+            title=article.title,
+            content=article.get_content()[:1000],  # Only check first 1000 chars
+        )
+
+        if is_advert:
+            stats[&quot;detected_advertorials&quot;] += 1
+            detection_reasons[reason] += 1
+
+            # Track specific detection types
+            if &quot;URL&quot; in reason:
+                stats[&quot;url_pattern_matches&quot;] += 1
+            elif &quot;Title&quot; in reason:
+                stats[&quot;title_keyword_matches&quot;] += 1
+            elif &quot;Multiple&quot; in reason:
+                stats[&quot;multiple_keyword_matches&quot;] += 1
+
+            detected_articles.append(
+                {
+                    &quot;id&quot;: article.id,
+                    &quot;title&quot;: article.title,
+                    &quot;url&quot;: url_string,
+                    &quot;reason&quot;: reason,
+                    &quot;published&quot;: article.published_time,
+                }
+            )
+
+            # Tag the article (unless dry run)
+            if not dry_run:
+                try:
+                    article.set_as_broken(db.session, LowQualityTypes.ADVERTORIAL_PATTERN)
+                    print(f&quot;✓ Tagged article {article.id}: {article.title[:60]}...&quot;)
+                except Exception as e:
+                    print(
+                        f&quot;✗ Failed to tag article {article.id}: {e}&quot;
+                    )
+            else:
+                print(f&quot;[DRY RUN] Would tag article {article.id}: {article.title[:60]}... ({reason})&quot;)
+
+    # Print summary
+    print(&quot;\n&quot; + &quot;=&quot; * 80)
+    print(&quot;SUMMARY&quot;)
+    print(&quot;=&quot; * 80)
+    print(f&quot;Total articles processed: {stats['total_processed']}&quot;)
+    print(f&quot;Detected advertorials: {stats['detected_advertorials']}&quot;)
+    print(f&quot;Already tagged: {stats['already_tagged']}&quot;)
+    print(f&quot;\nDetection breakdown:&quot;)
+    print(f&quot;  - URL pattern matches: {stats['url_pattern_matches']}&quot;)
+    print(f&quot;  - Title keyword matches: {stats['title_keyword_matches']}&quot;)
+    print(f&quot;  - Multiple keyword matches: {stats['multiple_keyword_matches']}&quot;)
+
+    if show_stats and detected_articles:
+        print(f&quot;\n&quot; + &quot;-&quot; * 80)
+        print(&quot;DETECTION REASONS BREAKDOWN&quot;)
+        print(&quot;-&quot; * 80)
+        for reason, count in sorted(
+            detection_reasons.items(), key=lambda x: x[1], reverse=True
+        ):
+            print(f&quot;  {reason}: {count}&quot;)
+
+        print(f&quot;\n&quot; + &quot;-&quot; * 80)
+        print(f&quot;SAMPLE DETECTED ARTICLES (first 10)&quot;)
+        print(&quot;-&quot; * 80)
+        for article in detected_articles[:10]:
+            print(f&quot;\nID: {article['id']}&quot;)
+            print(f&quot;Title: {article['title']}&quot;)
+            print(f&quot;URL: {article['url']}&quot;)
+            print(f&quot;Reason: {article['reason']}&quot;)
+            print(f&quot;Published: {article['published']}&quot;)
+
+    if dry_run:
+        print(&quot;\n&quot; + &quot;=&quot; * 80)
+        print(&quot;DRY RUN MODE - No changes were made to the database&quot;)
+        print(&quot;Run without --dry-run to actually tag articles&quot;)
+        print(&quot;=&quot; * 80)
+
+    return detected_articles
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description=&quot;Tag existing articles as advertorials based on detection patterns&quot;
+    )
+    parser.add_argument(
+        &quot;--dry-run&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Show what would be tagged without modifying database&quot;,
+    )
+    parser.add_argument(
+        &quot;--limit&quot;, type=int, help=&quot;Only process N articles (for testing)&quot;
+    )
+    parser.add_argument(
+        &quot;--language&quot;, type=str, help=&quot;Only process articles in specific language (e.g., 'fr')&quot;
+    )
+    parser.add_argument(
+        &quot;--all&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Process all articles including already broken ones&quot;,
+    )
+    parser.add_argument(
+        &quot;--no-stats&quot;, action=&quot;store_true&quot;, help=&quot;Don't show detailed statistics&quot;
+    )
+    parser.add_argument(
+        &quot;--days&quot;,
+        type=int,
+        default=30,
+        help=&quot;Only process articles from last N days (default: 30)&quot;,
+    )
+
+    args = parser.parse_args()
+
+    # Create Flask app context
+    app = create_app()
+    with app.app_context():
+        tag_existing_advertorials(
+            dry_run=args.dry_run,
+            limit=args.limit,
+            language_code=args.language,
+            untagged_only=not args.all,
+            show_stats=not args.no_stats,
+            days_back=args.days,
+        )
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

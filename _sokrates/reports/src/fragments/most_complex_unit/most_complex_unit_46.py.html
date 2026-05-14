@@ -1,0 +1,67 @@
+<html>
+<head>
+    <title>def print_article_info()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def print_article_info()</h3>
+<p style="margin-top: 4px">in <i>tools/simplify_article.py [0:0]</i></p>
+<ul>
+    <li><b>40</b> lines of code</li>
+    <li><b>19</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def print_article_info(article):
+    &quot;&quot;&quot;Print formatted article information.&quot;&quot;&quot;
+    print(f&quot;\nArticle ID: {article.id}&quot;)
+    print(f&quot;Title: {article.title}&quot;)
+    print(f&quot;Language: {article.language.code}&quot;)
+    print(f&quot;Word Count: {article.get_word_count()}&quot;)
+    print(f&quot;Difficulty: {article.get_fk_difficulty()}&quot;)
+
+    if article.url:
+        print(f&quot;URL: {article.url.as_string()}&quot;)
+
+    # Show summary for debugging
+    if article.summary:
+        print(f&quot;Summary: {article.summary[:200]}...&quot;)
+    else:
+        print(&quot;Summary: [None]&quot;)
+
+    if article.parent_article_id:
+        print(f&quot;CEFR Level: {article.cefr_level}&quot;)
+        if (
+            article.parent_article
+            and hasattr(article.parent_article, &quot;cefr_level&quot;)
+            and article.parent_article.cefr_level
+        ):
+            print(
+                f&quot;Original CEFR Level (AI-assessed): {article.parent_article.cefr_level}&quot;
+            )
+        print(f&quot;Parent Article ID: {article.parent_article_id}&quot;)
+        if article.simplification_ai_model:
+            print(f&quot;AI Model: {article.simplification_ai_model.model_name}&quot;)
+    else:
+        print(&quot;Type: Original Article&quot;)
+        if hasattr(article, &quot;cefr_level&quot;) and article.cefr_level:
+            print(f&quot;CEFR Level (AI-assessed): {article.cefr_level}&quot;)
+        elif hasattr(article, &quot;cefr_level&quot;) and article.cefr_level:
+            print(f&quot;CEFR Level (formula): {article.cefr_level}&quot;)
+        if article.simplified_versions:
+            print(f&quot;Simplified Versions: {len(article.simplified_versions)}&quot;)
+            for simplified in article.simplified_versions:
+                level_info = f&quot;{simplified.cefr_level}&quot;
+                if hasattr(article, &quot;cefr_level&quot;) and article.cefr_level:
+                    level_info += f&quot; (from {article.cefr_level})&quot;
+                elif hasattr(article, &quot;cefr_level&quot;) and article.cefr_level:
+                    level_info += f&quot; (from {article.cefr_level})&quot;
+                print(f&quot;  - {level_info} (ID: {simplified.id})&quot;)
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

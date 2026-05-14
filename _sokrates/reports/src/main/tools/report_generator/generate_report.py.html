@@ -1,0 +1,764 @@
+<html>
+<head>
+    <title>tools/report_generator/generate_report.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/report_generator/generate_report.py (<b>576</b> lines of code) (<a href="generate_report.py">raw</a>):</h3>
+<div id="editor">import pandas as pd
+import matplotlib.pyplot as plt
+from zeeguu.core.model.article_topic_map import TopicOriginType
+from zeeguu.operations.crawler.crawl_report import CrawlReport
+import seaborn as sns
+from data_extractor import DataExtractor
+from sqlalchemy import create_engine
+import datetime
+import os
+import argparse
+import pathlib
+from collections import Counter
+from tqdm import tqdm
+from nltk.tokenize import sent_tokenize
+
+FOLDER_FOR_REPORT_OUTPUT = os.environ.get(
+    &quot;FOLDER_FOR_REPORT_OUTPUT&quot;,
+    os.path.join(pathlib.Path(__file__).parent.resolve(), &quot;reports&quot;),
+)
+
+
+def set_legend_to_right_side(ax):
+    # https://stackoverflow.com/questions/4700614/how-to-put-the-legend-outside-the-plot
+    box = ax.get_position()
+    ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
+    ax.legend(loc=&quot;center left&quot;, bbox_to_anchor=(1, 0.5))
+
+
+def get_color_palette(n_items):
+    if n_items &lt;= 10:
+        return sns.color_palette(&quot;tab10&quot;)
+    else:
+        return sns.color_palette(&quot;tab20&quot;)
+
+
+def identify_repeating_patterns(article_df, sents_filtered_set: set):
+    def normalize_sent(text: str):
+        return text.lower().strip()
+
+    def sent_count(text: str):
+        return Counter(
+            [
+                normalize_sent(sent)
+                for paragraph in text.split(&quot;\n\n&quot;)
+                for sent in sent_tokenize(paragraph)
+                if len(sent.strip()) &gt; 10
+            ]
+        )
+
+    def get_total_sent_counts(text_list: list[str]):
+        total_counts = Counter()
+        for text in tqdm(text_list, total=len(text_list)):
+            total_counts += sent_count(text)
+        return total_counts
+
+    print(&quot;Evaluating new repeating patterns...&quot;)
+    total_counts = get_total_sent_counts(article_df.content)
+    sents_occur_more_than_10 = [
+        [sent, count]
+        for sent, count in total_counts.items()
+        if count &gt; 10 and sent not in sents_filtered_set
+    ]
+    return pd.DataFrame(sents_occur_more_than_10, columns=[&quot;Sent&quot;, &quot;Count&quot;])
+
+
+def save_fig_params(filename):
+    if not os.path.exists(FOLDER_FOR_REPORT_OUTPUT):
+        os.mkdir(FOLDER_FOR_REPORT_OUTPUT)
+    img_folder = os.path.join(FOLDER_FOR_REPORT_OUTPUT, &quot;img&quot;)
+    if not os.path.exists(img_folder):
+        os.mkdir(img_folder)
+    path_to_img = os.path.join(img_folder, filename)
+    rel_path = os.path.join(&quot;img&quot;, filename)
+    plt.savefig(path_to_img, bbox_inches=&quot;tight&quot;)
+    plt.clf()
+    return rel_path
+
+
+def get_new_repeating_sents_table(pd_repeating_sents):
+    return generate_html_table(pd_repeating_sents.sort_values(&quot;Count&quot;, ascending=False))
+
+
+def get_url_keywords_table(pd_url_keywords_count):
+    return generate_html_table(
+        pd_url_keywords_count.sort_values(&quot;count&quot;, ascending=False)
+    )
+
+
+def get_rejected_sentences_table(total_deleted_sents):
+    total_deleted_sents[&quot;Total&quot;] = sum(total_deleted_sents.values())
+    pd_deleted_sents = pd.DataFrame.from_dict(
+        total_deleted_sents, orient=&quot;index&quot;
+    ).reset_index()
+    pd_deleted_sents.columns = [&quot;Reason&quot;, &quot;Count&quot;]
+    return generate_html_table(pd_deleted_sents.sort_values(&quot;Count&quot;, ascending=False))
+
+
+def get_total_reject_article_reason_table(total_rejected_article_reasons):
+    total_rejected_article_reasons[&quot;Total&quot;] = sum(
+        total_rejected_article_reasons.values()
+    )
+    pd_quality_errors = pd.DataFrame.from_dict(
+        total_rejected_article_reasons, orient=&quot;index&quot;
+    ).reset_index()
+    pd_quality_errors.columns = [&quot;Reason&quot;, &quot;Count&quot;]
+    return generate_html_table(pd_quality_errors.sort_values(&quot;Count&quot;, ascending=True))
+
+
+def generate_feed_count_plots(feed_df, lang):
+    filename = f&quot;feed_downloaded_articles_{lang}_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+    if feed_df[feed_df[&quot;Language&quot;] == lang].Count.sum() == 0:
+        return &quot;&quot;
+    plt.figure(lang)
+    sns.barplot(
+        x=&quot;Feed Name&quot;,
+        y=&quot;Count&quot;,
+        hue=&quot;Feed Name&quot;,
+        data=feed_df[feed_df[&quot;Language&quot;] == lang],
+    )
+    plt.title(lang)
+    plt.xticks(rotation=35, ha=&quot;right&quot;)
+    return save_fig_params(filename)
+
+
+def generate_bookmarks_by_language_plot(bookmark_df):
+    filename = f&quot;bookmarks_plot_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+    bookmark_plot = (
+        bookmark_df.groupby([&quot;Language&quot;, &quot;Has Exercised&quot;])[[&quot;user_id&quot;]]
+        .count()
+        .reset_index()
+        .rename(columns={&quot;user_id&quot;: &quot;Count&quot;})
+    )
+    sns.barplot(data=bookmark_plot, x=&quot;Language&quot;, y=&quot;Count&quot;, hue=&quot;Has Exercised&quot;)
+    plt.title(&quot;Total Bookmarks by Language&quot;)
+    plt.xticks(rotation=35, ha=&quot;right&quot;)
+    return save_fig_params(filename)
+
+
+def generate_topic_by_feed_plot(article_topic_df, lang):
+    # If I want to make topics consistant
+    # https://stackoverflow.com/questions/39000115/how-can-i-set-the-colors-per-value-when-coloring-plots-by-a-dataframe-column
+    filename = f&quot;topics_per_feed_lang_{lang}_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+    topic_monitor = (
+        article_topic_df.groupby([&quot;Language&quot;, &quot;Feed Name&quot;])
+        .Topic.value_counts()
+        .reset_index()
+    )
+    total_sources = len(
+        topic_monitor[topic_monitor[&quot;Language&quot;] == lang][&quot;Feed Name&quot;].unique()
+    )
+
+    ax = plt.subplot(111)
+    sns.barplot(
+        x=&quot;Topic&quot;,
+        y=&quot;count&quot;,
+        hue=&quot;Feed Name&quot;,
+        data=topic_monitor[topic_monitor[&quot;Language&quot;] == lang],
+        palette=get_color_palette(total_sources),
+    )
+    set_legend_to_right_side(ax)
+    plt.title(f&quot;{lang} - Topic Report&quot;)
+    plt.xlabel(&quot;Topic&quot;)
+    plt.xticks(rotation=35, ha=&quot;right&quot;)
+    return save_fig_params(filename)
+
+
+def generate_topic_by_feed_plot(article_topic_df, lang):
+    # If I want to make topics consistant
+    # https://stackoverflow.com/questions/39000115/how-can-i-set-the-colors-per-value-when-coloring-plots-by-a-dataframe-column
+    filename = f&quot;topics_per_feed_lang_{lang}_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+    topic_monitor = (
+        article_topic_df.groupby([&quot;Language&quot;, &quot;Feed Name&quot;])
+        .Topic.value_counts()
+        .reset_index()
+    )
+    total_sources = len(
+        topic_monitor[topic_monitor[&quot;Language&quot;] == lang][&quot;Feed Name&quot;].unique()
+    )
+
+    ax = plt.subplot(111)
+    sns.barplot(
+        x=&quot;Topic&quot;,
+        y=&quot;count&quot;,
+        hue=&quot;Feed Name&quot;,
+        data=topic_monitor[topic_monitor[&quot;Language&quot;] == lang],
+        palette=get_color_palette(total_sources),
+    )
+    set_legend_to_right_side(ax)
+    plt.title(f&quot;{lang} - New Topic Report&quot;)
+    plt.xlabel(&quot;Topic&quot;)
+    plt.xticks(rotation=35, ha=&quot;right&quot;)
+    return save_fig_params(filename)
+
+
+def generate_topic_coverage_plot(article_df, article_with_topics_df):
+    filename = f&quot;topic_coverage_plot_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+    article_df[&quot;Has Topic&quot;] = &quot;No Topic&quot;
+    article_df.loc[
+        article_df.id.isin(
+            article_with_topics_df.loc[
+                article_with_topics_df.origin_type == TopicOriginType.HARDSET, &quot;id&quot;
+            ]
+        ),
+        &quot;Has Topic&quot;,
+    ] = &quot;Hardset Topic&quot;
+    article_df.loc[
+        article_df.id.isin(
+            article_with_topics_df.loc[
+                article_with_topics_df.origin_type == TopicOriginType.URL_PARSED, &quot;id&quot;
+            ]
+        ),
+        &quot;Has Topic&quot;,
+    ] = &quot;Url Keyword Topic&quot;
+    article_df.loc[
+        article_df.id.isin(
+            article_with_topics_df.loc[
+                article_with_topics_df.origin_type == TopicOriginType.INFERRED, &quot;id&quot;
+            ]
+        ),
+        &quot;Has Topic&quot;,
+    ] = &quot;Inferred Topic&quot;
+    articles_with_topics = (
+        article_df.groupby(&quot;Language&quot;)[&quot;Has Topic&quot;]
+        .value_counts(normalize=True)
+        .reset_index()
+    )
+    color_pallete = sns.color_palette(&quot;vlag&quot;, n_colors=15)
+    sns.barplot(
+        x=&quot;Language&quot;,
+        y=&quot;proportion&quot;,
+        hue=&quot;Has Topic&quot;,
+        data=articles_with_topics,
+        palette={
+            &quot;Url Keyword Topic&quot;: color_pallete[0],
+            &quot;Hardset Topic&quot;: color_pallete[1],
+            &quot;Inferred Topic&quot;: color_pallete[3],
+            &quot;No Topic&quot;: color_pallete[len(color_pallete) - 1],
+        },
+    )
+    plt.title(&quot;Proportion of Articles with Topics&quot;)
+    plt.xticks(rotation=35, ha=&quot;right&quot;)
+    return save_fig_params(filename)
+
+
+def generate_total_article_per_language(article_df):
+    filename = f&quot;total_articles_downloaded_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+    data = article_df[&quot;Language&quot;].value_counts().reset_index()
+    sns.barplot(
+        x=&quot;Language&quot;,
+        y=&quot;count&quot;,
+        hue=&quot;Language&quot;,
+        data=data,
+        palette=get_color_palette(len(data[&quot;Language&quot;].unique())),
+    )
+    plt.title(&quot;New Articles Downloaded&quot;)
+    plt.xticks(rotation=35, ha=&quot;right&quot;)
+    plt.ylabel(&quot;Total Articles&quot;)
+    return save_fig_params(filename)
+
+
+def generate_histogram(article_df, column, bins=20, remove_outliers=False):
+    filename = (
+        f&quot;hist_{column}_removed_out_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+        if remove_outliers
+        else f&quot;hist_{column}_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+    )
+    if remove_outliers:
+        article_df[article_df[column] &lt; article_df[column].quantile(0.99)].groupby(
+            &quot;Language&quot;
+        )[column].plot.hist(alpha=0.5, bins=bins)
+    else:
+        article_df.groupby(&quot;Language&quot;)[column].plot.hist(alpha=0.5, bins=bins)
+    plt.title(f&quot;{column} Distribution&quot;)
+    plt.legend()
+    return save_fig_params(filename)
+
+
+def generate_user_reading_time(user_reading_time_df, lang=&quot;&quot;):
+    filename = (
+        f&quot;user_reading_time_plot_all_lang_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+        if lang == &quot;&quot;
+        else f&quot;user_reading_time_plot_{lang}_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+    )
+    plot_total_reading_time = (
+        user_reading_time_df.groupby([&quot;Language&quot;, &quot;Feed Name&quot;])
+        .total_reading_time.sum()
+        .reset_index()
+        .sort_values(&quot;Feed Name&quot;)
+    )
+    if lang == &quot;&quot;:
+        sns.barplot(
+            x=&quot;Language&quot;,
+            y=&quot;total_reading_time&quot;,
+            hue=&quot;Language&quot;,
+            data=plot_total_reading_time,
+        )
+        plt.title(&quot;Total Reading Time by users per Language&quot;)
+    else:
+        sns.barplot(
+            x=&quot;Feed Name&quot;,
+            y=&quot;total_reading_time&quot;,
+            hue=&quot;Feed Name&quot;,
+            data=plot_total_reading_time[plot_total_reading_time[&quot;Language&quot;] == lang],
+        )
+        plt.title(f&quot;{lang} - Total Reading time by users per Feed&quot;)
+    plt.xticks(rotation=35, ha=&quot;right&quot;)
+    plt.ylabel(&quot;Total Reading time (mins)&quot;)
+    return save_fig_params(filename)
+
+
+def generate_unique_articles_read_plot(user_reading_time_df, lang=&quot;&quot;):
+    filename = (
+        f&quot;user_unique_articles_read_plot_all_lang_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+        if lang == &quot;&quot;
+        else f&quot;user_unique_articles_read_plot_{lang}_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+    )
+
+    if lang == &quot;&quot;:
+        plot_unique_articles_read = (
+            user_reading_time_df.Language.value_counts().reset_index()
+        )
+        sns.barplot(
+            x=&quot;Language&quot;,
+            y=&quot;count&quot;,
+            hue=&quot;Language&quot;,
+            data=plot_unique_articles_read,
+        )
+        plt.title(&quot;Total Unique Articles Opened by users per Language&quot;)
+    else:
+        plot_unique_articles_read = (
+            user_reading_time_df.groupby([&quot;Language&quot;])[&quot;Feed Name&quot;]
+            .value_counts()
+            .reset_index()
+            .sort_values(&quot;Feed Name&quot;)
+        )
+        sns.barplot(
+            x=&quot;Feed Name&quot;,
+            y=&quot;count&quot;,
+            hue=&quot;Feed Name&quot;,
+            data=plot_unique_articles_read[
+                plot_unique_articles_read[&quot;Language&quot;] == lang
+            ],
+        )
+        plt.title(f&quot;{lang} - Total Unique Articles Opened by users per Feed&quot;)
+    plt.xticks(rotation=35, ha=&quot;right&quot;)
+    plt.ylabel(&quot;Total Opened  Article Count&quot;)
+    return save_fig_params(filename)
+
+
+def generate_topic_reading_time(topic_reading_time_df, lang=&quot;&quot;):
+    filename = (
+        f&quot;topic_reading_time_plot_all_lang_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+        if lang == &quot;&quot;
+        else f&quot;topic_reading_time_plot_{lang}_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+    )
+    plot_total_reading_time = (
+        topic_reading_time_df.groupby([&quot;Language&quot;, &quot;Topic&quot;])
+        .total_reading_time.sum()
+        .reset_index()
+    )
+    if lang == &quot;&quot;:
+        ax = plt.subplot(111)
+        sns.barplot(
+            x=&quot;Language&quot;,
+            y=&quot;total_reading_time&quot;,
+            hue=&quot;Topic&quot;,
+            data=plot_total_reading_time,
+            palette=get_color_palette(len(plot_total_reading_time[&quot;Topic&quot;].unique())),
+        )
+        set_legend_to_right_side(ax)
+        plt.title(&quot;Total Reading Time by New Topic per Language&quot;)
+    else:
+        sns.barplot(
+            x=&quot;Topic&quot;,
+            y=&quot;total_reading_time&quot;,
+            hue=&quot;Topic&quot;,
+            data=plot_total_reading_time[plot_total_reading_time[&quot;Language&quot;] == lang],
+        )
+        plt.title(f&quot;{lang} - Total Reading time by New Topic&quot;)
+    plt.xticks(rotation=35, ha=&quot;right&quot;)
+    plt.ylabel(&quot;Total Reading time (mins)&quot;)
+    return save_fig_params(filename)
+
+
+def generate_exercise_activity(exercise_activity_df, lang=&quot;&quot;):
+    filename = (
+        f&quot;exercise_activity_plot_all_lang_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+        if lang == &quot;&quot;
+        else f&quot;exercise_activity_plot_{lang}_{date_str}_d{DAYS_FOR_REPORT}.png&quot;
+    )
+    ax = plt.subplot(111)
+    if lang == &quot;&quot;:
+        sns.barplot(
+            x=&quot;Source&quot;,
+            y=&quot;total_exercises&quot;,
+            hue=&quot;Language&quot;,
+            data=exercise_activity_df,
+        )
+        plt.title(&quot;Total Exercises Performed by Language&quot;)
+        set_legend_to_right_side(ax)
+    else:
+        sns.barplot(
+            x=&quot;Source&quot;,
+            y=&quot;total_exercises&quot;,
+            hue=&quot;Source&quot;,
+            data=exercise_activity_df[exercise_activity_df[&quot;Language&quot;] == lang],
+        )
+        plt.title(f&quot;{lang} - Total Exercses Performed by Type&quot;)
+
+    plt.xticks(rotation=35, ha=&quot;right&quot;)
+    plt.ylabel(&quot;Total Exercises Count&quot;)
+    return save_fig_params(filename)
+
+
+def print_descriptive_stats(df, title, precision=2):
+    print(f&quot;############## {title} Descriptive Stats ##############&quot;)
+    print(df.describe().round(precision).to_string())
+
+
+def generate_html_table(df, round_precision=2):
+    return (
+        df.round(round_precision)
+        .to_html(index=False)
+        .replace('class=&quot;dataframe&quot;', 'class=&quot;pure-table&quot;')
+    )
+
+
+def generate_active_users_table(active_user_read_ex_pd, bookmark_pd):
+    reading_time_ex_time = (
+        active_user_read_ex_pd.groupby(&quot;Language&quot;)[
+            [&quot;total_exercise_time&quot;, &quot;total_reading_time&quot;]
+        ]
+        .sum()
+        .reset_index()
+    )
+    reading_time_ex_time[&quot;Count&quot;] = (
+        active_user_read_ex_pd.groupby(&quot;Language&quot;)[[&quot;user_id&quot;]]
+        .count()
+        .reset_index()[&quot;user_id&quot;]
+    )
+
+    bookmark_count = (
+        bookmark_pd.groupby([&quot;Language&quot;])[&quot;user_id&quot;]
+        .describe()[&quot;count&quot;]
+        .reset_index()
+        .rename(columns={&quot;count&quot;: &quot;Total Bookmarks&quot;})
+    )
+    bookmark_review_proportion = (
+        bookmark_pd.groupby([&quot;Language&quot;])[&quot;Has Exercised&quot;]
+        .value_counts(normalize=True)
+        .reset_index()
+        .rename(columns={&quot;proportion&quot;: &quot;Bookmarks % Reviewed&quot;})
+    )
+    bookmark_review_proportion = bookmark_review_proportion[
+        bookmark_review_proportion[&quot;Has Exercised&quot;] == &quot;Yes&quot;
+    ]
+    if len(bookmark_count) &gt; 0:
+        reading_time_ex_time = reading_time_ex_time.merge(
+            bookmark_review_proportion, on=&quot;Language&quot;, how=&quot;outer&quot;
+        )
+        reading_time_ex_time = reading_time_ex_time.merge(
+            bookmark_count, on=&quot;Language&quot;, how=&quot;outer&quot;
+        )
+        reading_time_ex_time.loc[
+            reading_time_ex_time[&quot;Bookmarks % Reviewed&quot;].isna(), &quot;Bookmarks % Reviewed&quot;
+        ] = 0
+    else:
+        reading_time_ex_time[&quot;Bookmarks % Reviewed&quot;] = 0
+        reading_time_ex_time[&quot;Total Bookmarks&quot;] = 0
+
+    return generate_html_table(
+        reading_time_ex_time[
+            [
+                &quot;Language&quot;,
+                &quot;Count&quot;,
+                &quot;total_exercise_time&quot;,
+                &quot;total_reading_time&quot;,
+                &quot;Bookmarks % Reviewed&quot;,
+                &quot;Total Bookmarks&quot;,
+            ]
+        ]
+    )
+
+
+def generate_top_opened_articles(
+    user_reading_time_df, data_extractor, feed_df, number_of_articles_to_report=5
+):
+    articles_by_user_interaction = (
+        user_reading_time_df.groupby([&quot;id&quot;])
+        .agg({&quot;total_reading_time&quot;: &quot;mean&quot;, &quot;user_id&quot;: &quot;count&quot;})
+        .reset_index()
+    )
+    read_articles = data_extractor.get_article_df_with_ids(
+        feed_df, articles_by_user_interaction.id.values
+    )
+    articles_by_user_interaction = articles_by_user_interaction.merge(
+        read_articles[[&quot;id&quot;, &quot;title&quot;, &quot;Feed Name&quot;, &quot;Language&quot;]], on=&quot;id&quot;
+    )[[&quot;Language&quot;, &quot;Feed Name&quot;, &quot;id&quot;, &quot;title&quot;, &quot;user_id&quot;, &quot;total_reading_time&quot;]]
+    articles_by_user_interaction = articles_by_user_interaction.rename(
+        columns={
+            &quot;id&quot;: &quot;Article id&quot;,
+            &quot;title&quot;: &quot;Article Title&quot;,
+            &quot;user_id&quot;: &quot;Users Count&quot;,
+            &quot;total_reading_time&quot;: &quot;User Avg. Reading Time&quot;,
+        }
+    )
+    articles_by_user_interaction = articles_by_user_interaction.sort_values(
+        [&quot;Users Count&quot;, &quot;User Avg. Reading Time&quot;], ascending=False
+    )
+    return generate_html_table(
+        articles_by_user_interaction.head(number_of_articles_to_report)
+    )
+
+
+def generate_html_page():
+    data_extractor = DataExtractor(db_connection, DAYS_FOR_REPORT)
+
+    feed_df = data_extractor.get_feed_df()
+    article_df = data_extractor.get_article_df(feed_df)
+    article_topics_df = data_extractor.get_article_topics_df(feed_df)
+    language_df = data_extractor.get_language_df()
+    bookmark_df = data_extractor.get_bookmark_df()
+    data_extractor.add_stats_to_feed(feed_df, article_df)
+    user_reading_time_df = data_extractor.get_user_reading_activity(
+        language_df, feed_df
+    )
+    user_exercise_time_df = data_extractor.get_user_exercise_activity()
+    combined_user_activity_df = (
+        data_extractor.get_combined_user_reading_exercise_activity(
+            user_exercise_time_df, user_reading_time_df
+        )
+    )
+    topic_reading_time_df = data_extractor.get_topic_reading_time()
+    total_unique_articles_opened_by_users = len(
+        article_df[article_df.id.isin(user_reading_time_df.id)]
+    )
+    total_unique_articles_opened_by_users = (
+        user_reading_time_df.Language.value_counts().reset_index()[&quot;count&quot;].sum()
+    )
+    exercise_activity_df = data_extractor.get_exercise_type_activity()
+    top_subscribed_searches = data_extractor.get_top_search_subscriptions()
+    top_filtered_searches = data_extractor.get_top_search_filters()
+    newly_added_search_subscriptions = data_extractor.get_added_search_subscriptions()
+    pd_url_keywords = data_extractor.get_url_keyword_counts()
+    pd_feed_innactivity_time = data_extractor.get_days_since_last_crawl()
+    crawl_report = CrawlReport()
+    crawl_report.load_crawl_report_data(DAYS_FOR_REPORT)
+    total_days_from_crawl_report = crawl_report.get_days_from_crawl_report_date()
+    print(&quot;############ Report date: &quot;, crawl_report.crawl_report_date)
+    total_removed_sents = crawl_report.get_total_removed_sents_counts()
+    if DAYS_FOR_REPORT &lt;= 7:
+        pd_new_repeated_sents = identify_repeating_patterns(
+            article_df, set(total_removed_sents.keys())
+        )
+    warning_crawl_range = (
+        &quot;&quot;
+        if total_days_from_crawl_report == DAYS_FOR_REPORT
+        else f&quot;&lt;b&gt;WARNING!&lt;/b&gt; This date only contains values from the last '{total_days_from_crawl_report}' day(s).&quot;
+    )
+    ACTIVE_USER_ACTIVITY_TIME_MIN = 1
+    articles_with_topic_count = len(article_topics_df.id.unique())
+    active_users = combined_user_activity_df[
+        (
+            combined_user_activity_df[&quot;total_reading_time&quot;]
+            &gt; ACTIVE_USER_ACTIVITY_TIME_MIN
+        )
+        | (
+            combined_user_activity_df[&quot;total_exercise_time&quot;]
+            &gt; ACTIVE_USER_ACTIVITY_TIME_MIN
+        )
+    ]
+    total_active_users = len(active_users)
+    lang_report = &quot;&quot;
+    for lang in article_df[&quot;Language&quot;].unique():
+        lang_report += f&quot;&quot;&quot;
+          &lt;h2 id='{lang}'&gt;{lang}&lt;/h2&gt;
+          &lt;h3&gt;Articles Downloaded&lt;/h3&gt;
+          &lt;img src=&quot;{generate_topic_by_feed_plot(article_topics_df, lang)}&quot; /&gt;
+          &lt;img src=&quot;{generate_feed_count_plots(feed_df, lang)}&quot; /&gt;
+          &lt;h3&gt;User Activity&lt;/h3&gt;
+          &quot;&quot;&quot;
+        if lang in active_users[&quot;Language&quot;].values:
+            lang_report += f&quot;&quot;&quot;
+            &lt;p&gt;&lt;b&gt;Total Active users&lt;/b&gt;: {len(active_users[active_users[&quot;Language&quot;] == lang])}&lt;/p&gt;
+            &lt;img src=&quot;{generate_topic_reading_time(topic_reading_time_df, lang)}&quot; /&gt;
+            &lt;img src=&quot;{generate_user_reading_time(user_reading_time_df, lang)}&quot; /&gt;
+            &lt;img src=&quot;{generate_unique_articles_read_plot(user_reading_time_df, lang)}&quot; /&gt;
+            &lt;img src=&quot;{generate_exercise_activity(exercise_activity_df, lang)}&quot; /&gt;
+            &lt;hr&gt;
+            &quot;&quot;&quot;
+        else:
+            lang_report += &quot;&quot;&quot;
+            &lt;p&gt;&lt;b&gt;No active users in this language&lt;/b&gt;&lt;/p&gt;
+            &lt;hr&gt;
+            &quot;&quot;&quot;
+    lang_links = &quot;&lt;ul&gt;&quot;
+
+    for lang in article_df[&quot;Language&quot;].unique():
+        lang_links += f&quot;&quot;&quot;
+            &lt;li&gt;&lt;a href=&quot;#{lang}&quot;&gt;{lang}&lt;/a&gt; &lt;/li&gt;
+          &quot;&quot;&quot;
+    lang_links += &quot;&lt;/ul&gt;&quot;
+    title = (
+        f&quot;&quot;&quot;Week Report Nr {CURRENT_WEEK_N}&quot;&quot;&quot;
+        if DAYS_FOR_REPORT == 7
+        else f&quot;Last {DAYS_FOR_REPORT} days Report&quot;
+    )
+    result = f&quot;&quot;&quot;
+        &lt;head&gt;
+            &lt;meta charset=&quot;utf-8&quot;&gt;
+            &lt;link
+                rel=&quot;stylesheet&quot;
+                href=&quot;https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css&quot;
+                integrity=&quot;sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls&quot;
+                crossorigin=&quot;anonymous&quot;
+            /&gt;
+        &lt;/head&gt;
+        &lt;body style=&quot;margin-left: 2em&quot;&gt;
+            &lt;h1&gt;{title}&lt;/h1&gt;
+            &lt;p&gt;Generated at: {datetime.datetime.now(tz=datetime.timezone.utc)} UTC&lt;p&gt;
+            &lt;hr /&gt;
+                &lt;p&gt;&lt;b&gt;Total Articles Crawled: &lt;/b&gt; {len(article_df)}&lt;/p&gt;
+                &lt;p&gt;&lt;b&gt;Total Unique Articles Opened: &lt;/b&gt; {total_unique_articles_opened_by_users}
+                &lt;p&gt;&lt;b&gt;New Topic Coverage: &lt;/b&gt; {((articles_with_topic_count / len(article_df)) * 100) if len(article_df) &gt; 0 else 0:.2f}%&lt;/p&gt;
+                &lt;img src=&quot;{generate_topic_coverage_plot(article_df, article_topics_df)}&quot; /&gt;
+                &lt;img src=&quot;{generate_total_article_per_language(article_df)}&quot; /&gt;
+                &lt;h2&gt;Possible Innactive feeds: &lt;/h2&gt;
+                &lt;p&gt;&lt;a href=&quot;#inactive-feeds&quot;&gt;Full table&lt;/a&gt;&lt;p&gt;
+                {generate_html_table(pd_feed_innactivity_time.head(10))}
+                &lt;h2&gt;Articles Rejected:&lt;/h2&gt;
+                &lt;p&gt;{warning_crawl_range}&lt;/p&gt;
+                {get_total_reject_article_reason_table(crawl_report.get_total_non_quality_counts())}
+                &lt;h2&gt;Word Count:&lt;/h2&gt;
+                {generate_html_table(article_df.groupby(&quot;Language&quot;).word_count.describe().reset_index())}
+                &lt;h2&gt;FK Difficulty:&lt;/h2&gt;
+                {generate_html_table(article_df.groupby(&quot;Language&quot;).fk_difficulty.describe().reset_index())}
+                &lt;h2&gt;Top Subscribed Searches:&lt;/h2&gt;
+            &quot;&quot;&quot;
+    if len(newly_added_search_subscriptions) &gt; 0:
+        result += f&quot;&quot;&quot;
+                &lt;p&gt;&lt;b&gt;Newly added searches:&lt;/b&gt; {&quot;'&quot; + &quot;', '&quot;.join(newly_added_search_subscriptions) + &quot;'&quot;}&lt;/p&gt;
+                &quot;&quot;&quot;
+    result += f&quot;&quot;&quot;
+        {generate_html_table(top_subscribed_searches.head(10))}
+        &lt;h2&gt;Top Filtered Searches:&lt;/h2&gt;
+        {generate_html_table(top_filtered_searches.head(10))}
+        &lt;h2&gt;Activity Report&lt;/h2&gt;
+        &lt;p&gt;&lt;b&gt;Total Active Users:&lt;/b&gt; {total_active_users}&lt;/p&gt;
+        &quot;&quot;&quot;
+    if total_active_users == 0:
+        result += &quot;&quot;&quot;&lt;p&gt;&lt;b&gt;No active users in this period&lt;/b&gt;&lt;/p&gt;
+        &lt;hr&gt;&quot;&quot;&quot;
+    else:
+        result += f&quot;&quot;&quot;
+        {generate_active_users_table(combined_user_activity_df, bookmark_df)}
+        &lt;br&gt;
+        &lt;h3&gt;Top Articles Read:&lt;/h3&gt;
+        {generate_top_opened_articles(user_reading_time_df, data_extractor, feed_df)}
+        &lt;img src=&quot;{generate_unique_articles_read_plot(user_reading_time_df)}&quot; /&gt;
+        &lt;img src=&quot;{generate_exercise_activity(exercise_activity_df)}&quot; /&gt;
+        &lt;img src=&quot;{generate_topic_reading_time(topic_reading_time_df)}&quot; /&gt;
+        &lt;img src=&quot;{generate_bookmarks_by_language_plot(bookmark_df)}&quot; /&gt;
+        &quot;&quot;&quot;
+    result += f&quot;&quot;&quot;
+            &lt;p&gt;&lt;a href=&quot;#removed-articles&quot;&gt;Removed Sents Table&lt;/a&gt;&lt;p&gt;
+            &lt;p&gt;&lt;a href=&quot;#new-url-keywords&quot;&gt;New keywords without topics&lt;/a&gt;&lt;p&gt;
+            &lt;h1&gt;Per Language Report:&lt;/h1&gt;
+            {lang_links}
+            &lt;hr /&gt;
+            {lang_report}
+            &lt;hr /&gt;
+            &lt;h1&gt;Newly identified repeating patterns:&lt;/h1&gt;
+            &lt;p&gt;Sentences that occur in more than 10 articles during this weeks crawl, and were not filtered.&lt;p&gt;
+            {get_new_repeating_sents_table(pd_new_repeated_sents) if DAYS_FOR_REPORT &lt;= 7 else &quot;&lt;p&gt;Skipped due to long period.&lt;/p&gt;&quot;}
+            &lt;h1 id=&quot;removed-articles&quot;&gt;Removed Article Sents:&lt;/h1&gt;
+            &lt;p&gt;{warning_crawl_range}&lt;/p&gt;
+            {get_rejected_sentences_table(total_removed_sents)}
+        &lt;/body&gt;
+    &quot;&quot;&quot;
+
+    result += f&quot;&quot;&quot;
+            &lt;h1 id=&quot;new-url-keywords&quot;&gt;Newly url keywords without topics:&lt;/h1&gt;
+            &lt;p&gt;URL Keywords that occur more than 100 times in articles and are not mapped to a topic. They are language unique.&lt;p&gt;
+            {get_url_keywords_table(pd_url_keywords) if DAYS_FOR_REPORT &lt;= 7 else &quot;&lt;p&gt;Skipped due to long period.&lt;/p&gt;&quot;}
+            &lt;br /&gt;
+            &lt;h1 id=&quot;inactive-feeds&quot;&gt;Feed activity:&lt;/h1&gt;
+            {generate_html_table(pd_feed_innactivity_time)}
+        &lt;/body&gt;
+    &quot;&quot;&quot;
+
+    output_filepath = f&quot;report_zeeguu_{date_str}_d{DAYS_FOR_REPORT}.html&quot;
+    with open(
+        os.path.join(
+            FOLDER_FOR_REPORT_OUTPUT,
+            output_filepath,
+        ),
+        &quot;w&quot;,
+        encoding=&quot;UTF-8&quot;,
+    ) as f:
+        f.write(result)
+
+    print(f&quot;File written to '{output_filepath}'.&quot;)
+    return result
+
+
+if __name__ == &quot;__main__&quot;:
+    parser = argparse.ArgumentParser(&quot;generate_plots_report&quot;)
+    parser.add_argument(
+        &quot;number_of_days&quot;,
+        nargs=&quot;?&quot;,
+        default=7,
+        help=&quot;Number of days from the current date that will be cnsidered for the report.&quot;,
+        type=int,
+    )
+    args = parser.parse_args()
+    DAYS_FOR_REPORT = args.number_of_days
+    print(
+        f&quot;## Reporting for the last {DAYS_FOR_REPORT} days, today is: {datetime.datetime.now()}&quot;
+    )
+    print(
+        &quot;################################################################################&quot;
+    )
+    from zeeguu.api.app import create_app
+
+    app = create_app()
+    sns.set_theme(&quot;paper&quot;, &quot;whitegrid&quot;)
+    cur_time = datetime.datetime.now()
+    CURRENT_WEEK_N = max(cur_time.isocalendar()[1] - 1, 1)
+    date_str = cur_time.strftime(&quot;%Y_%m_%d&quot;)
+
+    DB_URI = app.config[&quot;SQLALCHEMY_DATABASE_URI&quot;]
+    # rcParams[&quot;figure.figsize&quot;] = 10, 8
+    db_connection = create_engine(
+        DB_URI,
+        pool_recycle=300,
+        connect_args={&quot;connect_timeout&quot;: 300, &quot;read_timeout&quot;: 600},
+    )
+    generate_html_page()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

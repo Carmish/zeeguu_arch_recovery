@@ -1,0 +1,375 @@
+<html>
+<head>
+    <title>tools/migrations/24-11-04--updating-url-keyword-mapping.sql</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/migrations/24-11-04--updating-url-keyword-mapping.sql (<b>312</b> lines of code) (<a href="24-11-04--updating-url-keyword-mapping.sql">raw</a>):</h3>
+<div id="editor"># Swedish 'ekonomi' -&gt; Business
+update
+    url_keyword
+set
+    new_topic_id = 6
+WHERE
+    keyword like 'ekonomi'
+    and language_id = 18;
+
+# German 'kunstmarkt' -&gt; Culture &amp; Art
+update
+    url_keyword
+set
+    new_topic_id = 2
+WHERE
+    keyword like 'kunstmarkt'
+    and language_id = 3;
+
+# German 'wintersport' -&gt; Sports
+update
+    url_keyword
+set
+    new_topic_id = 1
+WHERE
+    keyword like 'wintersport'
+    and language_id = 3;
+
+# German 'technik' -&gt; Technology &amp; Science
+update
+    url_keyword
+set
+    new_topic_id = 3
+WHERE
+    keyword like 'technik'
+    and language_id = 3;
+
+# German 'buehne und konzert' -&gt; Culture &amp; Art
+update
+    url_keyword
+set
+    new_topic_id = 2
+WHERE
+    keyword like 'patrimoine'
+    and language_id = 3;
+
+# German 'bildung' -&gt; Health &amp; Society
+update
+    url_keyword
+set
+    new_topic_id = 5
+WHERE
+    keyword like 'bildung'
+    and language_id = 3;
+
+# German 'mode design' -&gt; Culture &amp; Art ?
+update
+    url_keyword
+set
+    new_topic_id = 2
+WHERE
+    keyword like 'mode design'
+    and language_id = 3;
+
+# Danish 'krop sundhed' -&gt; Health &amp; Society
+update
+    url_keyword
+set
+    new_topic_id = 5
+WHERE
+    keyword like 'krop sundhed'
+    and language_id = 2;
+
+# Danish 'naturvidenskab' -&gt; Technology &amp; Science
+update
+    url_keyword
+set
+    new_topic_id = 3
+WHERE
+    keyword like 'naturvidenskab'
+    and language_id = 2;
+
+# Danish 'boganmeldelser' -&gt; Culture &amp; Art
+update
+    url_keyword
+set
+    new_topic_id = 2
+WHERE
+    keyword like 'boganmeldelser'
+    and language_id = 2;
+
+# Danish 'wimbledon' -&gt; Sports
+update
+    url_keyword
+set
+    new_topic_id = 1
+WHERE
+    keyword like 'wimbledon'
+    and language_id = 2;
+
+# Danish 'ep valg' -&gt; Politics
+update
+    url_keyword
+set
+    new_topic_id = 7
+WHERE
+    keyword like 'ep valg'
+    and language_id = 2;
+
+# Danish 'badminton' -&gt; Sports
+update
+    url_keyword
+set
+    new_topic_id = 1
+WHERE
+    keyword like 'badminton'
+    and language_id = 2;
+
+# Danish 'superliga' -&gt; Sports
+update
+    url_keyword
+set
+    new_topic_id = 1
+WHERE
+    keyword like 'superliga'
+    and language_id = 2;
+
+# Danish 'uddannelse' -&gt; Health &amp; Society
+update
+    url_keyword
+set
+    new_topic_id = 5
+WHERE
+    keyword like 'uddannelse'
+    and language_id = 2;
+
+# Danish 'kvindelandsholdet' -&gt; Sports
+update
+    url_keyword
+set
+    new_topic_id = 1
+WHERE
+    keyword like 'kvindelandsholdet'
+    and language_id = 2;
+
+# Danish 'rummet' -&gt; Technology &amp; Science
+update
+    url_keyword
+set
+    new_topic_id = 3
+WHERE
+    keyword like 'rummet'
+    and language_id = 2;
+
+# Danish 'erhverv' -&gt; Business
+update
+    url_keyword
+set
+    new_topic_id = 6
+WHERE
+    keyword like 'erhverv'
+    and language_id = 2;
+
+# Danish 'sundhed' -&gt; Health &amp; Society
+update
+    url_keyword
+set
+    new_topic_id = 5
+WHERE
+    keyword like 'sundhed'
+    and language_id = 2;
+
+# Danish 'valg i usa' -&gt; Politics
+update
+    url_keyword
+set
+    new_topic_id = 7
+WHERE
+    keyword like 'valg i usa'
+    and language_id = 2;
+
+# Danish 'teknologi' -&gt; Technology &amp; Science
+update
+    url_keyword
+set
+    new_topic_id = 3
+WHERE
+    keyword like 'teknologi'
+    and language_id = 2;
+
+# French 'sport auto' -&gt; Sports
+update
+    url_keyword
+set
+    new_topic_id = 1
+WHERE
+    keyword like 'sport auto'
+    and language_id = 7;
+
+# French 'entreprises' -&gt; Business
+update
+    url_keyword
+set
+    new_topic_id = 6
+WHERE
+    keyword like 'entreprises'
+    and language_id = 7;
+
+# French 'economie francaise' -&gt; Business
+update
+    url_keyword
+set
+    new_topic_id = 6
+WHERE
+    keyword like 'economie francaise'
+    and language_id = 7;
+
+# French 'tennis de table' -&gt; Sports
+update
+    url_keyword
+set
+    new_topic_id = 1
+WHERE
+    keyword like 'tennis de table'
+    and language_id = 7;
+
+# French 'judo' -&gt; Sports
+update
+    url_keyword
+set
+    new_topic_id = 1
+WHERE
+    keyword like 'judo'
+    and language_id = 7;
+
+# French 'surf' -&gt; Sports
+update
+    url_keyword
+set
+    new_topic_id = 1
+WHERE
+    keyword like 'surf'
+    and language_id = 7;
+
+# French 'histoire' -&gt; Culture &amp; Art
+update
+    url_keyword
+set
+    new_topic_id = 2
+WHERE
+    keyword like 'histoire'
+    and language_id = 7;
+
+# French 'patrimoine' -&gt; Culture &amp; Art
+update
+    url_keyword
+set
+    new_topic_id = 2
+WHERE
+    keyword like 'patrimoine'
+    and language_id = 7;
+
+# French 'gastronomie' -&gt; Travel &amp; Tourism
+update
+    url_keyword
+set
+    new_topic_id = 4
+WHERE
+    keyword like 'gastronomie'
+    and language_id = 7;
+
+# French 'rallye' -&gt; Sports
+update
+    url_keyword
+set
+    new_topic_id = 1
+WHERE
+    keyword like 'rallye'
+    and language_id = 7;
+
+# French 'theatre' -&gt; Culture &amp; Art
+update
+    url_keyword
+set
+    new_topic_id = 2
+WHERE
+    keyword like 'theatre'
+    and language_id = 7;
+
+# French 'cultures pop' -&gt; Culture &amp; Art
+update
+    url_keyword
+set
+    new_topic_id = 2
+WHERE
+    keyword like 'cultures pop'
+    and language_id = 7;
+
+# French 'festival de cannes' -&gt; Culture &amp; Art
+update
+    url_keyword
+set
+    new_topic_id = 2
+WHERE
+    keyword like 'festival de cannes'
+    and language_id = 7;
+
+# French 'festival de cannes' -&gt; Culture &amp; Art
+update
+    url_keyword
+set
+    new_topic_id = 2
+WHERE
+    keyword like 'festival de cannes'
+    and language_id = 7;
+
+# French 'jeux olympiques' -&gt; Sports
+update
+    url_keyword
+set
+    new_topic_id = 1
+WHERE
+    keyword like 'jeux olympiques'
+    and language_id = 7;
+
+# French 'volley ball' -&gt; Sports
+update
+    url_keyword
+set
+    new_topic_id = 1
+WHERE
+    keyword like 'volley ball'
+    and language_id = 7;
+
+# Italian 'casa' -&gt; Health &amp; Society
+update
+    url_keyword
+set
+    new_topic_id = 5
+WHERE
+    keyword like 'casa'
+    and language_id = 8;
+
+# Italian 'formulauno' -&gt; Sports
+update
+    url_keyword
+set
+    new_topic_id = 1
+WHERE
+    keyword like 'formulauno'
+    and language_id = 8;</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/sql");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

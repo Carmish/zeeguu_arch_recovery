@@ -1,0 +1,37 @@
+<html>
+<head>
+    <title>zeeguu/core/language/services/lingo_rank_service.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/language/services/lingo_rank_service.py (<b>7</b> lines of code) (<a href="lingo_rank_service.py">raw</a>):</h3>
+<div id="editor">import requests
+
+
+def retrieve_lingo_rank(text):
+    res = requests.get(
+        &quot;https://www.wolframcloud.com/obj/929a0113-278c-479d-912a-54ef21b5e0bb&quot;,
+        params={&quot;x&quot;: text},
+    )
+    # The damn thing returns a ton of digits
+    # truncating all but one
+    return int(float(res.text) * 10) / 10
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

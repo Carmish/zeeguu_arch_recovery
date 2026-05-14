@@ -1,0 +1,115 @@
+<html>
+<head>
+    <title>def extract_features()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def extract_features()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/language/ml_cefr_classifier.py [0:0]</i></p>
+<ul>
+    <li><b>54</b> lines of code</li>
+    <li><b>27</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def extract_features(content, fk_difficulty, word_count):
+    &quot;&quot;&quot;
+    Extract 12 linguistic features from article content.
+
+    Features:
+    1. FK difficulty (already computed)
+    2. Word count (already computed)
+    3. Average word length
+    4. Average chars per word
+    5. Average sentence length
+    6. Sentence length std dev
+    7. Type-token ratio (vocabulary richness)
+    8. Long word ratio (words &gt;7 chars)
+    9. Punctuation complexity (semicolons, colons, em-dashes)
+    10. Average paragraph length
+    11. Interactive ratio (questions/exclamations per sentence)
+    12. Character count
+    &quot;&quot;&quot;
+
+    if not content or len(content.strip()) == 0:
+        # Return default features for empty content
+        return np.array([fk_difficulty or 50, word_count or 0] + [0.0] * 10)
+
+    # Basic counts
+    char_count = len(content)
+
+    # Word-level features
+    words = re.findall(r&quot;\b\w+\b&quot;, content.lower())
+    if not words:
+        return np.array([fk_difficulty or 50, word_count or 0] + [0.0] * 10)
+
+    actual_word_count = len(words)
+    avg_word_length = np.mean([len(w) for w in words])
+    long_word_ratio = sum(1 for w in words if len(w) &gt; 7) / actual_word_count
+
+    # Vocabulary richness (type-token ratio)
+    unique_words = len(set(words))
+    type_token_ratio = unique_words / actual_word_count if actual_word_count &gt; 0 else 0
+
+    # Sentence-level features
+    sentences = re.split(r&quot;[.!?]+&quot;, content)
+    sentences = [s.strip() for s in sentences if s.strip()]
+
+    if sentences:
+        sentence_lengths = [len(re.findall(r&quot;\b\w+\b&quot;, s)) for s in sentences]
+        avg_sentence_length = np.mean(sentence_lengths)
+        sentence_length_std = (
+            np.std(sentence_lengths) if len(sentence_lengths) &gt; 1 else 0
+        )
+
+        # Interactive ratio (questions/exclamations)
+        interactive_marks = content.count(&quot;?&quot;) + content.count(&quot;!&quot;)
+        interactive_ratio = (
+            interactive_marks / len(sentences) if len(sentences) &gt; 0 else 0
+        )
+    else:
+        avg_sentence_length = 0
+        sentence_length_std = 0
+        interactive_ratio = 0
+
+    # Punctuation complexity
+    complex_punct = content.count(&quot;;&quot;) + content.count(&quot;:&quot;) + content.count(&quot;&mdash;&quot;)
+    punct_complexity = complex_punct / actual_word_count if actual_word_count &gt; 0 else 0
+
+    # Paragraph-level features
+    paragraphs = [p.strip() for p in content.split(&quot;\n\n&quot;) if p.strip()]
+    if paragraphs:
+        paragraph_lengths = [len(re.findall(r&quot;\b\w+\b&quot;, p)) for p in paragraphs]
+        avg_paragraph_length = np.mean(paragraph_lengths)
+    else:
+        avg_paragraph_length = actual_word_count  # Treat entire text as one paragraph
+
+    # Average chars per word (different from avg_word_length)
+    avg_chars_per_word = char_count / actual_word_count if actual_word_count &gt; 0 else 0
+
+    features = np.array(
+        [
+            fk_difficulty or 50,  # 1. FK difficulty
+            word_count or actual_word_count,  # 2. Word count
+            avg_word_length,  # 3. Average word length
+            avg_chars_per_word,  # 4. Average chars per word
+            avg_sentence_length,  # 5. Average sentence length
+            sentence_length_std,  # 6. Sentence length std dev
+            type_token_ratio,  # 7. Type-token ratio
+            long_word_ratio,  # 8. Long word ratio
+            punct_complexity,  # 9. Punctuation complexity
+            avg_paragraph_length,  # 10. Average paragraph length
+            interactive_ratio,  # 11. Interactive ratio
+            char_count,  # 12. Character count
+        ]
+    )
+
+    return features
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

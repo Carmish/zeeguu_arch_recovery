@@ -1,0 +1,423 @@
+{
+  "metadata" : {
+    "name" : "Zeeguu-api",
+    "description" : "",
+    "tooltip" : "",
+    "logoLink" : "",
+    "links" : [ ]
+  },
+  "summary" : [ ],
+  "srcRoot" : "..",
+  "extensions" : [ "py", "sql", "md", "txt", "json", "sh", "html", "cfg", "gitignore", "yaml", "ipynb", "svg", "in", "toml", "rss" ],
+  "ignore" : [ {
+    "pathPattern" : ".*/[.][a-zA-Z0-9_]+.*",
+    "contentPattern" : "",
+    "exception" : false,
+    "note" : "Hidden files and folders"
+  }, {
+    "pathPattern" : ".*/docs/.*",
+    "contentPattern" : "",
+    "exception" : false,
+    "note" : "Documentation"
+  } ],
+  "main" : {
+    "name" : "main",
+    "sourceFileFilters" : [ {
+      "pathPattern" : ".*",
+      "contentPattern" : "",
+      "exception" : false,
+      "note" : ""
+    } ],
+    "files" : [ ]
+  },
+  "test" : {
+    "name" : "test",
+    "sourceFileFilters" : [ {
+      "pathPattern" : ".*/[Tt]est/.*",
+      "contentPattern" : "",
+      "exception" : false,
+      "note" : "Test files"
+    }, {
+      "pathPattern" : ".*/test_.*",
+      "contentPattern" : "",
+      "exception" : false,
+      "note" : "Test files"
+    }, {
+      "pathPattern" : ".*/tests_.*",
+      "contentPattern" : "",
+      "exception" : false,
+      "note" : "Test files"
+    }, {
+      "pathPattern" : ".*_test[.].*",
+      "contentPattern" : "",
+      "exception" : false,
+      "note" : "Test files"
+    }, {
+      "pathPattern" : ".*_tests[.].*",
+      "contentPattern" : "",
+      "exception" : false,
+      "note" : "Test files"
+    } ],
+    "files" : [ ]
+  },
+  "generated" : {
+    "name" : "generated",
+    "sourceFileFilters" : [ ],
+    "files" : [ ]
+  },
+  "buildAndDeployment" : {
+    "name" : "build and deployment",
+    "sourceFileFilters" : [ {
+      "pathPattern" : ".*[.]sh",
+      "contentPattern" : "",
+      "exception" : false,
+      "note" : "Scripts"
+    }, {
+      "pathPattern" : ".*[.]git[a-z]+",
+      "contentPattern" : "",
+      "exception" : false,
+      "note" : "Git configuration files"
+    }, {
+      "pathPattern" : ".*/[.]gitignore",
+      "contentPattern" : "",
+      "exception" : false,
+      "note" : "Git ignore files"
+    } ],
+    "files" : [ ]
+  },
+  "other" : {
+    "name" : "other",
+    "sourceFileFilters" : [ {
+      "pathPattern" : ".*[.]txt",
+      "contentPattern" : "",
+      "exception" : false,
+      "note" : "Text files"
+    }, {
+      "pathPattern" : ".*[.]md",
+      "contentPattern" : "",
+      "exception" : false,
+      "note" : "Markdown files"
+    }, {
+      "pathPattern" : ".*/README[.][a-z0-9]+",
+      "contentPattern" : "",
+      "exception" : false,
+      "note" : "Text files"
+    }, {
+      "pathPattern" : ".*[.]svg",
+      "contentPattern" : "",
+      "exception" : false,
+      "note" : "SVG files"
+    }, {
+      "pathPattern" : ".*[.]json",
+      "contentPattern" : "",
+      "exception" : false,
+      "note" : "JSON files"
+    }, {
+      "pathPattern" : ".*/[.]gitignore",
+      "contentPattern" : "",
+      "exception" : false,
+      "note" : "Ignore list"
+    } ],
+    "files" : [ ]
+  },
+  "logicalDecompositions" : [ {
+    "name" : "frequency of changes",
+    "scope" : "main",
+    "filters" : [ ],
+    "componentsFolderDepth" : 0,
+    "minComponentsCount" : 0,
+    "components" : [ {
+      "name" : "1-5 changes",
+      "sourceFileFilters" : [ ],
+      "files" : [ "stanza_service/install_models.py", "stanza_service/gunicorn.conf.py", "stanza_service/app.py", "zeeguu/core/user_activity_hooks/__init__.py", "zeeguu/core/account_management/__init__.py", "zeeguu/core/bookmark_operations/__init__.py", "zeeguu/core/word_filter/proper_noun_filter.py", "zeeguu/core/word_filter/__init__.py", "zeeguu/core/word_filter/profanity_filter.py", "zeeguu/core/word_scheduling/basicSR/__init__.py", "zeeguu/core/behavioral_modeling/__init__.py", "zeeguu/core/util/reading_time_estimator.py", "zeeguu/core/util/encoding.py", "zeeguu/core/util/list.py", "zeeguu/core/util/timer_logging_decorator.py", "zeeguu/core/util/compute_fk_word_count.py", "zeeguu/core/util/time_conversion.py", "zeeguu/core/elastic/__init__.py", "zeeguu/core/word_stats/__init__.py", "zeeguu/core/audio_lessons/suggestion_validator.py", "zeeguu/core/audio_lessons/word_selector.py", "zeeguu/core/audio_lessons/__init__.py", "zeeguu/core/audio_lessons/azure_voice_synthesizer.py", "zeeguu/core/content_quality/advertorial_detection.py", "zeeguu/core/content_quality/__init__.py", "zeeguu/core/content_quality/disturbing_content_detection.py", "zeeguu/core/__init__.py", "zeeguu/core/content_retriever/parse_with_newspaper.py", "zeeguu/core/content_retriever/crawler_exceptions.py", "zeeguu/core/utils/__init__.py", "zeeguu/core/utils/caching.py", "zeeguu/core/language/strategies/word_rank_difficulty_estimator.py", "zeeguu/core/language/strategies/__init__.py", "zeeguu/core/language/strategies/default_difficulty_estimator.py", "zeeguu/core/language/strategies/frequency_difficulty_estimator.py", "zeeguu/core/language/__init__.py", "zeeguu/core/language/difficulty_estimator_factory.py", "zeeguu/core/language/ml_cefr_classifier.py", "zeeguu/core/language/fk_to_cefr.py", "zeeguu/core/language/difficulty_estimator_strategy.py", "zeeguu/core/language/services/lingo_rank_service.py", "zeeguu/core/tokenization/stanza_client.py", "zeeguu/core/tokenization/nltk_tokenizer.py", "zeeguu/core/tokenization/zeeguu_tokenizer.py", "zeeguu/core/exercises/__init__.py", "zeeguu/core/user_statistics/student_overview.py", "zeeguu/core/user_statistics/__init__.py", "zeeguu/core/model/user_word_interaction_history.py", "zeeguu/core/model/user_article_broken_report.py", "zeeguu/core/model/db.py", "zeeguu/core/model/article_cefr_assessment.py", "zeeguu/core/model/user_cohort_map.py", "zeeguu/core/model/article_summary_context.py", "zeeguu/core/model/bookmark_user_preference.py", "zeeguu/core/model/friendship.py", "zeeguu/core/model/difficulty_lingo_rank.py", "zeeguu/core/model/notification.py", "zeeguu/core/model/article_url_keyword_map.py", "zeeguu/core/model/article_classification.py", "zeeguu/core/model/user_notification.py", "zeeguu/core/model/example_sentence.py", "zeeguu/core/model/monthly_activity_stats_cache.py", "zeeguu/core/model/grammar_correction_log.py", "zeeguu/core/model/monthly_active_users_cache.py", "zeeguu/core/model/feedback_component.py", "zeeguu/core/model/daily_audio_lesson_segment.py", "zeeguu/core/model/user_badge_progress.py", "zeeguu/core/model/audio_lesson_dialogue.py", "zeeguu/core/model/meaning_report.py", "zeeguu/core/model/example_sentence_context.py", "zeeguu/core/model/badge_category.py", "zeeguu/core/model/context_identifier.py", "zeeguu/core/model/daily_audio_lesson_wrapper.py", "zeeguu/core/model/user_mwe_override.py", "zeeguu/core/model/ai_generator.py", "zeeguu/core/model/user_badge.py", "zeeguu/core/model/exercise_source.py", "zeeguu/core/model/exercise_report.py", "zeeguu/core/model/domain_name.py", "zeeguu/core/model/validation_log.py", "zeeguu/core/model/translation_search.py", "zeeguu/core/model/user_listening_session.py", "zeeguu/core/model/article_upload.py", "zeeguu/core/leaderboards/__init__.py", "zeeguu/core/content_cleaning/unicode_normalization.py", "zeeguu/core/content_cleaning/__init__.py", "zeeguu/core/nlp_pipeline/alignment_errant.py", "zeeguu/core/nlp_pipeline/edit_errant.py", "zeeguu/core/nlp_pipeline/reduce_context.py", "zeeguu/core/friends/friend_streak.py", "zeeguu/core/friends/listeners.py", "zeeguu/core/friends/__init__.py", "zeeguu/core/mwe/llm_mwe_detector.py", "zeeguu/core/mwe/stanza_mwe_detector.py", "zeeguu/core/mwe/__init__.py", "zeeguu/core/mwe/enricher.py", "zeeguu/core/events/__init__.py", "zeeguu/core/translation_services/__init__.py", "zeeguu/core/translation_services/azure_alignment.py", "zeeguu/core/translation_services/translator.py", "zeeguu/core/reading_analysis/macro_reading_session.py", "zeeguu/core/ml_models/__init__.py", "zeeguu/core/ml_models/utils.py", "zeeguu/core/ml_models/paywall_detector.py", "zeeguu/core/emailer/email_confirmation.py", "zeeguu/core/emailer/password_reset.py", "zeeguu/core/emailer/__init__.py", "zeeguu/core/badges/__init__.py", "zeeguu/core/feed_handler/__init__.py", "zeeguu/core/llm_services/__init__.py", "zeeguu/core/llm_services/llm_service.py", "zeeguu/core/llm_services/translation_validator.py", "zeeguu/core/llm_services/grammar_correction_service.py", "zeeguu/core/llm_services/anthropic_service.py", "zeeguu/core/llm_services/prompts/grammar_correction.py", "zeeguu/core/llm_services/prompts/meaning_frequency_classifier.py", "zeeguu/core/llm_services/prompts/__init__.py", "zeeguu/core/llm_services/prompts/example_generation.py", "zeeguu/core/llm_services/prompts/translation_validator.py", "zeeguu/core/llm_services/prompts/learning_card_generator.py", "zeeguu/core/llm_services/deepseek_service.py", "zeeguu/core/llm_services/mwe_translation_service.py", "zeeguu/core/llm_services/validation_service.py", "zeeguu/core/sql/queries/query_loader.py", "zeeguu/core/sql/__init__.py", "zeeguu/core/sql/learner/__init__.py", "zeeguu/core/sql/teacher/__init__.py", "zeeguu/core/sql/teacher/teachers_for_cohort.py", "zeeguu/config/loader.py", "zeeguu/__init__.py", "zeeguu/operations/crawler/article_crawler.py", "zeeguu/operations/crawler/feed_retrieval.py", "zeeguu/operations/crawler/video_crawler.py", "zeeguu/operations/crawler/crawl_report.py", "zeeguu/operations/__init__.py", "zeeguu/operations/monitoring/__init__.py", "zeeguu/operations/report_generator/data_extractor.py", "zeeguu/operations/report_generator/__init__.py", "zeeguu/operations/report_generator/generate_report.py", "zeeguu/operations/report_generator/explore_report_notebook.ipynb", "zeeguu/api/cross_domain_app.py", "zeeguu/api/endpoints/crawl_stats.py", "zeeguu/api/endpoints/cefr_assessment.py", "zeeguu/api/endpoints/teacher_dashboard/_common_api_parameters.py", "zeeguu/api/endpoints/teacher_dashboard/__init__.py", "zeeguu/api/endpoints/teacher_dashboard/helpers.py", "zeeguu/api/endpoints/teacher_dashboard/_only_teachers_decorator.py", "zeeguu/api/endpoints/user_video.py", "zeeguu/api/endpoints/session_history.py", "zeeguu/api/endpoints/leaderboards.py", "zeeguu/api/endpoints/article_simplification.py", "zeeguu/api/endpoints/user_statistics.py", "zeeguu/api/endpoints/system_languages.py", "zeeguu/api/endpoints/article_cefr_recompute.py", "zeeguu/api/endpoints/helpers/__init__.py", "zeeguu/api/endpoints/article_upload.py", "zeeguu/api/__init__.py", "zeeguu/api/utils/parse_json_boolean.py", "zeeguu/api/utils/feedparser_extensions.py", "zeeguu/api/utils/background.py", "zeeguu/api/utils/rate_limiter.py", "zeeguu/api/utils/session_helpers.py", "zeeguu/api/utils/caching_decorator.py", "zeeguu/api/utils/security_checks.py", "zeeguu/api/utils/abort_handling.py", "zeeguu/api/utils/json_result.py", "zeeguu/api/custom_fmd_graphs.py", "zeeguu/cl/__init__.py", "tools/one_time/fix_html_entities_in_articles.py", "tools/one_time/reindex_articles_with_quotes.py", "tools/one_time/fix_tokenization_cache_html_entities.py", "tools/one_time/reindex_articles_with_html_entities.py", "tools/one_time/fix_postillon_topics.py", "tools/one_time/reindex_single_article.py", "tools/download_feed.py", "tools/delete_daily_lesson.py", "tools/recompute_fk_difficulties.py", "tools/add_videos_and_captions_from_file.py", "tools/tokenizer_script.py", "tools/migrations/25-02-28--04-delete-unused-columns-article.sql", "tools/migrations/25-07-31--recalculate_multiword_phrase_ranks.py", "tools/migrations/24-05-21--add_uuid_to_session.sql", "tools/migrations/25-12-05--add_is_admin_to_user.sql", "tools/migrations/25-12-11--add_reading_session_id_to_bookmark.sql", "tools/migrations/25-08-13--optimize_viewport_data_format.py", "tools/migrations/25-08-02--add_last_seen_to_users.sql", "tools/migrations/25-10-03-a--add_content_simhash_to_article.sql", "tools/migrations/25-11-04--add_bookmark_context_userword_index.sql", "tools/migrations/26-02-12-a--add_meaning_report.sql", "tools/migrations/24-05-06--update_cohort_language_to_null_for_testing.sql", "tools/migrations/26-01-22-a--add_translation_explanation.sql", "tools/migrations/26-04-03-c--add_audio_lesson_dialogue.sql", "tools/migrations/25-07-08--add_meaning_frequency_and_phrase_type.sql", "tools/migrations/25-05-23--removed_learning_cycle_column.sql", "tools/migrations/25-04-16--remove-vtt-from-video.sql", "tools/migrations/26-01-01--add_is_mwe_to_bookmark.sql", "tools/migrations/25-05-21--rename_user_word_to_phrase.sql", "tools/migrations/25-07-09-a--populate_language_id_for_existing_lessons.sql", "tools/migrations/25-11-22--add_cascade_delete_cohort_article_map.sql", "tools/migrations/25-10-22--recalculate_single_word_phrase_ranks.py", "tools/migrations/24-07-24--add_receive_email_column.sql", "tools/migrations/26-02-13--add_exercise_report.sql", "tools/migrations/24-12-02--add_user_notification_table.sql", "tools/migrations/25-08-09--consolidate_duplicate_meanings.py", "tools/migrations/25-11-22-b--drop_user_cohort_id_column.sql", "tools/migrations/24-04-10--01--add_learning_cycle_column.sql", "tools/migrations/25-08-20--fix_ai_generator_foreign_key.sql", "tools/migrations/26-01-01-a--add_mwe_partner_token_i_to_bookmark.sql", "tools/migrations/25-07-09--add_language_to_daily_audio_lesson.sql", "tools/migrations/25-02-06--adding-cascade-deletes.sql", "tools/migrations/26-01-06--add_email_verified.sql", "tools/migrations/26-02-17--simplify_translation_search.sql", "tools/migrations/24-03-26-drop_unique_constraint_from_img_url_id.sql", "tools/migrations/24-07-26--remove_all_search_subscriptions_and_searches.sql", "tools/migrations/25-12-11--backfill_reading_session_id_on_bookmarks.py", "tools/migrations/25-08-09--comprehensive_userword_consolidation.py", "tools/migrations/26-01-20--add_platform_to_session_tables.sql", "tools/migrations/26-02-16--security_fixes.sql", "tools/migrations/24-03-add_img_url_to_article.sql", "tools/migrations/26-01-15--add_learned_time_index.sql", "tools/migrations/26-03-31--add_topic_suggestion_to_audio_lessons.sql", "tools/migrations/25-08-28--add_article_summary_context.sql", "tools/migrations/25-08-28-a--add_translation_source_to_bookmark.sql", "tools/migrations/25-08-12--add_is_user_added_to_user_word.sql", "tools/migrations/26-04-14--add_article_upload.sql", "tools/migrations/24-04-22-4-new_topic_subscription.sql", "tools/migrations/25-02-28--01-new-content-tables copy.sql", "tools/migrations/25-07-31--add_generated_example_context.sql", "tools/migrations/26-01-20--add_exercise_validation.sql", "tools/migrations/25-12-11--add_reading_source_to_session.sql", "tools/migrations/24-01-16--fix-portuguese-language.sql", "tools/migrations/26-04-15--update_user_name_email_collation.sql", "tools/migrations/26-02-16-b--set_existing_users_verified.sql", "tools/migrations/25-05-20--migrate_to_word_meaning.sql", "tools/migrations/24-03-is_dev_in_users_table.sql", "tools/migrations/26-01-03--add_tokenized_content_to_cache.sql", "tools/migrations/25-07-16--remove_article_duplicates.sql", "tools/migrations/25-12-09--add_grammar_correction_log.sql", "tools/migrations/24-11-12-rename_new_topics.sql", "tools/migrations/24-07-30--remove_articles_with_no_publish_time.sql", "tools/migrations/24-08-30--user_cohort_map.sql", "tools/migrations/24-12-17--add_article_type.sql", "tools/migrations/24-09-24--add_feeback_tables.sql", "tools/migrations/26-02-12--add_meaning_level_note.sql", "tools/migrations/25-12-05-a--add_browsing_session_id_to_bookmark.sql", "tools/migrations/26-03-13--fix_exercise_report_reason_enum.sql", "tools/migrations/24-02-rss_to_feed.sql", "tools/migrations/25-11-11--add-bookmark-position-constraints-strict.sql", "tools/migrations/25-02-05--add_teacher_language_to_audio_lesson_meaning.sql", "tools/migrations/24-04-23--02--update_learning_cycle_for_existing_users.sql", "tools/migrations/26-02-24-a--add_username.sql", "tools/migrations/25-10-22--recalculate_all_multiword_phrase_ranks.py", "tools/migrations/25-02-06--add_audio_lesson_generation_progress.sql", "tools/migrations/25-12-05--add_user_browsing_session.sql", "tools/migrations/25-10-15--add_cefr_assessment_system.sql", "tools/migrations/25-05-24--adding_the_user_word_table.sql", "tools/migrations/24-04-22-2-create_topic_keyword.sql", "tools/migrations/24-05-29--add_user_preference_to_bookmark.sql", "tools/migrations/24-10-23--delete_bookmark_learned.sql", "tools/migrations/26-03-13--add_user_avatar.sql", "tools/migrations/24-09-24--adding-language-to-search.sql", "tools/migrations/26-04-07--add_language_id_to_exercise_and_browsing_sessions.sql", "tools/migrations/26-01-22-b--add_literal_meaning.sql", "tools/migrations/26-01-22--add_validation_log.sql", "tools/migrations/26-02-10--add_monthly_active_users_cache.sql", "tools/migrations/24-12-02--add_notification_table.sql", "tools/migrations/25-12-24--add_user_listening_session.sql", "tools/migrations/26-04-05--drop_suggestion_from_audio_lesson_meaning.sql", "tools/migrations/24-11-12-delete_old_topics.sql", "tools/migrations/25-10-06--add_user_article_broken_report.sql", "tools/migrations/24-04-24--03--update_learning_cycle_preference_for_all_users.sql", "tools/migrations/25-11-22--add_user_created_at.sql", "tools/migrations/26-01-07--add_phrase_content_lower_index.sql", "tools/migrations/26-02-24-c--add_username.sql", "tools/migrations/24-07-01--add_article_broken_code_map.sql", "tools/migrations/25-04-03--update-context-type.sql", "tools/migrations/26-04-03-b--rename_topic_suggestion_to_suggestion.sql", "tools/migrations/25-07-25--add_user_article_completion_tracking.sql", "tools/migrations/26-02-19-a--add_badges.sql", "tools/migrations/26-01-05--add_user_mwe_override.sql", "tools/migrations/25-11-04-a--add_cached_tokenization.sql", "tools/migrations/25-07-01--add_audio_lesson_tables.sql", "tools/migrations/25-05-21--remove_word_form.sql", "tools/migrations/25-10-07--add_article_classification.sql", "tools/migrations/26-01-06--add_cached_tokenized_to_bookmark_context.sql", "tools/migrations/24-04-22-5-article_topic_user_feedback.sql", "tools/migrations/25-02-28--02-add-orphan-context-type.sql", "tools/migrations/25-08-20-b--fix_remaining_ai_models_foreign_keys.sql", "tools/migrations/25-07-12--add_simplified_content_fields.sql", "tools/migrations/26-01-27--add_daily_streak.sql", "tools/migrations/26-02-26--add_max_streak_to_user_language.sql", "tools/migrations/26-02-10-a--add_monthly_activity_stats_cache.sql", "tools/migrations/26-04-11--add_user_timezone.sql", "tools/migrations/25-10-03--add_performance_indexes.sql", "tools/migrations/25-02-28--03-update-user-activity-data.sql", "tools/migrations/24-04-22-1-new_topic_table.sql", "tools/migrations/26-02-19-b--insert_default_badges.sql", "tools/migrations/26-04-03--add_suggestion_type.sql", "tools/migrations/25-09-08--add_hidden_column_to_user_article.sql", "tools/migrations/25-08-13--cleanup_malformed_scroll_data.py", "tools/migrations/24-08-15--fix_politikens_titles.sql", "tools/migrations/26-01-27--add_user_word_interaction_history.sql", "tools/migrations/26-02-09--add_streak_to_user_language.sql", "tools/migrations/24-04-22-3-new_topic_filter.sql", "tools/migrations/24-11-31--add_level_column.sql", "tools/migrations/25-10-22--fix_codeline_collation.sql", "tools/migrations/24-11-04--updating-url-keyword-mapping.sql", "tools/migrations/26-01-12--add_platform_tracking.sql", "tools/diagnose_recommendations.py", "tools/delete_bookmarks_word_not_in_context.py", "tools/fix_feed.py", "tools/_test_validation.py", "tools/analyze_classroom_recommendations.py", "tools/delete_portuguese_audio_lessons.py", "tools/update_elastic_ids.py", "tools/remove_wrong_videos.py", "tools/feed_health_check.py", "tools/crawler/crawl.py", "tools/crawler/crawl_summary/__init__.py", "tools/crawler/crawl_summary/crawl_report.py", "tools/crawler/article_crawler.py", "tools/crawler/crawl_roundrobin.py", "tools/crawler/feed_retrieval.py", "tools/crawler/video_crawler.py", "tools/extract_validation_for_topics.py", "tools/delete_broken_videos_from_ES.py", "tools/update_meaning_frequencies.py", "tools/cleanup_todays_examples.py", "tools/generate_audio_lesson.py", "tools/delete_user_deleted_articles.py", "tools/delete_duplicate_articles.py", "tools/cleanup_empty_exercise_sessions.py", "tools/regenerate_test_fixture.py", "tools/__init__.py", "tools/fix_long_summaries.py", "tools/migrate_daily_streak.py", "tools/mysql_to_elastic_for_articles.py", "tools/old/remove_text_duplicates.py", "tools/old/add_word_rank.py", "tools/old/tag_topics_in_danish.py", "tools/old/bookmark_info.py", "tools/old/fix_text_duplications.py", "tools/old/es_v8_migration/migrate_old_topics_to_new_topics.py", "tools/old/es_v8_migration/set_url_keywords_article.py", "tools/old/es_v8_migration/set_topic_mapping_to_keywords.py", "tools/old/es_v8_migration/url_topics.py", "tools/old/es_v8_migration/set_new_topics_from_url_keyword.py", "tools/old/assert_db_anonymized.py", "tools/old/article_recommendations.py", "tools/old/consolidate_accounts.py", "tools/old/__init__.py", "tools/old/remove_unreferenced_articles.py", "tools/old/recompute_fk_difficulties_for_polish.py", "tools/old/update_particular_tag.py", "tools/old/learner_stats.py", "tools/old/tag_existing_articles.py", "tools/old/forget_user.py", "tools/old/add_all_cohorts_to_teacher.py", "tools/old/flatten_unicode_characters.py", "tools/old/add_article_id_to_text.py", "tools/feeds_for_language.py", "tools/fix_simplified_articles_html.py", "tools/cleanup_tokenization_cache.py", "tools/simplify_article.py", "tools/untag_simplified_and_user_articles.py", "tools/audio-engleza/generate_lesson.py", "tools/audio-engleza/deploy_lessons.py", "tools/audio-engleza/generate_script.py", "tools/audio-engleza/generate_audio.py", "tools/fix_audio_lesson_teacher_language.py", "tools/upgrade_to_teacher.py", "tools/notify_search_subscribers.py", "tools/backfill_cefr_assessments.py", "tools/tag_advertorials.py", "tools/ml/__init__.py", "tools/ml/cefr_trainers/__init__.py", "tools/ml/cefr_trainers/train_cefr_classifiers_with_frequency.py", "tools/ml/cefr_trainers/train_cefr_classifiers.py", "tools/prefetch_example_sentences_for_users.py", "tools/user_word_integrity/_daily_user_word_integrity_check.py", "tools/user_word_integrity/_delete_unvalidatable_bookmarks.py", "tools/user_word_integrity/_fix_multiword_bookmark_positions.py", "tools/user_word_integrity/_check_and_fix_user_word_integrity.py", "tools/user_word_integrity/_cleanup_orphaned_user_words.py", "tools/user_word_integrity/_test_integrity_validation.py", "tools/precompute_upcoming_meaning_lessons.py", "tools/add_ml_assessment_to_recent_articles.py", "tools/manual_test_user_report.py", "tools/cleanup_broken_summaries.py", "tools/fix_underscore_examples.py", "tools/fix_compound_examples.py", "tools/reclassify_unclassified_phrases.py", "tools/cleanup_empty_broken_articles.py", "tools/fix_user_over_limit.py", "tools/update_es_available_cefr_levels.py", "tools/cleanup_greek_audio_lessons.py", "tools/validate_and_clean_examples.py", "tools/cleanup_summary_formatting.py", "tools/delete_article_by_url.py", "tools/validate_scheduled_meanings.py", "tools/report_generator/__init__.py", "tools/report_generator/explore_report_notebook.ipynb", "tools/stiri-simple/generate_news_page.py", "tools/stiri-simple/deploy_to_news.py", "tools/recalculate_video_topics.py", "tools/update_elastic_with_source_ids.py", "tools/recalculate_all_word_ranks.py", "tools/rename_feed.py", "tools/sql/teacher-for-cohort.sql", "tools/sql/recent_exercise_outcomes.sql", "tools/sql/most_recent_active_teachers.sql", "tools/sql/history_of_bookmark.sql", "tools/sql/_show_foreign_keys.sql", "tools/sql/users_with_level.sql", "tools/sql/exercise_corectness.sql", "tools/sql/most_active_users_in_the_last_year.sql", "tools/sql/user_exercise_history.sql", "tools/sql/popular_exercise_outcomes.sql", "tools/sql/users_last_active_in_cohort.sql", "default.api.cfg", "default.fmd.cfg", "pyproject.toml", "MANIFEST.in", "install_stanza_models.py", "default_docker_v8.cfg", "default_docker.cfg" ]
+    }, {
+      "name" : "6-20 changes",
+      "sourceFileFilters" : [ ],
+      "files" : [ "zeeguu/core/user_activity_hooks/article_interaction_hooks.py", "zeeguu/core/account_management/user_account_deletion.py", "zeeguu/core/bookmark_operations/update_bookmark.py", "zeeguu/core/word_scheduling/__init__.py", "zeeguu/core/behavioral_modeling/scroll_last_reading_percentage.py", "zeeguu/core/util/time.py", "zeeguu/core/util/__init__.py", "zeeguu/core/util/hash.py", "zeeguu/core/util/text.py", "zeeguu/core/elastic/settings.py", "zeeguu/core/elastic/basic_ops.py", "zeeguu/core/audio_lessons/voice_synthesizer.py", "zeeguu/core/audio_lessons/script_generator.py", "zeeguu/core/audio_lessons/lesson_builder.py", "zeeguu/core/audio_lessons/voice_config.py", "zeeguu/core/constants.py", "zeeguu/core/content_recommender/__init__.py", "zeeguu/core/content_retriever/__init__.py", "zeeguu/core/content_retriever/video_dowloader.py", "zeeguu/core/language/strategies/flesch_kincaid_difficulty_estimator.py", "zeeguu/core/tokenization/token.py", "zeeguu/core/tokenization/word_position_finder.py", "zeeguu/core/tokenization/__init__.py", "zeeguu/core/tokenization/stanza_tokenizer.py", "zeeguu/core/semantic_vector_api/retrieve_embeddings.py", "zeeguu/core/semantic_vector_api/__init__.py", "zeeguu/core/exercises/similar_words.py", "zeeguu/core/user_feature_toggles.py", "zeeguu/core/user_statistics/exercise_corectness.py", "zeeguu/core/user_statistics/exercise_sessions.py", "zeeguu/core/user_statistics/reading_sessions.py", "zeeguu/core/user_statistics/activity.py", "zeeguu/core/model/starred_article.py", "zeeguu/core/model/article_topic_user_feedback.py", "zeeguu/core/model/url_keyword.py", "zeeguu/core/model/teacher.py", "zeeguu/core/model/teacher_cohort_map.py", "zeeguu/core/model/cohort.py", "zeeguu/core/model/personal_copy.py", "zeeguu/core/model/article_fragment_context.py", "zeeguu/core/model/article_difficulty_feedback.py", "zeeguu/core/model/article_tokenization_cache.py", "zeeguu/core/model/user_browsing_session.py", "zeeguu/core/model/article_topic_map.py", "zeeguu/core/model/exercise_outcome.py", "zeeguu/core/model/user_video.py", "zeeguu/core/model/yt_channel.py", "zeeguu/core/model/sorted_exercise_log.py", "zeeguu/core/model/cohort_article_map.py", "zeeguu/core/model/video_tag.py", "zeeguu/core/model/source_type.py", "zeeguu/core/model/session.py", "zeeguu/core/model/meaning_frequency_classifier.py", "zeeguu/core/model/audio_lesson_meaning.py", "zeeguu/core/model/search_filter.py", "zeeguu/core/model/phrase.py", "zeeguu/core/model/badge.py", "zeeguu/core/model/article_title_context.py", "zeeguu/core/model/friend_request.py", "zeeguu/core/model/search_subscription.py", "zeeguu/core/model/meaning.py", "zeeguu/core/model/url.py", "zeeguu/core/model/caption.py", "zeeguu/core/model/exercise.py", "zeeguu/core/model/article_fragment.py", "zeeguu/core/model/article_broken_code_map.py", "zeeguu/core/model/daily_audio_lesson.py", "zeeguu/core/model/video_topic_map.py", "zeeguu/core/model/topic.py", "zeeguu/core/model/search.py", "zeeguu/core/model/source_text.py", "zeeguu/core/model/context_type.py", "zeeguu/core/model/new_text.py", "zeeguu/core/model/user_avatar.py", "zeeguu/core/model/video_caption_context.py", "zeeguu/core/model/topic_subscription.py", "zeeguu/core/model/video_tag_map.py", "zeeguu/core/model/video_title_context.py", "zeeguu/core/model/topic_filter.py", "zeeguu/core/model/source.py", "zeeguu/core/model/audio_lesson_generation_progress.py", "zeeguu/core/model/user_watching_session.py", "zeeguu/core/model/unique_code.py", "zeeguu/core/model/bookmark_context.py", "zeeguu/core/model/user_feedback.py", "zeeguu/core/leaderboards/leaderboards.py", "zeeguu/core/content_cleaning/content_cleaner.py", "zeeguu/core/crowd_translations/__init__.py", "zeeguu/core/nlp_pipeline/spacy_wrapper.py", "zeeguu/core/nlp_pipeline/confusion_generator.py", "zeeguu/core/nlp_pipeline/__init__.py", "zeeguu/core/nlp_pipeline/automatic_gec_tagging.py", "zeeguu/core/bookmark_quality/fit_for_study.py", "zeeguu/core/bookmark_quality/__init__.py", "zeeguu/core/bookmark_quality/positive_qualities.py", "zeeguu/core/semantic_search/__init__.py", "zeeguu/core/emailer/user_activity.py", "zeeguu/core/badges/listeners.py", "zeeguu/core/badges/badge_progress.py", "zeeguu/core/feed_handler/rssfeed.py", "zeeguu/core/feed_handler/newspaperfeed.py", "zeeguu/core/feed_handler/feed_handler.py", "zeeguu/core/youtube_api/youtube_api.py", "zeeguu/core/llm_services/simplification_and_classification.py", "zeeguu/core/llm_services/simplification_service.py", "zeeguu/core/llm_services/prompts/article_simplification.py", "zeeguu/core/sql/queries/words_to_study.sql", "zeeguu/core/sql/query_building.py", "zeeguu/core/sql/learner/exercises_history.py", "zeeguu/core/sql/learner/words.py", "zeeguu/config/__init__.py", "zeeguu/operations/crawler/crawl.py", "zeeguu/api/endpoints/user_stats.py", "zeeguu/api/endpoints/user_preferences.py", "zeeguu/api/endpoints/user_notifications.py", "zeeguu/api/endpoints/exercise_sessions.py", "zeeguu/api/endpoints/sessions.py", "zeeguu/api/endpoints/own_texts.py", "zeeguu/api/endpoints/browsing_sessions.py", "zeeguu/api/endpoints/listening_sessions.py", "zeeguu/api/endpoints/reading_sessions.py", "zeeguu/api/endpoints/daily_streak.py", "zeeguu/api/endpoints/teacher_dashboard/cohorts.py", "zeeguu/api/endpoints/teacher_dashboard/student_readings.py", "zeeguu/api/endpoints/teacher_dashboard/student_overviews.py", "zeeguu/api/endpoints/teacher_dashboard/article_management.py", "zeeguu/api/endpoints/teacher_dashboard/_permissions.py", "zeeguu/api/endpoints/teacher_dashboard/student_exercises.py", "zeeguu/api/endpoints/teacher_dashboard/student.py", "zeeguu/api/endpoints/teacher_dashboard/student_words.py", "zeeguu/api/endpoints/teacher_dashboard/general.py", "zeeguu/api/endpoints/user_article.py", "zeeguu/api/endpoints/generated_examples.py", "zeeguu/api/endpoints/nlp.py", "zeeguu/api/endpoints/topics.py", "zeeguu/api/endpoints/audio_lessons.py", "zeeguu/api/endpoints/user_languages.py", "zeeguu/api/endpoints/student.py", "zeeguu/api/endpoints/activity_tracking.py", "zeeguu/api/endpoints/helpers/activity_sessions.py", "zeeguu/api/endpoints/user_watching_session.py", "zeeguu/api/utils/__init__.py", "zeeguu/logging/__init__.py", "tools/set_new_topics_article.py", "tools/migrations/26-02-24-friendship_system.sql", "tools/migrations/25-02-28--add_video-tables.sql", "tools/migrations/26-02-24-b--add_username.py", "tools/migrations/25-01-06--add_index_pointers.sql", "tools/run_knn_similarity_search.py", "tools/add_feed.py", "tools/tokenizer_playground.py", "tools/feed_info.py", "tools/transform_text_into_context.py", "tools/reduce_number_of_studied_bookmarks.py", "tools/old/add_standard_topics.py", "tools/old/update_feed.py", "tools/old/mysql_to_elastic.py", "tools/old/cleanup_non_content_bits.py", "tools/mark_broken_articles.py", "tools/add_images_to_articles.py", "tools/extract_articles_with_new_topics.py", "tools/get_lang_stats.py", "tools/update_es_based_on_url_keyword.py", "tools/remove_unreferenced_articles.py", "tools/add_captions_from_file.py", "tools/create_article_fragments_and_sources.py", "tools/remove_sub_bookmarks_from_text.py", "tools/delete_dev_users.py", "tools/activity_monitor.py", "tools/users_recently_active.py", "tools/anonymize_users.py", "tools/evaluate_infer_topics.py", "tools/update_article_content.py", "tools/update_bookmark_pointers.py", "env_var_defs_default.py", "start.py" ]
+    }, {
+      "name" : "21-50 changes",
+      "sourceFileFilters" : [ ],
+      "files" : [ "zeeguu/core/account_management/user_account_creation.py", "zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py", "zeeguu/core/elastic/indexing.py", "zeeguu/core/audio_lessons/daily_lesson_generator.py", "zeeguu/core/content_quality/quality_filter.py", "zeeguu/core/content_retriever/parse_with_readability_server.py", "zeeguu/core/model/user_language.py", "zeeguu/core/model/feed.py", "zeeguu/core/model/user_preference.py", "zeeguu/core/model/user_activitiy_data.py", "zeeguu/core/model/user_reading_session.py", "zeeguu/core/model/user_word.py", "zeeguu/core/model/text.py", "zeeguu/core/model/language.py", "zeeguu/core/model/user_exercise_session.py", "zeeguu/core/model/video.py", "zeeguu/core/bookmark_quality/negative_qualities.py", "zeeguu/core/semantic_search/elastic_semantic_search.py", "zeeguu/core/emailer/zeeguu_mailer.py", "zeeguu/api/endpoints/user_articles.py", "zeeguu/api/endpoints/friends.py", "zeeguu/api/endpoints/accounts.py", "zeeguu/api/endpoints/feature_toggles.py", "zeeguu/api/endpoints/__init__.py", "zeeguu/api/endpoints/badges.py", "zeeguu/api/endpoints/search.py", "zeeguu/api/endpoints/speech.py", "zeeguu/api/endpoints/exercises.py", "zeeguu/api/endpoints/article.py", "zeeguu/api/utils/route_wrappers.py", "tools/_playground.py", "tools/report_generator/data_extractor.py", "tools/report_generator/generate_report.py", "setup.py", "default_api.cfg" ]
+    }, {
+      "name" : "51-100 changes",
+      "sourceFileFilters" : [ ],
+      "files" : [ "zeeguu/core/word_scheduling/basicSR/basicSR.py", "zeeguu/core/elastic/elastic_query_builder.py", "zeeguu/core/content_recommender/elastic_recommender.py", "zeeguu/core/content_retriever/article_downloader.py", "zeeguu/core/model/user_article.py", "zeeguu/core/model/__init__.py", "zeeguu/core/model/bookmark.py", "zeeguu/api/endpoints/user.py", "zeeguu/api/endpoints/translation.py", "zeeguu/api/endpoints/bookmarks_and_words.py", "zeeguu/api/app.py" ]
+    }, {
+      "name" : "101+ changes",
+      "sourceFileFilters" : [ ],
+      "files" : [ "zeeguu/core/model/user.py", "zeeguu/core/model/article.py" ]
+    } ],
+    "metaComponents" : [ ],
+    "groups" : [ ],
+    "includeRemainingFiles" : true,
+    "dependenciesFinder" : {
+      "useBuiltInDependencyFinders" : false,
+      "rules" : [ ],
+      "metaRules" : [ ]
+    },
+    "renderingOptions" : {
+      "orientation" : "TB",
+      "maxNumberOfDependencies" : 100,
+      "renderComponentsWithoutDependencies" : true,
+      "renderIndirectDependencies" : false,
+      "renderInternalIndirectDependencies" : false,
+      "reverseDirection" : false
+    },
+    "includeExternalComponents" : true,
+    "dependencyLinkThreshold" : 1,
+    "duplicationLinkThreshold" : 50,
+    "temporalLinkThreshold" : 1,
+    "maxSearchDepthLines" : 200
+  } ],
+  "concernGroups" : [ {
+    "name" : "general",
+    "concerns" : [ {
+      "name" : "TODOs",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "",
+        "contentPattern" : ".*(TODO|FIXME)( |:|\t).*",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ],
+      "textOperations" : [ ]
+    } ],
+    "metaConcerns" : [ ]
+  } ],
+  "goalsAndControls" : [ {
+    "goal" : "Keep the system simple and easy to change",
+    "description" : "Aim at keeping the system size modest (less than 200,000 LOC is good), duplication low (less than 5% is good), files small (no files longer than 1000 LOC is good), and units simple (no units with more than 25 decision points is good).",
+    "controls" : [ {
+      "metric" : "LINES_OF_CODE_MAIN",
+      "description" : "Total number of lines of main code",
+      "desiredRange" : {
+        "min" : "0",
+        "max" : "200000",
+        "tolerance" : "20000"
+      }
+    }, {
+      "metric" : "DUPLICATION_PERCENTAGE",
+      "description" : "System duplication",
+      "desiredRange" : {
+        "min" : "0",
+        "max" : "5",
+        "tolerance" : "1"
+      }
+    }, {
+      "metric" : "VERY_HIGH_RISK_FILE_SIZE_COUNT",
+      "description" : "The number of very large files",
+      "desiredRange" : {
+        "min" : "0",
+        "max" : "0",
+        "tolerance" : "1"
+      }
+    }, {
+      "metric" : "CONDITIONAL_COMPLEXITY_VERY_HIGH_RISK_COUNT",
+      "description" : "Number of very complex units",
+      "desiredRange" : {
+        "min" : "0",
+        "max" : "0",
+        "tolerance" : "1"
+      }
+    } ]
+  } ],
+  "trendAnalysis" : {
+    "saveHistory" : false,
+    "frequency" : "weekly",
+    "maxReferencePointsForAnalysis" : 20,
+    "historyFolder" : "history"
+  },
+  "fileHistoryAnalysis" : {
+    "importPath" : "",
+    "ignoreContributors" : [ ],
+    "bots" : [ ".*\\[bot\\].*", ".*[-]bot[@].*" ],
+    "anonymizeContributors" : false,
+    "transformContributorEmails" : [ ]
+  },
+  "analysis" : {
+    "skipDuplication" : false,
+    "skipCorrelations" : false,
+    "skipDependencies" : false,
+    "saveSourceFiles" : true,
+    "saveCodeFragments" : true,
+    "maxFileSizeBytes" : 1000000,
+    "maxLines" : 10000,
+    "maxLineLength" : 1000,
+    "maxTemporalDependenciesDepthDays" : 180,
+    "locDuplicationThreshold" : 10000000,
+    "minDuplicationBlockLoc" : 6,
+    "maxTopListSize" : 50,
+    "analyzerOverrides" : [ ],
+    "fileSizeThresholds" : {
+      "low" : 100,
+      "medium" : 200,
+      "high" : 500,
+      "veryHigh" : 1000
+    },
+    "fileAgeThresholds" : {
+      "low" : 30,
+      "medium" : 90,
+      "high" : 180,
+      "veryHigh" : 365
+    },
+    "fileUpdateFrequencyThresholds" : {
+      "low" : 5,
+      "medium" : 20,
+      "high" : 50,
+      "veryHigh" : 100
+    },
+    "fileContributorsCountThresholds" : {
+      "low" : 1,
+      "medium" : 5,
+      "high" : 10,
+      "veryHigh" : 25
+    },
+    "unitSizeThresholds" : {
+      "low" : 10,
+      "medium" : 20,
+      "high" : 50,
+      "veryHigh" : 100
+    },
+    "conditionalComplexityThresholds" : {
+      "low" : 5,
+      "medium" : 10,
+      "high" : 25,
+      "veryHigh" : 50
+    },
+    "fileConditionalComplexityThresholds" : {
+      "low" : 5,
+      "medium" : 10,
+      "high" : 25,
+      "veryHigh" : 50
+    },
+    "commitFilesCountThresholds" : {
+      "low" : 5,
+      "medium" : 20,
+      "high" : 50,
+      "veryHigh" : 100
+    },
+    "customHtmlReportHeaderFragment" : "",
+    "analyzeConcernOverlaps" : false
+  },
+  "tagRules" : [ {
+    "tag" : "jenkins",
+    "color" : "#7CB9E8",
+    "pathPatterns" : [ "(|.*/)Jenkinsfile", "(|.*/)Jenkinsfile[.][a-z0-9_]+" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "travis",
+    "color" : "#7CB9E8",
+    "pathPatterns" : [ "(|.*/)[.]travis[.]ya?ml" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "github actions",
+    "color" : "#7CB9E8",
+    "pathPatterns" : [ "(|.*/)[.]github[/]workflows[/].*" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "circleci",
+    "color" : "#7CB9E8",
+    "pathPatterns" : [ "(|.*/)[.]circleci.*" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "gitlab",
+    "color" : "#7CB9E8",
+    "pathPatterns" : [ "(|.*/)[.]gitlab.*" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "maven",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)pom[.]xml" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "pnpm",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)pnpm.*[.](ya?ml|json)" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "npm",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)package[.]json" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "yarn",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)[.]yarnrc", "(|.*/)yarn[.]lock" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "jest",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)jest[.].*" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "babel",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)[.]babel[.]config[.]json" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "gradle",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)build[.]gradle" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "sbt",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)build[.]sbt" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "bazel",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)BUILD[.]bazel" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "pip",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)pip[.]conf", "(|.*/)Pipfile" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "nuget",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)[.]nuget/.*", "(|.*/)[.]nuget[.]config" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "aws codebuild",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)buildspec[.]yml" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "renovate",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)renovate[.]json5?" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "dependabot",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)dependabot[.]ya?ml" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "gemfile",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)Gemfile" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "podfile",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)Podfile" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "make",
+    "color" : "#B9D9EB",
+    "pathPatterns" : [ "(|.*/)Makefile" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "docker",
+    "color" : "#A3C1AD",
+    "pathPatterns" : [ "(|.*/)Dockerfile" ],
+    "excludePathPatterns" : [ ]
+  }, {
+    "tag" : "helm",
+    "color" : "#A3C1AD",
+    "pathPatterns" : [ "(|.*/)helmfile[.]ya?ml", "(|.*/)[.]helmignore" ],
+    "excludePathPatterns" : [ ]
+  } ]
+}

@@ -1,0 +1,69 @@
+<html>
+<head>
+    <title>def detect()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def detect()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/mwe/stanza_mwe_detector.py [0:0]</i></p>
+<ul>
+    <li><b>33</b> lines of code</li>
+    <li><b>18</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+    def detect(self, tokens: List[Dict]) -&gt; List[Dict]:
+        &quot;&quot;&quot;Detect aux+verb and clitic+verb groups.&quot;&quot;&quot;
+        mwe_groups = []
+        processed_indices = set()
+
+        for i, token in enumerate(tokens):
+            if i in processed_indices:
+                continue
+
+            dep = token.get(&quot;dep&quot;) or &quot;&quot;
+            head = token.get(&quot;head&quot;)  # 1-based index, 0 = ROOT
+
+            # Detect aux and reflexive clitic relationships
+            should_group = (
+                dep in self.VERB_DEPS or
+                dep.startswith(&quot;aux:&quot;) or
+                dep.startswith(&quot;expl:&quot;)
+            )
+
+            if should_group:
+                head_idx = self._convert_head_to_index(head)
+
+                if head_idx is not None and head_idx != i:
+                    if not (0 &lt;= head_idx &lt; len(tokens)):
+                        continue
+
+                    # Check if head is actually a verb
+                    head_pos = tokens[head_idx].get(&quot;pos&quot;, &quot;&quot;)
+                    if head_pos not in (&quot;VERB&quot;, &quot;AUX&quot;):
+                        continue
+
+                    # Check if we already have a group for this head
+                    existing_group = self._find_group_by_head(mwe_groups, head_idx)
+
+                    if existing_group:
+                        if i not in existing_group[&quot;dependent_indices&quot;]:
+                            existing_group[&quot;dependent_indices&quot;].append(i)
+                    else:
+                        mwe_groups.append({
+                            &quot;head_idx&quot;: head_idx,
+                            &quot;dependent_indices&quot;: [i],
+                            &quot;type&quot;: &quot;aux_verb&quot;  # New type for aux+verb
+                        })
+
+                    processed_indices.add(i)
+
+        return mwe_groups
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

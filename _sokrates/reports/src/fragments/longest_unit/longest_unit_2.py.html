@@ -1,0 +1,262 @@
+<html>
+<head>
+    <title>def download_feed_item()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def download_feed_item()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/content_retriever/article_downloader.py [0:0]</i></p>
+<ul>
+    <li><b>173</b> lines of code</li>
+    <li><b>20</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def download_feed_item(session, feed, feed_item, url, crawl_report, simplification_provider=None, topic_simplification_counts=None):
+    import html
+
+    title = html.unescape(feed_item[&quot;title&quot;])
+    log(f&quot; &rarr; Processing: {title[:80]}&quot;)
+    log(f&quot;   URL: {url}&quot;)
+
+    # Skip URLs with paths too long for the database
+    url_path = Url.get_path(url)
+    if len(url_path) &gt; 255:
+        log(f&quot;   Skipping: URL path too long ({len(url_path)} chars)&quot;)
+        raise SkippedForLongUrl()
+
+    published_datetime = feed_item[&quot;published_datetime&quot;]
+
+    # Check source-specific content filters
+    should_filter, filter_reason = should_filter_by_source_keywords(url, title)
+    if should_filter:
+        raise NotAppropriateForReading(filter_reason)
+
+    art = model.Article.find(url)
+
+    if art:
+        raise SkippedAlreadyInDB()
+
+    log(f&quot;   Downloading article content...&quot;)
+    np_article = readability_download_and_parse(url)
+    log(f&quot;   ✓ Article downloaded ({len(np_article.text) if np_article.text else 0} chars)&quot;)
+
+    # Check for near-duplicate content using simhash
+    if np_article and np_article.text:
+        is_dup, dup_id = is_duplicate_by_simhash(np_article.text, feed, session)
+        if is_dup:
+            log(f&quot; - Near-duplicate content detected (similar to article {dup_id})&quot;)
+            raise SkippedAlreadyInDB()
+
+    is_quality_article, reason, code = sufficient_quality(
+        np_article, feed.language.code
+    )
+    if is_quality_article:
+        np_article.text = cleanup_text_w_crawl_report(
+            np_article.text, crawl_report, feed, url
+        )
+    summary = feed_item[&quot;summary&quot;]
+    # however, this is not so easy... there have been cases where
+    # the summary is just malformed HTML... thus we try to extract
+    # the text:
+    from bs4 import BeautifulSoup
+
+    soup = BeautifulSoup(summary, &quot;lxml&quot;)
+    summary = html.unescape(soup.get_text())
+    # then there are cases where the summary is huge... so we clip it
+    summary = summary[:MAX_CHAR_COUNT_IN_SUMMARY]
+    # and if there is still no summary, we simply use the beginning of
+    # the article
+    if len(summary) &lt; 10:
+        summary = np_article.text[:MAX_CHAR_COUNT_IN_SUMMARY]
+
+    # Create the Source
+    new_source = Source.find_or_create(
+        session,
+        np_article.text,
+        SourceType.find_by_type(SourceType.ARTICLE),
+        feed.language,
+        0,
+        commit=False,
+    )
+    # Create new article and save it to DB
+    new_article = zeeguu.core.model.Article(
+        Url.find_or_create(session, url),
+        title,
+        &quot;, &quot;.join(np_article.authors),
+        new_source,
+        summary,
+        published_datetime,
+        feed,
+        feed.language,
+        htmlContent=np_article.htmlContent,
+    )
+
+    # Compute and store simhash for duplicate detection
+    new_article.content_simhash = compute_simhash(np_article.text)
+
+    session.add(new_article)
+
+    if not is_quality_article:
+        crawl_report.add_non_quality_reason(feed, code, str(url))
+        new_article.set_as_broken(session, code)
+        session.add(new_article)
+        print(f&quot;Article was skipped, reason: '{reason}'&quot;)
+        raise SkippedForLowQuality(reason)
+
+    # Create fragments only if article isn't broken.
+    new_article.create_article_fragments(session)
+
+    main_img_url = extract_article_image(np_article)
+    if main_img_url:
+        new_article.img_url = Url.find_or_create(session, main_img_url)
+
+    log(f&quot;   Extracting topics...&quot;)
+    url_keywords = add_url_keywords(new_article, session)
+    log(f&quot;   URL Keywords: {[str(k) for k in url_keywords]}&quot;)
+    _, topics = add_topics(new_article, feed, url_keywords, session)
+    log(f&quot;   ✓ Topics assigned: {topics}&quot;)
+    session.add(new_article)
+
+    # IMPORTANT: Capture topic data NOW before any potential session rollback.
+    # _cache_article_tokenization can rollback on failure, which would delete
+    # the ArticleTopicMap entries from the session. Store the data we need.
+    # Fixes ZEEGUU-API-X1: ObjectDeletedError when accessing topics after rollback.
+    article_topic_ids = [t.topic_id for t in new_article.topics]
+    article_topic_names = [t.topic.title for t in new_article.topics]
+
+    # Pre-tokenize and cache summary/title to avoid expensive CPU work during user requests
+    log(f&quot;   Caching tokenization...&quot;)
+    _cache_article_tokenization(new_article, session)
+
+    # Check for advertorial content before expensive simplification
+    log(f&quot;   Checking for advertorial content...&quot;)
+    is_advert, advert_reason = is_advertorial(
+        url=url, title=title, content=np_article.text
+    )
+    if is_advert:
+        log(
+            f&quot;   ⚠ Advertorial detected ({advert_reason}), skipping simplification&quot;
+        )
+        new_article.set_as_broken(session, LowQualityTypes.ADVERTORIAL_PATTERN)
+        return new_article
+
+    # Check for disturbing content (keyword-based detection)
+    is_disturbing_keyword, disturbing_reason = is_disturbing_content_based_on_keywords(
+        title=title, content=np_article.text, language=feed.language.code
+    )
+    if is_disturbing_keyword:
+        log(
+            f&quot;   ⚠ Disturbing content detected ({disturbing_reason})&quot;
+        )
+
+    # Check topic simplification cap - skip simplification if all topics are &quot;full&quot; for this language today
+    # topic_simplification_counts is keyed by (language_id, topic_id) tuple
+    # Note: article_topic_ids and article_topic_names were captured earlier before potential rollback
+    skip_simplification_due_to_cap = False
+    language_id = feed.language_id
+    lang_code = feed.language.code
+    max_for_lang = get_max_simplified_for_language(lang_code)
+
+    if topic_simplification_counts is not None and article_topic_ids:
+        # Check if ANY topic still needs simplified articles today for this language
+        needs_simplification = False
+        for topic_id in article_topic_ids:
+            key = (language_id, topic_id)
+            current_count = topic_simplification_counts.get(key, 0)
+            if current_count &lt; max_for_lang:
+                needs_simplification = True
+                break
+
+        if not needs_simplification:
+            skip_simplification_due_to_cap = True
+            log(f&quot;   ⏭ Skipping simplification - daily cap ({max_for_lang}/topic) reached for: {article_topic_names}&quot;)
+            return new_article
+
+    # Auto-create simplified versions and classify content
+    log(f&quot;   Calling LLM for simplification and classification...&quot;)
+    llm_start_time = time()
+    try:
+        simplified_articles, llm_classifications = simplify_and_classify(
+            session, new_article, simplification_provider=simplification_provider
+        )
+        llm_duration = time() - llm_start_time
+        log(f&quot;   ✓ LLM call completed in {llm_duration:.1f}s&quot;)
+        if simplified_articles:
+            log(
+                f&quot;   Created {len(simplified_articles)} simplified versions&quot;
+            )
+            # Update topic simplification counts after successful simplification
+            # Key is (language_id, topic_id) to track per language
+            if topic_simplification_counts is not None:
+                for topic_id in article_topic_ids:
+                    key = (language_id, topic_id)
+                    topic_simplification_counts[key] = topic_simplification_counts.get(key, 0) + 1
+        else:
+            log(
+                f&quot;   No simplified versions created&quot;
+            )
+
+        # Collect all classifications (keyword + LLM) and save them once
+        all_classifications = []
+
+        # Add keyword-based classification
+        if is_disturbing_keyword:
+            all_classifications.append((&quot;DISTURBING&quot;, &quot;KEYWORD&quot;))
+
+        # Add LLM-based classifications
+        all_classifications.extend(llm_classifications)
+
+        # Save all classifications at once
+        if all_classifications:
+            from zeeguu.core.model.article_classification import (
+                ArticleClassification,
+                ClassificationType,
+                DetectionMethod,
+            )
+
+            for classification_type, detection_method in all_classifications:
+                log(
+                    f&quot;Tagging article {new_article.id} as {classification_type} ({detection_method} detection)&quot;
+                )
+                ArticleClassification.find_or_create(
+                    session, new_article, classification_type, detection_method
+                )
+    except Exception as e:
+        llm_duration = time() - llm_start_time
+        error_msg = str(e).lower()
+
+        # Check if LLM detected advertorial - always save for pattern analysis
+        if &quot;advertorial&quot; in error_msg:
+            log(f&quot;   ✗ LLM detected advertorial content after {llm_duration:.1f}s, marking article as broken&quot;)
+            new_article.set_as_broken(session, LowQualityTypes.ADVERTORIAL_LLM)
+        # Check if LLM detected paywall - sample to avoid DB bloat
+        elif &quot;paywall&quot; in error_msg:
+            should_save = _should_save_paywall_sample(session, new_article.language)
+            if should_save:
+                log(f&quot;   ✗ LLM detected paywall after {llm_duration:.1f}s - saving as sample for pattern analysis&quot;)
+                new_article.set_as_broken(session, LowQualityTypes.LLM_PAYWALL_PATTERN)
+            else:
+                log(
+                    f&quot;   ✗ LLM detected paywall after {llm_duration:.1f}s - skipping (daily quota of {MAX_PAYWALL_SAMPLES_PER_DAY_PER_LANGUAGE} samples reached)&quot;
+                )
+                # Don't save the article - delete it
+                session.delete(new_article)
+                session.commit()
+                return None
+        else:
+            # Don't fail the entire crawl if simplification fails for other reasons
+            log(
+                f&quot;   ✗ LLM failed after {llm_duration:.1f}s for article {new_article.id}: {str(e)}&quot;
+            )
+            capture_to_sentry(e)
+
+    return new_article
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

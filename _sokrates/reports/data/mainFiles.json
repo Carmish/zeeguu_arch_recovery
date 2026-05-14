@@ -1,0 +1,4551 @@
+[ {
+  "relativePath" : "stanza_service/install_models.py",
+  "extension" : "py",
+  "linesOfCode" : 34,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 23
+}, {
+  "relativePath" : "stanza_service/gunicorn.conf.py",
+  "extension" : "py",
+  "linesOfCode" : 16,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 6
+}, {
+  "relativePath" : "stanza_service/app.py",
+  "extension" : "py",
+  "linesOfCode" : 312,
+  "unitsCount" : 13,
+  "unitsMcCabeIndexSum" : 63,
+  "linesOfCodeInUnits" : 262
+}, {
+  "relativePath" : "zeeguu/core/user_activity_hooks/article_interaction_hooks.py",
+  "extension" : "py",
+  "linesOfCode" : 69,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 11,
+  "linesOfCodeInUnits" : 61
+}, {
+  "relativePath" : "zeeguu/core/user_activity_hooks/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/account_management/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/account_management/user_account_creation.py",
+  "extension" : "py",
+  "linesOfCode" : 169,
+  "unitsCount" : 9,
+  "unitsMcCabeIndexSum" : 30,
+  "linesOfCodeInUnits" : 83
+}, {
+  "relativePath" : "zeeguu/core/account_management/user_account_deletion.py",
+  "extension" : "py",
+  "linesOfCode" : 152,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 16,
+  "linesOfCodeInUnits" : 94
+}, {
+  "relativePath" : "zeeguu/core/bookmark_operations/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/bookmark_operations/update_bookmark.py",
+  "extension" : "py",
+  "linesOfCode" : 219,
+  "unitsCount" : 13,
+  "unitsMcCabeIndexSum" : 57,
+  "linesOfCodeInUnits" : 213
+}, {
+  "relativePath" : "zeeguu/core/word_filter/proper_noun_filter.py",
+  "extension" : "py",
+  "linesOfCode" : 13,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 8
+}, {
+  "relativePath" : "zeeguu/core/word_filter/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 6,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 2
+}, {
+  "relativePath" : "zeeguu/core/word_filter/profanity_filter.py",
+  "extension" : "py",
+  "linesOfCode" : 15,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 10
+}, {
+  "relativePath" : "zeeguu/core/word_scheduling/basicSR/four_levels_per_word.py",
+  "extension" : "py",
+  "linesOfCode" : 80,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 22,
+  "linesOfCodeInUnits" : 62
+}, {
+  "relativePath" : "zeeguu/core/word_scheduling/basicSR/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/word_scheduling/basicSR/basicSR.py",
+  "extension" : "py",
+  "linesOfCode" : 272,
+  "unitsCount" : 24,
+  "unitsMcCabeIndexSum" : 66,
+  "linesOfCodeInUnits" : 238
+}, {
+  "relativePath" : "zeeguu/core/word_scheduling/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 5,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 2
+}, {
+  "relativePath" : "zeeguu/core/behavioral_modeling/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 4,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/behavioral_modeling/scroll_last_reading_percentage.py",
+  "extension" : "py",
+  "linesOfCode" : 28,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 13,
+  "linesOfCodeInUnits" : 28
+}, {
+  "relativePath" : "zeeguu/core/util/time.py",
+  "extension" : "py",
+  "linesOfCode" : 31,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 12,
+  "linesOfCodeInUnits" : 27
+}, {
+  "relativePath" : "zeeguu/core/util/reading_time_estimator.py",
+  "extension" : "py",
+  "linesOfCode" : 3,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 2
+}, {
+  "relativePath" : "zeeguu/core/util/encoding.py",
+  "extension" : "py",
+  "linesOfCode" : 16,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 12
+}, {
+  "relativePath" : "zeeguu/core/util/list.py",
+  "extension" : "py",
+  "linesOfCode" : 8,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 8
+}, {
+  "relativePath" : "zeeguu/core/util/timer_logging_decorator.py",
+  "extension" : "py",
+  "linesOfCode" : 12,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 9
+}, {
+  "relativePath" : "zeeguu/core/util/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 7,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/util/hash.py",
+  "extension" : "py",
+  "linesOfCode" : 29,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 11,
+  "linesOfCodeInUnits" : 26
+}, {
+  "relativePath" : "zeeguu/core/util/compute_fk_word_count.py",
+  "extension" : "py",
+  "linesOfCode" : 18,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 11
+}, {
+  "relativePath" : "zeeguu/core/util/text.py",
+  "extension" : "py",
+  "linesOfCode" : 49,
+  "unitsCount" : 11,
+  "unitsMcCabeIndexSum" : 18,
+  "linesOfCodeInUnits" : 40
+}, {
+  "relativePath" : "zeeguu/core/util/time_conversion.py",
+  "extension" : "py",
+  "linesOfCode" : 2,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 2
+}, {
+  "relativePath" : "zeeguu/core/elastic/elastic_query_builder.py",
+  "extension" : "py",
+  "linesOfCode" : 359,
+  "unitsCount" : 15,
+  "unitsMcCabeIndexSum" : 18,
+  "linesOfCodeInUnits" : 85
+}, {
+  "relativePath" : "zeeguu/core/elastic/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/elastic/settings.py",
+  "extension" : "py",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/elastic/basic_ops.py",
+  "extension" : "py",
+  "linesOfCode" : 31,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 28
+}, {
+  "relativePath" : "zeeguu/core/elastic/indexing.py",
+  "extension" : "py",
+  "linesOfCode" : 200,
+  "unitsCount" : 13,
+  "unitsMcCabeIndexSum" : 38,
+  "linesOfCodeInUnits" : 186
+}, {
+  "relativePath" : "zeeguu/core/word_stats/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 7,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 5
+}, {
+  "relativePath" : "zeeguu/core/audio_lessons/voice_synthesizer.py",
+  "extension" : "py",
+  "linesOfCode" : 202,
+  "unitsCount" : 13,
+  "unitsMcCabeIndexSum" : 49,
+  "linesOfCodeInUnits" : 141
+}, {
+  "relativePath" : "zeeguu/core/audio_lessons/script_generator.py",
+  "extension" : "py",
+  "linesOfCode" : 75,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 19
+}, {
+  "relativePath" : "zeeguu/core/audio_lessons/suggestion_validator.py",
+  "extension" : "py",
+  "linesOfCode" : 36,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 32
+}, {
+  "relativePath" : "zeeguu/core/audio_lessons/daily_lesson_generator.py",
+  "extension" : "py",
+  "linesOfCode" : 711,
+  "unitsCount" : 19,
+  "unitsMcCabeIndexSum" : 94,
+  "linesOfCodeInUnits" : 382
+}, {
+  "relativePath" : "zeeguu/core/audio_lessons/lesson_builder.py",
+  "extension" : "py",
+  "linesOfCode" : 336,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 37,
+  "linesOfCodeInUnits" : 111
+}, {
+  "relativePath" : "zeeguu/core/audio_lessons/word_selector.py",
+  "extension" : "py",
+  "linesOfCode" : 179,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 26
+}, {
+  "relativePath" : "zeeguu/core/audio_lessons/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/audio_lessons/azure_voice_synthesizer.py",
+  "extension" : "py",
+  "linesOfCode" : 51,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 23
+}, {
+  "relativePath" : "zeeguu/core/audio_lessons/voice_config.py",
+  "extension" : "py",
+  "linesOfCode" : 103,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 14,
+  "linesOfCodeInUnits" : 35
+}, {
+  "relativePath" : "zeeguu/core/constants.py",
+  "extension" : "py",
+  "linesOfCode" : 78,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/content_recommender/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 8,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/content_recommender/elastic_recommender.py",
+  "extension" : "py",
+  "linesOfCode" : 364,
+  "unitsCount" : 15,
+  "unitsMcCabeIndexSum" : 48,
+  "linesOfCodeInUnits" : 124
+}, {
+  "relativePath" : "zeeguu/core/content_quality/advertorial_detection.py",
+  "extension" : "py",
+  "linesOfCode" : 51,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 17,
+  "linesOfCodeInUnits" : 21
+}, {
+  "relativePath" : "zeeguu/core/content_quality/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/content_quality/quality_filter.py",
+  "extension" : "py",
+  "linesOfCode" : 115,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 17,
+  "linesOfCodeInUnits" : 63
+}, {
+  "relativePath" : "zeeguu/core/content_quality/disturbing_content_detection.py",
+  "extension" : "py",
+  "linesOfCode" : 140,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 12,
+  "linesOfCodeInUnits" : 16
+}, {
+  "relativePath" : "zeeguu/core/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/content_retriever/parse_with_newspaper.py",
+  "extension" : "py",
+  "linesOfCode" : 22,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 20
+}, {
+  "relativePath" : "zeeguu/core/content_retriever/crawler_exceptions.py",
+  "extension" : "py",
+  "linesOfCode" : 15,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 6
+}, {
+  "relativePath" : "zeeguu/core/content_retriever/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 10,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 9
+}, {
+  "relativePath" : "zeeguu/core/content_retriever/parse_with_readability_server.py",
+  "extension" : "py",
+  "linesOfCode" : 74,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 26,
+  "linesOfCodeInUnits" : 63
+}, {
+  "relativePath" : "zeeguu/core/content_retriever/video_dowloader.py",
+  "extension" : "py",
+  "linesOfCode" : 30,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 7,
+  "linesOfCodeInUnits" : 19
+}, {
+  "relativePath" : "zeeguu/core/content_retriever/article_downloader.py",
+  "extension" : "py",
+  "linesOfCode" : 585,
+  "unitsCount" : 15,
+  "unitsMcCabeIndexSum" : 74,
+  "linesOfCodeInUnits" : 358
+}, {
+  "relativePath" : "zeeguu/core/utils/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/utils/caching.py",
+  "extension" : "py",
+  "linesOfCode" : 16,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 15
+}, {
+  "relativePath" : "zeeguu/core/language/strategies/word_rank_difficulty_estimator.py",
+  "extension" : "py",
+  "linesOfCode" : 78,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 25,
+  "linesOfCodeInUnits" : 63
+}, {
+  "relativePath" : "zeeguu/core/language/strategies/flesch_kincaid_difficulty_estimator.py",
+  "extension" : "py",
+  "linesOfCode" : 118,
+  "unitsCount" : 9,
+  "unitsMcCabeIndexSum" : 30,
+  "linesOfCodeInUnits" : 85
+}, {
+  "relativePath" : "zeeguu/core/language/strategies/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/language/strategies/default_difficulty_estimator.py",
+  "extension" : "py",
+  "linesOfCode" : 20,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 16
+}, {
+  "relativePath" : "zeeguu/core/language/strategies/frequency_difficulty_estimator.py",
+  "extension" : "py",
+  "linesOfCode" : 71,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 20,
+  "linesOfCodeInUnits" : 59
+}, {
+  "relativePath" : "zeeguu/core/language/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/language/difficulty_estimator_factory.py",
+  "extension" : "py",
+  "linesOfCode" : 23,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 7,
+  "linesOfCodeInUnits" : 17
+}, {
+  "relativePath" : "zeeguu/core/language/ml_cefr_classifier.py",
+  "extension" : "py",
+  "linesOfCode" : 130,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 41,
+  "linesOfCodeInUnits" : 124
+}, {
+  "relativePath" : "zeeguu/core/language/fk_to_cefr.py",
+  "extension" : "py",
+  "linesOfCode" : 13,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 13
+}, {
+  "relativePath" : "zeeguu/core/language/difficulty_estimator_strategy.py",
+  "extension" : "py",
+  "linesOfCode" : 16,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 7
+}, {
+  "relativePath" : "zeeguu/core/language/services/lingo_rank_service.py",
+  "extension" : "py",
+  "linesOfCode" : 7,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 6
+}, {
+  "relativePath" : "zeeguu/core/tokenization/token.py",
+  "extension" : "py",
+  "linesOfCode" : 86,
+  "unitsCount" : 9,
+  "unitsMcCabeIndexSum" : 14,
+  "linesOfCodeInUnits" : 47
+}, {
+  "relativePath" : "zeeguu/core/tokenization/stanza_client.py",
+  "extension" : "py",
+  "linesOfCode" : 146,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 15,
+  "linesOfCodeInUnits" : 81
+}, {
+  "relativePath" : "zeeguu/core/tokenization/nltk_tokenizer.py",
+  "extension" : "py",
+  "linesOfCode" : 132,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 12,
+  "linesOfCodeInUnits" : 53
+}, {
+  "relativePath" : "zeeguu/core/tokenization/word_position_finder.py",
+  "extension" : "py",
+  "linesOfCode" : 147,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 29,
+  "linesOfCodeInUnits" : 146
+}, {
+  "relativePath" : "zeeguu/core/tokenization/zeeguu_tokenizer.py",
+  "extension" : "py",
+  "linesOfCode" : 38,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 25
+}, {
+  "relativePath" : "zeeguu/core/tokenization/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 27,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 7,
+  "linesOfCodeInUnits" : 18
+}, {
+  "relativePath" : "zeeguu/core/tokenization/stanza_tokenizer.py",
+  "extension" : "py",
+  "linesOfCode" : 141,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 15,
+  "linesOfCodeInUnits" : 50
+}, {
+  "relativePath" : "zeeguu/core/semantic_vector_api/retrieve_embeddings.py",
+  "extension" : "py",
+  "linesOfCode" : 38,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 32
+}, {
+  "relativePath" : "zeeguu/core/semantic_vector_api/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 6,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/exercises/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/exercises/similar_words.py",
+  "extension" : "py",
+  "linesOfCode" : 23,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 16
+}, {
+  "relativePath" : "zeeguu/core/user_feature_toggles.py",
+  "extension" : "py",
+  "linesOfCode" : 74,
+  "unitsCount" : 14,
+  "unitsMcCabeIndexSum" : 35,
+  "linesOfCodeInUnits" : 71
+}, {
+  "relativePath" : "zeeguu/core/user_statistics/exercise_corectness.py",
+  "extension" : "py",
+  "linesOfCode" : 68,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 53
+}, {
+  "relativePath" : "zeeguu/core/user_statistics/exercise_sessions.py",
+  "extension" : "py",
+  "linesOfCode" : 28,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 24
+}, {
+  "relativePath" : "zeeguu/core/user_statistics/student_overview.py",
+  "extension" : "py",
+  "linesOfCode" : 35,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 25
+}, {
+  "relativePath" : "zeeguu/core/user_statistics/reading_sessions.py",
+  "extension" : "py",
+  "linesOfCode" : 57,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 53
+}, {
+  "relativePath" : "zeeguu/core/user_statistics/activity.py",
+  "extension" : "py",
+  "linesOfCode" : 49,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 35
+}, {
+  "relativePath" : "zeeguu/core/user_statistics/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/model/starred_article.py",
+  "extension" : "py",
+  "linesOfCode" : 74,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 44
+}, {
+  "relativePath" : "zeeguu/core/model/user_word_interaction_history.py",
+  "extension" : "py",
+  "linesOfCode" : 24,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 7
+}, {
+  "relativePath" : "zeeguu/core/model/user_article_broken_report.py",
+  "extension" : "py",
+  "linesOfCode" : 81,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 18,
+  "linesOfCodeInUnits" : 52
+}, {
+  "relativePath" : "zeeguu/core/model/db.py",
+  "extension" : "py",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/model/user.py",
+  "extension" : "py",
+  "linesOfCode" : 1006,
+  "unitsCount" : 73,
+  "unitsMcCabeIndexSum" : 184,
+  "linesOfCodeInUnits" : 686
+}, {
+  "relativePath" : "zeeguu/core/model/article_cefr_assessment.py",
+  "extension" : "py",
+  "linesOfCode" : 97,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 25,
+  "linesOfCodeInUnits" : 70
+}, {
+  "relativePath" : "zeeguu/core/model/user_language.py",
+  "extension" : "py",
+  "linesOfCode" : 125,
+  "unitsCount" : 11,
+  "unitsMcCabeIndexSum" : 27,
+  "linesOfCodeInUnits" : 81
+}, {
+  "relativePath" : "zeeguu/core/model/article_topic_user_feedback.py",
+  "extension" : "py",
+  "linesOfCode" : 74,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 11,
+  "linesOfCodeInUnits" : 47
+}, {
+  "relativePath" : "zeeguu/core/model/url_keyword.py",
+  "extension" : "py",
+  "linesOfCode" : 129,
+  "unitsCount" : 10,
+  "unitsMcCabeIndexSum" : 29,
+  "linesOfCodeInUnits" : 75
+}, {
+  "relativePath" : "zeeguu/core/model/user_cohort_map.py",
+  "extension" : "py",
+  "linesOfCode" : 12,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/model/teacher.py",
+  "extension" : "py",
+  "linesOfCode" : 24,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 12
+}, {
+  "relativePath" : "zeeguu/core/model/article_summary_context.py",
+  "extension" : "py",
+  "linesOfCode" : 60,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 19
+}, {
+  "relativePath" : "zeeguu/core/model/bookmark_user_preference.py",
+  "extension" : "py",
+  "linesOfCode" : 15,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 8
+}, {
+  "relativePath" : "zeeguu/core/model/teacher_cohort_map.py",
+  "extension" : "py",
+  "linesOfCode" : 39,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 22
+}, {
+  "relativePath" : "zeeguu/core/model/friendship.py",
+  "extension" : "py",
+  "linesOfCode" : 163,
+  "unitsCount" : 9,
+  "unitsMcCabeIndexSum" : 28,
+  "linesOfCodeInUnits" : 129
+}, {
+  "relativePath" : "zeeguu/core/model/cohort.py",
+  "extension" : "py",
+  "linesOfCode" : 76,
+  "unitsCount" : 10,
+  "unitsMcCabeIndexSum" : 14,
+  "linesOfCodeInUnits" : 47
+}, {
+  "relativePath" : "zeeguu/core/model/personal_copy.py",
+  "extension" : "py",
+  "linesOfCode" : 56,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 37
+}, {
+  "relativePath" : "zeeguu/core/model/article_fragment_context.py",
+  "extension" : "py",
+  "linesOfCode" : 54,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 28
+}, {
+  "relativePath" : "zeeguu/core/model/article_difficulty_feedback.py",
+  "extension" : "py",
+  "linesOfCode" : 57,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 18
+}, {
+  "relativePath" : "zeeguu/core/model/article_tokenization_cache.py",
+  "extension" : "py",
+  "linesOfCode" : 65,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 16,
+  "linesOfCodeInUnits" : 44
+}, {
+  "relativePath" : "zeeguu/core/model/difficulty_lingo_rank.py",
+  "extension" : "py",
+  "linesOfCode" : 21,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 9
+}, {
+  "relativePath" : "zeeguu/core/model/user_browsing_session.py",
+  "extension" : "py",
+  "linesOfCode" : 93,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 10,
+  "linesOfCodeInUnits" : 44
+}, {
+  "relativePath" : "zeeguu/core/model/notification.py",
+  "extension" : "py",
+  "linesOfCode" : 30,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 18
+}, {
+  "relativePath" : "zeeguu/core/model/article_url_keyword_map.py",
+  "extension" : "py",
+  "linesOfCode" : 11,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/model/user_article.py",
+  "extension" : "py",
+  "linesOfCode" : 444,
+  "unitsCount" : 25,
+  "unitsMcCabeIndexSum" : 87,
+  "linesOfCodeInUnits" : 245
+}, {
+  "relativePath" : "zeeguu/core/model/article_topic_map.py",
+  "extension" : "py",
+  "linesOfCode" : 52,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 34
+}, {
+  "relativePath" : "zeeguu/core/model/exercise_outcome.py",
+  "extension" : "py",
+  "linesOfCode" : 66,
+  "unitsCount" : 10,
+  "unitsMcCabeIndexSum" : 21,
+  "linesOfCodeInUnits" : 38
+}, {
+  "relativePath" : "zeeguu/core/model/user_video.py",
+  "extension" : "py",
+  "linesOfCode" : 143,
+  "unitsCount" : 14,
+  "unitsMcCabeIndexSum" : 19,
+  "linesOfCodeInUnits" : 58
+}, {
+  "relativePath" : "zeeguu/core/model/yt_channel.py",
+  "extension" : "py",
+  "linesOfCode" : 89,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 35
+}, {
+  "relativePath" : "zeeguu/core/model/sorted_exercise_log.py",
+  "extension" : "py",
+  "linesOfCode" : 45,
+  "unitsCount" : 10,
+  "unitsMcCabeIndexSum" : 17,
+  "linesOfCodeInUnits" : 44
+}, {
+  "relativePath" : "zeeguu/core/model/cohort_article_map.py",
+  "extension" : "py",
+  "linesOfCode" : 60,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 16,
+  "linesOfCodeInUnits" : 38
+}, {
+  "relativePath" : "zeeguu/core/model/video_tag.py",
+  "extension" : "py",
+  "linesOfCode" : 29,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 10
+}, {
+  "relativePath" : "zeeguu/core/model/source_type.py",
+  "extension" : "py",
+  "linesOfCode" : 32,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 7,
+  "linesOfCodeInUnits" : 18
+}, {
+  "relativePath" : "zeeguu/core/model/article_classification.py",
+  "extension" : "py",
+  "linesOfCode" : 59,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 7,
+  "linesOfCodeInUnits" : 26
+}, {
+  "relativePath" : "zeeguu/core/model/session.py",
+  "extension" : "py",
+  "linesOfCode" : 44,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 10,
+  "linesOfCodeInUnits" : 29
+}, {
+  "relativePath" : "zeeguu/core/model/meaning_frequency_classifier.py",
+  "extension" : "py",
+  "linesOfCode" : 149,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 45,
+  "linesOfCodeInUnits" : 138
+}, {
+  "relativePath" : "zeeguu/core/model/user_notification.py",
+  "extension" : "py",
+  "linesOfCode" : 45,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 29
+}, {
+  "relativePath" : "zeeguu/core/model/audio_lesson_meaning.py",
+  "extension" : "py",
+  "linesOfCode" : 52,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 19
+}, {
+  "relativePath" : "zeeguu/core/model/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 87,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/model/example_sentence.py",
+  "extension" : "py",
+  "linesOfCode" : 125,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 15,
+  "linesOfCodeInUnits" : 63
+}, {
+  "relativePath" : "zeeguu/core/model/monthly_activity_stats_cache.py",
+  "extension" : "py",
+  "linesOfCode" : 44,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 7,
+  "linesOfCodeInUnits" : 27
+}, {
+  "relativePath" : "zeeguu/core/model/search_filter.py",
+  "extension" : "py",
+  "linesOfCode" : 54,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 31
+}, {
+  "relativePath" : "zeeguu/core/model/feed.py",
+  "extension" : "py",
+  "linesOfCode" : 205,
+  "unitsCount" : 14,
+  "unitsMcCabeIndexSum" : 27,
+  "linesOfCodeInUnits" : 119
+}, {
+  "relativePath" : "zeeguu/core/model/phrase.py",
+  "extension" : "py",
+  "linesOfCode" : 151,
+  "unitsCount" : 11,
+  "unitsMcCabeIndexSum" : 50,
+  "linesOfCodeInUnits" : 129
+}, {
+  "relativePath" : "zeeguu/core/model/badge.py",
+  "extension" : "py",
+  "linesOfCode" : 20,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 2
+}, {
+  "relativePath" : "zeeguu/core/model/user_preference.py",
+  "extension" : "py",
+  "linesOfCode" : 132,
+  "unitsCount" : 17,
+  "unitsMcCabeIndexSum" : 29,
+  "linesOfCodeInUnits" : 97
+}, {
+  "relativePath" : "zeeguu/core/model/article_title_context.py",
+  "extension" : "py",
+  "linesOfCode" : 60,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 19
+}, {
+  "relativePath" : "zeeguu/core/model/grammar_correction_log.py",
+  "extension" : "py",
+  "linesOfCode" : 100,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 48
+}, {
+  "relativePath" : "zeeguu/core/model/user_activitiy_data.py",
+  "extension" : "py",
+  "linesOfCode" : 367,
+  "unitsCount" : 16,
+  "unitsMcCabeIndexSum" : 44,
+  "linesOfCodeInUnits" : 166
+}, {
+  "relativePath" : "zeeguu/core/model/monthly_active_users_cache.py",
+  "extension" : "py",
+  "linesOfCode" : 35,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 7,
+  "linesOfCodeInUnits" : 21
+}, {
+  "relativePath" : "zeeguu/core/model/feedback_component.py",
+  "extension" : "py",
+  "linesOfCode" : 44,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 10,
+  "linesOfCodeInUnits" : 32
+}, {
+  "relativePath" : "zeeguu/core/model/daily_audio_lesson_segment.py",
+  "extension" : "py",
+  "linesOfCode" : 51,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 12,
+  "linesOfCodeInUnits" : 26
+}, {
+  "relativePath" : "zeeguu/core/model/user_reading_session.py",
+  "extension" : "py",
+  "linesOfCode" : 156,
+  "unitsCount" : 13,
+  "unitsMcCabeIndexSum" : 16,
+  "linesOfCodeInUnits" : 78
+}, {
+  "relativePath" : "zeeguu/core/model/friend_request.py",
+  "extension" : "py",
+  "linesOfCode" : 118,
+  "unitsCount" : 11,
+  "unitsMcCabeIndexSum" : 24,
+  "linesOfCodeInUnits" : 82
+}, {
+  "relativePath" : "zeeguu/core/model/user_badge_progress.py",
+  "extension" : "py",
+  "linesOfCode" : 70,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 30
+}, {
+  "relativePath" : "zeeguu/core/model/bookmark.py",
+  "extension" : "py",
+  "linesOfCode" : 443,
+  "unitsCount" : 22,
+  "unitsMcCabeIndexSum" : 41,
+  "linesOfCodeInUnits" : 209
+}, {
+  "relativePath" : "zeeguu/core/model/search_subscription.py",
+  "extension" : "py",
+  "linesOfCode" : 65,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 10,
+  "linesOfCodeInUnits" : 41
+}, {
+  "relativePath" : "zeeguu/core/model/meaning.py",
+  "extension" : "py",
+  "linesOfCode" : 193,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 20,
+  "linesOfCodeInUnits" : 54
+}, {
+  "relativePath" : "zeeguu/core/model/audio_lesson_dialogue.py",
+  "extension" : "py",
+  "linesOfCode" : 86,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 49
+}, {
+  "relativePath" : "zeeguu/core/model/url.py",
+  "extension" : "py",
+  "linesOfCode" : 119,
+  "unitsCount" : 12,
+  "unitsMcCabeIndexSum" : 23,
+  "linesOfCodeInUnits" : 91
+}, {
+  "relativePath" : "zeeguu/core/model/caption.py",
+  "extension" : "py",
+  "linesOfCode" : 39,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 25
+}, {
+  "relativePath" : "zeeguu/core/model/user_word.py",
+  "extension" : "py",
+  "linesOfCode" : 321,
+  "unitsCount" : 16,
+  "unitsMcCabeIndexSum" : 68,
+  "linesOfCodeInUnits" : 243
+}, {
+  "relativePath" : "zeeguu/core/model/meaning_report.py",
+  "extension" : "py",
+  "linesOfCode" : 40,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 22
+}, {
+  "relativePath" : "zeeguu/core/model/exercise.py",
+  "extension" : "py",
+  "linesOfCode" : 63,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 26
+}, {
+  "relativePath" : "zeeguu/core/model/article_fragment.py",
+  "extension" : "py",
+  "linesOfCode" : 68,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 36
+}, {
+  "relativePath" : "zeeguu/core/model/example_sentence_context.py",
+  "extension" : "py",
+  "linesOfCode" : 57,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 19
+}, {
+  "relativePath" : "zeeguu/core/model/badge_category.py",
+  "extension" : "py",
+  "linesOfCode" : 29,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 4
+}, {
+  "relativePath" : "zeeguu/core/model/context_identifier.py",
+  "extension" : "py",
+  "linesOfCode" : 107,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 13,
+  "linesOfCodeInUnits" : 96
+}, {
+  "relativePath" : "zeeguu/core/model/daily_audio_lesson_wrapper.py",
+  "extension" : "py",
+  "linesOfCode" : 26,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 13
+}, {
+  "relativePath" : "zeeguu/core/model/article_broken_code_map.py",
+  "extension" : "py",
+  "linesOfCode" : 46,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 17
+}, {
+  "relativePath" : "zeeguu/core/model/daily_audio_lesson.py",
+  "extension" : "py",
+  "linesOfCode" : 127,
+  "unitsCount" : 15,
+  "unitsMcCabeIndexSum" : 25,
+  "linesOfCodeInUnits" : 89
+}, {
+  "relativePath" : "zeeguu/core/model/text.py",
+  "extension" : "py",
+  "linesOfCode" : 158,
+  "unitsCount" : 12,
+  "unitsMcCabeIndexSum" : 21,
+  "linesOfCodeInUnits" : 78
+}, {
+  "relativePath" : "zeeguu/core/model/video_topic_map.py",
+  "extension" : "py",
+  "linesOfCode" : 24,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 12
+}, {
+  "relativePath" : "zeeguu/core/model/language.py",
+  "extension" : "py",
+  "linesOfCode" : 201,
+  "unitsCount" : 15,
+  "unitsMcCabeIndexSum" : 20,
+  "linesOfCodeInUnits" : 50
+}, {
+  "relativePath" : "zeeguu/core/model/topic.py",
+  "extension" : "py",
+  "linesOfCode" : 89,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 17,
+  "linesOfCodeInUnits" : 72
+}, {
+  "relativePath" : "zeeguu/core/model/user_exercise_session.py",
+  "extension" : "py",
+  "linesOfCode" : 76,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 32
+}, {
+  "relativePath" : "zeeguu/core/model/user_mwe_override.py",
+  "extension" : "py",
+  "linesOfCode" : 58,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 38
+}, {
+  "relativePath" : "zeeguu/core/model/search.py",
+  "extension" : "py",
+  "linesOfCode" : 57,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 10,
+  "linesOfCodeInUnits" : 44
+}, {
+  "relativePath" : "zeeguu/core/model/source_text.py",
+  "extension" : "py",
+  "linesOfCode" : 61,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 15
+}, {
+  "relativePath" : "zeeguu/core/model/context_type.py",
+  "extension" : "py",
+  "linesOfCode" : 72,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 40
+}, {
+  "relativePath" : "zeeguu/core/model/new_text.py",
+  "extension" : "py",
+  "linesOfCode" : 59,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 17
+}, {
+  "relativePath" : "zeeguu/core/model/ai_generator.py",
+  "extension" : "py",
+  "linesOfCode" : 37,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 11,
+  "linesOfCodeInUnits" : 25
+}, {
+  "relativePath" : "zeeguu/core/model/user_avatar.py",
+  "extension" : "py",
+  "linesOfCode" : 43,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 22
+}, {
+  "relativePath" : "zeeguu/core/model/video_caption_context.py",
+  "extension" : "py",
+  "linesOfCode" : 60,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 19
+}, {
+  "relativePath" : "zeeguu/core/model/user_badge.py",
+  "extension" : "py",
+  "linesOfCode" : 56,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 28
+}, {
+  "relativePath" : "zeeguu/core/model/topic_subscription.py",
+  "extension" : "py",
+  "linesOfCode" : 44,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 22
+}, {
+  "relativePath" : "zeeguu/core/model/video_tag_map.py",
+  "extension" : "py",
+  "linesOfCode" : 28,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 16
+}, {
+  "relativePath" : "zeeguu/core/model/exercise_source.py",
+  "extension" : "py",
+  "linesOfCode" : 27,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 7,
+  "linesOfCodeInUnits" : 16
+}, {
+  "relativePath" : "zeeguu/core/model/exercise_report.py",
+  "extension" : "py",
+  "linesOfCode" : 67,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 24
+}, {
+  "relativePath" : "zeeguu/core/model/domain_name.py",
+  "extension" : "py",
+  "linesOfCode" : 59,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 12,
+  "linesOfCodeInUnits" : 43
+}, {
+  "relativePath" : "zeeguu/core/model/validation_log.py",
+  "extension" : "py",
+  "linesOfCode" : 91,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 40
+}, {
+  "relativePath" : "zeeguu/core/model/video_title_context.py",
+  "extension" : "py",
+  "linesOfCode" : 57,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 19
+}, {
+  "relativePath" : "zeeguu/core/model/video.py",
+  "extension" : "py",
+  "linesOfCode" : 246,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 17,
+  "linesOfCodeInUnits" : 100
+}, {
+  "relativePath" : "zeeguu/core/model/topic_filter.py",
+  "extension" : "py",
+  "linesOfCode" : 45,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 23
+}, {
+  "relativePath" : "zeeguu/core/model/source.py",
+  "extension" : "py",
+  "linesOfCode" : 68,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 24
+}, {
+  "relativePath" : "zeeguu/core/model/translation_search.py",
+  "extension" : "py",
+  "linesOfCode" : 46,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 28
+}, {
+  "relativePath" : "zeeguu/core/model/user_listening_session.py",
+  "extension" : "py",
+  "linesOfCode" : 93,
+  "unitsCount" : 9,
+  "unitsMcCabeIndexSum" : 11,
+  "linesOfCodeInUnits" : 47
+}, {
+  "relativePath" : "zeeguu/core/model/audio_lesson_generation_progress.py",
+  "extension" : "py",
+  "linesOfCode" : 117,
+  "unitsCount" : 15,
+  "unitsMcCabeIndexSum" : 20,
+  "linesOfCodeInUnits" : 83
+}, {
+  "relativePath" : "zeeguu/core/model/user_watching_session.py",
+  "extension" : "py",
+  "linesOfCode" : 127,
+  "unitsCount" : 12,
+  "unitsMcCabeIndexSum" : 14,
+  "linesOfCodeInUnits" : 67
+}, {
+  "relativePath" : "zeeguu/core/model/unique_code.py",
+  "extension" : "py",
+  "linesOfCode" : 31,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 7,
+  "linesOfCodeInUnits" : 16
+}, {
+  "relativePath" : "zeeguu/core/model/article_upload.py",
+  "extension" : "py",
+  "linesOfCode" : 98,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 18,
+  "linesOfCodeInUnits" : 68
+}, {
+  "relativePath" : "zeeguu/core/model/bookmark_context.py",
+  "extension" : "py",
+  "linesOfCode" : 145,
+  "unitsCount" : 10,
+  "unitsMcCabeIndexSum" : 18,
+  "linesOfCodeInUnits" : 71
+}, {
+  "relativePath" : "zeeguu/core/model/article.py",
+  "extension" : "py",
+  "linesOfCode" : 1133,
+  "unitsCount" : 50,
+  "unitsMcCabeIndexSum" : 206,
+  "linesOfCodeInUnits" : 688
+}, {
+  "relativePath" : "zeeguu/core/model/user_feedback.py",
+  "extension" : "py",
+  "linesOfCode" : 52,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 17
+}, {
+  "relativePath" : "zeeguu/core/leaderboards/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/leaderboards/leaderboards.py",
+  "extension" : "py",
+  "linesOfCode" : 201,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 54
+}, {
+  "relativePath" : "zeeguu/core/content_cleaning/unicode_normalization.py",
+  "extension" : "py",
+  "linesOfCode" : 5,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 4
+}, {
+  "relativePath" : "zeeguu/core/content_cleaning/content_cleaner.py",
+  "extension" : "py",
+  "linesOfCode" : 140,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 18,
+  "linesOfCodeInUnits" : 52
+}, {
+  "relativePath" : "zeeguu/core/content_cleaning/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 13,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 6
+}, {
+  "relativePath" : "zeeguu/core/crowd_translations/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 16,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 2
+}, {
+  "relativePath" : "zeeguu/core/nlp_pipeline/spacy_wrapper.py",
+  "extension" : "py",
+  "linesOfCode" : 60,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 14,
+  "linesOfCodeInUnits" : 34
+}, {
+  "relativePath" : "zeeguu/core/nlp_pipeline/alignment_errant.py",
+  "extension" : "py",
+  "linesOfCode" : 115,
+  "unitsCount" : 9,
+  "unitsMcCabeIndexSum" : 61,
+  "linesOfCodeInUnits" : 109
+}, {
+  "relativePath" : "zeeguu/core/nlp_pipeline/edit_errant.py",
+  "extension" : "py",
+  "linesOfCode" : 36,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 19,
+  "linesOfCodeInUnits" : 35
+}, {
+  "relativePath" : "zeeguu/core/nlp_pipeline/confusion_generator.py",
+  "extension" : "py",
+  "linesOfCode" : 141,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 50,
+  "linesOfCodeInUnits" : 123
+}, {
+  "relativePath" : "zeeguu/core/nlp_pipeline/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 19,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/nlp_pipeline/automatic_gec_tagging.py",
+  "extension" : "py",
+  "linesOfCode" : 367,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 138,
+  "linesOfCodeInUnits" : 326
+}, {
+  "relativePath" : "zeeguu/core/nlp_pipeline/reduce_context.py",
+  "extension" : "py",
+  "linesOfCode" : 67,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 18,
+  "linesOfCodeInUnits" : 61
+}, {
+  "relativePath" : "zeeguu/core/bookmark_quality/fit_for_study.py",
+  "extension" : "py",
+  "linesOfCode" : 19,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 12,
+  "linesOfCodeInUnits" : 17
+}, {
+  "relativePath" : "zeeguu/core/bookmark_quality/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/bookmark_quality/negative_qualities.py",
+  "extension" : "py",
+  "linesOfCode" : 80,
+  "unitsCount" : 12,
+  "unitsMcCabeIndexSum" : 35,
+  "linesOfCodeInUnits" : 79
+}, {
+  "relativePath" : "zeeguu/core/bookmark_quality/positive_qualities.py",
+  "extension" : "py",
+  "linesOfCode" : 3,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 2
+}, {
+  "relativePath" : "zeeguu/core/friends/friend_streak.py",
+  "extension" : "py",
+  "linesOfCode" : 48,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 29,
+  "linesOfCodeInUnits" : 44
+}, {
+  "relativePath" : "zeeguu/core/friends/listeners.py",
+  "extension" : "py",
+  "linesOfCode" : 10,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 6
+}, {
+  "relativePath" : "zeeguu/core/friends/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/semantic_search/elastic_semantic_search.py",
+  "extension" : "py",
+  "linesOfCode" : 124,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 26,
+  "linesOfCodeInUnits" : 76
+}, {
+  "relativePath" : "zeeguu/core/semantic_search/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 7,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/mwe/llm_mwe_detector.py",
+  "extension" : "py",
+  "linesOfCode" : 282,
+  "unitsCount" : 21,
+  "unitsMcCabeIndexSum" : 96,
+  "linesOfCodeInUnits" : 259
+}, {
+  "relativePath" : "zeeguu/core/mwe/stanza_mwe_detector.py",
+  "extension" : "py",
+  "linesOfCode" : 318,
+  "unitsCount" : 11,
+  "unitsMcCabeIndexSum" : 143,
+  "linesOfCodeInUnits" : 264
+}, {
+  "relativePath" : "zeeguu/core/mwe/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 10,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 7
+}, {
+  "relativePath" : "zeeguu/core/mwe/enricher.py",
+  "extension" : "py",
+  "linesOfCode" : 74,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 30,
+  "linesOfCodeInUnits" : 62
+}, {
+  "relativePath" : "zeeguu/core/events/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 9,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/translation_services/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 7,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/translation_services/azure_alignment.py",
+  "extension" : "py",
+  "linesOfCode" : 113,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 20,
+  "linesOfCodeInUnits" : 60
+}, {
+  "relativePath" : "zeeguu/core/translation_services/translator.py",
+  "extension" : "py",
+  "linesOfCode" : 471,
+  "unitsCount" : 24,
+  "unitsMcCabeIndexSum" : 89,
+  "linesOfCodeInUnits" : 366
+}, {
+  "relativePath" : "zeeguu/core/reading_analysis/macro_reading_session.py",
+  "extension" : "py",
+  "linesOfCode" : 47,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 15,
+  "linesOfCodeInUnits" : 45
+}, {
+  "relativePath" : "zeeguu/core/ml_models/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 5,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/ml_models/utils.py",
+  "extension" : "py",
+  "linesOfCode" : 15,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 12
+}, {
+  "relativePath" : "zeeguu/core/ml_models/paywall_detector.py",
+  "extension" : "py",
+  "linesOfCode" : 9,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 3
+}, {
+  "relativePath" : "zeeguu/core/emailer/email_confirmation.py",
+  "extension" : "py",
+  "linesOfCode" : 12,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 11
+}, {
+  "relativePath" : "zeeguu/core/emailer/password_reset.py",
+  "extension" : "py",
+  "linesOfCode" : 12,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 11
+}, {
+  "relativePath" : "zeeguu/core/emailer/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/emailer/zeeguu_mailer.py",
+  "extension" : "py",
+  "linesOfCode" : 131,
+  "unitsCount" : 9,
+  "unitsMcCabeIndexSum" : 21,
+  "linesOfCodeInUnits" : 121
+}, {
+  "relativePath" : "zeeguu/core/emailer/user_activity.py",
+  "extension" : "py",
+  "linesOfCode" : 70,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 11,
+  "linesOfCodeInUnits" : 55
+}, {
+  "relativePath" : "zeeguu/core/badges/listeners.py",
+  "extension" : "py",
+  "linesOfCode" : 66,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 54
+}, {
+  "relativePath" : "zeeguu/core/badges/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/badges/badge_progress.py",
+  "extension" : "py",
+  "linesOfCode" : 65,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 40
+}, {
+  "relativePath" : "zeeguu/core/feed_handler/rssfeed.py",
+  "extension" : "py",
+  "linesOfCode" : 55,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 50
+}, {
+  "relativePath" : "zeeguu/core/feed_handler/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 10,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/feed_handler/newspaperfeed.py",
+  "extension" : "py",
+  "linesOfCode" : 112,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 18,
+  "linesOfCodeInUnits" : 83
+}, {
+  "relativePath" : "zeeguu/core/feed_handler/feed_handler.py",
+  "extension" : "py",
+  "linesOfCode" : 17,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 14
+}, {
+  "relativePath" : "zeeguu/core/youtube_api/youtube_api.py",
+  "extension" : "py",
+  "linesOfCode" : 276,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 46,
+  "linesOfCodeInUnits" : 228
+}, {
+  "relativePath" : "zeeguu/core/llm_services/simplification_and_classification.py",
+  "extension" : "py",
+  "linesOfCode" : 654,
+  "unitsCount" : 12,
+  "unitsMcCabeIndexSum" : 35,
+  "linesOfCodeInUnits" : 147
+}, {
+  "relativePath" : "zeeguu/core/llm_services/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 7,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/llm_services/simplification_service.py",
+  "extension" : "py",
+  "linesOfCode" : 528,
+  "unitsCount" : 14,
+  "unitsMcCabeIndexSum" : 22,
+  "linesOfCodeInUnits" : 50
+}, {
+  "relativePath" : "zeeguu/core/llm_services/llm_service.py",
+  "extension" : "py",
+  "linesOfCode" : 93,
+  "unitsCount" : 10,
+  "unitsMcCabeIndexSum" : 20,
+  "linesOfCodeInUnits" : 68
+}, {
+  "relativePath" : "zeeguu/core/llm_services/translation_validator.py",
+  "extension" : "py",
+  "linesOfCode" : 185,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 41,
+  "linesOfCodeInUnits" : 98
+}, {
+  "relativePath" : "zeeguu/core/llm_services/grammar_correction_service.py",
+  "extension" : "py",
+  "linesOfCode" : 133,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 27,
+  "linesOfCodeInUnits" : 112
+}, {
+  "relativePath" : "zeeguu/core/llm_services/anthropic_service.py",
+  "extension" : "py",
+  "linesOfCode" : 68,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 17,
+  "linesOfCodeInUnits" : 61
+}, {
+  "relativePath" : "zeeguu/core/llm_services/prompts/grammar_correction.py",
+  "extension" : "py",
+  "linesOfCode" : 4,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 3
+}, {
+  "relativePath" : "zeeguu/core/llm_services/prompts/meaning_frequency_classifier.py",
+  "extension" : "py",
+  "linesOfCode" : 18,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 16
+}, {
+  "relativePath" : "zeeguu/core/llm_services/prompts/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 13,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/llm_services/prompts/example_generation.py",
+  "extension" : "py",
+  "linesOfCode" : 37,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 17
+}, {
+  "relativePath" : "zeeguu/core/llm_services/prompts/translation_validator.py",
+  "extension" : "py",
+  "linesOfCode" : 25,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 22
+}, {
+  "relativePath" : "zeeguu/core/llm_services/prompts/article_simplification.py",
+  "extension" : "py",
+  "linesOfCode" : 4,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 3
+}, {
+  "relativePath" : "zeeguu/core/llm_services/prompts/learning_card_generator.py",
+  "extension" : "py",
+  "linesOfCode" : 44,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 12,
+  "linesOfCodeInUnits" : 30
+}, {
+  "relativePath" : "zeeguu/core/llm_services/deepseek_service.py",
+  "extension" : "py",
+  "linesOfCode" : 80,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 18,
+  "linesOfCodeInUnits" : 72
+}, {
+  "relativePath" : "zeeguu/core/llm_services/mwe_translation_service.py",
+  "extension" : "py",
+  "linesOfCode" : 87,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 12
+}, {
+  "relativePath" : "zeeguu/core/llm_services/validation_service.py",
+  "extension" : "py",
+  "linesOfCode" : 196,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 28,
+  "linesOfCodeInUnits" : 189
+}, {
+  "relativePath" : "zeeguu/core/sql/queries/query_loader.py",
+  "extension" : "py",
+  "linesOfCode" : 8,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 6
+}, {
+  "relativePath" : "zeeguu/core/sql/queries/words_to_study.sql",
+  "extension" : "sql",
+  "linesOfCode" : 27,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/sql/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/sql/query_building.py",
+  "extension" : "py",
+  "linesOfCode" : 12,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 10
+}, {
+  "relativePath" : "zeeguu/core/sql/learner/exercises_history.py",
+  "extension" : "py",
+  "linesOfCode" : 46,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 19
+}, {
+  "relativePath" : "zeeguu/core/sql/learner/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/sql/learner/words.py",
+  "extension" : "py",
+  "linesOfCode" : 33,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 31
+}, {
+  "relativePath" : "zeeguu/core/sql/teacher/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/core/sql/teacher/teachers_for_cohort.py",
+  "extension" : "py",
+  "linesOfCode" : 7,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 6
+}, {
+  "relativePath" : "zeeguu/config/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/config/loader.py",
+  "extension" : "py",
+  "linesOfCode" : 48,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 12,
+  "linesOfCodeInUnits" : 46
+}, {
+  "relativePath" : "zeeguu/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/operations/crawler/crawl.py",
+  "extension" : "py",
+  "linesOfCode" : 262,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 57,
+  "linesOfCodeInUnits" : 194
+}, {
+  "relativePath" : "zeeguu/operations/crawler/article_crawler.py",
+  "extension" : "py",
+  "linesOfCode" : 23,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/operations/crawler/feed_retrieval.py",
+  "extension" : "py",
+  "linesOfCode" : 72,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 60
+}, {
+  "relativePath" : "zeeguu/operations/crawler/video_crawler.py",
+  "extension" : "py",
+  "linesOfCode" : 11,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/operations/crawler/crawl_report.py",
+  "extension" : "py",
+  "linesOfCode" : 218,
+  "unitsCount" : 28,
+  "unitsMcCabeIndexSum" : 54,
+  "linesOfCodeInUnits" : 206
+}, {
+  "relativePath" : "zeeguu/operations/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/operations/monitoring/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/operations/report_generator/data_extractor.py",
+  "extension" : "py",
+  "linesOfCode" : 178,
+  "unitsCount" : 22,
+  "unitsMcCabeIndexSum" : 27,
+  "linesOfCodeInUnits" : 146
+}, {
+  "relativePath" : "zeeguu/operations/report_generator/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/operations/report_generator/generate_report.py",
+  "extension" : "py",
+  "linesOfCode" : 600,
+  "unitsCount" : 25,
+  "unitsMcCabeIndexSum" : 65,
+  "linesOfCodeInUnits" : 526
+}, {
+  "relativePath" : "zeeguu/operations/report_generator/explore_report_notebook.ipynb",
+  "extension" : "ipynb",
+  "linesOfCode" : 4327,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/api/cross_domain_app.py",
+  "extension" : "py",
+  "linesOfCode" : 7,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 5
+}, {
+  "relativePath" : "zeeguu/api/endpoints/user_articles.py",
+  "extension" : "py",
+  "linesOfCode" : 169,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 29,
+  "linesOfCodeInUnits" : 124
+}, {
+  "relativePath" : "zeeguu/api/endpoints/user_stats.py",
+  "extension" : "py",
+  "linesOfCode" : 1081,
+  "unitsCount" : 25,
+  "unitsMcCabeIndexSum" : 250,
+  "linesOfCodeInUnits" : 1028
+}, {
+  "relativePath" : "zeeguu/api/endpoints/user.py",
+  "extension" : "py",
+  "linesOfCode" : 279,
+  "unitsCount" : 14,
+  "unitsMcCabeIndexSum" : 62,
+  "linesOfCodeInUnits" : 222
+}, {
+  "relativePath" : "zeeguu/api/endpoints/user_preferences.py",
+  "extension" : "py",
+  "linesOfCode" : 84,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 10,
+  "linesOfCodeInUnits" : 71
+}, {
+  "relativePath" : "zeeguu/api/endpoints/user_notifications.py",
+  "extension" : "py",
+  "linesOfCode" : 72,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 39
+}, {
+  "relativePath" : "zeeguu/api/endpoints/exercise_sessions.py",
+  "extension" : "py",
+  "linesOfCode" : 65,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 7,
+  "linesOfCodeInUnits" : 30
+}, {
+  "relativePath" : "zeeguu/api/endpoints/sessions.py",
+  "extension" : "py",
+  "linesOfCode" : 91,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 13,
+  "linesOfCodeInUnits" : 70
+}, {
+  "relativePath" : "zeeguu/api/endpoints/crawl_stats.py",
+  "extension" : "py",
+  "linesOfCode" : 255,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 42,
+  "linesOfCodeInUnits" : 232
+}, {
+  "relativePath" : "zeeguu/api/endpoints/cefr_assessment.py",
+  "extension" : "py",
+  "linesOfCode" : 119,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 30,
+  "linesOfCodeInUnits" : 101
+}, {
+  "relativePath" : "zeeguu/api/endpoints/own_texts.py",
+  "extension" : "py",
+  "linesOfCode" : 116,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 17,
+  "linesOfCodeInUnits" : 93
+}, {
+  "relativePath" : "zeeguu/api/endpoints/friends.py",
+  "extension" : "py",
+  "linesOfCode" : 245,
+  "unitsCount" : 22,
+  "unitsMcCabeIndexSum" : 57,
+  "linesOfCodeInUnits" : 198
+}, {
+  "relativePath" : "zeeguu/api/endpoints/browsing_sessions.py",
+  "extension" : "py",
+  "linesOfCode" : 55,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 24
+}, {
+  "relativePath" : "zeeguu/api/endpoints/listening_sessions.py",
+  "extension" : "py",
+  "linesOfCode" : 52,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 21
+}, {
+  "relativePath" : "zeeguu/api/endpoints/reading_sessions.py",
+  "extension" : "py",
+  "linesOfCode" : 54,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 22
+}, {
+  "relativePath" : "zeeguu/api/endpoints/accounts.py",
+  "extension" : "py",
+  "linesOfCode" : 292,
+  "unitsCount" : 16,
+  "unitsMcCabeIndexSum" : 63,
+  "linesOfCodeInUnits" : 247
+}, {
+  "relativePath" : "zeeguu/api/endpoints/daily_streak.py",
+  "extension" : "py",
+  "linesOfCode" : 65,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 14,
+  "linesOfCodeInUnits" : 44
+}, {
+  "relativePath" : "zeeguu/api/endpoints/teacher_dashboard/cohorts.py",
+  "extension" : "py",
+  "linesOfCode" : 181,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 35,
+  "linesOfCodeInUnits" : 131
+}, {
+  "relativePath" : "zeeguu/api/endpoints/teacher_dashboard/student_readings.py",
+  "extension" : "py",
+  "linesOfCode" : 12,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 4
+}, {
+  "relativePath" : "zeeguu/api/endpoints/teacher_dashboard/student_overviews.py",
+  "extension" : "py",
+  "linesOfCode" : 12,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 4
+}, {
+  "relativePath" : "zeeguu/api/endpoints/teacher_dashboard/_common_api_parameters.py",
+  "extension" : "py",
+  "linesOfCode" : 33,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 10
+}, {
+  "relativePath" : "zeeguu/api/endpoints/teacher_dashboard/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 8,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/api/endpoints/teacher_dashboard/article_management.py",
+  "extension" : "py",
+  "linesOfCode" : 147,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 16,
+  "linesOfCodeInUnits" : 105
+}, {
+  "relativePath" : "zeeguu/api/endpoints/teacher_dashboard/_permissions.py",
+  "extension" : "py",
+  "linesOfCode" : 32,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 11,
+  "linesOfCodeInUnits" : 28
+}, {
+  "relativePath" : "zeeguu/api/endpoints/teacher_dashboard/student_exercises.py",
+  "extension" : "py",
+  "linesOfCode" : 21,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 8
+}, {
+  "relativePath" : "zeeguu/api/endpoints/teacher_dashboard/student.py",
+  "extension" : "py",
+  "linesOfCode" : 59,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 32
+}, {
+  "relativePath" : "zeeguu/api/endpoints/teacher_dashboard/helpers.py",
+  "extension" : "py",
+  "linesOfCode" : 63,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 52
+}, {
+  "relativePath" : "zeeguu/api/endpoints/teacher_dashboard/_only_teachers_decorator.py",
+  "extension" : "py",
+  "linesOfCode" : 10,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 7
+}, {
+  "relativePath" : "zeeguu/api/endpoints/teacher_dashboard/student_words.py",
+  "extension" : "py",
+  "linesOfCode" : 18,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 8
+}, {
+  "relativePath" : "zeeguu/api/endpoints/teacher_dashboard/general.py",
+  "extension" : "py",
+  "linesOfCode" : 51,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 22
+}, {
+  "relativePath" : "zeeguu/api/endpoints/user_article.py",
+  "extension" : "py",
+  "linesOfCode" : 176,
+  "unitsCount" : 9,
+  "unitsMcCabeIndexSum" : 25,
+  "linesOfCodeInUnits" : 139
+}, {
+  "relativePath" : "zeeguu/api/endpoints/feature_toggles.py",
+  "extension" : "py",
+  "linesOfCode" : 17,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 5
+}, {
+  "relativePath" : "zeeguu/api/endpoints/user_video.py",
+  "extension" : "py",
+  "linesOfCode" : 44,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 29
+}, {
+  "relativePath" : "zeeguu/api/endpoints/generated_examples.py",
+  "extension" : "py",
+  "linesOfCode" : 569,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 87,
+  "linesOfCodeInUnits" : 526
+}, {
+  "relativePath" : "zeeguu/api/endpoints/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 48,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/api/endpoints/session_history.py",
+  "extension" : "py",
+  "linesOfCode" : 238,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 60,
+  "linesOfCodeInUnits" : 220
+}, {
+  "relativePath" : "zeeguu/api/endpoints/leaderboards.py",
+  "extension" : "py",
+  "linesOfCode" : 116,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 25,
+  "linesOfCodeInUnits" : 90
+}, {
+  "relativePath" : "zeeguu/api/endpoints/nlp.py",
+  "extension" : "py",
+  "linesOfCode" : 98,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 13,
+  "linesOfCodeInUnits" : 66
+}, {
+  "relativePath" : "zeeguu/api/endpoints/article_simplification.py",
+  "extension" : "py",
+  "linesOfCode" : 64,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 10,
+  "linesOfCodeInUnits" : 55
+}, {
+  "relativePath" : "zeeguu/api/endpoints/topics.py",
+  "extension" : "py",
+  "linesOfCode" : 115,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 16,
+  "linesOfCodeInUnits" : 73
+}, {
+  "relativePath" : "zeeguu/api/endpoints/user_statistics.py",
+  "extension" : "py",
+  "linesOfCode" : 18,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 6
+}, {
+  "relativePath" : "zeeguu/api/endpoints/translation.py",
+  "extension" : "py",
+  "linesOfCode" : 460,
+  "unitsCount" : 10,
+  "unitsMcCabeIndexSum" : 73,
+  "linesOfCodeInUnits" : 399
+}, {
+  "relativePath" : "zeeguu/api/endpoints/audio_lessons.py",
+  "extension" : "py",
+  "linesOfCode" : 189,
+  "unitsCount" : 9,
+  "unitsMcCabeIndexSum" : 45,
+  "linesOfCodeInUnits" : 155
+}, {
+  "relativePath" : "zeeguu/api/endpoints/user_languages.py",
+  "extension" : "py",
+  "linesOfCode" : 91,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 13,
+  "linesOfCodeInUnits" : 61
+}, {
+  "relativePath" : "zeeguu/api/endpoints/system_languages.py",
+  "extension" : "py",
+  "linesOfCode" : 32,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 21
+}, {
+  "relativePath" : "zeeguu/api/endpoints/badges.py",
+  "extension" : "py",
+  "linesOfCode" : 87,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 24,
+  "linesOfCodeInUnits" : 62
+}, {
+  "relativePath" : "zeeguu/api/endpoints/search.py",
+  "extension" : "py",
+  "linesOfCode" : 185,
+  "unitsCount" : 11,
+  "unitsMcCabeIndexSum" : 22,
+  "linesOfCodeInUnits" : 126
+}, {
+  "relativePath" : "zeeguu/api/endpoints/student.py",
+  "extension" : "py",
+  "linesOfCode" : 40,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 26
+}, {
+  "relativePath" : "zeeguu/api/endpoints/article_cefr_recompute.py",
+  "extension" : "py",
+  "linesOfCode" : 115,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 31,
+  "linesOfCodeInUnits" : 100
+}, {
+  "relativePath" : "zeeguu/api/endpoints/speech.py",
+  "extension" : "py",
+  "linesOfCode" : 109,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 19,
+  "linesOfCodeInUnits" : 79
+}, {
+  "relativePath" : "zeeguu/api/endpoints/activity_tracking.py",
+  "extension" : "py",
+  "linesOfCode" : 84,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 27,
+  "linesOfCodeInUnits" : 70
+}, {
+  "relativePath" : "zeeguu/api/endpoints/exercises.py",
+  "extension" : "py",
+  "linesOfCode" : 266,
+  "unitsCount" : 19,
+  "unitsMcCabeIndexSum" : 56,
+  "linesOfCodeInUnits" : 195
+}, {
+  "relativePath" : "zeeguu/api/endpoints/helpers/activity_sessions.py",
+  "extension" : "py",
+  "linesOfCode" : 30,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 24
+}, {
+  "relativePath" : "zeeguu/api/endpoints/helpers/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/api/endpoints/user_watching_session.py",
+  "extension" : "py",
+  "linesOfCode" : 32,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 15
+}, {
+  "relativePath" : "zeeguu/api/endpoints/article_upload.py",
+  "extension" : "py",
+  "linesOfCode" : 185,
+  "unitsCount" : 9,
+  "unitsMcCabeIndexSum" : 37,
+  "linesOfCodeInUnits" : 160
+}, {
+  "relativePath" : "zeeguu/api/endpoints/bookmarks_and_words.py",
+  "extension" : "py",
+  "linesOfCode" : 578,
+  "unitsCount" : 26,
+  "unitsMcCabeIndexSum" : 108,
+  "linesOfCodeInUnits" : 484
+}, {
+  "relativePath" : "zeeguu/api/endpoints/article.py",
+  "extension" : "py",
+  "linesOfCode" : 447,
+  "unitsCount" : 11,
+  "unitsMcCabeIndexSum" : 100,
+  "linesOfCodeInUnits" : 400
+}, {
+  "relativePath" : "zeeguu/api/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/api/utils/parse_json_boolean.py",
+  "extension" : "py",
+  "linesOfCode" : 8,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 8
+}, {
+  "relativePath" : "zeeguu/api/utils/feedparser_extensions.py",
+  "extension" : "py",
+  "linesOfCode" : 28,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 5,
+  "linesOfCodeInUnits" : 25
+}, {
+  "relativePath" : "zeeguu/api/utils/background.py",
+  "extension" : "py",
+  "linesOfCode" : 14,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 11
+}, {
+  "relativePath" : "zeeguu/api/utils/rate_limiter.py",
+  "extension" : "py",
+  "linesOfCode" : 38,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 26
+}, {
+  "relativePath" : "zeeguu/api/utils/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/api/utils/session_helpers.py",
+  "extension" : "py",
+  "linesOfCode" : 11,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 8
+}, {
+  "relativePath" : "zeeguu/api/utils/caching_decorator.py",
+  "extension" : "py",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/api/utils/route_wrappers.py",
+  "extension" : "py",
+  "linesOfCode" : 101,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 14,
+  "linesOfCodeInUnits" : 91
+}, {
+  "relativePath" : "zeeguu/api/utils/security_checks.py",
+  "extension" : "py",
+  "linesOfCode" : 69,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 17,
+  "linesOfCodeInUnits" : 54
+}, {
+  "relativePath" : "zeeguu/api/utils/abort_handling.py",
+  "extension" : "py",
+  "linesOfCode" : 12,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 3
+}, {
+  "relativePath" : "zeeguu/api/utils/json_result.py",
+  "extension" : "py",
+  "linesOfCode" : 15,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 10
+}, {
+  "relativePath" : "zeeguu/api/custom_fmd_graphs.py",
+  "extension" : "py",
+  "linesOfCode" : 9,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 9
+}, {
+  "relativePath" : "zeeguu/api/app.py",
+  "extension" : "py",
+  "linesOfCode" : 200,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 38,
+  "linesOfCodeInUnits" : 171
+}, {
+  "relativePath" : "zeeguu/cl/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "zeeguu/logging/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 22,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 13
+}, {
+  "relativePath" : "tools/one_time/fix_html_entities_in_articles.py",
+  "extension" : "py",
+  "linesOfCode" : 36,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 4
+}, {
+  "relativePath" : "tools/one_time/reindex_articles_with_quotes.py",
+  "extension" : "py",
+  "linesOfCode" : 53,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/one_time/fix_tokenization_cache_html_entities.py",
+  "extension" : "py",
+  "linesOfCode" : 31,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/one_time/reindex_articles_with_html_entities.py",
+  "extension" : "py",
+  "linesOfCode" : 53,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/one_time/fix_postillon_topics.py",
+  "extension" : "py",
+  "linesOfCode" : 26,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/one_time/reindex_single_article.py",
+  "extension" : "py",
+  "linesOfCode" : 35,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/set_new_topics_article.py",
+  "extension" : "py",
+  "linesOfCode" : 38,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/download_feed.py",
+  "extension" : "py",
+  "linesOfCode" : 9,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/delete_daily_lesson.py",
+  "extension" : "py",
+  "linesOfCode" : 50,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 10,
+  "linesOfCodeInUnits" : 39
+}, {
+  "relativePath" : "tools/recompute_fk_difficulties.py",
+  "extension" : "py",
+  "linesOfCode" : 30,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/add_videos_and_captions_from_file.py",
+  "extension" : "py",
+  "linesOfCode" : 15,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/tokenizer_script.py",
+  "extension" : "py",
+  "linesOfCode" : 52,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 4
+}, {
+  "relativePath" : "tools/migrations/25-02-28--04-delete-unused-columns-article.sql",
+  "extension" : "sql",
+  "linesOfCode" : 72,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-07-31--recalculate_multiword_phrase_ranks.py",
+  "extension" : "py",
+  "linesOfCode" : 56,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 11,
+  "linesOfCodeInUnits" : 37
+}, {
+  "relativePath" : "tools/migrations/24-05-21--add_uuid_to_session.sql",
+  "extension" : "sql",
+  "linesOfCode" : 6,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-12-05--add_is_admin_to_user.sql",
+  "extension" : "sql",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-12-11--add_reading_session_id_to_bookmark.sql",
+  "extension" : "sql",
+  "linesOfCode" : 7,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-08-13--optimize_viewport_data_format.py",
+  "extension" : "py",
+  "linesOfCode" : 78,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 17,
+  "linesOfCodeInUnits" : 71
+}, {
+  "relativePath" : "tools/migrations/25-08-02--add_last_seen_to_users.sql",
+  "extension" : "sql",
+  "linesOfCode" : 18,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-10-03-a--add_content_simhash_to_article.sql",
+  "extension" : "sql",
+  "linesOfCode" : 4,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-24-friendship_system.sql",
+  "extension" : "sql",
+  "linesOfCode" : 19,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-11-04--add_bookmark_context_userword_index.sql",
+  "extension" : "sql",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-12-a--add_meaning_report.sql",
+  "extension" : "sql",
+  "linesOfCode" : 13,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-05-06--update_cohort_language_to_null_for_testing.sql",
+  "extension" : "sql",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-01-22-a--add_translation_explanation.sql",
+  "extension" : "sql",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-04-03-c--add_audio_lesson_dialogue.sql",
+  "extension" : "sql",
+  "linesOfCode" : 22,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-07-08--add_meaning_frequency_and_phrase_type.sql",
+  "extension" : "sql",
+  "linesOfCode" : 31,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-05-23--removed_learning_cycle_column.sql",
+  "extension" : "sql",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-04-16--remove-vtt-from-video.sql",
+  "extension" : "sql",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-01-01--add_is_mwe_to_bookmark.sql",
+  "extension" : "sql",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-05-21--rename_user_word_to_phrase.sql",
+  "extension" : "sql",
+  "linesOfCode" : 7,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-07-09-a--populate_language_id_for_existing_lessons.sql",
+  "extension" : "sql",
+  "linesOfCode" : 29,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-11-22--add_cascade_delete_cohort_article_map.sql",
+  "extension" : "sql",
+  "linesOfCode" : 8,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-10-22--recalculate_single_word_phrase_ranks.py",
+  "extension" : "py",
+  "linesOfCode" : 66,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 11,
+  "linesOfCodeInUnits" : 46
+}, {
+  "relativePath" : "tools/migrations/24-07-24--add_receive_email_column.sql",
+  "extension" : "sql",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-13--add_exercise_report.sql",
+  "extension" : "sql",
+  "linesOfCode" : 15,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-12-02--add_user_notification_table.sql",
+  "extension" : "sql",
+  "linesOfCode" : 12,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-08-09--consolidate_duplicate_meanings.py",
+  "extension" : "py",
+  "linesOfCode" : 118,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 26,
+  "linesOfCodeInUnits" : 102
+}, {
+  "relativePath" : "tools/migrations/25-11-22-b--drop_user_cohort_id_column.sql",
+  "extension" : "sql",
+  "linesOfCode" : 4,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-04-10--01--add_learning_cycle_column.sql",
+  "extension" : "sql",
+  "linesOfCode" : 6,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-08-20--fix_ai_generator_foreign_key.sql",
+  "extension" : "sql",
+  "linesOfCode" : 8,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-01-01-a--add_mwe_partner_token_i_to_bookmark.sql",
+  "extension" : "sql",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-07-09--add_language_to_daily_audio_lesson.sql",
+  "extension" : "sql",
+  "linesOfCode" : 9,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-02-06--adding-cascade-deletes.sql",
+  "extension" : "sql",
+  "linesOfCode" : 12,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-01-06--add_email_verified.sql",
+  "extension" : "sql",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-17--simplify_translation_search.sql",
+  "extension" : "sql",
+  "linesOfCode" : 11,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-03-26-drop_unique_constraint_from_img_url_id.sql",
+  "extension" : "sql",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-07-26--remove_all_search_subscriptions_and_searches.sql",
+  "extension" : "sql",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-12-11--backfill_reading_session_id_on_bookmarks.py",
+  "extension" : "py",
+  "linesOfCode" : 67,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 14,
+  "linesOfCodeInUnits" : 46
+}, {
+  "relativePath" : "tools/migrations/25-08-09--comprehensive_userword_consolidation.py",
+  "extension" : "py",
+  "linesOfCode" : 203,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 39,
+  "linesOfCodeInUnits" : 188
+}, {
+  "relativePath" : "tools/migrations/26-01-20--add_platform_to_session_tables.sql",
+  "extension" : "sql",
+  "linesOfCode" : 5,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-16--security_fixes.sql",
+  "extension" : "sql",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-03-add_img_url_to_article.sql",
+  "extension" : "sql",
+  "linesOfCode" : 13,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-01-15--add_learned_time_index.sql",
+  "extension" : "sql",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-03-31--add_topic_suggestion_to_audio_lessons.sql",
+  "extension" : "sql",
+  "linesOfCode" : 6,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-08-28--add_article_summary_context.sql",
+  "extension" : "sql",
+  "linesOfCode" : 11,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-08-28-a--add_translation_source_to_bookmark.sql",
+  "extension" : "sql",
+  "linesOfCode" : 4,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-08-12--add_is_user_added_to_user_word.sql",
+  "extension" : "sql",
+  "linesOfCode" : 4,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-04-14--add_article_upload.sql",
+  "extension" : "sql",
+  "linesOfCode" : 22,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-04-22-4-new_topic_subscription.sql",
+  "extension" : "sql",
+  "linesOfCode" : 10,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-02-28--01-new-content-tables copy.sql",
+  "extension" : "sql",
+  "linesOfCode" : 198,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-07-31--add_generated_example_context.sql",
+  "extension" : "sql",
+  "linesOfCode" : 41,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-01-20--add_exercise_validation.sql",
+  "extension" : "sql",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-12-11--add_reading_source_to_session.sql",
+  "extension" : "sql",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-01-16--fix-portuguese-language.sql",
+  "extension" : "sql",
+  "linesOfCode" : 6,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-04-15--update_user_name_email_collation.sql",
+  "extension" : "sql",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-16-b--set_existing_users_verified.sql",
+  "extension" : "sql",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-05-20--migrate_to_word_meaning.sql",
+  "extension" : "sql",
+  "linesOfCode" : 38,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-03-is_dev_in_users_table.sql",
+  "extension" : "sql",
+  "linesOfCode" : 22,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-01-03--add_tokenized_content_to_cache.sql",
+  "extension" : "sql",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-07-16--remove_article_duplicates.sql",
+  "extension" : "sql",
+  "linesOfCode" : 103,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-12-09--add_grammar_correction_log.sql",
+  "extension" : "sql",
+  "linesOfCode" : 19,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-11-12-rename_new_topics.sql",
+  "extension" : "sql",
+  "linesOfCode" : 58,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-07-30--remove_articles_with_no_publish_time.sql",
+  "extension" : "sql",
+  "linesOfCode" : 39,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-08-30--user_cohort_map.sql",
+  "extension" : "sql",
+  "linesOfCode" : 23,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-12-17--add_article_type.sql",
+  "extension" : "sql",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-09-24--add_feeback_tables.sql",
+  "extension" : "sql",
+  "linesOfCode" : 48,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-12--add_meaning_level_note.sql",
+  "extension" : "sql",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-12-05-a--add_browsing_session_id_to_bookmark.sql",
+  "extension" : "sql",
+  "linesOfCode" : 5,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-03-13--fix_exercise_report_reason_enum.sql",
+  "extension" : "sql",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-02-rss_to_feed.sql",
+  "extension" : "sql",
+  "linesOfCode" : 8,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-11-11--add-bookmark-position-constraints-strict.sql",
+  "extension" : "sql",
+  "linesOfCode" : 4,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-02-05--add_teacher_language_to_audio_lesson_meaning.sql",
+  "extension" : "sql",
+  "linesOfCode" : 4,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-04-23--02--update_learning_cycle_for_existing_users.sql",
+  "extension" : "sql",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-24-a--add_username.sql",
+  "extension" : "sql",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-10-22--recalculate_all_multiword_phrase_ranks.py",
+  "extension" : "py",
+  "linesOfCode" : 67,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 12,
+  "linesOfCodeInUnits" : 47
+}, {
+  "relativePath" : "tools/migrations/25-02-28--add_video-tables.sql",
+  "extension" : "sql",
+  "linesOfCode" : 127,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-02-06--add_audio_lesson_generation_progress.sql",
+  "extension" : "sql",
+  "linesOfCode" : 14,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-12-05--add_user_browsing_session.sql",
+  "extension" : "sql",
+  "linesOfCode" : 11,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-10-15--add_cefr_assessment_system.sql",
+  "extension" : "sql",
+  "linesOfCode" : 44,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-05-24--adding_the_user_word_table.sql",
+  "extension" : "sql",
+  "linesOfCode" : 130,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-04-22-2-create_topic_keyword.sql",
+  "extension" : "sql",
+  "linesOfCode" : 21,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-05-29--add_user_preference_to_bookmark.sql",
+  "extension" : "sql",
+  "linesOfCode" : 12,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-10-23--delete_bookmark_learned.sql",
+  "extension" : "sql",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-24-b--add_username.py",
+  "extension" : "py",
+  "linesOfCode" : 88,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 68
+}, {
+  "relativePath" : "tools/migrations/26-03-13--add_user_avatar.sql",
+  "extension" : "sql",
+  "linesOfCode" : 9,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-09-24--adding-language-to-search.sql",
+  "extension" : "sql",
+  "linesOfCode" : 26,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-04-07--add_language_id_to_exercise_and_browsing_sessions.sql",
+  "extension" : "sql",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-01-22-b--add_literal_meaning.sql",
+  "extension" : "sql",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-01-22--add_validation_log.sql",
+  "extension" : "sql",
+  "linesOfCode" : 14,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-10--add_monthly_active_users_cache.sql",
+  "extension" : "sql",
+  "linesOfCode" : 7,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-12-02--add_notification_table.sql",
+  "extension" : "sql",
+  "linesOfCode" : 11,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-12-24--add_user_listening_session.sql",
+  "extension" : "sql",
+  "linesOfCode" : 14,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-04-05--drop_suggestion_from_audio_lesson_meaning.sql",
+  "extension" : "sql",
+  "linesOfCode" : 13,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-11-12-delete_old_topics.sql",
+  "extension" : "sql",
+  "linesOfCode" : 5,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-10-06--add_user_article_broken_report.sql",
+  "extension" : "sql",
+  "linesOfCode" : 17,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-01-06--add_index_pointers.sql",
+  "extension" : "sql",
+  "linesOfCode" : 40,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-04-24--03--update_learning_cycle_preference_for_all_users.sql",
+  "extension" : "sql",
+  "linesOfCode" : 4,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-11-22--add_user_created_at.sql",
+  "extension" : "sql",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-01-07--add_phrase_content_lower_index.sql",
+  "extension" : "sql",
+  "linesOfCode" : 4,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-24-c--add_username.sql",
+  "extension" : "sql",
+  "linesOfCode" : 4,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-07-01--add_article_broken_code_map.sql",
+  "extension" : "sql",
+  "linesOfCode" : 6,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-04-03--update-context-type.sql",
+  "extension" : "sql",
+  "linesOfCode" : 6,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-04-03-b--rename_topic_suggestion_to_suggestion.sql",
+  "extension" : "sql",
+  "linesOfCode" : 4,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-07-25--add_user_article_completion_tracking.sql",
+  "extension" : "sql",
+  "linesOfCode" : 5,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-19-a--add_badges.sql",
+  "extension" : "sql",
+  "linesOfCode" : 39,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-01-05--add_user_mwe_override.sql",
+  "extension" : "sql",
+  "linesOfCode" : 12,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-11-04-a--add_cached_tokenization.sql",
+  "extension" : "sql",
+  "linesOfCode" : 7,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-07-01--add_audio_lesson_tables.sql",
+  "extension" : "sql",
+  "linesOfCode" : 65,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-05-21--remove_word_form.sql",
+  "extension" : "sql",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-10-07--add_article_classification.sql",
+  "extension" : "sql",
+  "linesOfCode" : 12,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-01-06--add_cached_tokenized_to_bookmark_context.sql",
+  "extension" : "sql",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-04-22-5-article_topic_user_feedback.sql",
+  "extension" : "sql",
+  "linesOfCode" : 14,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-02-28--02-add-orphan-context-type.sql",
+  "extension" : "sql",
+  "linesOfCode" : 4,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-08-20-b--fix_remaining_ai_models_foreign_keys.sql",
+  "extension" : "sql",
+  "linesOfCode" : 8,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-07-12--add_simplified_content_fields.sql",
+  "extension" : "sql",
+  "linesOfCode" : 6,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-01-27--add_daily_streak.sql",
+  "extension" : "sql",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-26--add_max_streak_to_user_language.sql",
+  "extension" : "sql",
+  "linesOfCode" : 7,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-10-a--add_monthly_activity_stats_cache.sql",
+  "extension" : "sql",
+  "linesOfCode" : 10,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-04-11--add_user_timezone.sql",
+  "extension" : "sql",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-10-03--add_performance_indexes.sql",
+  "extension" : "sql",
+  "linesOfCode" : 40,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-02-28--03-update-user-activity-data.sql",
+  "extension" : "sql",
+  "linesOfCode" : 18,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-04-22-1-new_topic_table.sql",
+  "extension" : "sql",
+  "linesOfCode" : 26,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-19-b--insert_default_badges.sql",
+  "extension" : "sql",
+  "linesOfCode" : 45,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-04-03--add_suggestion_type.sql",
+  "extension" : "sql",
+  "linesOfCode" : 6,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-09-08--add_hidden_column_to_user_article.sql",
+  "extension" : "sql",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-08-13--cleanup_malformed_scroll_data.py",
+  "extension" : "py",
+  "linesOfCode" : 39,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 33
+}, {
+  "relativePath" : "tools/migrations/24-08-15--fix_politikens_titles.sql",
+  "extension" : "sql",
+  "linesOfCode" : 21,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-01-27--add_user_word_interaction_history.sql",
+  "extension" : "sql",
+  "linesOfCode" : 9,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-02-09--add_streak_to_user_language.sql",
+  "extension" : "sql",
+  "linesOfCode" : 8,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-04-22-3-new_topic_filter.sql",
+  "extension" : "sql",
+  "linesOfCode" : 10,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-11-31--add_level_column.sql",
+  "extension" : "sql",
+  "linesOfCode" : 6,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/25-10-22--fix_codeline_collation.sql",
+  "extension" : "sql",
+  "linesOfCode" : 4,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/24-11-04--updating-url-keyword-mapping.sql",
+  "extension" : "sql",
+  "linesOfCode" : 312,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/migrations/26-01-12--add_platform_tracking.sql",
+  "extension" : "sql",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/diagnose_recommendations.py",
+  "extension" : "py",
+  "linesOfCode" : 180,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 46,
+  "linesOfCodeInUnits" : 161
+}, {
+  "relativePath" : "tools/delete_bookmarks_word_not_in_context.py",
+  "extension" : "py",
+  "linesOfCode" : 135,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 23,
+  "linesOfCodeInUnits" : 117
+}, {
+  "relativePath" : "tools/fix_feed.py",
+  "extension" : "py",
+  "linesOfCode" : 209,
+  "unitsCount" : 10,
+  "unitsMcCabeIndexSum" : 62,
+  "linesOfCodeInUnits" : 185
+}, {
+  "relativePath" : "tools/_test_validation.py",
+  "extension" : "py",
+  "linesOfCode" : 57,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 48
+}, {
+  "relativePath" : "tools/run_knn_similarity_search.py",
+  "extension" : "py",
+  "linesOfCode" : 94,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 11,
+  "linesOfCodeInUnits" : 68
+}, {
+  "relativePath" : "tools/analyze_classroom_recommendations.py",
+  "extension" : "py",
+  "linesOfCode" : 230,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 53,
+  "linesOfCodeInUnits" : 217
+}, {
+  "relativePath" : "tools/add_feed.py",
+  "extension" : "py",
+  "linesOfCode" : 78,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 13,
+  "linesOfCodeInUnits" : 69
+}, {
+  "relativePath" : "tools/delete_portuguese_audio_lessons.py",
+  "extension" : "py",
+  "linesOfCode" : 61,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 10,
+  "linesOfCodeInUnits" : 52
+}, {
+  "relativePath" : "tools/tokenizer_playground.py",
+  "extension" : "py",
+  "linesOfCode" : 55,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 4
+}, {
+  "relativePath" : "tools/feed_info.py",
+  "extension" : "py",
+  "linesOfCode" : 16,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/update_elastic_ids.py",
+  "extension" : "py",
+  "linesOfCode" : 67,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 10,
+  "linesOfCodeInUnits" : 41
+}, {
+  "relativePath" : "tools/_playground.py",
+  "extension" : "py",
+  "linesOfCode" : 37,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/remove_wrong_videos.py",
+  "extension" : "py",
+  "linesOfCode" : 32,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/feed_health_check.py",
+  "extension" : "py",
+  "linesOfCode" : 38,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 11,
+  "linesOfCodeInUnits" : 29
+}, {
+  "relativePath" : "tools/transform_text_into_context.py",
+  "extension" : "py",
+  "linesOfCode" : 118,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 3
+}, {
+  "relativePath" : "tools/crawler/crawl.py",
+  "extension" : "py",
+  "linesOfCode" : 126,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 19,
+  "linesOfCodeInUnits" : 56
+}, {
+  "relativePath" : "tools/crawler/crawl_summary/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/crawler/crawl_summary/crawl_report.py",
+  "extension" : "py",
+  "linesOfCode" : 202,
+  "unitsCount" : 27,
+  "unitsMcCabeIndexSum" : 49,
+  "linesOfCodeInUnits" : 190
+}, {
+  "relativePath" : "tools/crawler/article_crawler.py",
+  "extension" : "py",
+  "linesOfCode" : 23,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/crawler/crawl_roundrobin.py",
+  "extension" : "py",
+  "linesOfCode" : 209,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 45,
+  "linesOfCodeInUnits" : 133
+}, {
+  "relativePath" : "tools/crawler/feed_retrieval.py",
+  "extension" : "py",
+  "linesOfCode" : 72,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 60
+}, {
+  "relativePath" : "tools/crawler/video_crawler.py",
+  "extension" : "py",
+  "linesOfCode" : 11,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/extract_validation_for_topics.py",
+  "extension" : "py",
+  "linesOfCode" : 63,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 15
+}, {
+  "relativePath" : "tools/delete_broken_videos_from_ES.py",
+  "extension" : "py",
+  "linesOfCode" : 15,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/update_meaning_frequencies.py",
+  "extension" : "py",
+  "linesOfCode" : 122,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 32,
+  "linesOfCodeInUnits" : 113
+}, {
+  "relativePath" : "tools/cleanup_todays_examples.py",
+  "extension" : "py",
+  "linesOfCode" : 41,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/reduce_number_of_studied_bookmarks.py",
+  "extension" : "py",
+  "linesOfCode" : 65,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 12,
+  "linesOfCodeInUnits" : 36
+}, {
+  "relativePath" : "tools/generate_audio_lesson.py",
+  "extension" : "py",
+  "linesOfCode" : 22,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/delete_user_deleted_articles.py",
+  "extension" : "py",
+  "linesOfCode" : 58,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 39
+}, {
+  "relativePath" : "tools/delete_duplicate_articles.py",
+  "extension" : "py",
+  "linesOfCode" : 147,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 10,
+  "linesOfCodeInUnits" : 18
+}, {
+  "relativePath" : "tools/cleanup_empty_exercise_sessions.py",
+  "extension" : "py",
+  "linesOfCode" : 40,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 28
+}, {
+  "relativePath" : "tools/regenerate_test_fixture.py",
+  "extension" : "py",
+  "linesOfCode" : 62,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 7,
+  "linesOfCodeInUnits" : 38
+}, {
+  "relativePath" : "tools/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/fix_long_summaries.py",
+  "extension" : "py",
+  "linesOfCode" : 150,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 19,
+  "linesOfCodeInUnits" : 135
+}, {
+  "relativePath" : "tools/migrate_daily_streak.py",
+  "extension" : "py",
+  "linesOfCode" : 80,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 21,
+  "linesOfCodeInUnits" : 63
+}, {
+  "relativePath" : "tools/mysql_to_elastic_for_articles.py",
+  "extension" : "py",
+  "linesOfCode" : 134,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 18,
+  "linesOfCodeInUnits" : 101
+}, {
+  "relativePath" : "tools/old/remove_text_duplicates.py",
+  "extension" : "py",
+  "linesOfCode" : 37,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/add_standard_topics.py",
+  "extension" : "py",
+  "linesOfCode" : 113,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 8
+}, {
+  "relativePath" : "tools/old/add_word_rank.py",
+  "extension" : "py",
+  "linesOfCode" : 36,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/tag_topics_in_danish.py",
+  "extension" : "py",
+  "linesOfCode" : 35,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/bookmark_info.py",
+  "extension" : "py",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/fix_text_duplications.py",
+  "extension" : "py",
+  "linesOfCode" : 30,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/es_v8_migration/migrate_old_topics_to_new_topics.py",
+  "extension" : "py",
+  "linesOfCode" : 43,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/es_v8_migration/set_url_keywords_article.py",
+  "extension" : "py",
+  "linesOfCode" : 42,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/es_v8_migration/set_topic_mapping_to_keywords.py",
+  "extension" : "py",
+  "linesOfCode" : 23,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/es_v8_migration/url_topics.py",
+  "extension" : "py",
+  "linesOfCode" : 54,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 41
+}, {
+  "relativePath" : "tools/old/es_v8_migration/set_new_topics_from_url_keyword.py",
+  "extension" : "py",
+  "linesOfCode" : 54,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/assert_db_anonymized.py",
+  "extension" : "py",
+  "linesOfCode" : 4,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/article_recommendations.py",
+  "extension" : "py",
+  "linesOfCode" : 22,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/consolidate_accounts.py",
+  "extension" : "py",
+  "linesOfCode" : 39,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/remove_unreferenced_articles.py",
+  "extension" : "py",
+  "linesOfCode" : 89,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 11,
+  "linesOfCodeInUnits" : 21
+}, {
+  "relativePath" : "tools/old/recompute_fk_difficulties_for_polish.py",
+  "extension" : "py",
+  "linesOfCode" : 15,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/update_particular_tag.py",
+  "extension" : "py",
+  "linesOfCode" : 35,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 20
+}, {
+  "relativePath" : "tools/old/learner_stats.py",
+  "extension" : "py",
+  "linesOfCode" : 51,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 14,
+  "linesOfCodeInUnits" : 46
+}, {
+  "relativePath" : "tools/old/tag_existing_articles.py",
+  "extension" : "py",
+  "linesOfCode" : 25,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/update_feed.py",
+  "extension" : "py",
+  "linesOfCode" : 16,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/forget_user.py",
+  "extension" : "py",
+  "linesOfCode" : 20,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 10
+}, {
+  "relativePath" : "tools/old/add_all_cohorts_to_teacher.py",
+  "extension" : "py",
+  "linesOfCode" : 8,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/flatten_unicode_characters.py",
+  "extension" : "py",
+  "linesOfCode" : 31,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 18
+}, {
+  "relativePath" : "tools/old/add_article_id_to_text.py",
+  "extension" : "py",
+  "linesOfCode" : 25,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/old/mysql_to_elastic.py",
+  "extension" : "py",
+  "linesOfCode" : 50,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 23
+}, {
+  "relativePath" : "tools/old/cleanup_non_content_bits.py",
+  "extension" : "py",
+  "linesOfCode" : 32,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/feeds_for_language.py",
+  "extension" : "py",
+  "linesOfCode" : 21,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 4
+}, {
+  "relativePath" : "tools/fix_simplified_articles_html.py",
+  "extension" : "py",
+  "linesOfCode" : 115,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 34,
+  "linesOfCodeInUnits" : 105
+}, {
+  "relativePath" : "tools/cleanup_tokenization_cache.py",
+  "extension" : "py",
+  "linesOfCode" : 18,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 7
+}, {
+  "relativePath" : "tools/mark_broken_articles.py",
+  "extension" : "py",
+  "linesOfCode" : 205,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 4,
+  "linesOfCodeInUnits" : 50
+}, {
+  "relativePath" : "tools/add_images_to_articles.py",
+  "extension" : "py",
+  "linesOfCode" : 43,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 32
+}, {
+  "relativePath" : "tools/extract_articles_with_new_topics.py",
+  "extension" : "py",
+  "linesOfCode" : 24,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/get_lang_stats.py",
+  "extension" : "py",
+  "linesOfCode" : 122,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 40
+}, {
+  "relativePath" : "tools/simplify_article.py",
+  "extension" : "py",
+  "linesOfCode" : 251,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 54,
+  "linesOfCodeInUnits" : 196
+}, {
+  "relativePath" : "tools/update_es_based_on_url_keyword.py",
+  "extension" : "py",
+  "linesOfCode" : 145,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 24,
+  "linesOfCodeInUnits" : 109
+}, {
+  "relativePath" : "tools/untag_simplified_and_user_articles.py",
+  "extension" : "py",
+  "linesOfCode" : 82,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 9,
+  "linesOfCodeInUnits" : 74
+}, {
+  "relativePath" : "tools/audio-engleza/generate_lesson.py",
+  "extension" : "py",
+  "linesOfCode" : 138,
+  "unitsCount" : 9,
+  "unitsMcCabeIndexSum" : 21,
+  "linesOfCodeInUnits" : 125
+}, {
+  "relativePath" : "tools/audio-engleza/deploy_lessons.py",
+  "extension" : "py",
+  "linesOfCode" : 110,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 28,
+  "linesOfCodeInUnits" : 99
+}, {
+  "relativePath" : "tools/audio-engleza/generate_script.py",
+  "extension" : "py",
+  "linesOfCode" : 64,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 55
+}, {
+  "relativePath" : "tools/audio-engleza/generate_audio.py",
+  "extension" : "py",
+  "linesOfCode" : 123,
+  "unitsCount" : 8,
+  "unitsMcCabeIndexSum" : 26,
+  "linesOfCodeInUnits" : 109
+}, {
+  "relativePath" : "tools/fix_audio_lesson_teacher_language.py",
+  "extension" : "py",
+  "linesOfCode" : 120,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/upgrade_to_teacher.py",
+  "extension" : "py",
+  "linesOfCode" : 19,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/remove_unreferenced_articles.py",
+  "extension" : "py",
+  "linesOfCode" : 82,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 11,
+  "linesOfCodeInUnits" : 23
+}, {
+  "relativePath" : "tools/add_captions_from_file.py",
+  "extension" : "py",
+  "linesOfCode" : 42,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/notify_search_subscribers.py",
+  "extension" : "py",
+  "linesOfCode" : 61,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 12,
+  "linesOfCodeInUnits" : 47
+}, {
+  "relativePath" : "tools/backfill_cefr_assessments.py",
+  "extension" : "py",
+  "linesOfCode" : 144,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 13,
+  "linesOfCodeInUnits" : 120
+}, {
+  "relativePath" : "tools/tag_advertorials.py",
+  "extension" : "py",
+  "linesOfCode" : 179,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 47
+}, {
+  "relativePath" : "tools/ml/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/ml/cefr_trainers/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/ml/cefr_trainers/train_cefr_classifiers_with_frequency.py",
+  "extension" : "py",
+  "linesOfCode" : 206,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 24,
+  "linesOfCodeInUnits" : 163
+}, {
+  "relativePath" : "tools/ml/cefr_trainers/train_cefr_classifiers.py",
+  "extension" : "py",
+  "linesOfCode" : 176,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 20,
+  "linesOfCodeInUnits" : 137
+}, {
+  "relativePath" : "tools/prefetch_example_sentences_for_users.py",
+  "extension" : "py",
+  "linesOfCode" : 330,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 25,
+  "linesOfCodeInUnits" : 138
+}, {
+  "relativePath" : "tools/user_word_integrity/_daily_user_word_integrity_check.py",
+  "extension" : "py",
+  "linesOfCode" : 70,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 7,
+  "linesOfCodeInUnits" : 57
+}, {
+  "relativePath" : "tools/user_word_integrity/_delete_unvalidatable_bookmarks.py",
+  "extension" : "py",
+  "linesOfCode" : 149,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 30,
+  "linesOfCodeInUnits" : 137
+}, {
+  "relativePath" : "tools/user_word_integrity/_fix_multiword_bookmark_positions.py",
+  "extension" : "py",
+  "linesOfCode" : 154,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 28,
+  "linesOfCodeInUnits" : 142
+}, {
+  "relativePath" : "tools/user_word_integrity/_check_and_fix_user_word_integrity.py",
+  "extension" : "py",
+  "linesOfCode" : 167,
+  "unitsCount" : 7,
+  "unitsMcCabeIndexSum" : 36,
+  "linesOfCodeInUnits" : 155
+}, {
+  "relativePath" : "tools/user_word_integrity/_cleanup_orphaned_user_words.py",
+  "extension" : "py",
+  "linesOfCode" : 132,
+  "unitsCount" : 5,
+  "unitsMcCabeIndexSum" : 32,
+  "linesOfCodeInUnits" : 119
+}, {
+  "relativePath" : "tools/user_word_integrity/_test_integrity_validation.py",
+  "extension" : "py",
+  "linesOfCode" : 38,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/precompute_upcoming_meaning_lessons.py",
+  "extension" : "py",
+  "linesOfCode" : 319,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 25,
+  "linesOfCodeInUnits" : 107
+}, {
+  "relativePath" : "tools/create_article_fragments_and_sources.py",
+  "extension" : "py",
+  "linesOfCode" : 56,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 7,
+  "linesOfCodeInUnits" : 37
+}, {
+  "relativePath" : "tools/add_ml_assessment_to_recent_articles.py",
+  "extension" : "py",
+  "linesOfCode" : 143,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 30,
+  "linesOfCodeInUnits" : 112
+}, {
+  "relativePath" : "tools/remove_sub_bookmarks_from_text.py",
+  "extension" : "py",
+  "linesOfCode" : 89,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 1,
+  "linesOfCodeInUnits" : 2
+}, {
+  "relativePath" : "tools/manual_test_user_report.py",
+  "extension" : "py",
+  "linesOfCode" : 127,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/cleanup_broken_summaries.py",
+  "extension" : "py",
+  "linesOfCode" : 139,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 34,
+  "linesOfCodeInUnits" : 128
+}, {
+  "relativePath" : "tools/fix_underscore_examples.py",
+  "extension" : "py",
+  "linesOfCode" : 169,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 32,
+  "linesOfCodeInUnits" : 154
+}, {
+  "relativePath" : "tools/fix_compound_examples.py",
+  "extension" : "py",
+  "linesOfCode" : 246,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 56,
+  "linesOfCodeInUnits" : 232
+}, {
+  "relativePath" : "tools/reclassify_unclassified_phrases.py",
+  "extension" : "py",
+  "linesOfCode" : 206,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 32,
+  "linesOfCodeInUnits" : 191
+}, {
+  "relativePath" : "tools/cleanup_empty_broken_articles.py",
+  "extension" : "py",
+  "linesOfCode" : 142,
+  "unitsCount" : 2,
+  "unitsMcCabeIndexSum" : 2,
+  "linesOfCodeInUnits" : 46
+}, {
+  "relativePath" : "tools/fix_user_over_limit.py",
+  "extension" : "py",
+  "linesOfCode" : 60,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 46
+}, {
+  "relativePath" : "tools/update_es_available_cefr_levels.py",
+  "extension" : "py",
+  "linesOfCode" : 100,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 20,
+  "linesOfCodeInUnits" : 82
+}, {
+  "relativePath" : "tools/cleanup_greek_audio_lessons.py",
+  "extension" : "py",
+  "linesOfCode" : 195,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 33,
+  "linesOfCodeInUnits" : 177
+}, {
+  "relativePath" : "tools/validate_and_clean_examples.py",
+  "extension" : "py",
+  "linesOfCode" : 203,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 34,
+  "linesOfCodeInUnits" : 185
+}, {
+  "relativePath" : "tools/delete_dev_users.py",
+  "extension" : "py",
+  "linesOfCode" : 19,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/cleanup_summary_formatting.py",
+  "extension" : "py",
+  "linesOfCode" : 61,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 23,
+  "linesOfCodeInUnits" : 51
+}, {
+  "relativePath" : "tools/delete_article_by_url.py",
+  "extension" : "py",
+  "linesOfCode" : 75,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 11,
+  "linesOfCodeInUnits" : 55
+}, {
+  "relativePath" : "tools/activity_monitor.py",
+  "extension" : "py",
+  "linesOfCode" : 35,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 3,
+  "linesOfCodeInUnits" : 17
+}, {
+  "relativePath" : "tools/validate_scheduled_meanings.py",
+  "extension" : "py",
+  "linesOfCode" : 187,
+  "unitsCount" : 4,
+  "unitsMcCabeIndexSum" : 12,
+  "linesOfCodeInUnits" : 108
+}, {
+  "relativePath" : "tools/users_recently_active.py",
+  "extension" : "py",
+  "linesOfCode" : 41,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/anonymize_users.py",
+  "extension" : "py",
+  "linesOfCode" : 77,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/report_generator/data_extractor.py",
+  "extension" : "py",
+  "linesOfCode" : 175,
+  "unitsCount" : 22,
+  "unitsMcCabeIndexSum" : 25,
+  "linesOfCodeInUnits" : 143
+}, {
+  "relativePath" : "tools/report_generator/__init__.py",
+  "extension" : "py",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/report_generator/generate_report.py",
+  "extension" : "py",
+  "linesOfCode" : 576,
+  "unitsCount" : 24,
+  "unitsMcCabeIndexSum" : 54,
+  "linesOfCodeInUnits" : 502
+}, {
+  "relativePath" : "tools/report_generator/explore_report_notebook.ipynb",
+  "extension" : "ipynb",
+  "linesOfCode" : 4327,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/stiri-simple/generate_news_page.py",
+  "extension" : "py",
+  "linesOfCode" : 242,
+  "unitsCount" : 9,
+  "unitsMcCabeIndexSum" : 76,
+  "linesOfCodeInUnits" : 230
+}, {
+  "relativePath" : "tools/stiri-simple/deploy_to_news.py",
+  "extension" : "py",
+  "linesOfCode" : 49,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 40
+}, {
+  "relativePath" : "tools/evaluate_infer_topics.py",
+  "extension" : "py",
+  "linesOfCode" : 96,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/recalculate_video_topics.py",
+  "extension" : "py",
+  "linesOfCode" : 10,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/update_article_content.py",
+  "extension" : "py",
+  "linesOfCode" : 78,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 8,
+  "linesOfCodeInUnits" : 51
+}, {
+  "relativePath" : "tools/update_elastic_with_source_ids.py",
+  "extension" : "py",
+  "linesOfCode" : 43,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 19
+}, {
+  "relativePath" : "tools/recalculate_all_word_ranks.py",
+  "extension" : "py",
+  "linesOfCode" : 129,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 30,
+  "linesOfCodeInUnits" : 102
+}, {
+  "relativePath" : "tools/rename_feed.py",
+  "extension" : "py",
+  "linesOfCode" : 20,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/update_bookmark_pointers.py",
+  "extension" : "py",
+  "linesOfCode" : 185,
+  "unitsCount" : 6,
+  "unitsMcCabeIndexSum" : 29,
+  "linesOfCodeInUnits" : 139
+}, {
+  "relativePath" : "tools/sql/teacher-for-cohort.sql",
+  "extension" : "sql",
+  "linesOfCode" : 4,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/sql/recent_exercise_outcomes.sql",
+  "extension" : "sql",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/sql/most_recent_active_teachers.sql",
+  "extension" : "sql",
+  "linesOfCode" : 8,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/sql/history_of_bookmark.sql",
+  "extension" : "sql",
+  "linesOfCode" : 8,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/sql/_show_foreign_keys.sql",
+  "extension" : "sql",
+  "linesOfCode" : 11,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/sql/users_with_level.sql",
+  "extension" : "sql",
+  "linesOfCode" : 2,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/sql/exercise_corectness.sql",
+  "extension" : "sql",
+  "linesOfCode" : 11,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/sql/most_active_users_in_the_last_year.sql",
+  "extension" : "sql",
+  "linesOfCode" : 11,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/sql/user_exercise_history.sql",
+  "extension" : "sql",
+  "linesOfCode" : 26,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/sql/popular_exercise_outcomes.sql",
+  "extension" : "sql",
+  "linesOfCode" : 3,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "tools/sql/users_last_active_in_cohort.sql",
+  "extension" : "sql",
+  "linesOfCode" : 7,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "env_var_defs_default.py",
+  "extension" : "py",
+  "linesOfCode" : 10,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "default.api.cfg",
+  "extension" : "cfg",
+  "linesOfCode" : 12,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "default.fmd.cfg",
+  "extension" : "cfg",
+  "linesOfCode" : 17,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "pyproject.toml",
+  "extension" : "toml",
+  "linesOfCode" : 38,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "MANIFEST.in",
+  "extension" : "in",
+  "linesOfCode" : 1,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "install_stanza_models.py",
+  "extension" : "py",
+  "linesOfCode" : 30,
+  "unitsCount" : 1,
+  "unitsMcCabeIndexSum" : 7,
+  "linesOfCodeInUnits" : 24
+}, {
+  "relativePath" : "start.py",
+  "extension" : "py",
+  "linesOfCode" : 14,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "setup.py",
+  "extension" : "py",
+  "linesOfCode" : 46,
+  "unitsCount" : 3,
+  "unitsMcCabeIndexSum" : 6,
+  "linesOfCodeInUnits" : 21
+}, {
+  "relativePath" : "default_docker_v8.cfg",
+  "extension" : "cfg",
+  "linesOfCode" : 11,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "default_docker.cfg",
+  "extension" : "cfg",
+  "linesOfCode" : 11,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+}, {
+  "relativePath" : "default_api.cfg",
+  "extension" : "cfg",
+  "linesOfCode" : 13,
+  "unitsCount" : 0,
+  "unitsMcCabeIndexSum" : 0,
+  "linesOfCodeInUnits" : 0
+} ]

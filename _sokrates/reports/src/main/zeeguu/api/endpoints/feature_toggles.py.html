@@ -1,0 +1,56 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/feature_toggles.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/feature_toggles.py (<b>17</b> lines of code) (<a href="feature_toggles.py">raw</a>):</h3>
+<div id="editor">import flask
+
+from zeeguu.api.endpoints import api
+from zeeguu.api.utils import cross_domain, requires_session
+from zeeguu.core.model import User
+from zeeguu.core.user_feature_toggles import (
+    features_for_user,
+    is_feature_enabled_for_user,
+)
+
+
+@api.route(&quot;/is_feature_enabled/&lt;feature_name&gt;&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def is_feature_enabled(feature_name):
+    &quot;&quot;&quot;
+    e.g.
+    /is_feature_enabled/ems_teacher_dashboard
+
+    will return YES or NO
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    if is_feature_enabled_for_user(feature_name, user):
+        return &quot;YES&quot;
+
+    return &quot;NO&quot;
+
+
+# Re-export for backward compatibility
+__all__ = [&quot;features_for_user&quot;, &quot;is_feature_enabled_for_user&quot;]
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

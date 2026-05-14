@@ -1,0 +1,337 @@
+<html>
+<head>
+    <title>tools/analyze_classroom_recommendations.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/analyze_classroom_recommendations.py (<b>230</b> lines of code) (<a href="analyze_classroom_recommendations.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python
+&quot;&quot;&quot;
+Test script for classroom/cohort recommendations for a given user.
+
+This script tests the recommendation system for users who are part of a classroom (cohort).
+It shows what articles are recommended based on:
+- User's language preferences
+- User's difficulty level
+- Cohort's assigned articles
+- User's subscribed topics
+- User's search preferences
+&quot;&quot;&quot;
+
+import argparse
+import os
+import sys
+
+# Add parent directory to path to import zeeguu modules
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), &quot;../..&quot;))
+
+from zeeguu.core.model import User, Cohort, CohortArticleMap, UserCohortMap
+from zeeguu.core.content_recommender.elastic_recommender import (
+    article_recommendations_for_user,
+    video_recommendations_for_user,
+    _prepare_user_constraints,
+)
+from zeeguu.api.app import create_app
+
+
+def print_separator(title=&quot;&quot;):
+    &quot;&quot;&quot;Print a visual separator with optional title.&quot;&quot;&quot;
+    if title:
+        print(f&quot;\n{'='*60}&quot;)
+        print(f&quot;  {title}&quot;)
+        print(&quot;=&quot; * 60)
+    else:
+        print(&quot;-&quot; * 60)
+
+
+def get_user_cohorts(user):
+    &quot;&quot;&quot;Get all cohorts a user belongs to.&quot;&quot;&quot;
+    cohorts = []
+
+    # Check UserCohortMap
+    user_cohort_maps = UserCohortMap.query.filter_by(user_id=user.id).all()
+    for ucm in user_cohort_maps:
+        cohorts.append(ucm.cohort)
+
+    # Also check by invitation code (backwards compatibility)
+    if user.invitation_code:
+        cohort_by_code = Cohort.query.filter_by(inv_code=user.invitation_code).first()
+        if cohort_by_code and cohort_by_code not in cohorts:
+            cohorts.append(cohort_by_code)
+
+    return cohorts
+
+
+def analyze_user_recommendations(user_email, show_details=True, count=20):
+    &quot;&quot;&quot;Test recommendations for a specific user.&quot;&quot;&quot;
+
+    app = create_app()
+    app.app_context().push()
+
+    try:
+        user = User.find(user_email)
+    except Exception as e:
+        print(f&quot;Error: Could not find user with email '{user_email}'&quot;)
+        return
+
+    print_separator(f&quot;Testing Recommendations for User: {user.name}&quot;)
+    print(f&quot;Email: {user.email}&quot;)
+    print(f&quot;ID: {user.id}&quot;)
+    print(
+        f&quot;Learned Language: {user.learned_language.name if user.learned_language else 'None'} (ID: {user.learned_language_id})&quot;
+    )
+
+    # Show user's cohorts
+    print_separator(&quot;User's Cohorts/Classrooms&quot;)
+    cohorts = get_user_cohorts(user)
+    if cohorts:
+        for cohort in cohorts:
+            print(f&quot;\n  Cohort: {cohort.name} (ID: {cohort.id})&quot;)
+            print(f&quot;    Invitation Code: {cohort.inv_code}&quot;)
+            print(
+                f&quot;    Language: {cohort.language.name if cohort.language else 'None'} (ID: {cohort.language_id})&quot;
+            )
+            print(
+                f&quot;    Students: {cohort.get_current_student_count()}/{cohort.max_students}&quot;
+            )
+            
+            # Check language match
+            if cohort.language_id != user.learned_language_id:
+                print(f&quot;    ⚠️  WARNING: Cohort language ({cohort.language_id}) doesn't match user's learned language ({user.learned_language_id})!&quot;)
+                print(f&quot;       Articles from this cohort won't appear in the Classroom tab&quot;)
+
+            # Show cohort's assigned articles
+            cohort_articles = CohortArticleMap.get_articles_info_for_cohort(cohort)
+            if cohort_articles:
+                print(f&quot;    Assigned Articles: {len(cohort_articles)} articles&quot;)
+                if show_details:
+                    for i, article_info in enumerate(cohort_articles[:5], 1):
+                        title = article_info.get(&quot;title&quot;, &quot;Untitled&quot;)
+                        print(f&quot;      {i}. {title[:60]}...&quot;)
+                    if len(cohort_articles) &gt; 5:
+                        print(f&quot;      ... and {len(cohort_articles) - 5} more&quot;)
+    else:
+        print(&quot;  User is not part of any cohort&quot;)
+
+    # Show user preferences
+    print_separator(&quot;User Preferences &amp; Constraints&quot;)
+
+    # Get user constraints for recommendations
+    (
+        language,
+        upper_bounds,
+        lower_bounds,
+        topics_to_include,
+        topics_to_exclude,
+        wanted_searches,
+        unwanted_searches,
+        ignored_sources,
+    ) = _prepare_user_constraints(user)
+
+    print(f&quot;  Language: {language.name if language else 'Not set'}&quot;)
+    print(f&quot;  Difficulty Level: {lower_bounds/10:.1f} - {upper_bounds/10:.1f}&quot;)
+
+    # Topics
+    print(f&quot;\n  Subscribed Topics:&quot;)
+    if topics_to_include:
+        for topic in topics_to_include.split(&quot;,&quot;):
+            if topic:
+                print(f&quot;    + {topic}&quot;)
+    else:
+        print(&quot;    (none)&quot;)
+
+    print(f&quot;\n  Excluded Topics:&quot;)
+    if topics_to_exclude:
+        for topic in topics_to_exclude.split(&quot;,&quot;):
+            if topic:
+                print(f&quot;    - {topic}&quot;)
+    else:
+        print(&quot;    (none)&quot;)
+
+    # Searches
+    print(f&quot;\n  Saved Searches:&quot;)
+    if wanted_searches:
+        for search in wanted_searches.split():
+            print(f&quot;    + {search}&quot;)
+    else:
+        print(&quot;    (none)&quot;)
+
+    print(f&quot;\n  Excluded Searches:&quot;)
+    if unwanted_searches:
+        for search in unwanted_searches.split():
+            print(f&quot;    - {search}&quot;)
+    else:
+        print(&quot;    (none)&quot;)
+
+    # Ignored sources
+    if ignored_sources:
+        print(f&quot;\n  Ignored Sources: {', '.join(ignored_sources)}&quot;)
+    
+    # Test cohort articles endpoint
+    print_separator(&quot;Cohort Articles (Classroom Tab)&quot;)
+    
+    # First show what the frontend sees
+    print(&quot;Frontend checks:&quot;)
+    print(f&quot;  - User has {len(cohorts)} cohort(s)&quot;)
+    print(f&quot;  - studentJoinedCohort would be: {len(cohorts) &gt; 0}&quot;)
+    
+    try:
+        cohort_articles = user.cohort_articles_for_user()
+        if cohort_articles:
+            print(f&quot;\nFound {len(cohort_articles)} articles in Classroom tab:\n&quot;)
+            for i, article_info in enumerate(cohort_articles[:5], 1):
+                title = article_info.get(&quot;title&quot;, &quot;Untitled&quot;)
+                print(f&quot;{i:2}. {title[:70]}...&quot;)
+                if show_details:
+                    difficulty = article_info.get(&quot;metrics&quot;, {}).get(&quot;difficulty&quot;, &quot;Unknown&quot;)
+                    print(f&quot;     Difficulty: {difficulty}&quot;)
+            if len(cohort_articles) &gt; 5:
+                print(f&quot;\n     ... and {len(cohort_articles) - 5} more&quot;)
+        else:
+            print(&quot;\n⚠️  No articles found in Classroom tab!&quot;)
+            print(&quot;\nDiagnosis:&quot;)
+            
+            # Check each cohort
+            user_language_code = user.learned_language.code if user.learned_language else None
+            for cohort in cohorts:
+                cohort_articles_raw = CohortArticleMap.get_articles_info_for_cohort(cohort)
+                print(f&quot;\n  Cohort: {cohort.name}&quot;)
+                print(f&quot;    - Has {len(cohort_articles_raw)} assigned articles&quot;)
+                print(f&quot;    - User learned language: {user_language_code}&quot;)
+                
+                # Check article languages
+                article_languages = {}
+                matching_articles = 0
+                for article_info in cohort_articles_raw:
+                    article_lang = article_info.get(&quot;language&quot;, &quot;unknown&quot;)
+                    article_languages[article_lang] = article_languages.get(article_lang, 0) + 1
+                    if article_lang == user_language_code:
+                        matching_articles += 1
+                
+                print(f&quot;    - Article languages: {dict(article_languages)}&quot;)
+                print(f&quot;    - Articles matching user language: {matching_articles}&quot;)
+                
+                if matching_articles == 0:
+                    print(f&quot;    ❌ No articles in user's language ({user_language_code})!&quot;)
+                else:
+                    print(f&quot;    ✅ {matching_articles} articles match user's language&quot;)
+            
+            print(f&quot;\nTo fix: Add articles in user's language ({user_language_code}) to the cohort(s).&quot;)
+    except Exception as e:
+        print(f&quot;Error getting cohort articles: {e}&quot;)
+        import traceback
+        traceback.print_exc()
+
+    # Get article recommendations
+    print_separator(&quot;Article Recommendations&quot;)
+    try:
+        articles = article_recommendations_for_user(user, count=count)
+
+        if articles:
+            print(f&quot;Found {len(articles)} recommended articles:\n&quot;)
+            for i, article in enumerate(articles, 1):
+                print(f&quot;{i:2}. {article.title[:70]}...&quot;)
+                if show_details:
+                    print(
+                        f&quot;     Published: {article.published_time.strftime('%Y-%m-%d %H:%M') if article.published_time else 'Unknown'}&quot;
+                    )
+                    print(
+                        f&quot;     Language: {article.language.name if article.language else 'Unknown'}&quot;
+                    )
+                    if hasattr(article, &quot;fk_difficulty&quot;):
+                        print(f&quot;     Difficulty: {article.fk_difficulty}&quot;)
+                    topics = article.topics if hasattr(article, &quot;topics&quot;) else []
+                    if topics:
+                        topic_names = (
+                            [t.title for t in topics]
+                            if hasattr(topics[0], &quot;title&quot;)
+                            else []
+                        )
+                        if topic_names:
+                            print(f&quot;     Topics: {', '.join(topic_names[:3])}&quot;)
+
+                    # Check if article is from cohort
+                    for cohort in cohorts:
+                        if CohortArticleMap.find(cohort.id, article.id):
+                            print(f&quot;     ⚡ From Cohort: {cohort.name}&quot;)
+                    print()
+        else:
+            print(&quot;No article recommendations found for this user.&quot;)
+    except Exception as e:
+        print(f&quot;Error getting article recommendations: {e}&quot;)
+        import traceback
+
+        traceback.print_exc()
+
+    # Get video recommendations (if available)
+    print_separator(&quot;Video Recommendations&quot;)
+    try:
+        videos = video_recommendations_for_user(user, count=10)
+
+        if videos:
+            print(f&quot;Found {len(videos)} recommended videos:\n&quot;)
+            for i, video in enumerate(videos, 1):
+                print(f&quot;{i:2}. {video.title[:70]}...&quot;)
+                if show_details:
+                    print(
+                        f&quot;     Duration: {video.duration if hasattr(video, 'duration') else 'Unknown'}&quot;
+                    )
+                    print(
+                        f&quot;     Language: {video.language.name if video.language else 'Unknown'}&quot;
+                    )
+                    print()
+        else:
+            print(&quot;No video recommendations found for this user.&quot;)
+    except Exception as e:
+        print(f&quot;Error getting video recommendations: {e}&quot;)
+
+    print_separator()
+    print(&quot;Test completed successfully!&quot;)
+
+
+def main():
+    &quot;&quot;&quot;Main function to run the test.&quot;&quot;&quot;
+    parser = argparse.ArgumentParser(
+        description=&quot;Test classroom recommendations for a Zeeguu user&quot;
+    )
+    parser.add_argument(&quot;email&quot;, help=&quot;Email address of the user to test&quot;)
+    parser.add_argument(
+        &quot;--count&quot;,
+        type=int,
+        default=20,
+        help=&quot;Number of recommendations to retrieve (default: 20)&quot;,
+    )
+    parser.add_argument(
+        &quot;--no-details&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Show only basic information without details&quot;,
+    )
+
+    args = parser.parse_args()
+
+    analyze_user_recommendations(
+        args.email, show_details=not args.no_details, count=args.count
+    )
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

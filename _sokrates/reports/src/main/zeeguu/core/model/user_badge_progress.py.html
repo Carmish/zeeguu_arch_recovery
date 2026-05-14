@@ -1,0 +1,126 @@
+<html>
+<head>
+    <title>zeeguu/core/model/user_badge_progress.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/user_badge_progress.py (<b>70</b> lines of code) (<a href="user_badge_progress.py">raw</a>):</h3>
+<div id="editor">from zeeguu.core.model.db import db
+
+
+class UserBadgeProgress(db.Model):
+    &quot;&quot;&quot;
+        Tracks a user's current value for a specific activity type.
+        Used to determine badge threshold eligibility.
+    &quot;&quot;&quot;
+    __tablename__ = &quot;user_badge_progress&quot;
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(&quot;user.id&quot;), nullable=False)
+    badge_category_id = db.Column(db.Integer, db.ForeignKey(&quot;badge_category.id&quot;), nullable=False)
+    value = db.Column(db.Integer, nullable=False, default=0)
+
+    __table_args__ = (
+        db.UniqueConstraint(&quot;user_id&quot;, &quot;badge_category_id&quot;),
+    )
+
+    badge_category = db.relationship(&quot;BadgeCategory&quot;)
+    user = db.relationship(&quot;User&quot;)
+
+    def __init__(
+            self,
+            user_id,
+            badge_category_id,
+            value=0
+    ):
+        self.user_id = user_id
+        self.badge_category_id = badge_category_id
+        self.value = value
+
+    def __repr__(self):
+        return f&quot;&lt;UserBadgeProgress User:{self.user_id} BadgeCategory:{self.badge_category_id} Value:{self.value}&gt;&quot;
+
+    @classmethod
+    def find_all(cls, user_id: int) -&gt; list[&quot;UserBadgeProgress&quot;]:
+        &quot;&quot;&quot;Return all metric records for a user.&quot;&quot;&quot;
+        return cls.query.filter_by(user_id=user_id).all()
+
+    @classmethod
+    def find(cls, user_id: int, badge_category_ids: list[int]) -&gt; list[&quot;UserBadgeProgress&quot;]:
+        &quot;&quot;&quot;Return metric records for the given activity type IDs.&quot;&quot;&quot;
+        if not badge_category_ids:
+            return []
+        return cls.query.filter(cls.user_id == user_id, cls.badge_category_id.in_(badge_category_ids)).all()
+
+    @classmethod
+    def _get_or_create(
+            cls,
+            session,
+            user_id: int,
+            badge_category_id: int,
+    ) -&gt; &quot;UserBadgeProgress&quot;:
+        &quot;&quot;&quot;
+        Internal helper to fetch existing metric or create a new one (value=0).
+        Does not commit.
+        &quot;&quot;&quot;
+        record = cls.query.filter_by(
+            user_id=user_id,
+            badge_category_id=badge_category_id
+        ).one_or_none()
+
+        if not record:
+            record = cls(user_id=user_id, badge_category_id=badge_category_id, value=0)
+            session.add(record)
+
+        return record
+
+    @classmethod
+    def create_or_increment(
+            cls,
+            session,
+            user_id: int,
+            badge_category_id: int,
+            increment: int
+    ) -&gt; &quot;UserBadgeProgress&quot;:
+        &quot;&quot;&quot;
+        Increment value by the given amount.
+        &quot;&quot;&quot;
+        record = cls._get_or_create(session, user_id, badge_category_id)
+        record.value += increment
+        session.add(record)
+        return record
+
+    @classmethod
+    def create_or_update(
+            cls,
+            session,
+            user_id: int,
+            badge_category_id: int,
+            value: int
+    ) -&gt; &quot;UserBadgeProgress&quot;:
+        &quot;&quot;&quot;
+        Overwrite value with a new value.
+        &quot;&quot;&quot;
+        record = cls._get_or_create(session, user_id, badge_category_id)
+        record.value = value
+        session.add(record)
+        return record
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

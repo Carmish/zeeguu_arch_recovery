@@ -1,0 +1,93 @@
+<html>
+<head>
+    <title>tools/users_recently_active.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/users_recently_active.py (<b>41</b> lines of code) (<a href="users_recently_active.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python
+
+&quot;&quot;&quot;
+
+   Script that lists recent users
+
+&quot;&quot;&quot;
+
+DAYS_SINCE_ACTIVE = 30
+SHOW_TEACHER_NAMES = True
+SHOW_STUDENT_NAMES = True
+
+from zeeguu.api.app import create_app
+
+app = create_app()
+app.app_context().push()
+
+from collections import defaultdict
+
+cohort_student_map = defaultdict(list)
+
+from zeeguu.core.model import User
+
+for user_id in User.all_recent_user_ids(DAYS_SINCE_ACTIVE):
+    user = User.find_by_id(user_id)
+    # print(f&quot;{user.name} ({user.email})&quot;)
+    for ucmap in user.cohorts:
+        # print(f&quot;{ucmap.cohort.name}&quot;)
+        # print(f&quot;{teacher.name}&quot;)
+        cohort_student_map[ucmap.cohort].append(user.name)
+
+    # print(&quot;&quot;)
+
+ordered_cohorts = sorted(
+    cohort_student_map.keys(), key=lambda x: len(cohort_student_map[x]), reverse=True
+)
+
+print(f&quot;Users active in the last {DAYS_SINCE_ACTIVE} days&quot;)
+total_users = 0
+for cohort in ordered_cohorts:
+    values = cohort_student_map[cohort]
+    print(&quot;&quot;)
+    print(f&quot;========================================================&quot;)
+    print(
+        f&quot;{cohort.name} ({cohort.id}) &quot;
+        f&quot;\nLang: {cohort.language.name if cohort.language else ''} &quot;
+        f&quot;\nCode: {cohort.inv_code} &quot;
+    )
+
+    if SHOW_TEACHER_NAMES:
+        print(&quot;\nTeachers: &quot;)
+    for teacher in cohort.get_teachers():
+        if SHOW_TEACHER_NAMES:
+            print(f&quot;  -  {teacher.name} ({teacher.email})&quot;)
+    if SHOW_TEACHER_NAMES:
+        print(&quot;&quot;)
+
+    print(f&quot;Active Students: {len(values)}&quot;)
+
+    for v in values:
+        total_users += 1
+        if SHOW_STUDENT_NAMES:
+            print(&quot;  - &quot;, v)
+
+    print(&quot; &quot;)
+
+print(&quot;Total users: &quot;, total_users)
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

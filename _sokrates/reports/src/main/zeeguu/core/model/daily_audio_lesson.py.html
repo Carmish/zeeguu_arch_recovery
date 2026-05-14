@@ -1,0 +1,212 @@
+<html>
+<head>
+    <title>zeeguu/core/model/daily_audio_lesson.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/daily_audio_lesson.py (<b>127</b> lines of code) (<a href="daily_audio_lesson.py">raw</a>):</h3>
+<div id="editor">from datetime import datetime
+from sqlalchemy import Column, Integer, JSON, ForeignKey, TIMESTAMP
+from sqlalchemy.orm import relationship
+
+from zeeguu.core.model.db import db
+from zeeguu.core.model.user import User
+from zeeguu.core.model.language import Language
+
+
+class DailyAudioLesson(db.Model):
+    &quot;&quot;&quot;
+    Daily audio lesson that combines multiple meaning lessons for a user.
+    MP3 files are stored on disk with filename pattern: {id}.mp3
+    Tracks user interaction including completion status and pause/resume functionality.
+    &quot;&quot;&quot;
+
+    __tablename__ = &quot;daily_audio_lesson&quot;
+    __table_args__ = {&quot;mysql_collate&quot;: &quot;utf8mb4_unicode_ci&quot;}
+
+    id = Column(Integer, primary_key=True)
+
+    user_id = Column(Integer, ForeignKey(User.id, ondelete=&quot;CASCADE&quot;), nullable=False)
+    user = relationship(User, backref=&quot;daily_audio_lessons&quot;)
+
+    language_id = Column(Integer, ForeignKey(Language.id), nullable=True)
+    language = relationship(Language)
+
+    voice_config = Column(JSON)
+    duration_seconds = Column(Integer)
+
+    created_at = Column(TIMESTAMP, default=datetime.utcnow)
+    created_by = Column(db.String(255), nullable=False)
+
+    # User interaction tracking
+    recommended_at = Column(TIMESTAMP, default=datetime.utcnow)
+    completed_at = Column(TIMESTAMP)
+    listened_count = Column(Integer, default=0)
+
+    # Pause/resume tracking
+    last_paused_at = Column(TIMESTAMP)
+    pause_position_seconds = Column(Integer, default=0)
+
+    raw_suggestion = Column(db.String(100), nullable=True)
+    canonical_suggestion = Column(db.String(100), nullable=True)
+    lesson_type = Column(db.String(20), nullable=True)
+
+    # Relationship to segments (individual meaning lessons)
+    segments = relationship(
+        &quot;DailyAudioLessonSegment&quot;,
+        back_populates=&quot;daily_lesson&quot;,
+        order_by=&quot;DailyAudioLessonSegment.sequence_order&quot;,
+        cascade=&quot;all, delete-orphan&quot;,
+    )
+
+    def __init__(self, user, created_by, voice_config=None, duration_seconds=None, language=None, raw_suggestion=None, canonical_suggestion=None, lesson_type=&quot;three_words_lesson&quot;):
+        self.user = user
+        self.created_by = created_by
+        self.voice_config = voice_config
+        self.duration_seconds = duration_seconds
+        self.language = language or user.learned_language
+        self.raw_suggestion = raw_suggestion
+        self.canonical_suggestion = canonical_suggestion
+        self.lesson_type = lesson_type
+        self.listened_count = 0
+        self.pause_position_seconds = 0
+
+    def __repr__(self):
+        return f&quot;&lt;DailyAudioLesson {self.id} for user {self.user_id}&gt;&quot;
+
+    @property
+    def audio_file_path(self):
+        &quot;&quot;&quot;Returns the expected path for the audio file based on lesson ID&quot;&quot;&quot;
+        return f&quot;/audio/daily_lessons/{self.id}.mp3&quot;
+
+    def add_intro_segment(self, daily_audio_lesson_wrapper, sequence_order=1):
+        &quot;&quot;&quot;Add intro segment to this daily lesson&quot;&quot;&quot;
+        from zeeguu.core.model.daily_audio_lesson_segment import DailyAudioLessonSegment
+
+        segment = DailyAudioLessonSegment(
+            daily_lesson=self,
+            segment_type=&quot;intro&quot;,
+            daily_audio_lesson_wrapper=daily_audio_lesson_wrapper,
+            sequence_order=sequence_order,
+        )
+        self.segments.append(segment)
+        return segment
+
+    def add_meaning_segment(self, audio_lesson_meaning, sequence_order):
+        &quot;&quot;&quot;Add a meaning lesson segment to this daily lesson&quot;&quot;&quot;
+        from zeeguu.core.model.daily_audio_lesson_segment import DailyAudioLessonSegment
+        from zeeguu.core.model import db
+
+        segment = DailyAudioLessonSegment(
+            daily_lesson=self,
+            segment_type=&quot;meaning_lesson&quot;,
+            audio_lesson_meaning=audio_lesson_meaning,
+            sequence_order=sequence_order,
+        )
+        # Only add to session - the relationship will be handled automatically
+        db.session.add(segment)
+        return segment
+
+    def add_dialogue_segment(self, audio_lesson_dialogue, sequence_order):
+        &quot;&quot;&quot;Add a dialogue lesson segment to this daily lesson&quot;&quot;&quot;
+        from zeeguu.core.model.daily_audio_lesson_segment import DailyAudioLessonSegment
+        from zeeguu.core.model import db
+
+        segment = DailyAudioLessonSegment(
+            daily_lesson=self,
+            segment_type=&quot;dialogue_lesson&quot;,
+            audio_lesson_dialogue=audio_lesson_dialogue,
+            sequence_order=sequence_order,
+        )
+        db.session.add(segment)
+        return segment
+
+    def add_outro_segment(self, daily_audio_lesson_wrapper, sequence_order):
+        &quot;&quot;&quot;Add outro segment to this daily lesson&quot;&quot;&quot;
+        from zeeguu.core.model.daily_audio_lesson_segment import DailyAudioLessonSegment
+
+        segment = DailyAudioLessonSegment(
+            daily_lesson=self,
+            segment_type=&quot;outro&quot;,
+            daily_audio_lesson_wrapper=daily_audio_lesson_wrapper,
+            sequence_order=sequence_order,
+        )
+        self.segments.append(segment)
+        return segment
+
+    @property
+    def meaning_count(self):
+        &quot;&quot;&quot;Number of meanings included in this daily lesson&quot;&quot;&quot;
+        return sum(1 for s in self.segments if s.segment_type == &quot;meaning_lesson&quot;)
+
+    def mark_completed(self):
+        &quot;&quot;&quot;Mark this lesson as completed&quot;&quot;&quot;
+        self.completed_at = datetime.utcnow()
+        # Only count as a listen if it hasn't been counted yet
+        if self.listened_count == 0:
+            self.listened_count = 1
+        self.pause_position_seconds = 0
+
+    def pause_at(self, position_seconds):
+        &quot;&quot;&quot;Record pause position for later resume&quot;&quot;&quot;
+        self.last_paused_at = datetime.now()
+        # Ensure pause position doesn't exceed duration (prevents MediaSession API errors)
+        if self.duration_seconds and position_seconds &gt; self.duration_seconds:
+            self.pause_position_seconds = self.duration_seconds
+        else:
+            self.pause_position_seconds = position_seconds
+
+    def resume(self):
+        &quot;&quot;&quot;Clear pause state when resuming (don't increment listen count)&quot;&quot;&quot;
+        # Only clear the pause state, don't increment listened_count
+        # The listen count should only increment on initial play, not on resume
+        pass
+
+    @property
+    def is_completed(self):
+        &quot;&quot;&quot;Check if lesson has been completed&quot;&quot;&quot;
+        return self.completed_at is not None
+
+    @property
+    def is_paused(self):
+        &quot;&quot;&quot;Check if lesson is currently paused&quot;&quot;&quot;
+        return self.pause_position_seconds &gt; 0 and not self.is_completed
+
+    @classmethod
+    def find_canonical_for_raw_suggestion(cls, user, raw_suggestion):
+        &quot;&quot;&quot;Find the canonical form previously used for this raw suggestion by this user.&quot;&quot;&quot;
+        result = (
+            cls.query.filter_by(user_id=user.id, raw_suggestion=raw_suggestion)
+            .filter(cls.canonical_suggestion.isnot(None))
+            .order_by(cls.id.desc())
+            .first()
+        )
+        return result.canonical_suggestion if result else None
+
+    @classmethod
+    def find_latest_for_user(cls, user, include_completed=False):
+        &quot;&quot;&quot;Find the most recent audio lesson for a user&quot;&quot;&quot;
+        query = cls.query.filter_by(user=user)
+        if not include_completed:
+            query = query.filter(cls.completed_at.is_(None))
+        return query.order_by(cls.recommended_at.desc()).first()
+
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

@@ -1,0 +1,218 @@
+<html>
+<head>
+    <title>def generate_html_page()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def generate_html_page()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/operations/report_generator/generate_report.py [0:0]</i></p>
+<ul>
+    <li><b>96</b> lines of code</li>
+    <li><b>9</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def generate_html_page():
+    data_extractor = DataExtractor(db_connection, DAYS_FOR_REPORT)
+
+    feed_df = data_extractor.get_feed_df()
+    article_df = data_extractor.get_article_df(feed_df)
+    article_topics_df = data_extractor.get_article_topics_df(feed_df)
+    language_df = data_extractor.get_language_df()
+    bookmark_df = data_extractor.get_bookmark_df()
+    data_extractor.add_stats_to_feed(feed_df, article_df)
+    user_reading_time_df = data_extractor.get_user_reading_activity(
+        language_df, feed_df
+    )
+    user_exercise_time_df = data_extractor.get_user_exercise_activity()
+    combined_user_activity_df = (
+        data_extractor.get_combined_user_reading_exercise_activity(
+            user_exercise_time_df, user_reading_time_df
+        )
+    )
+    topic_reading_time_df = data_extractor.get_topic_reading_time()
+    total_unique_articles_opened_by_users = len(
+        article_df[article_df.id.isin(user_reading_time_df.id)]
+    )
+    total_unique_articles_opened_by_users = (
+        user_reading_time_df.Language.value_counts().reset_index()[&quot;count&quot;].sum()
+    )
+    exercise_activity_df = data_extractor.get_exercise_type_activity()
+    top_subscribed_searches = data_extractor.get_top_search_subscriptions()
+    top_filtered_searches = data_extractor.get_top_search_filters()
+    newly_added_search_subscriptions = data_extractor.get_added_search_subscriptions()
+    pd_url_keywords = data_extractor.get_url_keyword_counts()
+    pd_feed_innactivity_time = data_extractor.get_days_since_last_crawl()
+    crawl_report = CrawlReport()
+    crawl_report.load_crawl_report_data(DAYS_FOR_REPORT)
+    total_days_from_crawl_report = crawl_report.get_days_from_crawl_report_date()
+    print(&quot;############ Report date: &quot;, crawl_report.crawl_report_date)
+    total_removed_sents = crawl_report.get_total_removed_sents_counts()
+    if DAYS_FOR_REPORT &lt;= 7:
+        pd_new_repeated_sents = identify_repeating_patterns(
+            article_df, set(total_removed_sents.keys())
+        )
+    warning_crawl_range = (
+        &quot;&quot;
+        if total_days_from_crawl_report == DAYS_FOR_REPORT
+        else f&quot;&lt;b&gt;WARNING!&lt;/b&gt; This date only contains values from the last '{total_days_from_crawl_report}' day(s).&quot;
+    )
+    ACTIVE_USER_ACTIVITY_TIME_MIN = 1
+    articles_with_topic_count = len(article_topics_df.id.unique())
+    active_users = combined_user_activity_df[
+        (
+            combined_user_activity_df[&quot;total_reading_time&quot;]
+            &gt; ACTIVE_USER_ACTIVITY_TIME_MIN
+        )
+        | (
+            combined_user_activity_df[&quot;total_exercise_time&quot;]
+            &gt; ACTIVE_USER_ACTIVITY_TIME_MIN
+        )
+    ]
+    total_active_users = len(active_users)
+    lang_report = &quot;&quot;
+    for lang in article_df[&quot;Language&quot;].unique():
+        lang_report += f&quot;&quot;&quot;
+          &lt;h2 id='{lang}'&gt;{lang}&lt;/h2&gt;
+          &lt;h3&gt;Articles Downloaded&lt;/h3&gt;
+          &lt;img src=&quot;{generate_topic_by_feed_plot(article_topics_df, lang)}&quot; /&gt;
+          &lt;img src=&quot;{generate_feed_count_plots(feed_df, lang)}&quot; /&gt;
+          &lt;h3&gt;User Activity&lt;/h3&gt;
+          &quot;&quot;&quot;
+        if lang in active_users[&quot;Language&quot;].values:
+            lang_report += f&quot;&quot;&quot;
+            &lt;p&gt;&lt;b&gt;Total Active users&lt;/b&gt;: {len(active_users[active_users[&quot;Language&quot;] == lang])}&lt;/p&gt;
+            &lt;img src=&quot;{generate_topic_reading_time(topic_reading_time_df, lang)}&quot; /&gt;
+            &lt;img src=&quot;{generate_user_reading_time(user_reading_time_df, lang)}&quot; /&gt;
+            &lt;img src=&quot;{generate_unique_articles_read_plot(user_reading_time_df, lang)}&quot; /&gt;
+            &lt;img src=&quot;{generate_exercise_activity(exercise_activity_df, lang)}&quot; /&gt;
+            &lt;hr&gt;
+            &quot;&quot;&quot;
+        else:
+            lang_report += &quot;&quot;&quot;
+            &lt;p&gt;&lt;b&gt;No active users in this language&lt;/b&gt;&lt;/p&gt;
+            &lt;hr&gt;
+            &quot;&quot;&quot;
+    lang_links = &quot;&lt;ul&gt;&quot;
+
+    for lang in article_df[&quot;Language&quot;].unique():
+        lang_links += f&quot;&quot;&quot;
+            &lt;li&gt;&lt;a href=&quot;#{lang}&quot;&gt;{lang}&lt;/a&gt; &lt;/li&gt;
+          &quot;&quot;&quot;
+    lang_links += &quot;&lt;/ul&gt;&quot;
+    title = (
+        f&quot;&quot;&quot;Week Report Nr {CURRENT_WEEK_N}&quot;&quot;&quot;
+        if DAYS_FOR_REPORT == 7
+        else f&quot;Last {DAYS_FOR_REPORT} days Report&quot;
+    )
+    result = f&quot;&quot;&quot;
+        &lt;head&gt;
+            &lt;meta charset=&quot;utf-8&quot;&gt;
+            &lt;link
+                rel=&quot;stylesheet&quot;
+                href=&quot;https://cdn.jsdelivr.net/npm/purecss@3.0.0/build/pure-min.css&quot;
+                integrity=&quot;sha384-X38yfunGUhNzHpBaEBsWLO+A0HDYOQi8ufWDkZ0k9e0eXz/tH3II7uKZ9msv++Ls&quot;
+                crossorigin=&quot;anonymous&quot;
+            /&gt;
+        &lt;/head&gt;
+        &lt;body style=&quot;margin-left: 2em&quot;&gt;
+            &lt;h1&gt;{title}&lt;/h1&gt;
+            &lt;p&gt;Generated at: {datetime.datetime.now(tz=datetime.timezone.utc)} UTC&lt;p&gt;
+            &lt;hr /&gt;
+                &lt;p&gt;&lt;b&gt;Total Articles Crawled: &lt;/b&gt; {len(article_df)}&lt;/p&gt;
+                &lt;p&gt;&lt;b&gt;Total Unique Articles Opened: &lt;/b&gt; {total_unique_articles_opened_by_users}
+                &lt;p&gt;&lt;b&gt;New Topic Coverage: &lt;/b&gt; {((articles_with_topic_count / len(article_df)) * 100) if len(article_df) &gt; 0 else 0:.2f}%&lt;/p&gt;
+                &lt;img src=&quot;{generate_topic_coverage_plot(article_df, article_topics_df)}&quot; /&gt;
+                &lt;img src=&quot;{generate_total_article_per_language(article_df)}&quot; /&gt;
+                &lt;h2&gt;Possible Innactive feeds: &lt;/h2&gt;
+                &lt;p&gt;&lt;a href=&quot;#inactive-feeds&quot;&gt;Full table&lt;/a&gt;&lt;p&gt;
+                {generate_html_table(pd_feed_innactivity_time.head(10))}
+                &lt;h2&gt;Articles Rejected:&lt;/h2&gt;
+                &lt;p&gt;{warning_crawl_range}&lt;/p&gt;
+                {get_total_reject_article_reason_table(crawl_report.get_total_non_quality_counts())}
+                &lt;h2&gt;Word Count:&lt;/h2&gt;
+                {generate_html_table(article_df.groupby(&quot;Language&quot;).word_count.describe().reset_index())}
+                &lt;h2&gt;FK Difficulty:&lt;/h2&gt;
+                {generate_html_table(article_df.groupby(&quot;Language&quot;).fk_difficulty.describe().reset_index())}
+                &lt;h2&gt;Top Subscribed Searches:&lt;/h2&gt;
+            &quot;&quot;&quot;
+    if len(newly_added_search_subscriptions) &gt; 0:
+        result += f&quot;&quot;&quot;
+                &lt;p&gt;&lt;b&gt;Newly added searches:&lt;/b&gt; {&quot;'&quot; + &quot;', '&quot;.join(newly_added_search_subscriptions) + &quot;'&quot;}&lt;/p&gt;
+                &quot;&quot;&quot;
+    result += f&quot;&quot;&quot;
+        {generate_html_table(top_subscribed_searches.head(10))}
+        &lt;h2&gt;Top Filtered Searches:&lt;/h2&gt;
+        {generate_html_table(top_filtered_searches.head(10))}
+        &lt;h2&gt;Activity Report&lt;/h2&gt;
+        &lt;p&gt;&lt;b&gt;Total Active Users:&lt;/b&gt; {total_active_users}&lt;/p&gt;
+        &quot;&quot;&quot;
+    if total_active_users == 0:
+        result += &quot;&quot;&quot;&lt;p&gt;&lt;b&gt;No active users in this period&lt;/b&gt;&lt;/p&gt;
+        &lt;hr&gt;&quot;&quot;&quot;
+    else:
+        result += f&quot;&quot;&quot;
+        {generate_active_users_table(combined_user_activity_df, bookmark_df)}
+        &lt;br&gt;
+        &lt;h3&gt;Top Articles Read:&lt;/h3&gt;
+        {generate_top_opened_articles(user_reading_time_df, data_extractor, feed_df)}
+        &lt;img src=&quot;{generate_unique_articles_read_plot(user_reading_time_df)}&quot; /&gt;
+        &lt;img src=&quot;{generate_exercise_activity(exercise_activity_df)}&quot; /&gt;
+        &lt;img src=&quot;{generate_topic_reading_time(topic_reading_time_df)}&quot; /&gt;
+        &lt;img src=&quot;{generate_bookmarks_by_language_plot(bookmark_df)}&quot; /&gt;
+        &quot;&quot;&quot;
+    result += f&quot;&quot;&quot;
+            &lt;p&gt;&lt;a href=&quot;#removed-articles&quot;&gt;Removed Sents Table&lt;/a&gt;&lt;p&gt;
+            &lt;p&gt;&lt;a href=&quot;#feed-errors&quot;&gt;Feed Errors&lt;/a&gt;&lt;p&gt;
+            &lt;p&gt;&lt;a href=&quot;#new-url-keywords&quot;&gt;New keywords without topics&lt;/a&gt;&lt;p&gt;
+            &lt;h1&gt;Per Language Report:&lt;/h1&gt;
+            {lang_links}
+            &lt;hr /&gt;
+            {lang_report}
+            &lt;hr /&gt;
+            &lt;h1&gt;Newly identified repeating patterns:&lt;/h1&gt;
+            &lt;p&gt;Sentences that occur in more than 10 articles during this weeks crawl, and were not filtered.&lt;p&gt;
+            {get_new_repeating_sents_table(pd_new_repeated_sents) if DAYS_FOR_REPORT &lt;= 7 else &quot;&lt;p&gt;Skipped due to long period.&lt;/p&gt;&quot;}
+            &lt;h1 id=&quot;removed-articles&quot;&gt;Removed Article Sents:&lt;/h1&gt;
+            &lt;p&gt;{warning_crawl_range}&lt;/p&gt;
+            {get_rejected_sentences_table(total_removed_sents)}
+        &lt;/body&gt;
+    &quot;&quot;&quot;
+
+    feed_errors = crawl_report.get_all_feed_errors()
+    result += f&quot;&quot;&quot;
+            &lt;h1 id=&quot;feed-errors&quot;&gt;Feed Errors:&lt;/h1&gt;
+            &lt;p&gt;Connection timeouts, HTTP errors, and other issues encountered while fetching feeds.&lt;/p&gt;
+            &lt;p&gt;{warning_crawl_range}&lt;/p&gt;
+            {get_feed_errors_table(feed_errors, feed_df)}
+            &lt;br /&gt;
+            &lt;h1 id=&quot;new-url-keywords&quot;&gt;Newly url keywords without topics:&lt;/h1&gt;
+            &lt;p&gt;URL Keywords that occur more than 100 times in articles and are not mapped to a topic. They are language unique.&lt;p&gt;
+            {get_url_keywords_table(pd_url_keywords) if DAYS_FOR_REPORT &lt;= 7 else &quot;&lt;p&gt;Skipped due to long period.&lt;/p&gt;&quot;}
+            &lt;br /&gt;
+            &lt;h1 id=&quot;inactive-feeds&quot;&gt;Feed activity:&lt;/h1&gt;
+            {generate_html_table(pd_feed_innactivity_time)}
+        &lt;/body&gt;
+    &quot;&quot;&quot;
+
+    output_filepath = f&quot;report_zeeguu_{date_str}_d{DAYS_FOR_REPORT}.html&quot;
+    with open(
+        os.path.join(
+            FOLDER_FOR_REPORT_OUTPUT,
+            output_filepath,
+        ),
+        &quot;w&quot;,
+        encoding=&quot;UTF-8&quot;,
+    ) as f:
+        f.write(result)
+
+    print(f&quot;File written to '{output_filepath}'.&quot;)
+    return result
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

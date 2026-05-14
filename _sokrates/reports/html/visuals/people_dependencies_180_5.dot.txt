@@ -1,0 +1,63 @@
+graph G {
+    compound="true"
+    rankdir="TB"
+    bgcolor="white"
+    fontname="Tahoma"
+
+    node [
+        fixedsize="false"
+        fontname="Tahoma"
+        color="white"
+        fillcolor="grey"
+        fontcolor="black"
+        shape="box"
+        style="filled"
+        penwidth="1.0"
+    ]
+    edge [
+        fontname="Arial"
+        color="#00688b"
+        fontcolor="black"
+        fontsize="12"
+        arrowsize="0.5"
+        penwidth="1.0"
+    ]
+
+
+
+
+    "mircea.lungu@gmail.com" -- "gabortodor@gmail.com" [label=" 111 ", penwidth="10", color="#00688bFF"];
+    "mircea.lungu@gmail.com" -- "nicra@itu.dk" [label=" 95 ", penwidth="8", color="#00688bDB"];
+    "kalny.zalan7@gmail.com" -- "mircea.lungu@gmail.com" [label=" 74 ", penwidth="6", color="#00688bB7"];
+    "gabortodor@gmail.com" -- "kalny.zalan7@gmail.com" [label=" 73 ", penwidth="6", color="#00688bB7"];
+    "gabortodor@gmail.com" -- "63254940+gabortodor@users.noreply.github.com" [label=" 60 ", penwidth="5", color="#00688bA5"];
+    "nickras2001@gmail.com" -- "gabortodor@gmail.com" [label=" 60 ", penwidth="5", color="#00688bA5"];
+    "nickras2001@gmail.com" -- "mircea.lungu@gmail.com" [label=" 59 ", penwidth="5", color="#00688bA5"];
+    "63254940+gabortodor@users.noreply.github.com" -- "mircea.lungu@gmail.com" [label=" 58 ", penwidth="5", color="#00688bA5"];
+    "kalny.zalan7@gmail.com" -- "nickras2001@gmail.com" [label=" 55 ", penwidth="4", color="#00688b93"];
+    "nickras2001@gmail.com" -- "63254940+gabortodor@users.noreply.github.com" [label=" 54 ", penwidth="4", color="#00688b93"];
+    "nicra@itu.dk" -- "gabortodor@gmail.com" [label=" 53 ", penwidth="4", color="#00688b93"];
+    "nicra@itu.dk" -- "kalny.zalan7@gmail.com" [label=" 50 ", penwidth="4", color="#00688b93"];
+    "kalny.zalan7@gmail.com" -- "63254940+gabortodor@users.noreply.github.com" [label=" 50 ", penwidth="4", color="#00688b93"];
+    "nicra@itu.dk" -- "nickras2001@gmail.com" [label=" 48 ", penwidth="4", color="#00688b93"];
+    "nicra@itu.dk" -- "63254940+gabortodor@users.noreply.github.com" [label=" 44 ", penwidth="3", color="#00688b82"];
+    "72095082+klnyzzz33@users.noreply.github.com" -- "mircea.lungu@gmail.com" [label=" 34 ", penwidth="3", color="#00688b82"];
+    "gabortodor@gmail.com" -- "72095082+klnyzzz33@users.noreply.github.com" [label=" 33 ", penwidth="2", color="#00688b70"];
+    "gabortodor@gmail.com" -- "98952123+xxpinkmagicxx@users.noreply.github.com" [label=" 30 ", penwidth="2", color="#00688b70"];
+    "kalny.zalan7@gmail.com" -- "72095082+klnyzzz33@users.noreply.github.com" [label=" 30 ", penwidth="2", color="#00688b70"];
+    "72095082+klnyzzz33@users.noreply.github.com" -- "63254940+gabortodor@users.noreply.github.com" [label=" 28 ", penwidth="2", color="#00688b70"];
+    "98952123+xxpinkmagicxx@users.noreply.github.com" -- "63254940+gabortodor@users.noreply.github.com" [label=" 27 ", penwidth="2", color="#00688b70"];
+    "72095082+klnyzzz33@users.noreply.github.com" -- "nickras2001@gmail.com" [label=" 27 ", penwidth="2", color="#00688b70"];
+    "nickras2001@gmail.com" -- "98952123+xxpinkmagicxx@users.noreply.github.com" [label=" 27 ", penwidth="2", color="#00688b70"];
+    "kalny.zalan7@gmail.com" -- "98952123+xxpinkmagicxx@users.noreply.github.com" [label=" 26 ", penwidth="2", color="#00688b70"];
+    "72095082+klnyzzz33@users.noreply.github.com" -- "98952123+xxpinkmagicxx@users.noreply.github.com" [label=" 24 ", penwidth="2", color="#00688b70"];
+    "98952123+xxpinkmagicxx@users.noreply.github.com" -- "mircea.lungu@gmail.com" [label=" 23 ", penwidth="2", color="#00688b70"];
+    "nicra@itu.dk" -- "72095082+klnyzzz33@users.noreply.github.com" [label=" 19 ", penwidth="1", color="#00688b5E"];
+    "nicra@itu.dk" -- "98952123+xxpinkmagicxx@users.noreply.github.com" [label=" 19 ", penwidth="1", color="#00688b5E"];
+    "mircea.lungu@gmail.com" -- "49699333+dependabot[bot]@users.noreply.github.com" [label=" 2 ", penwidth="1", color="#00688b4C"];
+    "kalny.zalan7@gmail.com" -- "49699333+dependabot[bot]@users.noreply.github.com" [label=" 1 ", penwidth="1", color="#00688b4C"];
+    "nicra@itu.dk" -- "49699333+dependabot[bot]@users.noreply.github.com" [label=" 1 ", penwidth="1", color="#00688b4C"];
+    "nickras2001@gmail.com" -- "49699333+dependabot[bot]@users.noreply.github.com" [label=" 1 ", penwidth="1", color="#00688b4C"];
+    "gabortodor@gmail.com" -- "49699333+dependabot[bot]@users.noreply.github.com" [label=" 1 ", penwidth="1", color="#00688b4C"];
+
+}

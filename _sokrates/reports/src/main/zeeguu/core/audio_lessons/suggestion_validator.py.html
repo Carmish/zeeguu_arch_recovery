@@ -1,0 +1,117 @@
+<html>
+<head>
+    <title>zeeguu/core/audio_lessons/suggestion_validator.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/audio_lessons/suggestion_validator.py (<b>36</b> lines of code) (<a href="suggestion_validator.py">raw</a>):</h3>
+<div id="editor">&quot;&quot;&quot;
+Validates and sanitizes user-provided topic/situation suggestions for audio lessons.
+Uses an LLM to classify whether the input is appropriate and to produce a canonical form.
+&quot;&quot;&quot;
+
+import json
+from zeeguu.core.llm_services import get_llm_service
+from zeeguu.logging import log
+
+VALIDATION_PROMPT = &quot;&quot;&quot;You are a content classifier for a language learning app. A user wants to generate a listening lesson about a topic or situation.
+
+The user typed: &quot;{suggestion}&quot;
+The type is: &quot;{lesson_type}&quot;
+The user's native language is: {native_language}
+
+Classify this into one of three categories:
+
+1. &quot;invalid&quot; &mdash; offensive, nonsensical, random characters, too vague (single word with no clear topic), not something two adults could have a conversation about, or requires a child as a speaking character (we only have adult voices). Note: adults talking ABOUT children is fine (e.g. &quot;parent-teacher meeting&quot;), but scenarios where a child would be a speaker are not (e.g. &quot;a child ordering ice cream&quot;).
+
+2. &quot;niche&quot; &mdash; a valid topic but too personal or specific for other learners. It references specific people, dates, or situations unique to the user. Examples: &quot;my sister's wedding next Saturday&quot;, &quot;explaining to my neighbor why my dog barks&quot;, &quot;my thesis defense at university&quot;, &quot;what happened at the Berlin flea market yesterday&quot;. These are fine to generate but shouldn't appear in autocomplete.
+
+3. &quot;general&quot; &mdash; a topic or situation that many language learners would benefit from. Be generous here &mdash; if the user phrases a general topic personally (e.g. &quot;talking to my boss about a raise&quot;), it's still general (canonicalize to &quot;asking for a raise&quot;). Examples: &quot;restaurant&quot;, &quot;doctor visit&quot;, &quot;job interview&quot;, &quot;grocery shopping&quot;, &quot;travel&quot;, &quot;cooking&quot;, &quot;meeting neighbors&quot;, &quot;asking for a raise&quot;, &quot;renting an apartment&quot;, &quot;public transport&quot;.
+
+If valid (niche or general), produce a short canonical form IN {native_language} (lowercase, 2-5 words, no articles at the start). The canonical form must be in {native_language} regardless of what language the user typed in. Examples for English: &quot;At the Restaurant&quot; &rarr; &quot;restaurant&quot;, &quot;going to the doctor's office&quot; &rarr; &quot;doctor visit&quot;. Examples for other languages: &quot;похід до лікаря&quot; &rarr; &quot;візит до лікаря&quot; (Ukrainian), &quot;beim Arzt&quot; &rarr; &quot;arztbesuch&quot; (German).
+
+Reply with ONLY a JSON object, no other text:
+{{&quot;category&quot;: &quot;general&quot;, &quot;canonical&quot;: &quot;the canonical form in {native_language}&quot;}}
+or
+{{&quot;category&quot;: &quot;niche&quot;, &quot;canonical&quot;: &quot;the canonical form in {native_language}&quot;}}
+or
+{{&quot;category&quot;: &quot;invalid&quot;, &quot;reason&quot;: &quot;brief reason in {native_language}&quot;}}
+&quot;&quot;&quot;
+
+
+def validate_suggestion(suggestion, lesson_type, native_language=&quot;English&quot;):
+    &quot;&quot;&quot;
+    Validate and sanitize a user suggestion.
+
+    Args:
+        suggestion: The user's raw input
+        lesson_type: &quot;topic&quot; or &quot;situation&quot;
+        native_language: The user's native language name (canonical form will be in this language)
+
+    Returns:
+        (is_valid, result_dict) where result_dict contains:
+        - If valid: {&quot;canonical&quot;: &quot;...&quot;, &quot;is_general&quot;: True/False}
+        - If invalid: {&quot;reason&quot;: &quot;...&quot;}
+    &quot;&quot;&quot;
+    if not suggestion or not suggestion.strip():
+        return False, {&quot;reason&quot;: &quot;Empty suggestion&quot;}
+
+    suggestion = suggestion.strip()
+
+    # Quick rejections without LLM
+    if len(suggestion) &lt; 2:
+        return False, {&quot;reason&quot;: &quot;Suggestion too short&quot;}
+    if len(suggestion) &gt; 80:
+        return False, {&quot;reason&quot;: &quot;Suggestion too long&quot;}
+
+    try:
+        llm = get_llm_service(&quot;unified&quot;)
+        prompt = VALIDATION_PROMPT.format(
+            suggestion=suggestion,
+            lesson_type=lesson_type or &quot;topic&quot;,
+            native_language=native_language,
+        )
+        response = llm.generate_text(prompt, max_tokens=100, temperature=0.0)
+
+        # Parse the JSON response
+        response = response.strip()
+        # Handle potential markdown code block wrapping
+        if response.startswith(&quot;```&quot;):
+            response = response.split(&quot;\n&quot;, 1)[1].rsplit(&quot;```&quot;, 1)[0].strip()
+
+        result = json.loads(response)
+        category = result.get(&quot;category&quot;, &quot;invalid&quot;)
+
+        if category == &quot;invalid&quot;:
+            reason = result.get(&quot;reason&quot;, &quot;Not suitable for a language lesson&quot;)
+            log(f&quot;[suggestion_validator] '{suggestion}' rejected: {reason}&quot;)
+            return False, {&quot;reason&quot;: reason}
+
+        canonical = result.get(&quot;canonical&quot;, suggestion.lower()).strip()[:80]
+        is_general = category == &quot;general&quot;
+        log(f&quot;[suggestion_validator] '{suggestion}' &rarr; canonical: '{canonical}' (general: {is_general})&quot;)
+        return True, {&quot;canonical&quot;: canonical, &quot;is_general&quot;: is_general}
+
+    except Exception as e:
+        # If validation fails, let it through with basic sanitization
+        log(f&quot;[suggestion_validator] LLM validation failed, allowing with basic sanitization: {e}&quot;)
+        return True, {&quot;canonical&quot;: suggestion.strip().lower()[:80], &quot;is_general&quot;: False}
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

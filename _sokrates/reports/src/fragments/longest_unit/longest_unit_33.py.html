@@ -1,0 +1,140 @@
+<html>
+<head>
+    <title>def generate_audio_lesson_for_meaning()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def generate_audio_lesson_for_meaning()</h3>
+<p style="margin-top: 4px">in <i>tools/precompute_upcoming_meaning_lessons.py [0:0]</i></p>
+<ul>
+    <li><b>84</b> lines of code</li>
+    <li><b>14</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def generate_audio_lesson_for_meaning(user, user_word, cefr_level=&quot;B1&quot;, timeout_seconds=600):
+    &quot;&quot;&quot;
+    Generate an audio lesson for a specific meaning using the shared logic.
+
+    Args:
+        user: The user who owns this meaning
+        user_word: The UserWord object containing the meaning
+        cefr_level: CEFR level for the lesson
+        timeout_seconds: Maximum time to spend generating this lesson (default: 10 minutes)
+
+    Returns:
+        AudioLessonMeaning object or None if generation fails
+    &quot;&quot;&quot;
+    meaning = user_word.meaning
+    origin_language = meaning.origin.language.code
+    translation_language = meaning.translation.language.code
+
+    # Helper function to get display info
+    def get_word_display_info():
+        origin_word = meaning.origin.content
+        try:
+            from wordstats import Word
+
+            word_stats = Word.stats(origin_word, meaning.origin.language.code)
+            rank = word_stats.rank if word_stats else &quot;N/A&quot;
+        except:
+            rank = &quot;N/A&quot;
+
+        # Determine scheduling status
+        from zeeguu.core.word_scheduling.basicSR.basicSR import (
+            BasicSRSchedule,
+            _get_end_of_today,
+        )
+
+        if user_word.is_learned():
+            status = &quot;learned&quot;
+        else:
+            scheduled_today = BasicSRSchedule.query.filter(
+                BasicSRSchedule.user_word_id == user_word.id,
+                BasicSRSchedule.next_practice_time &lt; _get_end_of_today(),
+            ).first()
+            if scheduled_today:
+                status = &quot;scheduled_today&quot;
+            else:
+                scheduled = BasicSRSchedule.query.filter(
+                    BasicSRSchedule.user_word_id == user_word.id
+                ).first()
+                status = &quot;scheduled&quot; if scheduled else &quot;unscheduled&quot;
+        return rank, status
+
+    # Check if audio lesson already exists for this meaning and native language
+    existing_lesson = AudioLessonMeaning.find(
+        meaning=meaning, teacher_language=user.native_language
+    )
+    if existing_lesson:
+        if SHOW_DETAILS:
+            rank, status = get_word_display_info()
+            output(
+                f&quot;        Audio lesson already exists for: {meaning.origin.content} &rarr; {meaning.translation.content} (rank: {rank}, {status})&quot;
+            )
+        return existing_lesson
+
+    if DRY_RUN:
+        rank, status = get_word_display_info()
+        output(
+            f&quot;        [DRY RUN] Would generate audio for: {meaning.origin.content} &rarr; {meaning.translation.content} (rank: {rank}, {status})&quot;
+        )
+        return None
+
+    try:
+        import signal
+
+        class TimeoutException(Exception):
+            pass
+
+        def timeout_handler(signum, frame):
+            raise TimeoutException(&quot;Audio lesson generation timed out&quot;)
+
+        # Set up timeout
+        signal.signal(signal.SIGALRM, timeout_handler)
+        signal.alarm(timeout_seconds)
+
+        try:
+            # Use the shared generation logic from DailyLessonGenerator
+            audio_lesson_meaning = lesson_generator.generate_audio_lesson_meaning(
+                user_word,
+                origin_language,
+                translation_language,
+                cefr_level,
+                &quot;claude-v1&quot;,
+            )
+
+            db.session.commit()
+
+            if SHOW_DETAILS:
+                rank, status = get_word_display_info()
+                output(
+                    f&quot;        ✓ Generated audio lesson for: {meaning.origin.content} &rarr; {meaning.translation.content} (rank: {rank}, {status}, {audio_lesson_meaning.duration_seconds}s)&quot;
+                )
+
+            return audio_lesson_meaning
+
+        finally:
+            # Cancel the alarm
+            signal.alarm(0)
+
+    except TimeoutException:
+        db.session.rollback()
+        output(
+            f&quot;        ✗ Timeout (&gt;{timeout_seconds}s) generating audio for {meaning.origin.content}&quot;
+        )
+        return None
+    except Exception as e:
+        db.session.rollback()
+        output(
+            f&quot;        ✗ Failed to generate audio for {meaning.origin.content}: {str(e)}&quot;
+        )
+        return None
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

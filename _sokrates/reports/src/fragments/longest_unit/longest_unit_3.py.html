@@ -1,0 +1,240 @@
+<html>
+<head>
+    <title>def alternative_sentences()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def alternative_sentences()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/api/endpoints/generated_examples.py [0:0]</i></p>
+<ul>
+    <li><b>162</b> lines of code</li>
+    <li><b>25</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def alternative_sentences(user_word_id):
+    &quot;&quot;&quot;
+    Returns alternative example sentences for a user_word.
+
+    Tries to serve pre-generated examples from the database.
+    Falls back to real-time LLM generation if no pre-generated examples exist.
+
+    :param user_word_id: ID of the UserWord to get examples for
+    :return: JSON array with example sentences
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    user_word = UserWord.query.get(user_word_id)
+
+    if not user_word or user_word.user_id != user.id:
+        return json_result({&quot;error&quot;: &quot;UserWord not found or unauthorized&quot;}, status=404)
+
+    origin_word = user_word.meaning.origin.content
+    translation = user_word.meaning.translation.content
+    origin_lang = user_word.meaning.origin.language.code
+    translation_lang = user_word.meaning.translation.language.code
+
+    # Get the current context so we can exclude it from alternatives
+    current_context = &quot;&quot;
+    if user_word.preferred_bookmark and user_word.preferred_bookmark.context:
+        current_context = user_word.preferred_bookmark.get_context().strip().lower()
+
+    # Determine CEFR level
+    cefr_level = request.args.get(&quot;cefr_level&quot;, DEFAULT_CEFR_LEVEL)
+
+    # First, try to get pre-generated examples from database
+    # Try exact CEFR level match first
+    db_examples = (
+        ExampleSentence.query.filter(
+            ExampleSentence.meaning_id == user_word.meaning_id,
+            ExampleSentence.cefr_level == cefr_level,
+        )
+        .limit(MAX_EXAMPLES_ALTERNATIVE)
+        .all()
+    )
+
+    # If no exact match, try any CEFR level for this meaning
+    if not db_examples:
+        db_examples = (
+            ExampleSentence.query.filter(
+                ExampleSentence.meaning_id == user_word.meaning_id
+            )
+            .limit(MAX_EXAMPLES_ALTERNATIVE)
+            .all()
+        )
+
+    if db_examples:
+        # Format database examples
+        examples = []
+        ai_generator_id = None
+        llm_model = &quot;database&quot;
+        prompt_version = &quot;pregenerated&quot;
+
+        for db_example in db_examples:
+            # Skip examples that duplicate the current exercise context
+            if db_example.sentence.strip().lower() == current_context:
+                continue
+
+            example_dict = {
+                &quot;id&quot;: db_example.id,  # Include the sentence ID
+                &quot;sentence&quot;: db_example.sentence,
+                &quot;translation&quot;: db_example.translation,
+                &quot;cefr_level&quot;: db_example.cefr_level,
+                &quot;llm_model&quot;: (
+                    db_example.ai_generator.model_name
+                    if db_example.ai_generator
+                    else &quot;unknown&quot;
+                ),
+                &quot;prompt_version&quot;: (
+                    db_example.ai_generator.prompt_version
+                    if db_example.ai_generator
+                    else &quot;unknown&quot;
+                ),
+            }
+
+            # Pre-create bookmark so frontend can render instantly on swipe
+            bookmark_dict = _build_bookmark_dict_for_example(
+                user, user_word, db_example
+            )
+            if bookmark_dict:
+                example_dict[&quot;bookmark&quot;] = bookmark_dict
+
+            examples.append(example_dict)
+
+            # Use the first example's ai_generator_id for consistency
+            if not ai_generator_id and db_example.ai_generator:
+                ai_generator_id = db_example.ai_generator.id
+                llm_model = db_example.ai_generator.model_name
+                prompt_version = db_example.ai_generator.prompt_version
+
+        return json_result(
+            {
+                &quot;user_word_id&quot;: user_word_id,
+                &quot;word&quot;: origin_word,
+                &quot;translation&quot;: translation,
+                &quot;examples&quot;: examples,
+                &quot;ai_generator_id&quot;: ai_generator_id,
+                &quot;llm_model&quot;: llm_model,
+                &quot;prompt_version&quot;: prompt_version,
+                &quot;source&quot;: &quot;database&quot;,
+            }
+        )
+
+    # Fallback to real-time generation if no pre-generated examples
+    log(
+        f&quot;No pre-generated examples found for user_word {user_word_id}, falling back to real-time generation&quot;
+    )
+
+    try:
+        # Get the LLM service
+        llm_service = get_llm_service()
+
+        # Generate examples
+        examples = llm_service.generate_examples(
+            word=origin_word,
+            translation=translation,
+            source_lang=origin_lang,
+            target_lang=translation_lang,
+            cefr_level=cefr_level,
+            prompt_version=&quot;v3&quot;,
+        )
+
+        # Extract model and version from first example (they're all the same)
+        llm_model = examples[0][&quot;llm_model&quot;] if examples else &quot;unknown&quot;
+        prompt_version = examples[0][&quot;prompt_version&quot;] if examples else &quot;v1&quot;
+
+        # Find or create AIGenerator record
+        ai_generator = AIGenerator.find_or_create(
+            db_session,
+            llm_model,
+            prompt_version,
+            description=&quot;Real-time example generation for language learning&quot;,
+        )
+
+        # Save the generated examples to database for future use
+        saved_examples = []
+        for example in examples:
+            example_sentence = ExampleSentence.create_ai_generated(
+                db_session,
+                sentence=example[&quot;sentence&quot;],
+                language=user_word.meaning.origin.language,
+                meaning=user_word.meaning,
+                ai_generator=ai_generator,
+                translation=example.get(&quot;translation&quot;),
+                cefr_level=example.get(&quot;cefr_level&quot;, cefr_level),
+                commit=False,
+            )
+            saved_examples.append(example_sentence)
+
+        # Commit all the new examples
+        db_session.commit()
+        log(
+            f&quot;Saved {len(examples)} real-time generated examples to database for user_word {user_word_id}&quot;
+        )
+
+        # commit() expires all ORM attributes by default, so the downstream
+        # bookmark-building loop would lazy-reload user_word.meaning.*. If the
+        # row was deleted mid-request (parallel tab, session closed) that lazy
+        # reload raises ObjectDeletedError deep in the loop and surfaces as a
+        # 500. Refresh here so we fail fast with a clean 404 in that case.
+        try:
+            db_session.refresh(user_word)
+        except Exception:
+            return json_result(
+                {&quot;error&quot;: &quot;UserWord not found or unauthorized&quot;}, status=404
+            )
+
+        # Add IDs and pre-created bookmarks, skipping duplicates of current context
+        filtered_examples = []
+        for i, example in enumerate(examples):
+            if example[&quot;sentence&quot;].strip().lower() == current_context:
+                continue
+            example[&quot;id&quot;] = saved_examples[i].id
+            bookmark_dict = _build_bookmark_dict_for_example(
+                user, user_word, saved_examples[i]
+            )
+            if bookmark_dict:
+                example[&quot;bookmark&quot;] = bookmark_dict
+            filtered_examples.append(example)
+
+        return json_result(
+            {
+                &quot;user_word_id&quot;: user_word_id,
+                &quot;word&quot;: origin_word,
+                &quot;translation&quot;: translation,
+                &quot;examples&quot;: filtered_examples,
+                &quot;ai_generator_id&quot;: ai_generator.id,
+                &quot;llm_model&quot;: llm_model,
+                &quot;prompt_version&quot;: prompt_version,
+                &quot;source&quot;: &quot;realtime_saved&quot;,
+            }
+        )
+
+    except Exception as e:
+        log(f&quot;Error generating examples for user_word {user_word_id}: {e}&quot;)
+        sentry_sdk.capture_exception(
+            e,
+            tags={
+                &quot;endpoint&quot;: &quot;alternative_sentences&quot;,
+                &quot;user_word_id&quot;: str(user_word_id),
+            },
+        )
+
+        resp = json_result(
+            {
+                &quot;error&quot;: &quot;Failed to generate examples. Please try again later.&quot;,
+                &quot;user_word_id&quot;: user_word_id,
+                &quot;word&quot;: origin_word,
+                &quot;translation&quot;: translation,
+                &quot;examples&quot;: [],
+            }
+        )
+        resp.status_code = 500
+        return resp
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

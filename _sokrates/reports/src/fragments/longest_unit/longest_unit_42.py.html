@@ -1,0 +1,119 @@
+<html>
+<head>
+    <title>def delete_user_account()</title>
+    <link rel="stylesheet" charset="UTF-8" href="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/styles/docco.min.css">
+    <script charset="UTF-8" type="application/javascript" src="https://d2bb1mtyn3kglb.cloudfront.net/lib/highlight/highlight.min.js"></script>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">def delete_user_account()</h3>
+<p style="margin-top: 4px">in <i>zeeguu/core/account_management/user_account_deletion.py [0:0]</i></p>
+<ul>
+    <li><b>78</b> lines of code</li>
+    <li><b>12</b> McCabe index (conditional complexity)</li>
+</ul>
+<pre>
+<code class="py">
+def delete_user_account(db_session, user_to_delete):
+    try:
+        start_time = time.time()
+        total_rows_affected = 0
+        articles = Article.uploaded_by(user_to_delete.id)
+        print(f&quot;Removing author from Articles:&quot;)
+        for a in articles:
+            a.uploader_id = None
+            total_rows_affected += 1
+            db_session.add(a)
+        print(f&quot;Total of {total_rows_affected} articles altered&quot;)
+        db_session.commit()
+
+        print(f&quot;Deleting user {user_to_delete.name}...&quot;)
+
+        # Delete exercises first (they reference UserWord with NOT NULL constraint)
+        user_exercises = (
+            Exercise.query.join(UserWord)
+            .filter(UserWord.user_id == user_to_delete.id)
+            .all()
+        )
+        print(f&quot;exercise: {len(user_exercises)}&quot;)
+        for each in user_exercises:
+            total_rows_affected += 1
+            db_session.delete(each)
+        db_session.commit()
+
+        # Clear preferred_bookmark_id on UserWord records to break circular FK
+        # (UserWord.preferred_bookmark_id -&gt; Bookmark, Bookmark.user_word_id -&gt; UserWord)
+        user_words = UserWord.query.filter_by(user_id=user_to_delete.id).all()
+        print(f&quot;Clearing preferred_bookmark_id on {len(user_words)} user_word records&quot;)
+        for uw in user_words:
+            if uw.preferred_bookmark_id is not None:
+                uw.preferred_bookmark_id = None
+                db_session.add(uw)
+        db_session.commit()
+
+        # Delete bookmarks (they reference UserWord with NOT NULL constraint)
+        user_bookmarks = Bookmark.find_by_specific_user(user_to_delete)
+        print(f&quot;bookmark: {len(user_bookmarks)}&quot;)
+        for each in user_bookmarks:
+            total_rows_affected += 1
+            db_session.delete(each)
+        db_session.commit()
+
+        # Delete user_word_interaction_history (references UserWord)
+        user_word_history = (
+            UserWordInteractionHistory.query.join(UserWord)
+            .filter(UserWord.user_id == user_to_delete.id)
+            .all()
+        )
+        print(f&quot;user_word_interaction_history: {len(user_word_history)}&quot;)
+        for each in user_word_history:
+            total_rows_affected += 1
+            db_session.delete(each)
+        db_session.commit()
+
+        # Delete friend requests (they can reference a User in two different fields)
+        user_friend_requests = FriendRequest.get_all_friend_requests_for_user(user_to_delete.id)
+        print(f&quot;friend_request: {len(user_friend_requests)}&quot;)
+        for each in user_friend_requests:
+            total_rows_affected += 1
+            db_session.delete(each)
+        db_session.commit()
+
+        # Delete friendships (they can reference a User in two different fields)
+        user_friends = Friendship.get_friend_objects(user_to_delete.id)
+        print(f&quot;friend: {len(user_friends)}&quot;)
+        for each in user_friends:
+            total_rows_affected += 1
+            db_session.delete(each)
+        db_session.commit()
+
+        for each_table in tables_to_modify:
+            subject_related = each_table.query.filter_by(
+                user_id=user_to_delete.id
+            ).all()
+
+            print(f&quot;{each_table.__tablename__}: {len(subject_related)}&quot;)
+
+            for each in subject_related:
+                total_rows_affected += 1
+                db_session.delete(each)
+            db_session.commit()
+
+        db_session.delete(user_to_delete)
+        db_session.commit()
+        end_time = time.time() - start_time
+        print(
+            f&quot;A total of {total_rows_affected} rows were affected. The process took: {end_time:.2f} seconds.&quot;
+        )
+    except Exception as e:
+        from sentry_sdk import capture_exception
+
+        capture_exception(e)
+        print(e)
+        raise Exception(f&quot;Could not delete the user '{user_to_delete}'&quot;)
+
+</code>
+</pre>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+</body>

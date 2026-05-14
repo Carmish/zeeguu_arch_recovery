@@ -1,0 +1,147 @@
+<html>
+<head>
+    <title>zeeguu/core/model/user_exercise_session.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/user_exercise_session.py (<b>76</b> lines of code) (<a href="user_exercise_session.py">raw</a>):</h3>
+<div id="editor">import sqlalchemy
+import zeeguu.core
+
+from datetime import datetime, timedelta
+from zeeguu.core.model.user import User
+from zeeguu.core.model.language import Language
+
+from zeeguu.core.model.db import db
+
+VERY_FAR_IN_THE_PAST = &quot;2000-01-01T00:00:00&quot;
+VERY_FAR_IN_THE_FUTURE = &quot;9999-12-31T23:59:59&quot;
+
+
+class UserExerciseSession(db.Model):
+    &quot;&quot;&quot;
+    This class keeps track of the user's exercise sessions.
+
+    So we can study how much time and when the user has done exercises.
+    &quot;&quot;&quot;
+
+    __table_args__ = dict(mysql_collate=&quot;utf8_bin&quot;)
+    __tablename__ = &quot;user_exercise_session&quot;
+
+    id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id))
+    user = db.relationship(User)
+
+    start_time = db.Column(db.DateTime)
+    duration = db.Column(db.Integer)  # Duration time in miliseconds
+    last_action_time = db.Column(db.DateTime)
+
+    is_active = db.Column(db.Boolean)
+    platform = db.Column(db.SmallInteger)
+
+    # Snapshot of user.learned_language_id at session start; see activity_sessions._session_language.
+    language_id = db.Column(db.Integer, db.ForeignKey(Language.id), nullable=True)
+    language = db.relationship(Language)
+
+    def __init__(self, user_id, start_time, current_time=None, platform=None, language_id=None):
+        self.user_id = user_id
+        self.is_active = False
+        self.platform = platform
+        self.language_id = language_id
+
+        # When we want to emulate an event happening in a particular moment in the past or in the future,
+        #   we can provide the current_time variable to override the datetime.now()
+        if current_time is None:
+            current_time = datetime.now()
+
+        self.start_time = start_time
+        self.last_action_time = current_time
+
+        duration = self.last_action_time - self.start_time
+        self.duration = duration.total_seconds() * 1000
+
+    def exercises_in_session_string(self):
+        from zeeguu.core.sql.learner.exercises_history import exercises_in_session
+
+        exercise_details_list = exercises_in_session(self.id)
+
+        res = &quot;&quot;
+        for each in exercise_details_list:
+            res += f&quot;{each['time']} {int(each['solving_speed'] / 1000):&gt;6} {each['outcome']:&gt;6} {each['content']:&lt;15} {each['source']}   \n&quot;
+
+        return res
+
+    @classmethod
+    def find_by_user_id(
+        cls,
+        user_id,
+        from_date: str = VERY_FAR_IN_THE_PAST,
+        to_date: str = VERY_FAR_IN_THE_FUTURE,
+    ):
+        &quot;&quot;&quot;
+
+        Get exercise sessions by user
+
+        return: object or None if not found
+        &quot;&quot;&quot;
+        query = cls.query
+        query = query.filter(cls.user_id == user_id)
+        query = query.filter(cls.start_time &gt;= from_date)
+        query = query.filter(cls.start_time &lt;= to_date)
+
+        query = query.order_by(&quot;start_time&quot;)
+
+        sessions = query.all()
+        return sessions
+
+    @classmethod
+    def find_by_id(cls, id):
+        query = cls.query
+        query = query.filter(cls.id == id)
+        return query.one()
+
+    @classmethod
+    def find_by_cohort(
+        cls,
+        cohort_id,
+        from_date: str = VERY_FAR_IN_THE_PAST,
+        to_date: str = VERY_FAR_IN_THE_FUTURE,
+    ):
+        &quot;&quot;&quot;
+        Get exercise sessions by cohort
+        return: object or None if not found
+        &quot;&quot;&quot;
+        from .user_cohort_map import UserCohortMap
+
+        query = (
+            cls.query.join(User)
+            .join(UserCohortMap)
+            .filter(UserCohortMap.cohort_id == cohort_id)
+        )
+        query = query.filter(cls.start_time &gt;= from_date)
+        query = query.filter(cls.start_time &lt;= to_date)
+
+        query = query.order_by(&quot;start_time&quot;)
+
+        sessions = query.all()
+        return sessions
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

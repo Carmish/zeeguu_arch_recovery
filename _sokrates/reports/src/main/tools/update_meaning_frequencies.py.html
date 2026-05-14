@@ -1,0 +1,215 @@
+<html>
+<head>
+    <title>tools/update_meaning_frequencies.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/update_meaning_frequencies.py (<b>122</b> lines of code) (<a href="update_meaning_frequencies.py">raw</a>):</h3>
+<div id="editor">#!/usr/bin/env python
+&quot;&quot;&quot;
+Command-line tool to update meaning frequencies for a range of IDs.
+
+Usage:
+    python -m tools.update_meaning_frequencies --start 1 --end 100
+    python -m tools.update_meaning_frequencies --ids 5,10,15,20
+    python -m tools.update_meaning_frequencies --start 1 --end 10 --dry-run
+&quot;&quot;&quot;
+
+import argparse
+import sys
+import time
+
+from zeeguu.api.app import create_app
+from zeeguu.core.model import db, Meaning
+from zeeguu.core.model.meaning_frequency_classifier import MeaningFrequencyClassifier
+from zeeguu.logging import log
+
+
+def parse_arguments():
+    &quot;&quot;&quot;Parse command line arguments.&quot;&quot;&quot;
+    parser = argparse.ArgumentParser(
+        description=&quot;Update meaning frequencies using AI classification&quot;
+    )
+
+    # ID range options
+    parser.add_argument(&quot;--start&quot;, type=int, help=&quot;Starting meaning ID (inclusive)&quot;)
+    parser.add_argument(&quot;--end&quot;, type=int, help=&quot;Ending meaning ID (inclusive)&quot;)
+    parser.add_argument(
+        &quot;--ids&quot;, type=str, help=&quot;Comma-separated list of specific IDs to update&quot;
+    )
+
+    # Options
+    parser.add_argument(
+        &quot;--dry-run&quot;,
+        action=&quot;store_true&quot;,
+        help=&quot;Show what would be updated without making changes&quot;,
+    )
+    parser.add_argument(
+        &quot;--force&quot;, action=&quot;store_true&quot;, help=&quot;Update even if frequency already exists&quot;
+    )
+    parser.add_argument(
+        &quot;--delay&quot;,
+        type=float,
+        default=0.5,
+        help=&quot;Delay between API calls in seconds (default: 0.5)&quot;,
+    )
+
+    args = parser.parse_args()
+
+    # Validate arguments
+    if args.ids:
+        if args.start or args.end:
+            parser.error(&quot;Cannot use --ids with --start/--end&quot;)
+    elif not (args.start and args.end):
+        parser.error(&quot;Must provide either --ids or both --start and --end&quot;)
+
+    if args.start and args.end and args.start &gt; args.end:
+        parser.error(&quot;Start ID must be less than or equal to end ID&quot;)
+
+    return args
+
+
+def get_meanings_to_update(args):
+    &quot;&quot;&quot;Get the list of meanings to update based on arguments.&quot;&quot;&quot;
+    if args.ids:
+        # Parse comma-separated IDs
+        id_list = [int(id_str.strip()) for id_str in args.ids.split(&quot;,&quot;)]
+        meanings = Meaning.query.filter(Meaning.id.in_(id_list)).all()
+
+        # Report any missing IDs
+        found_ids = {m.id for m in meanings}
+        missing_ids = set(id_list) - found_ids
+        if missing_ids:
+            log(f&quot;Warning: IDs not found in database: {sorted(missing_ids)}&quot;)
+    else:
+        # Get range of IDs
+        query = Meaning.query.filter(Meaning.id &gt;= args.start, Meaning.id &lt;= args.end)
+
+        if not args.force:
+            # Skip meanings that already have frequency
+            query = query.filter(Meaning.frequency.is_(None))
+
+        meanings = query.order_by(Meaning.id).all()
+
+    return meanings
+
+
+def format_meaning_info(meaning):
+    &quot;&quot;&quot;Format meaning information for display.&quot;&quot;&quot;
+    return (
+        f&quot;ID {meaning.id}: &quot;
+        f&quot;{meaning.origin.content} ({meaning.origin.language.code}) &rarr; &quot;
+        f&quot;{meaning.translation.content} ({meaning.translation.language.code})&quot;
+    )
+
+
+def main():
+    &quot;&quot;&quot;Main function.&quot;&quot;&quot;
+    args = parse_arguments()
+
+    # Initialize app context
+    app = create_app()
+    app.app_context().push()
+
+    # Initialize classifier
+    try:
+        classifier = MeaningFrequencyClassifier()
+    except ValueError as e:
+        print(f&quot;Error: {e}&quot;)
+        print(&quot;Make sure ANTHROPIC_API_KEY environment variable is set&quot;)
+        sys.exit(1)
+
+    # Get meanings to update
+    meanings = get_meanings_to_update(args)
+
+    if not meanings:
+        print(&quot;No meanings found to update&quot;)
+        return
+
+    print(f&quot;Found {len(meanings)} meanings to process&quot;)
+
+    if args.dry_run:
+        print(&quot;\n=== DRY RUN MODE - No changes will be made ===&quot;)
+
+    # Process each meaning
+    success_count = 0
+    error_count = 0
+    skipped_count = 0
+
+    for i, meaning in enumerate(meanings, 1):
+        print(f&quot;\n[{i}/{len(meanings)}] {format_meaning_info(meaning)}&quot;)
+
+        # Check if already has frequency
+        if meaning.frequency and not args.force:
+            print(f&quot;  &rarr; Skipping: already has frequency '{meaning.frequency.value}'&quot;)
+            skipped_count += 1
+            continue
+
+        if meaning.frequency:
+            print(f&quot;  &rarr; Current frequency: '{meaning.frequency.value}' (will update)&quot;)
+
+        if args.dry_run:
+            print(&quot;  &rarr; Would classify and update&quot;)
+            success_count += 1
+        else:
+            try:
+                # Classify and update
+                print(&quot;  &rarr; Classifying...&quot;, end=&quot;&quot;, flush=True)
+
+                import time
+                start_time = time.time()
+                success = classifier.classify_and_update_meaning(meaning, db.session)
+                end_time = time.time()
+                execution_time = end_time - start_time
+                print(f&quot;Execution time: {execution_time:.4f} seconds&quot;)
+
+                if success:
+                    print(
+                        f&quot; ✓ Updated to: '{meaning.frequency.value}, {meaning.phrase_type.value}'&quot;
+                    )
+                    success_count += 1
+                else:
+                    print(&quot; ✗ Classification failed&quot;)
+                    error_count += 1
+
+            except Exception as e:
+                print(f&quot; ✗ Error: {e}&quot;)
+                error_count += 1
+                db.session.rollback()
+
+        # Rate limiting
+        if i &lt; len(meanings) and not args.dry_run:
+            time.sleep(args.delay)
+
+    # Summary
+    print(&quot;\n=== Summary ===&quot;)
+    print(f&quot;Total processed: {len(meanings)}&quot;)
+    print(f&quot;Successfully updated: {success_count}&quot;)
+    print(f&quot;Errors: {error_count}&quot;)
+    print(f&quot;Skipped: {skipped_count}&quot;)
+
+    if args.dry_run:
+        print(&quot;\nThis was a dry run. Use without --dry-run to make actual changes.&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

@@ -1,0 +1,79 @@
+<html>
+<head>
+    <title>tools/_playground.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">tools/_playground.py (<b>37</b> lines of code) (<a href="_playground.py">raw</a>):</h3>
+<div id="editor">from zeeguu.core.model import User, Session
+import requests
+import json
+
+from zeeguu.api.app import create_app
+from zeeguu.core.model import db
+
+app = create_app()
+app.app_context().push()
+
+
+user = User.find_by_id(4607)
+
+session = Session.create_for_user(user)
+db.session.add(session)
+db.session.commit()
+
+# Prepare the request
+# Prepare the request
+url = f&quot;http://localhost:9001/generate_daily_lesson?session={session.uuid}&quot;
+headers = {&quot;Content-Type&quot;: &quot;application/json&quot;}
+
+print(f&quot;Session UUID: {session.uuid}&quot;)
+
+try:
+    # Make the API call
+    print(f&quot;Making POST request to: {url}&quot;)
+    response = requests.post(url, headers=headers, json={})
+
+    print(f&quot;Response status: {response.status_code}&quot;)
+    print(f&quot;Response headers: {dict(response.headers)}&quot;)
+
+    if response.status_code == 200:
+        result = response.json()
+        print(&quot;✅ Success! Audio lesson generated:&quot;)
+        print(json.dumps(result, indent=2))
+    else:
+        print(&quot;❌ Error response:&quot;)
+        try:
+            error_data = response.json()
+            print(json.dumps(error_data, indent=2))
+        except:
+            print(response.text)
+
+except requests.exceptions.ConnectionError:
+    print(&quot;❌ Connection error. Make sure the API server is running on localhost:9001&quot;)
+except Exception as e:
+    print(f&quot;❌ Unexpected error: {str(e)}&quot;)
+
+finally:
+    # Clean up the session
+    db.session.delete(session)
+    db.session.commit()
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

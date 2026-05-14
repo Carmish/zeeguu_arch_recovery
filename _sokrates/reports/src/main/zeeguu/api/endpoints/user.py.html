@@ -1,0 +1,440 @@
+<html>
+<head>
+    <title>zeeguu/api/endpoints/user.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/api/endpoints/user.py (<b>279</b> lines of code) (<a href="user.py">raw</a>):</h3>
+<div id="editor">import re
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+
+import flask
+import sqlalchemy
+
+import zeeguu.core
+from zeeguu.api.endpoints.feature_toggles import features_for_user
+from zeeguu.api.utils.abort_handling import make_error
+from zeeguu.api.utils.json_result import json_result
+from zeeguu.api.utils.route_wrappers import cross_domain, requires_session, allows_unverified
+from zeeguu.core.friends.friend_streak import compute_current_streak
+from zeeguu.core.model import User
+from zeeguu.core.model.feedback_component import FeedbackComponent
+from zeeguu.core.model.url import Url
+from zeeguu.core.model.user_avatar import UserAvatar
+from zeeguu.core.model.user_feedback import UserFeedback
+from . import api
+from ...core.model import UserActivityData, UserArticle, Article
+
+
+@api.route(&quot;/learned_language&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def learned_language():
+    &quot;&quot;&quot;
+    Each endpoint is defined by a function definition
+    of the same form as this one.
+
+    The important information for understanding the
+    endpoint is in the annotations before the function
+    and in the comment immediately after the function
+    name.
+
+    Two types of annotations are important:
+
+     @endpoints.route gives you the endpoint name together
+        with the expectd HTTP method
+        it is normally appended to the API_URL (https://www.zeeguu.unibe.ch/)
+
+     @with_session means that you must submit a session
+        argument together wit your API request
+        e.g. API_URL/learned_language?session=123141516
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    return user.learned_language.code
+
+
+@api.route(&quot;/learned_language/&lt;language_code&gt;&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def learned_language_set(language_code):
+    &quot;&quot;&quot;
+    Set the learned language
+    :param language_code: one of the ISO language codes
+    :return: &quot;OK&quot; for success
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    user.set_learned_language(language_code, session=zeeguu.core.model.db.session)
+    zeeguu.core.model.db.session.commit()
+    return &quot;OK&quot;
+
+
+@api.route(&quot;/native_language&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def native_language():
+    user = User.find_by_id(flask.g.user_id)
+    return user.native_language.code
+
+
+@api.route(&quot;/native_language/&lt;language_code&gt;&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def native_language_set(language_code):
+    &quot;&quot;&quot;
+    :param language_code:
+    :return: OK for success
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    user.set_native_language(language_code)
+    zeeguu.core.model.db.session.commit()
+    return &quot;OK&quot;
+
+
+@api.route(&quot;/learned_and_native_language&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def learned_and_native_language():
+    &quot;&quot;&quot;
+    Get both the native and the learned language
+    for the user in session
+    :return:
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    res = dict(native=user.native_language_id, learned=user.learned_language_id)
+    return json_result(res)
+
+
+@api.route(&quot;/user_timezone&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def set_user_timezone():
+    tz = flask.request.form.get(&quot;timezone&quot;, &quot;&quot;).strip()
+    try:
+        ZoneInfo(tz)
+    except (ZoneInfoNotFoundError, ValueError):
+        flask.abort(400, &quot;invalid timezone&quot;)
+
+    user = User.find_by_id(flask.g.user_id)
+    user.timezone = tz
+    zeeguu.core.model.db.session.commit()
+    return &quot;OK&quot;
+
+
+@api.route(&quot;/get_unfinished_user_reading_sessions&quot;, methods=(&quot;GET&quot;,))
+@api.route(
+    &quot;/get_unfinished_user_reading_sessions/&lt;int:total_sessions&gt;&quot;, methods=(&quot;GET&quot;,)
+)
+@cross_domain
+@requires_session
+def get_user_unfinished_reading_sessions(total_sessions: int = 1):
+    &quot;&quot;&quot;
+    Retrieves the last uncompleted sessions based on the SCROLL events of the user.
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    last_sessions = (
+        UserActivityData.get_articles_with_reading_percentages_for_user_in_date_range(
+            user, limit=total_sessions
+        )
+    )
+
+    # Step 1: Filter sessions and collect articles with their extra data
+    articles_to_fetch = []
+    session_data = {}  # article_id -&gt; (date_read, last_reading_percentage)
+
+    for s in last_sessions:
+        art_id, date_read, viewport_settings, last_reading_point = s
+        if not (last_reading_point &lt; 0.9 and last_reading_point &gt; 0):
+            continue
+
+        if not isinstance(viewport_settings, dict):
+            continue
+
+        # Calculate tolerance
+        if &quot;viewportRatio&quot; in viewport_settings:
+            tolerance = viewport_settings[&quot;viewportRatio&quot;] / 4
+        elif all(
+            key in viewport_settings
+            for key in [&quot;scrollHeight&quot;, &quot;clientHeight&quot;, &quot;bottomRowHeight&quot;]
+        ):
+            scrollHeight = viewport_settings[&quot;scrollHeight&quot;]
+            clientHeight = viewport_settings[&quot;clientHeight&quot;]
+            bottomRowHeight = viewport_settings[&quot;bottomRowHeight&quot;]
+            tolerance = clientHeight / ((scrollHeight - bottomRowHeight)) / 4
+        elif (
+            &quot;scrollHeight&quot; in viewport_settings
+            and &quot;clientHeight&quot; in viewport_settings
+        ):
+            scrollHeight = viewport_settings[&quot;scrollHeight&quot;]
+            clientHeight = viewport_settings[&quot;clientHeight&quot;]
+            tolerance = clientHeight / scrollHeight / 4
+        else:
+            continue
+
+        last_reading_percentage = last_reading_point - tolerance
+        if last_reading_percentage &lt;= 0:
+            continue
+
+        art = Article.find_by_id(art_id)
+        if art:
+            ua = UserArticle.find(user, art)
+            if ua and ua.hidden:
+                continue
+            articles_to_fetch.append(art)
+            session_data[art_id] = (date_read, last_reading_percentage)
+
+    # Step 2: Use helper for proper cache handling
+    # select_appropriate=False: user should resume the same article version they started
+    article_infos = UserArticle.article_infos(user, articles_to_fetch, select_appropriate=False)
+
+    # Step 3: Add session-specific data to each article info
+    for art_info in article_infos:
+        art_id = art_info[&quot;id&quot;]
+        if art_id in session_data:
+            date_read, last_reading_percentage = session_data[art_id]
+            art_info[&quot;time_last_read&quot;] = date_read
+            art_info[&quot;last_reading_percentage&quot;] = last_reading_percentage
+
+    return json_result(article_infos)
+
+
+@api.route(&quot;/get_user_details&quot;, methods=(&quot;GET&quot;,))
+@cross_domain
+@requires_session
+@allows_unverified
+def get_user_details():
+    &quot;&quot;&quot;
+    after the login, this information might be useful to be displayed
+    by an app
+    :param lang_code:
+    :return:
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    details_dict = user.details_as_dictionary()
+    details_dict[&quot;features&quot;] = features_for_user(user)
+
+    return json_result(details_dict)
+
+
+@api.route(&quot;/get_friend_details/&lt;friend_username&gt;&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def get_friend_details(friend_username):
+    &quot;&quot;&quot;
+    Return user details for friend_username, including a 'friendship' object
+    with friend_request_status ('accepted', 'pending', or None).
+    &quot;&quot;&quot;
+    user = User.find_by_id(flask.g.user_id)
+    from zeeguu.core.model.friendship import Friendship
+    friend_user, friend_user_avatar, friendship, friend_request = Friendship.find_friend_details(user.id, friend_username)
+    if not friend_user:
+        return make_error(401, &quot;Not friends with this user or user not found.&quot;)
+
+    details_dict = _serialize_friend_details(friend_user, friend_user_avatar, friendship, friend_request)
+
+    return json_result(details_dict)
+
+
+@api.route(&quot;/user_settings&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def user_settings():
+    &quot;&quot;&quot;
+        Update the authenticated user's settings.
+
+        Accepts form data to update:
+            - name
+            - username (must be unique)
+            - native_language
+            - learned_language (with optional CEFR level)
+            - email (must be unique)
+            - password
+            - avatar (image name, character color, background color)
+
+        Returns:
+            str: &quot;OK&quot; on success, or a 400 error with a message if validation fails.
+    &quot;&quot;&quot;
+    try:
+        user_id = flask.g.user_id
+        data = flask.request.form
+        user = User.find_by_id(user_id)
+
+        submitted_name = data.get(&quot;name&quot;, None)
+        if submitted_name:
+            user.name = submitted_name
+
+        submitted_username = data.get(&quot;username&quot;, None)
+        if submitted_username:
+            normalized_username = submitted_username.strip()
+            if len(normalized_username) &gt; User.MAX_USERNAME_LENGTH:
+                return make_error(400, f&quot;Username can be at most {User.MAX_USERNAME_LENGTH} characters&quot;)
+            if not re.fullmatch(User.USERNAME_VALIDATION_REGEX, normalized_username):
+                return make_error(400, &quot;Username can only contain letters, numbers, and underscores&quot;)
+            # A user can change their username to the same username (case-insensitive)
+            # E.g from &quot;MYUSER99&quot; to &quot;myuser99&quot;
+            if normalized_username.lower() != user.username.lower() and User.username_exists(normalized_username):
+                return make_error(400, &quot;Username already in use&quot;)
+            user.username = normalized_username
+
+        submitted_native_language_code = data.get(&quot;native_language&quot;, None)
+        if submitted_native_language_code:
+            user.set_native_language(submitted_native_language_code)
+
+        cefr_level = data.get(&quot;cefr_level&quot;, None)
+        submitted_learned_language_code = data.get(&quot;learned_language&quot;, None)
+
+        if submitted_learned_language_code:
+            user.set_learned_language(
+                submitted_learned_language_code, cefr_level, zeeguu.core.model.db.session
+            )
+
+        submitted_email = data.get(&quot;email&quot;, None)
+        if submitted_email:
+            normalized_email = submitted_email.strip().lower()
+            if normalized_email != user.email.lower() and User.email_exists(normalized_email):
+                return make_error(400, &quot;Email already in use&quot;)
+            user.email = normalized_email
+
+        submitted_password = data.get(&quot;password&quot;, None)
+        if submitted_password:
+            user.update_password(submitted_password)
+
+        submitted_avatar_image_name = data.get(&quot;avatar_image_name&quot;, None)
+        submitted_avatar_character_color = data.get(&quot;avatar_character_color&quot;, None)
+        submitted_avatar_background_color = data.get(&quot;avatar_background_color&quot;, None)
+
+        if submitted_avatar_image_name or submitted_avatar_character_color or submitted_avatar_background_color:
+            user_avatar = UserAvatar.update_or_create(user_id, submitted_avatar_image_name,
+                                                      submitted_avatar_character_color,
+                                                      submitted_avatar_background_color)
+            zeeguu.core.model.db.session.add(user_avatar)
+
+        zeeguu.core.model.db.session.add(user)
+        zeeguu.core.model.db.session.commit()
+        return &quot;OK&quot;
+    except ValueError as e:
+        zeeguu.core.model.db.session.rollback()
+        return make_error(400, str(e))
+    except sqlalchemy.exc.IntegrityError:
+        zeeguu.core.model.db.session.rollback()
+        return make_error(400, &quot;Could not update user settings&quot;)
+
+
+@api.route(&quot;/send_feedback&quot;, methods=[&quot;POST&quot;])
+@cross_domain
+@requires_session
+def send_feedback():
+    session = zeeguu.core.model.db.session
+    message = flask.request.form.get(&quot;message&quot;, &quot;&quot;)
+    url = flask.request.form.get(&quot;currentUrl&quot;, None)
+
+    # Get component name from frontend
+    component_name = flask.request.form.get(&quot;feedbackComponentName&quot;, &quot;&quot;)
+
+    from zeeguu.core.emailer.zeeguu_mailer import ZeeguuMailer
+
+    user = User.find_by_id(flask.g.user_id)
+
+    # Use component name or default
+    feedback_component = FeedbackComponent.find_or_create(
+        session, component_name or &quot;General Feedback&quot;
+    )
+
+    if url is not None:
+        url = Url.find_or_create(session, url)
+
+    user_feedback = UserFeedback.create(session, user, feedback_component, message, url)
+    session.commit()
+    ZeeguuMailer.send_feedback(
+        f&quot;Feedback from {user.id}&quot;,
+        feedback_component.component_type,
+        message,
+        user,
+        str(url) if url else None,
+    )
+    return &quot;OK&quot;
+
+
+@api.route(&quot;/leave_cohort/&lt;cohort_id&gt;&quot;, methods=[&quot;GET&quot;])
+@cross_domain
+@requires_session
+def leave_cohort(cohort_id):
+    from zeeguu.core.model.db import db
+
+    &quot;&quot;&quot;
+    set the native language of the user in session
+    :return: OK for success
+    &quot;&quot;&quot;
+    try:
+        user = User.find_by_id(flask.g.user_id)
+        user.remove_from_cohort(cohort_id, db.session)
+        return &quot;OK&quot;
+    except Exception as e:
+        print(e)
+        return &quot;FAIL&quot;
+
+
+def _serialize_friend_details(friend_user, friend_user_avatar, friendship, friend_request):
+    details = _serialize_friend_user(friend_user, friend_user_avatar)
+    if friendship:
+        details[&quot;friendship&quot;] = {
+            &quot;friend_streak&quot;: compute_current_streak(friendship),
+            &quot;friend_streak_last_updated&quot;: (
+                friendship.friend_streak_last_updated.isoformat()
+                if friendship.friend_streak_last_updated
+                else None
+            ),
+            &quot;is_accepted&quot;: True,
+            &quot;created_at&quot;: friendship.created_at.isoformat() if friendship.created_at else None,
+        }
+    elif friend_request:
+        details[&quot;friendship&quot;] = {
+            &quot;sender_username&quot;: friend_request.sender.username,
+            &quot;receiver_username&quot;: friend_request.receiver.username,
+            &quot;friend_streak&quot;: 0,
+            &quot;friend_streak_last_updated&quot;: None,
+            &quot;is_accepted&quot;: False,
+            &quot;created_at&quot;: (
+                friend_request.created_at.isoformat()
+                if friend_request.created_at
+                else None
+            ),
+        }
+    return details
+
+
+def _serialize_friend_user(friend_user, friend_user_avatar):
+    user_avatar_dict = (
+        dict(
+            image_name=friend_user_avatar.image_name,
+            character_color=friend_user_avatar.character_color,
+            background_color=friend_user_avatar.background_color,
+        )
+        if friend_user_avatar is not None
+        else None
+    )
+
+    return dict(
+        name=friend_user.name,
+        username=friend_user.username,
+        created_at=friend_user.created_at.isoformat() if friend_user.created_at else None,
+        user_avatar=user_avatar_dict,
+    )
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>

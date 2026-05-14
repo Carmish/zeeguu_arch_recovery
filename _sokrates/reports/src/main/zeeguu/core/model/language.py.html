@@ -1,0 +1,283 @@
+<html>
+<head>
+    <title>zeeguu/core/model/language.py</title>
+    <style type="text/css" media="screen">
+        #editor {
+            position: absolute;
+            top: 40px;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body style="font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif">
+<h3 style="margin-bottom: 0">zeeguu/core/model/language.py (<b>201</b> lines of code) (<a href="language.py">raw</a>):</h3>
+<div id="editor">from sqlalchemy.orm.exc import NoResultFound
+from datetime import datetime
+
+from zeeguu.logging import log
+
+import zeeguu
+
+from zeeguu.core.model.db import db
+
+
+class Language(db.Model):
+    __table_args__ = {&quot;mysql_collate&quot;: &quot;utf8_bin&quot;}
+    __tablename__ = &quot;language&quot;
+
+    LANGUAGE_NAMES = {
+        &quot;sq&quot;: &quot;Albanian&quot;,
+        &quot;ar&quot;: &quot;Arabic&quot;,
+        &quot;zh-CN&quot;: &quot;Chinese&quot;,
+        &quot;da&quot;: &quot;Danish&quot;,
+        &quot;nl&quot;: &quot;Dutch&quot;,
+        &quot;en&quot;: &quot;English&quot;,
+        &quot;fr&quot;: &quot;French&quot;,
+        &quot;de&quot;: &quot;German&quot;,
+        &quot;hu&quot;: &quot;Hungarian&quot;,
+        &quot;it&quot;: &quot;Italian&quot;,
+        &quot;ku&quot;: &quot;Kurdish&quot;,
+        &quot;lv&quot;: &quot;Latvian&quot;,
+        &quot;no&quot;: &quot;Norwegian&quot;,
+        &quot;pl&quot;: &quot;Polish&quot;,
+        &quot;pt&quot;: &quot;Portuguese&quot;,
+        &quot;ro&quot;: &quot;Romanian&quot;,
+        &quot;ru&quot;: &quot;Russian&quot;,
+        &quot;so&quot;: &quot;Somali&quot;,
+        &quot;es&quot;: &quot;Spanish&quot;,
+        &quot;sv&quot;: &quot;Swedish&quot;,
+        &quot;tr&quot;: &quot;Turkish&quot;,
+        &quot;uk&quot;: &quot;Ukrainian&quot;,
+        &quot;vi&quot;: &quot;Vietnamese&quot;,
+        &quot;ja&quot;: &quot;Japanese&quot;,
+        &quot;sr&quot;: &quot;Serbian&quot;,
+        &quot;ind&quot;: &quot;Indonesian&quot;,
+        &quot;ur&quot;: &quot;Urdu&quot;,
+        &quot;ta&quot;: &quot;Tamil&quot;,
+        &quot;bn&quot;: &quot;Bengali&quot;,
+        &quot;el&quot;: &quot;Greek&quot;,
+    }
+
+    CODES_OF_LANGUAGES_BEING_CRAWLED = [
+        &quot;da&quot;,
+        &quot;nl&quot;,
+        &quot;fr&quot;,
+        &quot;de&quot;,
+        &quot;it&quot;,
+        &quot;sv&quot;,
+        &quot;pt&quot;,
+        &quot;es&quot;,
+        &quot;ro&quot;,
+        &quot;en&quot;,
+        &quot;el&quot;,
+    ]
+
+    CODES_OF_LANGUAGES_THAT_CAN_BE_LEARNED = [
+        &quot;de&quot;,
+        &quot;es&quot;,
+        &quot;fr&quot;,
+        &quot;nl&quot;,
+        &quot;en&quot;,
+        &quot;it&quot;,
+        &quot;da&quot;,
+        &quot;pl&quot;,
+        &quot;sv&quot;,
+        &quot;ru&quot;,
+        &quot;no&quot;,
+        &quot;hu&quot;,
+        &quot;pt&quot;,
+        &quot;ro&quot;,
+        &quot;el&quot;,
+    ]
+    CODES_OF_LANGUAGES_AVAILABLE_AS_NATIVE = [
+        &quot;da&quot;,
+        &quot;en&quot;,
+        &quot;fr&quot;,
+        &quot;nl&quot;,
+        &quot;pl&quot;,
+        &quot;ro&quot;,
+        &quot;zh-CN&quot;,
+        &quot;tr&quot;,
+        &quot;ku&quot;,
+        &quot;ar&quot;,  # arabic
+        &quot;so&quot;,  # somali
+        &quot;de&quot;,
+        &quot;sv&quot;,
+        &quot;sq&quot;,  # albanian
+        &quot;es&quot;,
+        &quot;it&quot;,
+        &quot;ja&quot;,
+        &quot;sr&quot;,
+        &quot;pt&quot;,
+        &quot;ru&quot;,
+        &quot;uk&quot;,  # ukrainian
+        &quot;vi&quot;,  # vietnamese
+        &quot;hu&quot;,
+        &quot;lv&quot;,
+        &quot;ind&quot;,
+        &quot;ur&quot;,
+        &quot;ta&quot;,
+        &quot;bn&quot;,
+        &quot;el&quot;,  # greek
+    ]
+
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(5))
+    name = db.Column(db.String(255), unique=True)
+
+    def __init__(self, code, name):
+        self.code = code
+        self.name = name
+
+    def __repr__(self):
+        return &quot;&lt;Language %r&gt;&quot; % self.code
+
+    def __eq__(self, other):
+        return self.code == other.code or self.name == other.name
+
+    def as_dictionary(self):
+
+        return dict(
+            id=self.id,
+            code=self.code,
+            language=self.name,
+        )
+
+    @classmethod
+    def default_learned(cls):
+        return cls.find_or_create(&quot;de&quot;)
+
+    @classmethod
+    def default_native_language(cls):
+        return cls.find_or_create(&quot;en&quot;)
+
+    @classmethod
+    def native_languages(cls):
+        return [
+            Language.find_or_create(code)
+            for code in cls.CODES_OF_LANGUAGES_AVAILABLE_AS_NATIVE
+        ]
+
+    @classmethod
+    def available_languages(cls):
+        return [
+            Language.find_or_create(code)
+            for code in cls.CODES_OF_LANGUAGES_BEING_CRAWLED
+        ]
+
+    @classmethod
+    def find(cls, code):
+        result = cls.query.filter(Language.code == code).one()
+        return result
+
+    @classmethod
+    def find_or_create(cls, language_code):
+        # due to the limitations of the WTFFOrms, the zh-CN can't be used in the UI...
+        if language_code == &quot;cn&quot;:
+            language_code = &quot;zh-CN&quot;
+
+        try:
+            language = cls.find(language_code)
+
+        except NoResultFound:
+            language = cls(language_code, cls.LANGUAGE_NAMES[language_code])
+            db.session.add(language)
+            db.session.commit()
+
+        return language
+
+    @classmethod
+    def all(cls):
+        return cls.query.filter().order_by(Language.name).all()
+
+    @classmethod
+    def find_by_id(cls, i):
+        return cls.query.filter(Language.id == i).one()
+
+    def get_articles(
+        self, after_date=None, most_recent_first=False, easiest_first=False
+    ):
+        from zeeguu.core.model import Article
+
+        if hasattr(Language, &quot;cached_articles&quot;) and (
+            self.cached_articles.get(self.id, None)
+        ):
+            log(
+                f&quot;found {len(Language.cached_articles[self.id])} cached articles for {self.name}&quot;
+            )
+            all_ids = Language.cached_articles[self.id]
+            return Article.query.filter(Article.id.in_(all_ids)).all()
+
+        if not hasattr(Language, &quot;cached_articles&quot;):
+            Language.cached_articles = {}
+
+        log(&quot;computing and caching the articles for language: &quot; + self.name)
+        Language.cached_articles[self.id] = [
+            each.id
+            for each in self._get_articles(after_date, most_recent_first, easiest_first)
+        ]
+
+        all_ids = Language.cached_articles[self.id]
+        return Article.query.filter(Article.id.in_(all_ids)).all()
+
+    def _get_articles(
+        self, after_date=None, most_recent_first=False, easiest_first=False
+    ):
+        &quot;&quot;&quot;
+
+            Articles for this language from the article DB
+
+        :param limit:
+        :param after_date:
+        :param most_recent_first:
+        :param easiest_first:
+        :return:
+        &quot;&quot;&quot;
+
+        from zeeguu.core.model import Article
+
+        if not after_date:
+            after_date = datetime(2001, 1, 1)
+
+        try:
+            q = (
+                Article.query.filter(Article.language == self)
+                .filter(Article.broken == 0)
+                .filter(Article.published_time &gt;= after_date)
+                .filter(Article.word_count &gt; Article.MINIMUM_WORD_COUNT)
+            )
+
+            if most_recent_first:
+                q = q.order_by(Article.published_time.desc())
+            if easiest_first:
+                q = q.order_by(Article.fk_difficulty)
+
+            return q.limit(10000)
+
+        except Exception as e:
+            raise (e)
+            return None
+
+    @classmethod
+    def all_reading_for_user(cls, user):
+        &quot;&quot;&quot;
+            this used to allow multiple languages for reading;
+            currently it simply returns the learned language
+        :param user:
+        :return:
+        &quot;&quot;&quot;
+
+        return [user.learned_language]
+</div>
+<script src="https://www.zeljkoobrenovic.com/tools/common/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("editor");
+    editor.session.setMode("ace/mode/python");
+    editor.setTheme("ace/theme/xcode");
+    editor.setReadOnly(true);
+    editor.setOption("wrap", true);
+    editor.setPrintMarginColumn(120);
+</script>
+</body>
