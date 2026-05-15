@@ -178,7 +178,7 @@
 <div class='section'><div class='sectionHeader'>  <span class='sectionTitle'>Logical Decompositions Overview</span></div><div class='sectionBody'>
 <p>Analyzed system has <b>1</b> logical decomposition:</p>
 <ul>
-<li>primary (4 components)</li>
+<li>primary (20 components)</li>
 </ul>
 </div></div>
 <div class="tab">
@@ -186,18 +186,18 @@
 </div>
 <div id="primary" class="tabcontent" style="display: block">
 <h2 style="margin-bottom: 0;">Logical Decomposition #1: PRIMARY</h2>
-<p style="color: grey; margin-bottom: 24px;">The decompositions is based on the folder structure at <b>level 1</b> (relative to the source code root).</p>
+<p style="color: grey; margin-bottom: 24px;">The decompositions is based on the folder structure at <b>level 2</b> (relative to the source code root).</p>
 <div style="margin-top: -8px; margin-bottom: 18px;">
 <a target='_blank' href='visuals/bubble_chart_components_1.html'>Bubble Chart</a> | 
 <a target='_blank' href='visuals/tree_map_components_1.html'>Tree Map</a>
 </div>
-<div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Component Sizes (Lines of Code)</span>  <div class='subSectionSubtitle'>The "primary" logical decomposition has <b>4</b> components.</div></div><div class='sectionBody'>
+<div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Component Sizes (Lines of Code)</span>  <div class='subSectionSubtitle'>The "primary" logical decomposition has <b>20</b> components.</div></div><div class='sectionBody'>
 <ul>
 <li><b>650</b> files, <b>58,313</b> LOC (<b>100.0%</b> vs. main code).</li>
 </ul>
 <ul>
-<li>"zeeguu" is biggest, containing <b>65.17%</b> of LOC.</li>
-<li>"ROOT" is smallest, containing <b>0.35%</b> of LOC.</li>
+<li>"zeeguu/core" is biggest, containing <b>40.36%</b> of LOC.</li>
+<li>"zeeguu" is smallest, containing <b>0%</b> of LOC.</li>
 </ul>
 <br/>
 <br/>
@@ -205,16 +205,64 @@
 <div style="width: 100%; overflow-x: auto">
 <div style="min-width: 1000px">
 <div style="">
-<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='130' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu</text><text font-size='medium' x='508' y='17'>38002 LOC (65%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu.txt'>351 files</a></u></text></svg>
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='80' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/core</text><text font-size='medium' x='508' y='17'>23538 LOC (40%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu_core.txt'>263 files</a></u></text></svg>
 </div>
 <div style="">
-<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='67' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools</text><text font-size='medium' x='508' y='17'>19746 LOC (33%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools.txt'>285 files</a></u></text></svg>
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='29' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/api</text><text font-size='medium' x='508' y='17'>8693 LOC (14%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu_api.txt'>72 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='26' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools</text><text font-size='medium' x='508' y='17'>7854 LOC (13%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools.txt'>81 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='19' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/operations</text><text font-size='medium' x='508' y='17'>5694 LOC (9%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu_operations.txt'>11 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='17' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/report_generator</text><text font-size='medium' x='508' y='17'>5079 LOC (8%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_report_generator.txt'>4 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='10' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/migrations</text><text font-size='medium' x='508' y='17'>3089 LOC (5%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_migrations.txt'>133 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='3' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/old</text><text font-size='medium' x='508' y='17'>933 LOC (1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_old.txt'>27 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='2' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/user_word_integrity</text><text font-size='medium' x='508' y='17'>710 LOC (1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_user_word_integrity.txt'>6 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='2' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/crawler</text><text font-size='medium' x='508' y='17'>644 LOC (1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_crawler.txt'>7 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/audio-engleza</text><text font-size='medium' x='508' y='17'>435 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_audio_engleza.txt'>4 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/ml</text><text font-size='medium' x='508' y='17'>384 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_ml.txt'>4 files</a></u></text></svg>
 </div>
 <div style="">
 <svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>stanza_service</text><text font-size='medium' x='508' y='17'>362 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_stanza_service.txt'>3 files</a></u></text></svg>
 </div>
 <div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/stiri-simple</text><text font-size='medium' x='508' y='17'>291 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_stiri_simple.txt'>2 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/one_time</text><text font-size='medium' x='508' y='17'>234 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_one_time.txt'>6 files</a></u></text></svg>
+</div>
+<div style="">
 <svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>ROOT</text><text font-size='medium' x='508' y='17'>203 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_ROOT.txt'>11 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/sql</text><text font-size='medium' x='508' y='17'>93 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_sql.txt'>11 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/config</text><text font-size='medium' x='508' y='17'>51 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu_config.txt'>2 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/logging</text><text font-size='medium' x='508' y='17'>22 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu_logging.txt'>1 file</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/cl</text><text font-size='medium' x='508' y='17'>3 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu_cl.txt'>1 file</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu</text><text font-size='medium' x='508' y='17'>1 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu.txt'>1 file</a></u></text></svg>
 </div>
 </div>
 </div>
@@ -226,16 +274,64 @@
 <div style="width: 100%; overflow-x: auto">
 <div style="min-width: 1000px">
 <div style="">
-<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='103' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu</text><text font-size='medium' x='508' y='17'>2106 commits (51%) </text></svg>
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='82' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/core</text><text font-size='medium' x='508' y='17'>1684 commits (41%) </text></svg>
 </div>
 <div style="">
-<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='35' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools</text><text font-size='medium' x='508' y='17'>718 commits (17%) </text></svg>
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='43' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/api</text><text font-size='medium' x='508' y='17'>881 commits (21%) </text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='18' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools</text><text font-size='medium' x='508' y='17'>383 commits (9%) </text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='15' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/migrations</text><text font-size='medium' x='508' y='17'>317 commits (7%) </text></svg>
 </div>
 <div style="">
 <svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='5' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>ROOT</text><text font-size='medium' x='508' y='17'>119 commits (2%) </text></svg>
 </div>
 <div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='2' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/report_generator</text><text font-size='medium' x='508' y='17'>48 commits (1%) </text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/old</text><text font-size='medium' x='508' y='17'>33 commits (&lt;1%) </text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/operations</text><text font-size='medium' x='508' y='17'>18 commits (&lt;1%) </text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/sql</text><text font-size='medium' x='508' y='17'>16 commits (&lt;1%) </text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/config</text><text font-size='medium' x='508' y='17'>15 commits (&lt;1%) </text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/crawler</text><text font-size='medium' x='508' y='17'>12 commits (&lt;1%) </text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/logging</text><text font-size='medium' x='508' y='17'>9 commits (&lt;1%) </text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/stiri-simple</text><text font-size='medium' x='508' y='17'>8 commits (&lt;1%) </text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/one_time</text><text font-size='medium' x='508' y='17'>8 commits (&lt;1%) </text></svg>
+</div>
+<div style="">
 <svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>stanza_service</text><text font-size='medium' x='508' y='17'>7 commits (&lt;1%) </text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/user_word_integrity</text><text font-size='medium' x='508' y='17'>4 commits (&lt;1%) </text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/cl</text><text font-size='medium' x='508' y='17'>3 commits (&lt;1%) </text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/ml</text><text font-size='medium' x='508' y='17'>2 commits (&lt;1%) </text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu</text><text font-size='medium' x='508' y='17'>1 commits (&lt;1%) </text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:grey'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/audio-engleza</text><text font-size='medium' x='508' y='17'>1 commits (&lt;1%) </text></svg>
 </div>
 </div>
 </div>
@@ -270,18 +366,18 @@ animated commit history:
 <td style="border: none; text-align: center"></td>
 </tr>
 <tr>
-<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">zeeguu</td>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">zeeguu/core</td>
 <td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
 <div style="margin: auto; color: grey; font-size: 60%">
-1799
+1109
 </div>
-<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:53px" title="">
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:43px" title="">
 
 </div>
 </td>
 <td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
 <div style="margin: auto; color: grey; font-size: 60%">
-2188
+1659
 </div>
 <div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:65px" title="">
 
@@ -289,23 +385,86 @@ animated commit history:
 </td>
 <td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
 <div style="margin: auto; color: grey; font-size: 60%">
-1096
+794
 </div>
-<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:33px" title="">
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:31px" title="">
 
 </div>
 </td>
 <td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
 <div style="margin: auto; color: grey; font-size: 60%">
-541
+369
 </div>
-<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:16px" title="">
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:15px" title="">
 
 </div>
 </td>
 <td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
 <div style="margin: auto; color: grey; font-size: 60%">
-235
+227
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:9px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+105
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:5px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+</tr>
+<tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">zeeguu/api</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+679
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:27px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+492
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:19px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+299
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:12px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+159
 </div>
 <div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:7px" title="">
 
@@ -313,9 +472,79 @@ animated commit history:
 </td>
 <td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
 <div style="margin: auto; color: grey; font-size: 60%">
-110
+8
 </div>
-<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:4px" title="">
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+4
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+</tr>
+<tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">tools/migrations</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+206
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:8px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+155
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:6px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+77
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:3px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
 
 </div>
 </td>
@@ -344,39 +573,39 @@ animated commit history:
 <td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">tools</td>
 <td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
 <div style="margin: auto; color: grey; font-size: 60%">
-255
+49
 </div>
-<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:8px" title="">
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:2px" title="">
 
 </div>
 </td>
 <td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
 <div style="margin: auto; color: grey; font-size: 60%">
-518
+268
 </div>
-<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:16px" title="">
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:11px" title="">
 
 </div>
 </td>
 <td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
 <div style="margin: auto; color: grey; font-size: 60%">
-303
+120
 </div>
-<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:9px" title="">
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:5px" title="">
 
 </div>
 </td>
 <td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
 <div style="margin: auto; color: grey; font-size: 60%">
-102
+50
 </div>
-<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:3px" title="">
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:2px" title="">
 
 </div>
 </td>
 <td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
 <div style="margin: auto; color: grey; font-size: 60%">
-25
+17
 </div>
 <div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:1px" title="">
 
@@ -384,7 +613,7 @@ animated commit history:
 </td>
 <td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
 <div style="margin: auto; color: grey; font-size: 60%">
-22
+10
 </div>
 <div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:1px" title="">
 
@@ -418,6 +647,65 @@ animated commit history:
 </td>
 </tr>
 <tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">zeeguu/operations</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+11
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+24
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+</tr>
+<tr>
 <td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">ROOT</td>
 <td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
 <div style="margin: auto; color: grey; font-size: 60%">
@@ -431,7 +719,7 @@ animated commit history:
 <div style="margin: auto; color: grey; font-size: 60%">
 27
 </div>
-<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:1px" title="">
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:2px" title="">
 
 </div>
 </td>
@@ -487,7 +775,7 @@ animated commit history:
 <div style="margin: auto; color: grey; font-size: 60%">
 30
 </div>
-<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:1px" title="">
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:2px" title="">
 
 </div>
 </td>
@@ -496,6 +784,183 @@ animated commit history:
 22
 </div>
 <div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:1px" title="">
+
+</div>
+</td>
+</tr>
+<tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">tools/old</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+22
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+43
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:2px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+51
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:2px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+</tr>
+<tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">tools/crawler</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+19
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+</tr>
+<tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">tools/report_generator</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+15
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+61
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:3px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
 
 </div>
 </td>
@@ -556,6 +1021,584 @@ animated commit history:
 </div>
 </td>
 </tr>
+<tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">tools/stiri-simple</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+10
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+</tr>
+<tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">tools/one_time</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+9
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+</tr>
+<tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">tools/user_word_integrity</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+8
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+</tr>
+<tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">tools/ml</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+8
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+</tr>
+<tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">zeeguu/logging</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+7
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+2
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+</tr>
+<tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">zeeguu/config</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+6
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+3
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+8
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+</tr>
+<tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">tools/audio-engleza</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+4
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 1.0; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+</tr>
+<tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">zeeguu</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+1
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+</tr>
+<tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">tools/sql</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+2
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+1
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+8
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+12
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+</tr>
+<tr>
+<td style="text-align: right; color: grey; font-size: 80%; vertical-align: middle; border: none;">zeeguu/cl</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="margin: auto; color: grey; font-size: 60%">
+3
+</div>
+<div style="cursor: help;margin: auto; width: 32px; background-color: #343434; opacity: 0.5; height:1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+<td style="border: none; padding: 1px; text-align: center; vertical-align: bottom">
+<div style="cursor: help;margin: auto; width: 32px; background-color: lightgrey; height: 1px" title="">
+
+</div>
+</td>
+</tr>
 </table>
 </td>
 </tr>
@@ -569,76 +1612,292 @@ animated commit history:
 <br/>
 <br/>
 <div style="width: 100%; overflow: auto; font-weight: normal;">
-<svg width="280pt" height="217pt"
- viewBox="0.00 0.00 280.00 217.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 212.5)">
+<svg width="793pt" height="648pt"
+ viewBox="0.00 0.00 793.00 648.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 643.75)">
 <title>G</title>
-<polygon fill="white" stroke="none" points="-4,4 -4,-212.5 276.29,-212.5 276.29,4 -4,4"/>
-<!-- zeeguu -->
+<polygon fill="white" stroke="none" points="-4,4 -4,-643.75 789.38,-643.75 789.38,4 -4,4"/>
+<!-- zeeguu/core -->
 <g id="node1" class="node">
-<title>zeeguu</title>
-<polygon fill="#00b2ee" stroke="white" points="191.75,-208.5 132.25,-208.5 132.25,-172.5 191.75,-172.5 191.75,-208.5"/>
-<text xml:space="preserve" text-anchor="middle" x="162" y="-185.82" font-family="Tahoma" font-size="14.00">zeeguu</text>
+<title>zeeguu/core</title>
+<polygon fill="#00b2ee" stroke="white" points="364.88,-553.5 273.12,-553.5 273.12,-517.5 364.88,-517.5 364.88,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="319" y="-530.83" font-family="Tahoma" font-size="14.00">zeeguu/core</text>
 </g>
-<!-- zeeguu&#45;&#45;zeeguu -->
+<!-- zeeguu/core&#45;&#45;zeeguu/core -->
 <g id="edge1" class="edge">
-<title>zeeguu&#45;&#45;zeeguu</title>
-<path fill="none" stroke="#a0a0a0" stroke-width="10" d="M191.84,-198.59C201.79,-198.59 209.75,-195.89 209.75,-190.5 209.75,-185.11 201.79,-182.41 191.84,-182.41"/>
-<text xml:space="preserve" text-anchor="middle" x="222.88" y="-186.22" font-family="Arial" font-size="12.00"> 352 </text>
+<title>zeeguu/core&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#a0a0a0" stroke-width="10" d="M365.22,-543.37C375.44,-542.63 382.88,-540.01 382.88,-535.5 382.88,-530.99 375.44,-528.37 365.22,-527.63"/>
+<text xml:space="preserve" text-anchor="middle" x="396" y="-531.23" font-family="Arial" font-size="12.00"> 242 </text>
 </g>
-<!-- tools -->
-<g id="node2" class="node">
-<title>tools</title>
-<polygon fill="#00b2ee" stroke="white" points="54,-122.25 0,-122.25 0,-86.25 54,-86.25 54,-122.25"/>
-<text xml:space="preserve" text-anchor="middle" x="27" y="-99.58" font-family="Tahoma" font-size="14.00">tools</text>
+<!-- tools/migrations -->
+<g id="node3" class="node">
+<title>tools/migrations</title>
+<polygon fill="#00b2ee" stroke="white" points="554.38,-467.25 441.62,-467.25 441.62,-431.25 554.38,-431.25 554.38,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="498" y="-444.57" font-family="Tahoma" font-size="14.00">tools/migrations</text>
 </g>
-<!-- zeeguu&#45;&#45;tools -->
-<g id="edge2" class="edge">
-<title>zeeguu&#45;&#45;tools</title>
-<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M134.03,-172.04C110.7,-157.49 77.66,-136.86 54.47,-122.4"/>
-<text xml:space="preserve" text-anchor="middle" x="115.71" y="-143.1" font-family="Arial" font-size="12.00"> 184 </text>
-</g>
-<!-- stanza_service -->
-<g id="node4" class="node">
-<title>stanza_service</title>
-<polygon fill="#00b2ee" stroke="white" points="214.62,-122.25 109.38,-122.25 109.38,-86.25 214.62,-86.25 214.62,-122.25"/>
-<text xml:space="preserve" text-anchor="middle" x="162" y="-99.58" font-family="Tahoma" font-size="14.00">stanza_service</text>
-</g>
-<!-- zeeguu&#45;&#45;stanza_service -->
-<g id="edge6" class="edge">
-<title>zeeguu&#45;&#45;stanza_service</title>
-<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M162,-172.04C162,-157.58 162,-137.14 162,-122.68"/>
-<text xml:space="preserve" text-anchor="middle" x="168.38" y="-143.1" font-family="Arial" font-size="12.00"> 3 </text>
-</g>
-<!-- tools&#45;&#45;tools -->
+<!-- zeeguu/core&#45;&#45;tools/migrations -->
 <g id="edge3" class="edge">
-<title>tools&#45;&#45;tools</title>
-<path fill="none" stroke="#a0a0a0" stroke-opacity="0.368627" d="M54.24,-112.33C64.02,-112.5 72,-109.81 72,-104.25 72,-98.69 64.02,-96 54.24,-96.17"/>
-<text xml:space="preserve" text-anchor="middle" x="81.75" y="-99.97" font-family="Arial" font-size="12.00"> 49 </text>
+<title>zeeguu/core&#45;&#45;tools/migrations</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M365.29,-523C385.14,-517.22 408.25,-509.33 428,-499.5 445.56,-490.76 463.62,-477.94 477,-467.57"/>
+<text xml:space="preserve" text-anchor="middle" x="465.45" y="-488.1" font-family="Arial" font-size="12.00"> 149 </text>
 </g>
 <!-- ROOT -->
-<g id="node3" class="node">
+<g id="node6" class="node">
 <title>ROOT</title>
-<polygon fill="#00b2ee" stroke="white" points="181,-36 127,-36 127,0 181,0 181,-36"/>
-<text xml:space="preserve" text-anchor="middle" x="154" y="-13.32" font-family="Tahoma" font-size="14.00">ROOT</text>
+<polygon fill="#00b2ee" stroke="white" points="529,-122.25 475,-122.25 475,-86.25 529,-86.25 529,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="502" y="-99.58" font-family="Tahoma" font-size="14.00">ROOT</text>
+</g>
+<!-- zeeguu/core&#45;&#45;ROOT -->
+<g id="edge15" class="edge">
+<title>zeeguu/core&#45;&#45;ROOT</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M365.2,-531.22C449.8,-523.93 621,-502.71 621,-450.25 621,-450.25 621,-450.25 621,-275.75 621,-209.51 559.86,-150.63 525.23,-122.59"/>
+<text xml:space="preserve" text-anchor="middle" x="627.38" y="-315.6" font-family="Arial" font-size="12.00"> 5 </text>
+</g>
+<!-- stanza_service -->
+<g id="node8" class="node">
+<title>stanza_service</title>
+<polygon fill="#00b2ee" stroke="white" points="754.62,-467.25 649.38,-467.25 649.38,-431.25 754.62,-431.25 754.62,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="702" y="-444.57" font-family="Tahoma" font-size="14.00">stanza_service</text>
+</g>
+<!-- zeeguu/core&#45;&#45;stanza_service -->
+<g id="edge19" class="edge">
+<title>zeeguu/core&#45;&#45;stanza_service</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M365.32,-532.32C440.86,-528.26 586.99,-518.24 635,-499.5 653.42,-492.31 671.32,-478.71 683.97,-467.62"/>
+<text xml:space="preserve" text-anchor="middle" x="667.31" y="-488.1" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- zeeguu/api -->
+<g id="node2" class="node">
+<title>zeeguu/api</title>
+<polygon fill="#00b2ee" stroke="white" points="238.38,-36 155.62,-36 155.62,0 238.38,0 238.38,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="197" y="-13.32" font-family="Tahoma" font-size="14.00">zeeguu/api</text>
+</g>
+<!-- zeeguu/api&#45;&#45;zeeguu/core -->
+<g id="edge2" class="edge">
+<title>zeeguu/api&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-width="9" stroke-opacity="0.929412" d="M155.34,-24.22C110.64,-32.42 46,-52.97 46,-103.25 46,-234.62 46,-234.62 46,-234.62 46,-358.86 109.17,-383.58 201,-467.25 223.92,-488.13 254.43,-505.31 278.68,-517.07"/>
+<text xml:space="preserve" text-anchor="middle" x="65.06" y="-272.48" font-family="Arial" font-size="12.00"> 227 </text>
+</g>
+<!-- zeeguu/api&#45;&#45;zeeguu/api -->
+<g id="edge4" class="edge">
+<title>zeeguu/api&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#a0a0a0" stroke-width="4" stroke-opacity="0.576471" d="M238.62,-25.96C248.8,-25.37 256.38,-22.72 256.38,-18 256.38,-13.28 248.8,-10.63 238.62,-10.04"/>
+<text xml:space="preserve" text-anchor="middle" x="269.12" y="-13.72" font-family="Arial" font-size="12.00"> 114 </text>
+</g>
+<!-- zeeguu/api&#45;&#45;tools/migrations -->
+<g id="edge5" class="edge">
+<title>zeeguu/api&#45;&#45;tools/migrations</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M238.59,-20.07C322.43,-23.29 506.46,-36.05 538,-86.25 615.36,-209.35 586.22,-279.6 529,-413.25 526.25,-419.67 521.85,-425.72 517.22,-430.94"/>
+<text xml:space="preserve" text-anchor="middle" x="597.7" y="-229.35" font-family="Arial" font-size="12.00"> 113 </text>
+</g>
+<!-- tools/migrations&#45;&#45;tools/migrations -->
+<g id="edge6" class="edge">
+<title>tools/migrations&#45;&#45;tools/migrations</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.368627" d="M554.75,-456.89C565.11,-455.92 572.38,-453.38 572.38,-449.25 572.38,-445.12 565.11,-442.58 554.75,-441.61"/>
+<text xml:space="preserve" text-anchor="middle" x="582.12" y="-444.98" font-family="Arial" font-size="12.00"> 33 </text>
+</g>
+<!-- tools -->
+<g id="node4" class="node">
+<title>tools</title>
+<polygon fill="#00b2ee" stroke="white" points="346,-381 292,-381 292,-345 346,-345 346,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="319" y="-358.32" font-family="Tahoma" font-size="14.00">tools</text>
+</g>
+<!-- tools/migrations&#45;&#45;tools -->
+<g id="edge10" class="edge">
+<title>tools/migrations&#45;&#45;tools</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M460.91,-430.79C426.81,-414.74 377.04,-391.32 346.4,-376.9"/>
+<text xml:space="preserve" text-anchor="middle" x="428.97" y="-401.85" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- tools/migrations&#45;&#45;ROOT -->
+<g id="edge18" class="edge">
+<title>tools/migrations&#45;&#45;ROOT</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M508.28,-431.02C511.02,-425.53 513.61,-419.31 515,-413.25 516.42,-407.08 515.01,-405.33 515,-399 514.78,-284 533.13,-253.65 514,-140.25 513,-134.3 511.11,-128 509.13,-122.41"/>
+<text xml:space="preserve" text-anchor="middle" x="528.51" y="-272.48" font-family="Arial" font-size="12.00"> 4 </text>
+</g>
+<!-- tools&#45;&#45;zeeguu/core -->
+<g id="edge7" class="edge">
+<title>tools&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.368627" d="M319,-381.33C319,-414.05 319,-484.53 319,-517.21"/>
+<text xml:space="preserve" text-anchor="middle" x="328.75" y="-444.98" font-family="Arial" font-size="12.00"> 30 </text>
+</g>
+<!-- tools&#45;&#45;zeeguu/api -->
+<g id="edge8" class="edge">
+<title>tools&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M309.99,-344.76C290.11,-306.03 242.18,-208.75 216,-122.25 207.08,-92.77 201.66,-57.21 199,-36.45"/>
+<text xml:space="preserve" text-anchor="middle" x="256.41" y="-186.22" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- tools&#45;&#45;tools -->
+<g id="edge12" class="edge">
+<title>tools&#45;&#45;tools</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M346.24,-371.08C356.02,-371.25 364,-368.56 364,-363 364,-357.44 356.02,-354.75 346.24,-354.92"/>
+<text xml:space="preserve" text-anchor="middle" x="370.38" y="-358.73" font-family="Arial" font-size="12.00"> 8 </text>
 </g>
 <!-- tools&#45;&#45;ROOT -->
-<g id="edge5" class="edge">
+<g id="edge29" class="edge">
 <title>tools&#45;&#45;ROOT</title>
-<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M53.31,-85.79C75.11,-71.33 105.93,-50.89 127.72,-36.43"/>
-<text xml:space="preserve" text-anchor="middle" x="104.48" y="-56.85" font-family="Arial" font-size="12.00"> 4 </text>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M346.44,-344.69C383.8,-319.55 449.8,-269.24 483,-208.5 498.04,-180.99 501.44,-143.84 502.06,-122.42"/>
+<text xml:space="preserve" text-anchor="middle" x="477.2" y="-229.35" font-family="Arial" font-size="12.00"> 1 </text>
 </g>
-<!-- ROOT&#45;&#45;zeeguu -->
-<g id="edge4" class="edge">
-<title>ROOT&#45;&#45;zeeguu</title>
-<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M181.3,-28.78C205.31,-39.01 238.76,-57.63 254,-86.25 261.52,-100.37 261.24,-107.98 254,-122.25 241.1,-147.65 213.61,-165.76 192.01,-176.73"/>
-<text xml:space="preserve" text-anchor="middle" x="265.91" y="-99.97" font-family="Arial" font-size="12.00"> 5 </text>
+<!-- tools/crawler -->
+<g id="node7" class="node">
+<title>tools/crawler</title>
+<polygon fill="#00b2ee" stroke="white" points="222.38,-294.75 127.62,-294.75 127.62,-258.75 222.38,-258.75 222.38,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="175" y="-272.07" font-family="Tahoma" font-size="14.00">tools/crawler</text>
+</g>
+<!-- tools&#45;&#45;tools/crawler -->
+<g id="edge28" class="edge">
+<title>tools&#45;&#45;tools/crawler</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M291.7,-347.72C280.07,-341.51 266.41,-334.05 254.25,-327 236.6,-316.76 217.12,-304.66 201.9,-295.03"/>
+<text xml:space="preserve" text-anchor="middle" x="260.62" y="-315.6" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- zeeguu/operations -->
+<g id="node5" class="node">
+<title>zeeguu/operations</title>
+<polygon fill="#00b2ee" stroke="white" points="442.88,-208.5 315.12,-208.5 315.12,-172.5 442.88,-172.5 442.88,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="379" y="-185.82" font-family="Tahoma" font-size="14.00">zeeguu/operations</text>
+</g>
+<!-- zeeguu/operations&#45;&#45;zeeguu/core -->
+<g id="edge9" class="edge">
+<title>zeeguu/operations&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M382.42,-208.98C388.41,-242.68 398.98,-318.8 386,-381 375.07,-433.37 345.24,-489.76 329.32,-517.33"/>
+<text xml:space="preserve" text-anchor="middle" x="400.63" y="-358.73" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- zeeguu/operations&#45;&#45;zeeguu/api -->
+<g id="edge13" class="edge">
+<title>zeeguu/operations&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M386.75,-172.37C395.43,-150.32 406.09,-111.8 388,-86.25 354.28,-38.62 283.98,-24.49 238.72,-20.43"/>
+<text xml:space="preserve" text-anchor="middle" x="404.25" y="-99.97" font-family="Arial" font-size="12.00"> 7 </text>
+</g>
+<!-- zeeguu/operations&#45;&#45;tools/migrations -->
+<g id="edge21" class="edge">
+<title>zeeguu/operations&#45;&#45;tools/migrations</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M433.82,-208.91C441.88,-213.52 449.35,-219.3 455,-226.5 503.78,-288.66 502.41,-390.35 499.62,-430.83"/>
+<text xml:space="preserve" text-anchor="middle" x="501.19" y="-315.6" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- zeeguu/operations&#45;&#45;tools -->
+<g id="edge17" class="edge">
+<title>zeeguu/operations&#45;&#45;tools</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M373.48,-208.71C365.13,-234.55 348.58,-284.82 333,-327 330.87,-332.77 328.41,-339.02 326.16,-344.62"/>
+<text xml:space="preserve" text-anchor="middle" x="363.12" y="-272.48" font-family="Arial" font-size="12.00"> 5 </text>
+</g>
+<!-- zeeguu/operations&#45;&#45;zeeguu/operations -->
+<g id="edge11" class="edge">
+<title>zeeguu/operations&#45;&#45;zeeguu/operations</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M443.19,-197.98C453.67,-196.91 460.88,-194.42 460.88,-190.5 460.88,-186.58 453.67,-184.09 443.19,-183.02"/>
+<text xml:space="preserve" text-anchor="middle" x="467.25" y="-186.22" font-family="Arial" font-size="12.00"> 8 </text>
+</g>
+<!-- zeeguu/operations&#45;&#45;ROOT -->
+<g id="edge20" class="edge">
+<title>zeeguu/operations&#45;&#45;ROOT</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M404.49,-172.04C425.6,-157.58 455.45,-137.14 476.55,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="454.24" y="-143.1" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- tools/report_generator -->
+<g id="node9" class="node">
+<title>tools/report_generator</title>
+<polygon fill="#00b2ee" stroke="white" points="379,-122.25 225,-122.25 225,-86.25 379,-86.25 379,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="302" y="-99.58" font-family="Tahoma" font-size="14.00">tools/report_generator</text>
+</g>
+<!-- zeeguu/operations&#45;&#45;tools/report_generator -->
+<g id="edge25" class="edge">
+<title>zeeguu/operations&#45;&#45;tools/report_generator</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M363.05,-172.04C349.83,-157.58 331.14,-137.14 317.93,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="351.49" y="-143.1" font-family="Arial" font-size="12.00"> 2 </text>
+</g>
+<!-- ROOT&#45;&#45;zeeguu/api -->
+<g id="edge14" class="edge">
+<title>ROOT&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M481.69,-85.91C467.76,-74.98 448.37,-61.55 429,-54 365.62,-29.3 286.2,-21.93 238.64,-19.79"/>
+<text xml:space="preserve" text-anchor="middle" x="461.14" y="-56.85" font-family="Arial" font-size="12.00"> 5 </text>
+</g>
+<!-- tools/crawler&#45;&#45;zeeguu/core -->
+<g id="edge16" class="edge">
+<title>tools/crawler&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M184.63,-294.92C210.81,-341.6 283.1,-470.48 309.33,-517.26"/>
+<text xml:space="preserve" text-anchor="middle" x="256.7" y="-401.85" font-family="Arial" font-size="12.00"> 5 </text>
+</g>
+<!-- tools/crawler&#45;&#45;zeeguu/api -->
+<g id="edge32" class="edge">
+<title>tools/crawler&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M173.01,-258.39C169.24,-220.49 163.07,-127.83 183,-54 184.6,-48.06 186.92,-41.76 189.2,-36.17"/>
+<text xml:space="preserve" text-anchor="middle" x="176.44" y="-143.1" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- tools/crawler&#45;&#45;zeeguu/operations -->
+<g id="edge23" class="edge">
+<title>tools/crawler&#45;&#45;zeeguu/operations</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M222.77,-267.2C248.47,-261.59 280.27,-252.99 307,-240.75 325.31,-232.36 344.03,-219.4 357.79,-208.87"/>
+<text xml:space="preserve" text-anchor="middle" x="338.48" y="-229.35" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- tools/crawler&#45;&#45;tools/crawler -->
+<g id="edge22" class="edge">
+<title>tools/crawler&#45;&#45;tools/crawler</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M222.6,-284.6C232.9,-283.83 240.38,-281.21 240.38,-276.75 240.38,-272.29 232.9,-269.67 222.6,-268.9"/>
+<text xml:space="preserve" text-anchor="middle" x="246.75" y="-272.48" font-family="Arial" font-size="12.00"> 3 </text>
 </g>
 <!-- stanza_service&#45;&#45;stanza_service -->
-<g id="edge7" class="edge">
+<g id="edge24" class="edge">
 <title>stanza_service&#45;&#45;stanza_service</title>
-<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M214.98,-111.98C225.3,-111.08 232.62,-108.5 232.62,-104.25 232.62,-100 225.3,-97.42 214.98,-96.52"/>
-<text xml:space="preserve" text-anchor="middle" x="239" y="-99.97" font-family="Arial" font-size="12.00"> 2 </text>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M754.98,-456.98C765.3,-456.08 772.62,-453.5 772.62,-449.25 772.62,-445 765.3,-442.42 754.98,-441.52"/>
+<text xml:space="preserve" text-anchor="middle" x="779" y="-444.98" font-family="Arial" font-size="12.00"> 2 </text>
+</g>
+<!-- tools/report_generator&#45;&#45;zeeguu/core -->
+<g id="edge30" class="edge">
+<title>tools/report_generator&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M260.58,-122.72C198.37,-151.87 90.93,-215.17 119,-294.75 154.16,-394.43 251.8,-481.36 296.33,-517.13"/>
+<text xml:space="preserve" text-anchor="middle" x="138.56" y="-315.6" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- tools/report_generator&#45;&#45;tools -->
+<g id="edge26" class="edge">
+<title>tools/report_generator&#45;&#45;tools</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M298.15,-122.41C292.9,-148.18 284.75,-198.37 290.25,-240.75 291.31,-248.96 293.01,-250.72 295,-258.75 302.49,-288.94 310.55,-324.26 315.16,-344.79"/>
+<text xml:space="preserve" text-anchor="middle" x="296.62" y="-229.35" font-family="Arial" font-size="12.00"> 2 </text>
+</g>
+<!-- zeeguu/logging -->
+<g id="node10" class="node">
+<title>zeeguu/logging</title>
+<polygon fill="#00b2ee" stroke="white" points="121.12,-639.75 12.88,-639.75 12.88,-603.75 121.12,-603.75 121.12,-639.75"/>
+<text xml:space="preserve" text-anchor="middle" x="67" y="-617.08" font-family="Tahoma" font-size="14.00">zeeguu/logging</text>
+</g>
+<!-- zeeguu/logging&#45;&#45;zeeguu/core -->
+<g id="edge27" class="edge">
+<title>zeeguu/logging&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M119.21,-603.29C164.48,-588.16 229.37,-566.47 272.78,-551.95"/>
+<text xml:space="preserve" text-anchor="middle" x="214.46" y="-574.35" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- zeeguu/logging&#45;&#45;zeeguu/api -->
+<g id="edge36" class="edge">
+<title>zeeguu/logging&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M41.67,-603.49C22.7,-588.32 0,-564.35 0,-536.5 0,-536.5 0,-536.5 0,-103.25 0,-36.29 97.39,-21.84 155.22,-19.16"/>
+<text xml:space="preserve" text-anchor="middle" x="6.38" y="-315.6" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- zeeguu/logging&#45;&#45;tools -->
+<g id="edge35" class="edge">
+<title>zeeguu/logging&#45;&#45;tools</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M66.84,-603.62C67.43,-576.1 72.1,-521.46 98.25,-485.25 146.76,-418.07 244.41,-383.91 291.87,-370.7"/>
+<text xml:space="preserve" text-anchor="middle" x="104.62" y="-488.1" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- zeeguu/logging&#45;&#45;tools/crawler -->
+<g id="edge31" class="edge">
+<title>zeeguu/logging&#45;&#45;tools/crawler</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M65.12,-603.36C63.36,-582.65 61.81,-547.16 68,-517.5 86.47,-428.93 140.63,-333.57 164.03,-295.2"/>
+<text xml:space="preserve" text-anchor="middle" x="100.75" y="-444.98" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- tools/one_time -->
+<g id="node11" class="node">
+<title>tools/one_time</title>
+<polygon fill="#00b2ee" stroke="white" points="372.38,-639.75 265.62,-639.75 265.62,-603.75 372.38,-603.75 372.38,-639.75"/>
+<text xml:space="preserve" text-anchor="middle" x="319" y="-617.08" font-family="Tahoma" font-size="14.00">tools/one_time</text>
+</g>
+<!-- tools/one_time&#45;&#45;zeeguu/core -->
+<g id="edge33" class="edge">
+<title>tools/one_time&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M319,-603.29C319,-588.83 319,-568.39 319,-553.93"/>
+<text xml:space="preserve" text-anchor="middle" x="325.38" y="-574.35" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- tools/one_time&#45;&#45;tools/one_time -->
+<g id="edge34" class="edge">
+<title>tools/one_time&#45;&#45;tools/one_time</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M372.85,-629.45C383.11,-628.53 390.38,-625.96 390.38,-621.75 390.38,-617.54 383.11,-614.97 372.85,-614.05"/>
+<text xml:space="preserve" text-anchor="middle" x="396.75" y="-617.48" font-family="Arial" font-size="12.00"> 1 </text>
 </g>
 </g>
 </svg>
@@ -652,7 +1911,7 @@ animated commit history:
 </div></div>
 <br/>
 <hr/>
-<p><i>2026-05-14 21:48</i></p>
+<p><i>2026-05-14 23:45</i></p>
 </div>
 </body>
 </html>

@@ -1,0 +1,24 @@
+26 duplicated lines in:
+  - tools/old/remove_unreferenced_articles.py (41:76, 31%)
+  - tools/remove_unreferenced_articles.py (49:84, 35%)
+
+21 duplicated lines in:
+  - tools/old/remove_unreferenced_articles.py (95:123, 25%)
+  - tools/remove_unreferenced_articles.py (96:124, 28%)
+
+10 duplicated lines in:
+  - tools/old/es_v8_migration/set_new_topics_from_url_keyword.py (57:66, 20%)
+  - tools/set_new_topics_article.py (45:54, 30%)
+
+10 duplicated lines in:
+  - tools/old/es_v8_migration/set_url_keywords_article.py (45:54, 27%)
+  - tools/set_new_topics_article.py (45:54, 30%)
+
+7 duplicated lines in:
+  - tools/old/remove_unreferenced_articles.py (78:86, 8%)
+  - tools/remove_unreferenced_articles.py (86:94, 9%)
+
+6 duplicated lines in:
+  - tools/old/remove_unreferenced_articles.py (23:28, 7%)
+  - tools/remove_unreferenced_articles.py (24:29, 8%)
+

@@ -1,0 +1,7 @@
+Path	Lines of Code
+tools/one_time/fix_html_entities_in_articles.py	36
+tools/one_time/fix_postillon_topics.py	26
+tools/one_time/fix_tokenization_cache_html_entities.py	31
+tools/one_time/reindex_articles_with_html_entities.py	53
+tools/one_time/reindex_articles_with_quotes.py	53
+tools/one_time/reindex_single_article.py	35

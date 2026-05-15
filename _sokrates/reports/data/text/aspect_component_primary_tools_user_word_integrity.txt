@@ -1,0 +1,7 @@
+Path	Lines of Code
+tools/user_word_integrity/_check_and_fix_user_word_integrity.py	167
+tools/user_word_integrity/_cleanup_orphaned_user_words.py	132
+tools/user_word_integrity/_daily_user_word_integrity_check.py	70
+tools/user_word_integrity/_delete_unvalidatable_bookmarks.py	149
+tools/user_word_integrity/_fix_multiword_bookmark_positions.py	154
+tools/user_word_integrity/_test_integrity_validation.py	38

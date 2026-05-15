@@ -26,6 +26,10 @@ graph G {
 
 
 
-    "tools" -- "zeeguu" [label=" 11082 ", penwidth="10", color="#DC143CFF"];
+    "tools/report_generator" -- "zeeguu/operations" [label=" 10116 ", penwidth="10", color="#DC143CFF"];
+    "tools/crawler" -- "zeeguu/operations" [label=" 889 ", penwidth="1", color="#DC143C4C"];
+    "tools/old" -- "tools" [label=" 150 ", penwidth="1", color="#DC143C4C"];
+    "zeeguu/api" -- "zeeguu/core" [label=" 62 ", penwidth="1", color="#DC143C4C"];
+    "tools" -- "zeeguu/api" [label=" 51 ", penwidth="1", color="#DC143C4C"];
 
 }

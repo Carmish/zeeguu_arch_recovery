@@ -184,7 +184,7 @@
 <div class='section'><div class='sectionHeader'>  <span class='sectionTitle'>Logical Decompositions Overview</span></div><div class='sectionBody'>
 <p>Analyzed system has <b>1</b> logical decomposition:</p>
 <ul>
-<li>primary (4 components)</li>
+<li>primary (20 components)</li>
 </ul>
 </div></div>
 <div class="tab">
@@ -192,18 +192,18 @@
 </div>
 <div id="primary" class="tabcontent" style="display: block">
 <h2 style="margin-bottom: 0;">Logical Decomposition #1: PRIMARY</h2>
-<p style="color: grey; margin-bottom: 24px;">The decompositions is based on the folder structure at <b>level 1</b> (relative to the source code root).</p>
+<p style="color: grey; margin-bottom: 24px;">The decompositions is based on the folder structure at <b>level 2</b> (relative to the source code root).</p>
 <div style="margin-top: -8px; margin-bottom: 18px;">
 <a target='_blank' href='visuals/bubble_chart_components_1.html'>Bubble Chart</a> | 
 <a target='_blank' href='visuals/tree_map_components_1.html'>Tree Map</a>
 </div>
-<div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Component Sizes (Lines of Code)</span>  <div class='subSectionSubtitle'>The "primary" logical decomposition has <b>4</b> components.</div></div><div class='sectionBody'>
+<div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Component Sizes (Lines of Code)</span>  <div class='subSectionSubtitle'>The "primary" logical decomposition has <b>20</b> components.</div></div><div class='sectionBody'>
 <ul>
 <li><b>650</b> files, <b>58,313</b> LOC (<b>100.0%</b> vs. main code).</li>
 </ul>
 <ul>
-<li>"zeeguu" is biggest, containing <b>65.17%</b> of LOC.</li>
-<li>"ROOT" is smallest, containing <b>0.35%</b> of LOC.</li>
+<li>"zeeguu/core" is biggest, containing <b>40.36%</b> of LOC.</li>
+<li>"zeeguu" is smallest, containing <b>0%</b> of LOC.</li>
 </ul>
 <br/>
 <br/>
@@ -211,16 +211,64 @@
 <div style="width: 100%; overflow-x: auto">
 <div style="min-width: 1000px">
 <div style="">
-<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='130' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu</text><text font-size='medium' x='508' y='17'>38002 LOC (65%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu.txt'>351 files</a></u></text></svg>
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='80' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/core</text><text font-size='medium' x='508' y='17'>23538 LOC (40%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu_core.txt'>263 files</a></u></text></svg>
 </div>
 <div style="">
-<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='67' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools</text><text font-size='medium' x='508' y='17'>19746 LOC (33%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools.txt'>285 files</a></u></text></svg>
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='29' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/api</text><text font-size='medium' x='508' y='17'>8693 LOC (14%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu_api.txt'>72 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='26' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools</text><text font-size='medium' x='508' y='17'>7854 LOC (13%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools.txt'>81 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='19' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/operations</text><text font-size='medium' x='508' y='17'>5694 LOC (9%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu_operations.txt'>11 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='17' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/report_generator</text><text font-size='medium' x='508' y='17'>5079 LOC (8%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_report_generator.txt'>4 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='10' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/migrations</text><text font-size='medium' x='508' y='17'>3089 LOC (5%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_migrations.txt'>133 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='3' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/old</text><text font-size='medium' x='508' y='17'>933 LOC (1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_old.txt'>27 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='2' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/user_word_integrity</text><text font-size='medium' x='508' y='17'>710 LOC (1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_user_word_integrity.txt'>6 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='2' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/crawler</text><text font-size='medium' x='508' y='17'>644 LOC (1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_crawler.txt'>7 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/audio-engleza</text><text font-size='medium' x='508' y='17'>435 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_audio_engleza.txt'>4 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/ml</text><text font-size='medium' x='508' y='17'>384 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_ml.txt'>4 files</a></u></text></svg>
 </div>
 <div style="">
 <svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>stanza_service</text><text font-size='medium' x='508' y='17'>362 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_stanza_service.txt'>3 files</a></u></text></svg>
 </div>
 <div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/stiri-simple</text><text font-size='medium' x='508' y='17'>291 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_stiri_simple.txt'>2 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/one_time</text><text font-size='medium' x='508' y='17'>234 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_one_time.txt'>6 files</a></u></text></svg>
+</div>
+<div style="">
 <svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>ROOT</text><text font-size='medium' x='508' y='17'>203 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_ROOT.txt'>11 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>tools/sql</text><text font-size='medium' x='508' y='17'>93 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_tools_sql.txt'>11 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/config</text><text font-size='medium' x='508' y='17'>51 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu_config.txt'>2 files</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/logging</text><text font-size='medium' x='508' y='17'>22 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu_logging.txt'>1 file</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu/cl</text><text font-size='medium' x='508' y='17'>3 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu_cl.txt'>1 file</a></u></text></svg>
+</div>
+<div style="">
+<svg width='800' height='24'><rect x='300' y='2' width='200' height='20' style='fill-opacity:0.4;stroke:#a0a0a0;stroke-width:0.5px;fill:#ffffff'/><rect x='300' y='2' width='1' height='20' style='fill:#c0deed;stroke:#898989;stroke-width:0.5;fill:#00aced'/><text text-anchor='end' font-size='medium' x='296' y='17'>zeeguu</text><text font-size='medium' x='508' y='17'>1 LOC (&lt;1%) <u><a target='_blank' href='../data/text/aspect_component_primary_zeeguu.txt'>1 file</a></u></text></svg>
 </div>
 </div>
 </div>
@@ -233,7 +281,7 @@
 </div></div>
 <br/>
 <hr/>
-<p><i>2026-05-14 21:48</i></p>
+<p><i>2026-05-14 23:45</i></p>
 </div>
 </body>
 </html>

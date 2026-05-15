@@ -124,7 +124,7 @@
     "name" : "primary",
     "scope" : "main",
     "filters" : [ ],
-    "componentsFolderDepth" : 1,
+    "componentsFolderDepth" : 2,
     "minComponentsCount" : 0,
     "components" : [ ],
     "metaComponents" : [ ],

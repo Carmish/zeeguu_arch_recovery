@@ -26,12 +26,41 @@ graph G {
 
 
 
-    "zeeguu" -- "zeeguu" [label=" 352 ", penwidth="10", color="#a0a0a0FF"];
-    "zeeguu" -- "tools" [label=" 184 ", penwidth="5", color="#00688bA5"];
-    "tools" -- "tools" [label=" 49 ", penwidth="1", color="#a0a0a05E"];
-    "ROOT" -- "zeeguu" [label=" 5 ", penwidth="1", color="#00688b4C"];
-    "tools" -- "ROOT" [label=" 4 ", penwidth="1", color="#00688b4C"];
-    "zeeguu" -- "stanza_service" [label=" 3 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/core" -- "zeeguu/core" [label=" 242 ", penwidth="10", color="#a0a0a0FF"];
+    "zeeguu/api" -- "zeeguu/core" [label=" 227 ", penwidth="9", color="#00688bED"];
+    "zeeguu/core" -- "tools/migrations" [label=" 149 ", penwidth="6", color="#00688bB7"];
+    "zeeguu/api" -- "zeeguu/api" [label=" 114 ", penwidth="4", color="#a0a0a093"];
+    "zeeguu/api" -- "tools/migrations" [label=" 113 ", penwidth="4", color="#00688b93"];
+    "tools/migrations" -- "tools/migrations" [label=" 33 ", penwidth="1", color="#a0a0a05E"];
+    "tools" -- "zeeguu/core" [label=" 30 ", penwidth="1", color="#00688b5E"];
+    "tools" -- "zeeguu/api" [label=" 16 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/operations" -- "zeeguu/core" [label=" 10 ", penwidth="1", color="#00688b4C"];
+    "tools/migrations" -- "tools" [label=" 10 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/operations" -- "zeeguu/operations" [label=" 8 ", penwidth="1", color="#a0a0a04C"];
+    "tools" -- "tools" [label=" 8 ", penwidth="1", color="#a0a0a04C"];
+    "zeeguu/operations" -- "zeeguu/api" [label=" 7 ", penwidth="1", color="#00688b4C"];
+    "ROOT" -- "zeeguu/api" [label=" 5 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/core" -- "ROOT" [label=" 5 ", penwidth="1", color="#00688b4C"];
+    "tools/crawler" -- "zeeguu/core" [label=" 5 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/operations" -- "tools" [label=" 5 ", penwidth="1", color="#00688b4C"];
+    "tools/migrations" -- "ROOT" [label=" 4 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/core" -- "stanza_service" [label=" 3 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/operations" -- "ROOT" [label=" 3 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/operations" -- "tools/migrations" [label=" 3 ", penwidth="1", color="#00688b4C"];
+    "tools/crawler" -- "tools/crawler" [label=" 3 ", penwidth="1", color="#a0a0a04C"];
+    "tools/crawler" -- "zeeguu/operations" [label=" 3 ", penwidth="1", color="#00688b4C"];
     "stanza_service" -- "stanza_service" [label=" 2 ", penwidth="1", color="#a0a0a04C"];
+    "zeeguu/operations" -- "tools/report_generator" [label=" 2 ", penwidth="1", color="#00688b4C"];
+    "tools/report_generator" -- "tools" [label=" 2 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/logging" -- "zeeguu/core" [label=" 1 ", penwidth="1", color="#00688b4C"];
+    "tools" -- "tools/crawler" [label=" 1 ", penwidth="1", color="#00688b4C"];
+    "tools" -- "ROOT" [label=" 1 ", penwidth="1", color="#00688b4C"];
+    "tools/report_generator" -- "zeeguu/core" [label=" 1 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/logging" -- "tools/crawler" [label=" 1 ", penwidth="1", color="#00688b4C"];
+    "tools/crawler" -- "zeeguu/api" [label=" 1 ", penwidth="1", color="#00688b4C"];
+    "tools/one_time" -- "zeeguu/core" [label=" 1 ", penwidth="1", color="#00688b4C"];
+    "tools/one_time" -- "tools/one_time" [label=" 1 ", penwidth="1", color="#a0a0a04C"];
+    "zeeguu/logging" -- "tools" [label=" 1 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/logging" -- "zeeguu/api" [label=" 1 ", penwidth="1", color="#00688b4C"];
 
 }

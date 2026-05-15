@@ -1,0 +1,8 @@
+tools/old/remove_unreferenced_articles.py
+tools/remove_unreferenced_articles.py
+
+tools/old/es_v8_migration/set_new_topics_from_url_keyword.py
+tools/set_new_topics_article.py
+
+tools/old/es_v8_migration/set_url_keywords_article.py
+tools/set_new_topics_article.py

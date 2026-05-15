@@ -1,0 +1,12 @@
+Path	Lines of Code
+tools/sql/_show_foreign_keys.sql	11
+tools/sql/exercise_corectness.sql	11
+tools/sql/history_of_bookmark.sql	8
+tools/sql/most_active_users_in_the_last_year.sql	11
+tools/sql/most_recent_active_teachers.sql	8
+tools/sql/popular_exercise_outcomes.sql	3
+tools/sql/recent_exercise_outcomes.sql	2
+tools/sql/teacher-for-cohort.sql	4
+tools/sql/user_exercise_history.sql	26
+tools/sql/users_last_active_in_cohort.sql	7
+tools/sql/users_with_level.sql	2

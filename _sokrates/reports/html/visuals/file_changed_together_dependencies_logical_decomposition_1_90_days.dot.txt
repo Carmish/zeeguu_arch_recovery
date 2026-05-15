@@ -26,10 +26,25 @@ graph G {
 
 
 
-    "zeeguu" -- "zeeguu" [label=" 215 ", penwidth="10", color="#a0a0a0FF"];
-    "zeeguu" -- "tools" [label=" 93 ", penwidth="4", color="#00688b93"];
-    "tools" -- "tools" [label=" 26 ", penwidth="1", color="#a0a0a05E"];
-    "zeeguu" -- "ROOT" [label=" 3 ", penwidth="1", color="#00688b4C"];
-    "tools" -- "ROOT" [label=" 3 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/core" -- "zeeguu/api" [label=" 154 ", penwidth="10", color="#00688bFF"];
+    "zeeguu/core" -- "zeeguu/core" [label=" 139 ", penwidth="9", color="#a0a0a0ED"];
+    "zeeguu/core" -- "tools/migrations" [label=" 88 ", penwidth="5", color="#00688bA5"];
+    "zeeguu/api" -- "zeeguu/api" [label=" 87 ", penwidth="5", color="#a0a0a0A5"];
+    "zeeguu/api" -- "tools/migrations" [label=" 68 ", penwidth="4", color="#00688b93"];
+    "tools/migrations" -- "tools/migrations" [label=" 25 ", penwidth="1", color="#a0a0a05E"];
+    "tools" -- "zeeguu/core" [label=" 7 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/api" -- "tools" [label=" 6 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/api" -- "ROOT" [label=" 3 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/operations" -- "zeeguu/core" [label=" 3 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/operations" -- "zeeguu/api" [label=" 3 ", penwidth="1", color="#00688b4C"];
+    "ROOT" -- "zeeguu/core" [label=" 3 ", penwidth="1", color="#00688b4C"];
+    "tools/migrations" -- "ROOT" [label=" 3 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/operations" -- "ROOT" [label=" 3 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/operations" -- "tools/migrations" [label=" 3 ", penwidth="1", color="#00688b4C"];
+    "tools/migrations" -- "tools" [label=" 3 ", penwidth="1", color="#00688b4C"];
+    "tools" -- "tools" [label=" 2 ", penwidth="1", color="#a0a0a04C"];
+    "zeeguu/operations" -- "tools" [label=" 1 ", penwidth="1", color="#00688b4C"];
+    "tools" -- "ROOT" [label=" 1 ", penwidth="1", color="#00688b4C"];
+    "zeeguu/operations" -- "zeeguu/operations" [label=" 1 ", penwidth="1", color="#a0a0a04C"];
 
 }

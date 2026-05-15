@@ -12,65 +12,222 @@
 <script>
     const gData = {
   "nodes" : [ {
-    "id" : "zeeguu",
-    "size" : 5
+    "id" : "zeeguu/operations",
+    "size" : 9
+  }, {
+    "id" : "tools/one_time",
+    "size" : 3
   }, {
     "id" : "ROOT",
-    "size" : 2
+    "size" : 5
+  }, {
+    "id" : "zeeguu/core",
+    "size" : 12
+  }, {
+    "id" : "tools/report_generator",
+    "size" : 3
   }, {
     "id" : "tools",
-    "size" : 4
+    "size" : 10
   }, {
     "id" : "stanza_service",
     "size" : 3
+  }, {
+    "id" : "zeeguu/api",
+    "size" : 9
+  }, {
+    "id" : "tools/migrations",
+    "size" : 7
+  }, {
+    "id" : "zeeguu/logging",
+    "size" : 4
+  }, {
+    "id" : "tools/crawler",
+    "size" : 7
   } ],
   "links" : [ {
-    "source" : "zeeguu",
-    "target" : "zeeguu",
-    "count" : 352
+    "source" : "zeeguu/core",
+    "target" : "zeeguu/core",
+    "count" : 242
   }, {
-    "source" : "zeeguu",
-    "target" : "zeeguu",
-    "count" : 352
+    "source" : "zeeguu/core",
+    "target" : "zeeguu/core",
+    "count" : 242
   }, {
-    "source" : "zeeguu",
-    "target" : "tools",
-    "count" : 184
+    "source" : "zeeguu/api",
+    "target" : "zeeguu/core",
+    "count" : 227
+  }, {
+    "source" : "zeeguu/core",
+    "target" : "zeeguu/api",
+    "count" : 227
+  }, {
+    "source" : "zeeguu/core",
+    "target" : "tools/migrations",
+    "count" : 149
+  }, {
+    "source" : "tools/migrations",
+    "target" : "zeeguu/core",
+    "count" : 149
+  }, {
+    "source" : "zeeguu/api",
+    "target" : "zeeguu/api",
+    "count" : 114
+  }, {
+    "source" : "zeeguu/api",
+    "target" : "zeeguu/api",
+    "count" : 114
+  }, {
+    "source" : "zeeguu/api",
+    "target" : "tools/migrations",
+    "count" : 113
+  }, {
+    "source" : "tools/migrations",
+    "target" : "zeeguu/api",
+    "count" : 113
+  }, {
+    "source" : "tools/migrations",
+    "target" : "tools/migrations",
+    "count" : 33
+  }, {
+    "source" : "tools/migrations",
+    "target" : "tools/migrations",
+    "count" : 33
   }, {
     "source" : "tools",
-    "target" : "zeeguu",
-    "count" : 184
+    "target" : "zeeguu/core",
+    "count" : 30
+  }, {
+    "source" : "zeeguu/core",
+    "target" : "tools",
+    "count" : 30
+  }, {
+    "source" : "tools",
+    "target" : "zeeguu/api",
+    "count" : 16
+  }, {
+    "source" : "zeeguu/api",
+    "target" : "tools",
+    "count" : 16
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "zeeguu/core",
+    "count" : 10
+  }, {
+    "source" : "zeeguu/core",
+    "target" : "zeeguu/operations",
+    "count" : 10
+  }, {
+    "source" : "tools/migrations",
+    "target" : "tools",
+    "count" : 10
+  }, {
+    "source" : "tools",
+    "target" : "tools/migrations",
+    "count" : 10
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "zeeguu/operations",
+    "count" : 8
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "zeeguu/operations",
+    "count" : 8
   }, {
     "source" : "tools",
     "target" : "tools",
-    "count" : 49
+    "count" : 8
   }, {
     "source" : "tools",
     "target" : "tools",
-    "count" : 49
+    "count" : 8
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "zeeguu/api",
+    "count" : 7
+  }, {
+    "source" : "zeeguu/api",
+    "target" : "zeeguu/operations",
+    "count" : 7
   }, {
     "source" : "ROOT",
-    "target" : "zeeguu",
+    "target" : "zeeguu/api",
     "count" : 5
   }, {
-    "source" : "zeeguu",
+    "source" : "zeeguu/api",
     "target" : "ROOT",
     "count" : 5
   }, {
+    "source" : "zeeguu/core",
+    "target" : "ROOT",
+    "count" : 5
+  }, {
+    "source" : "ROOT",
+    "target" : "zeeguu/core",
+    "count" : 5
+  }, {
+    "source" : "tools/crawler",
+    "target" : "zeeguu/core",
+    "count" : 5
+  }, {
+    "source" : "zeeguu/core",
+    "target" : "tools/crawler",
+    "count" : 5
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "tools",
+    "count" : 5
+  }, {
     "source" : "tools",
+    "target" : "zeeguu/operations",
+    "count" : 5
+  }, {
+    "source" : "tools/migrations",
     "target" : "ROOT",
     "count" : 4
   }, {
     "source" : "ROOT",
-    "target" : "tools",
+    "target" : "tools/migrations",
     "count" : 4
   }, {
-    "source" : "zeeguu",
+    "source" : "zeeguu/core",
     "target" : "stanza_service",
     "count" : 3
   }, {
     "source" : "stanza_service",
-    "target" : "zeeguu",
+    "target" : "zeeguu/core",
+    "count" : 3
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "ROOT",
+    "count" : 3
+  }, {
+    "source" : "ROOT",
+    "target" : "zeeguu/operations",
+    "count" : 3
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "tools/migrations",
+    "count" : 3
+  }, {
+    "source" : "tools/migrations",
+    "target" : "zeeguu/operations",
+    "count" : 3
+  }, {
+    "source" : "tools/crawler",
+    "target" : "tools/crawler",
+    "count" : 3
+  }, {
+    "source" : "tools/crawler",
+    "target" : "tools/crawler",
+    "count" : 3
+  }, {
+    "source" : "tools/crawler",
+    "target" : "zeeguu/operations",
+    "count" : 3
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "tools/crawler",
     "count" : 3
   }, {
     "source" : "stanza_service",
@@ -80,6 +237,102 @@
     "source" : "stanza_service",
     "target" : "stanza_service",
     "count" : 2
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "tools/report_generator",
+    "count" : 2
+  }, {
+    "source" : "tools/report_generator",
+    "target" : "zeeguu/operations",
+    "count" : 2
+  }, {
+    "source" : "tools/report_generator",
+    "target" : "tools",
+    "count" : 2
+  }, {
+    "source" : "tools",
+    "target" : "tools/report_generator",
+    "count" : 2
+  }, {
+    "source" : "zeeguu/logging",
+    "target" : "zeeguu/core",
+    "count" : 1
+  }, {
+    "source" : "zeeguu/core",
+    "target" : "zeeguu/logging",
+    "count" : 1
+  }, {
+    "source" : "tools",
+    "target" : "tools/crawler",
+    "count" : 1
+  }, {
+    "source" : "tools/crawler",
+    "target" : "tools",
+    "count" : 1
+  }, {
+    "source" : "tools",
+    "target" : "ROOT",
+    "count" : 1
+  }, {
+    "source" : "ROOT",
+    "target" : "tools",
+    "count" : 1
+  }, {
+    "source" : "tools/report_generator",
+    "target" : "zeeguu/core",
+    "count" : 1
+  }, {
+    "source" : "zeeguu/core",
+    "target" : "tools/report_generator",
+    "count" : 1
+  }, {
+    "source" : "zeeguu/logging",
+    "target" : "tools/crawler",
+    "count" : 1
+  }, {
+    "source" : "tools/crawler",
+    "target" : "zeeguu/logging",
+    "count" : 1
+  }, {
+    "source" : "tools/crawler",
+    "target" : "zeeguu/api",
+    "count" : 1
+  }, {
+    "source" : "zeeguu/api",
+    "target" : "tools/crawler",
+    "count" : 1
+  }, {
+    "source" : "tools/one_time",
+    "target" : "zeeguu/core",
+    "count" : 1
+  }, {
+    "source" : "zeeguu/core",
+    "target" : "tools/one_time",
+    "count" : 1
+  }, {
+    "source" : "tools/one_time",
+    "target" : "tools/one_time",
+    "count" : 1
+  }, {
+    "source" : "tools/one_time",
+    "target" : "tools/one_time",
+    "count" : 1
+  }, {
+    "source" : "zeeguu/logging",
+    "target" : "tools",
+    "count" : 1
+  }, {
+    "source" : "tools",
+    "target" : "zeeguu/logging",
+    "count" : 1
+  }, {
+    "source" : "zeeguu/logging",
+    "target" : "zeeguu/api",
+    "count" : 1
+  }, {
+    "source" : "zeeguu/api",
+    "target" : "zeeguu/logging",
+    "count" : 1
   } ]
 }
 

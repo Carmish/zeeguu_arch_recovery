@@ -100,14 +100,6 @@ zeeguu/core/test/test_data/public_suffix_list.dat
 
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-*.jar files (1):
-
-sokrates/sokrates-LATEST.jar
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
-
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 *.env files (1):
 
 default.env

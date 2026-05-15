@@ -1,0 +1,5 @@
+Path	Lines of Code
+tools/audio-engleza/deploy_lessons.py	110
+tools/audio-engleza/generate_audio.py	123
+tools/audio-engleza/generate_lesson.py	138
+tools/audio-engleza/generate_script.py	64

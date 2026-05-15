@@ -1,0 +1,3 @@
+Path	Lines of Code
+tools/stiri-simple/deploy_to_news.py	49
+tools/stiri-simple/generate_news_page.py	242

@@ -1,5 +1,5 @@
 Start of analysis
-Found 901 files
+Found 900 files
 650 are in the main's scope  (58313 lines of code)
   *.py: 505 files, (47129 lines of code)
   *.ipynb: 2 files, (8654 lines of code)
@@ -20,18 +20,50 @@ Found 901 files
   *.md: 29 files, (3413 lines of code)
   *.txt: 20 files, (745 lines of code)
   *.svg: 1 files, (63 lines of code)
-Excluded from analyses 98 files
+Excluded from analyses 97 files
 Analysing dependencies...
 3 are in the DECOMPOSITION_primary/stanza_service's scope  (362 lines of code)
   *.py: 3 files, (362 lines of code)
-351 are in the DECOMPOSITION_primary/zeeguu's scope  (38002 lines of code)
-  *.py: 349 files, (33648 lines of code)
-  *.ipynb: 1 files, (4327 lines of code)
+263 are in the DECOMPOSITION_primary/zeeguu/core's scope  (23538 lines of code)
+  *.py: 262 files, (23511 lines of code)
   *.sql: 1 files, (27 lines of code)
-285 are in the DECOMPOSITION_primary/tools's scope  (19746 lines of code)
-  *.py: 149 files, (13019 lines of code)
+2 are in the DECOMPOSITION_primary/zeeguu/config's scope  (51 lines of code)
+  *.py: 2 files, (51 lines of code)
+1 are in the DECOMPOSITION_primary/zeeguu's scope  (1 lines of code)
+  *.py: 1 files, (1 lines of code)
+11 are in the DECOMPOSITION_primary/zeeguu/operations's scope  (5694 lines of code)
   *.ipynb: 1 files, (4327 lines of code)
-  *.sql: 135 files, (2400 lines of code)
+  *.py: 10 files, (1367 lines of code)
+72 are in the DECOMPOSITION_primary/zeeguu/api's scope  (8693 lines of code)
+  *.py: 72 files, (8693 lines of code)
+1 are in the DECOMPOSITION_primary/zeeguu/cl's scope  (3 lines of code)
+  *.py: 1 files, (3 lines of code)
+1 are in the DECOMPOSITION_primary/zeeguu/logging's scope  (22 lines of code)
+  *.py: 1 files, (22 lines of code)
+6 are in the DECOMPOSITION_primary/tools/one_time's scope  (234 lines of code)
+  *.py: 6 files, (234 lines of code)
+81 are in the DECOMPOSITION_primary/tools's scope  (7854 lines of code)
+  *.py: 81 files, (7854 lines of code)
+133 are in the DECOMPOSITION_primary/tools/migrations's scope  (3089 lines of code)
+  *.sql: 124 files, (2307 lines of code)
+  *.py: 9 files, (782 lines of code)
+7 are in the DECOMPOSITION_primary/tools/crawler's scope  (644 lines of code)
+  *.py: 7 files, (644 lines of code)
+27 are in the DECOMPOSITION_primary/tools/old's scope  (933 lines of code)
+  *.py: 27 files, (933 lines of code)
+4 are in the DECOMPOSITION_primary/tools/audio-engleza's scope  (435 lines of code)
+  *.py: 4 files, (435 lines of code)
+4 are in the DECOMPOSITION_primary/tools/ml's scope  (384 lines of code)
+  *.py: 4 files, (384 lines of code)
+6 are in the DECOMPOSITION_primary/tools/user_word_integrity's scope  (710 lines of code)
+  *.py: 6 files, (710 lines of code)
+4 are in the DECOMPOSITION_primary/tools/report_generator's scope  (5079 lines of code)
+  *.ipynb: 1 files, (4327 lines of code)
+  *.py: 3 files, (752 lines of code)
+2 are in the DECOMPOSITION_primary/tools/stiri-simple's scope  (291 lines of code)
+  *.py: 2 files, (291 lines of code)
+11 are in the DECOMPOSITION_primary/tools/sql's scope  (93 lines of code)
+  *.sql: 11 files, (93 lines of code)
 11 are in the DECOMPOSITION_primary/ROOT's scope  (203 lines of code)
   *.py: 4 files, (100 lines of code)
   *.cfg: 5 files, (64 lines of code)
@@ -54,29 +86,71 @@ Basic unit metrics...
 Unit size 7417 / 5384 / 9594 / 4965 / 3045
 Unit size per component:
 Unit Size Component stanza_service: 34 / 43 / 157 / 57 / 0
-Unit Size Component zeeguu: 6547 / 4435 / 6065 / 2923 / 1962
-Unit Size Component tools: 830 / 891 / 3348 / 1985 / 1083
+Unit Size Component zeeguu/core: 5164 / 2981 / 3649 / 1423 / 540
+Unit Size Component zeeguu/config: 30 / 16 / 0 / 0 / 0
+Unit Size Component zeeguu/operations: 247 / 131 / 411 / 225 / 118
+Unit Size Component zeeguu/api: 1093 / 1307 / 2005 / 1275 / 1304
+Unit Size Component zeeguu/logging: 13 / 0 / 0 / 0 / 0
+Unit Size Component tools/one_time: 4 / 0 / 0 / 0 / 0
+Unit Size Component tools: 417 / 395 / 1449 / 1416 / 979
+Unit Size Component tools/migrations: 2 / 53 / 479 / 0 / 104
+Unit Size Component tools/crawler: 90 / 39 / 121 / 189 / 0
+Unit Size Component tools/old: 22 / 86 / 79 / 0 / 0
+Unit Size Component tools/audio-engleza: 86 / 114 / 121 / 67 / 0
+Unit Size Component tools/ml: 24 / 35 / 241 / 0 / 0
+Unit Size Component tools/user_word_integrity: 15 / 92 / 338 / 165 / 0
+Unit Size Component tools/report_generator: 153 / 77 / 267 / 148 / 0
+Unit Size Component tools/stiri-simple: 17 / 0 / 253 / 0 / 0
 Unit Size Component ROOT: 6 / 15 / 24 / 0 / 0
 Unit size per extension:
 Unit Size Extension py: 7417 / 5384 / 9594 / 4965 / 3045
 Conditional complexity: 15198 / 6831 / 5713 / 2253 / 410
 Conditional complexity per component:
 Conditional Complexity Component stanza_service 122 / 78 / 91 / 0 / 0
-Conditional Complexity Component zeeguu 12234 / 4271 / 3607 / 1410 / 410
-Conditional Complexity Component tools 2821 / 2458 / 2015 / 843 / 0
+Conditional Complexity Component zeeguu/core 8510 / 2532 / 1943 / 509 / 263
+Conditional Complexity Component zeeguu/config 46 / 0 / 0 / 0 / 0
+Conditional Complexity Component zeeguu/operations 750 / 165 / 23 / 194 / 0
+Conditional Complexity Component zeeguu/api 2915 / 1574 / 1641 / 707 / 147
+Conditional Complexity Component zeeguu/logging 13 / 0 / 0 / 0 / 0
+Conditional Complexity Component tools/one_time 4 / 0 / 0 / 0 / 0
+Conditional Complexity Component tools 1159 / 1339 / 1392 / 766 / 0
+Conditional Complexity Component tools/migrations 129 / 183 / 326 / 0 / 0
+Conditional Complexity Component tools/crawler 206 / 44 / 112 / 77 / 0
+Conditional Complexity Component tools/old 118 / 69 / 0 / 0 / 0
+Conditional Complexity Component tools/audio-engleza 315 / 38 / 35 / 0 / 0
+Conditional Complexity Component tools/ml 211 / 89 / 0 / 0 / 0
+Conditional Complexity Component tools/user_word_integrity 107 / 503 / 0 / 0 / 0
+Conditional Complexity Component tools/report_generator 525 / 120 / 0 / 0 / 0
+Conditional Complexity Component tools/stiri-simple 47 / 73 / 150 / 0 / 0
 Conditional Complexity Component ROOT 21 / 24 / 0 / 0 / 0
 Conditional complexity per extension:
 Conditional Complexity Component py: 15198 / 6831 / 5713 / 2253 / 410
 Analysing duplication...
   - found 1137 duplicates (15834 duplicated lines vs. 54829 cleaned lines) in 183 files
   - per component:primary
-     - "zeeguu": 8711 duplicated lines vs. 35548 total lines
-     - "tools": 7063 duplicated lines vs. 18741 total lines
+     - "zeeguu/operations": 5494 duplicated lines vs. 5633 total lines
+     - "tools/report_generator": 5058 duplicated lines vs. 5063 total lines
+     - "zeeguu/core": 2534 duplicated lines vs. 21940 total lines
+     - "zeeguu/api": 683 duplicated lines vs. 7905 total lines
+     - "tools": 756 duplicated lines vs. 7242 total lines
      - "stanza_service": 54 duplicated lines vs. 351 total lines
+     - "tools/user_word_integrity": 66 duplicated lines vs. 662 total lines
+     - "tools/ml": 290 duplicated lines vs. 360 total lines
+     - "tools/crawler": 518 duplicated lines vs. 590 total lines
+     - "tools/old": 121 duplicated lines vs. 832 total lines
+     - "tools/migrations": 190 duplicated lines vs. 3029 total lines
+     - "tools/stiri-simple": 12 duplicated lines vs. 274 total lines
+     - "tools/sql": 16 duplicated lines vs. 93 total lines
+     - "tools/one_time": 12 duplicated lines vs. 192 total lines
      - "ROOT": 6 duplicated lines vs. 189 total lines
+     - "tools/audio-engleza": 24 duplicated lines vs. 404 total lines
+     - "zeeguu/config": 0 duplicated lines vs. 48 total lines
+     - "zeeguu": 0 duplicated lines vs. 1 total lines
+     - "zeeguu/cl": 0 duplicated lines vs. 2 total lines
+     - "zeeguu/logging": 0 duplicated lines vs. 19 total lines
   - per extension:
      - "ipynb": 8654 duplicated lines vs. 8654 total lines
      - "py": 7050 duplicated lines vs. 43645 total lines
      - "sql": 130 duplicated lines vs. 2427 total lines
-Total analysis time: 69.20s
+Total analysis time: 70.62s
 

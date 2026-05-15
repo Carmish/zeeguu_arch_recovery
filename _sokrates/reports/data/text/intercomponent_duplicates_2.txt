@@ -1,0 +1,84 @@
+187 duplicated lines in:
+  - tools/crawler/crawl_summary/crawl_report.py (18:237, 95%)
+  - zeeguu/operations/crawler/crawl_report.py (20:239, 88%)
+
+62 duplicated lines in:
+  - tools/crawler/feed_retrieval.py (33:115, 100%)
+  - zeeguu/operations/crawler/feed_retrieval.py (33:115, 100%)
+
+45 duplicated lines in:
+  - tools/crawler/crawl_roundrobin.py (150:214, 23%)
+  - zeeguu/operations/crawler/crawl.py (201:265, 18%)
+
+21 duplicated lines in:
+  - tools/crawler/crawl_roundrobin.py (243:270, 10%)
+  - zeeguu/operations/crawler/crawl.py (314:341, 8%)
+
+17 duplicated lines in:
+  - tools/crawler/crawl_roundrobin.py (215:240, 8%)
+  - zeeguu/operations/crawler/crawl.py (268:293, 6%)
+
+12 duplicated lines in:
+  - tools/crawler/crawl_roundrobin.py (272:290, 6%)
+  - zeeguu/operations/crawler/crawl.py (345:363, 4%)
+
+12 duplicated lines in:
+  - tools/crawler/crawl.py (122:140, 10%)
+  - zeeguu/operations/crawler/crawl.py (345:363, 4%)
+
+10 duplicated lines in:
+  - tools/crawler/crawl.py (53:64, 8%)
+  - zeeguu/operations/crawler/crawl.py (73:84, 4%)
+
+10 duplicated lines in:
+  - tools/crawler/crawl_roundrobin.py (70:81, 5%)
+  - zeeguu/operations/crawler/crawl.py (73:84, 4%)
+
+9 duplicated lines in:
+  - tools/crawler/crawl_roundrobin.py (48:61, 4%)
+  - zeeguu/operations/crawler/crawl.py (47:60, 3%)
+
+9 duplicated lines in:
+  - tools/crawler/crawl_roundrobin.py (109:120, 4%)
+  - zeeguu/operations/crawler/crawl.py (124:135, 3%)
+
+9 duplicated lines in:
+  - tools/crawler/crawl.py (92:103, 7%)
+  - zeeguu/operations/crawler/crawl.py (124:135, 3%)
+
+8 duplicated lines in:
+  - tools/crawler/crawl_roundrobin.py (90:99, 4%)
+  - zeeguu/operations/crawler/crawl.py (97:106, 3%)
+
+8 duplicated lines in:
+  - tools/crawler/crawl.py (73:82, 6%)
+  - zeeguu/operations/crawler/crawl.py (97:106, 3%)
+
+8 duplicated lines in:
+  - tools/crawler/article_crawler.py (6:19, 47%)
+  - zeeguu/operations/crawler/article_crawler.py (6:19, 47%)
+
+8 duplicated lines in:
+  - tools/crawler/crawl_summary/crawl_report.py (8:17, 4%)
+  - zeeguu/operations/crawler/crawl_report.py (8:17, 3%)
+
+8 duplicated lines in:
+  - tools/crawler/article_crawler.py (24:33, 47%)
+  - zeeguu/operations/crawler/article_crawler.py (24:33, 47%)
+
+6 duplicated lines in:
+  - tools/crawler/video_crawler.py (9:15, 85%)
+  - zeeguu/operations/crawler/video_crawler.py (9:15, 85%)
+
+6 duplicated lines in:
+  - tools/crawler/crawl.py (46:51, 5%)
+  - zeeguu/operations/crawler/crawl.py (64:69, 2%)
+
+6 duplicated lines in:
+  - tools/crawler/crawl_roundrobin.py (303:310, 3%)
+  - zeeguu/operations/crawler/crawl.py (377:384, 2%)
+
+6 duplicated lines in:
+  - tools/crawler/crawl_roundrobin.py (63:68, 3%)
+  - zeeguu/operations/crawler/crawl.py (64:69, 2%)
+

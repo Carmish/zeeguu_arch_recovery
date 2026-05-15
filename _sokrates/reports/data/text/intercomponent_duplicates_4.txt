@@ -1,0 +1,16 @@
+11 duplicated lines in:
+  - zeeguu/api/endpoints/user_articles.py (112:123, 6%)
+  - zeeguu/core/content_recommender/elastic_recommender.py (230:241, 3%)
+
+8 duplicated lines in:
+  - zeeguu/api/endpoints/accounts.py (62:69, 2%)
+  - zeeguu/core/account_management/user_account_creation.py (96:103, 5%)
+
+6 duplicated lines in:
+  - zeeguu/api/endpoints/user_articles.py (207:212, 3%)
+  - zeeguu/core/content_recommender/elastic_recommender.py (347:352, 1%)
+
+6 duplicated lines in:
+  - zeeguu/api/endpoints/own_texts.py (132:137, 5%)
+  - zeeguu/core/language/ml_cefr_classifier.py (148:153, 4%)
+

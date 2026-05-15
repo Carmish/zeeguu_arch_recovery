@@ -1,0 +1,8 @@
+tools/prefetch_example_sentences_for_users.py
+zeeguu/api/endpoints/generated_examples.py
+
+tools/fix_underscore_examples.py
+zeeguu/api/endpoints/generated_examples.py
+
+tools/delete_bookmarks_word_not_in_context.py
+zeeguu/api/endpoints/bookmarks_and_words.py

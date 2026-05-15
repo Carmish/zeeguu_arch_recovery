@@ -16,17 +16,13 @@
       "description" : [ ]
     } ]
   }, {
-    "name" : "zeeguu",
-    "filesCount" : 351,
-    "linesOfCode" : 38002,
+    "name" : "zeeguu/core",
+    "filesCount" : 263,
+    "linesOfCode" : 23538,
     "numberOfRegexLineMatches" : 0,
     "fileCountPerExtension" : [ {
       "name" : "  *.py",
-      "value" : 349,
-      "description" : [ ]
-    }, {
-      "name" : "  *.ipynb",
-      "value" : 1,
+      "value" : 262,
       "description" : [ ]
     }, {
       "name" : "  *.sql",
@@ -35,11 +31,7 @@
     } ],
     "linesOfCodePerExtension" : [ {
       "name" : "  *.py",
-      "value" : 33648,
-      "description" : [ ]
-    }, {
-      "name" : "  *.ipynb",
-      "value" : 4327,
+      "value" : 23511,
       "description" : [ ]
     }, {
       "name" : "  *.sql",
@@ -47,34 +39,282 @@
       "description" : [ ]
     } ]
   }, {
-    "name" : "tools",
-    "filesCount" : 285,
-    "linesOfCode" : 19746,
+    "name" : "zeeguu/config",
+    "filesCount" : 2,
+    "linesOfCode" : 51,
     "numberOfRegexLineMatches" : 0,
     "fileCountPerExtension" : [ {
       "name" : "  *.py",
-      "value" : 149,
-      "description" : [ ]
-    }, {
-      "name" : "  *.ipynb",
-      "value" : 1,
-      "description" : [ ]
-    }, {
-      "name" : "  *.sql",
-      "value" : 135,
+      "value" : 2,
       "description" : [ ]
     } ],
     "linesOfCodePerExtension" : [ {
       "name" : "  *.py",
-      "value" : 13019,
+      "value" : 51,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "zeeguu",
+    "filesCount" : 1,
+    "linesOfCode" : 1,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 1,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 1,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "zeeguu/operations",
+    "filesCount" : 11,
+    "linesOfCode" : 5694,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.ipynb",
+      "value" : 1,
       "description" : [ ]
     }, {
+      "name" : "  *.py",
+      "value" : 10,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
       "name" : "  *.ipynb",
       "value" : 4327,
       "description" : [ ]
     }, {
+      "name" : "  *.py",
+      "value" : 1367,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "zeeguu/api",
+    "filesCount" : 72,
+    "linesOfCode" : 8693,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 72,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 8693,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "zeeguu/cl",
+    "filesCount" : 1,
+    "linesOfCode" : 3,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 1,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 3,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "zeeguu/logging",
+    "filesCount" : 1,
+    "linesOfCode" : 22,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 1,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 22,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "tools/one_time",
+    "filesCount" : 6,
+    "linesOfCode" : 234,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 6,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 234,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "tools",
+    "filesCount" : 81,
+    "linesOfCode" : 7854,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 81,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 7854,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "tools/migrations",
+    "filesCount" : 133,
+    "linesOfCode" : 3089,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
       "name" : "  *.sql",
-      "value" : 2400,
+      "value" : 124,
+      "description" : [ ]
+    }, {
+      "name" : "  *.py",
+      "value" : 9,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.sql",
+      "value" : 2307,
+      "description" : [ ]
+    }, {
+      "name" : "  *.py",
+      "value" : 782,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "tools/crawler",
+    "filesCount" : 7,
+    "linesOfCode" : 644,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 7,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 644,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "tools/old",
+    "filesCount" : 27,
+    "linesOfCode" : 933,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 27,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 933,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "tools/audio-engleza",
+    "filesCount" : 4,
+    "linesOfCode" : 435,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 4,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 435,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "tools/ml",
+    "filesCount" : 4,
+    "linesOfCode" : 384,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 4,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 384,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "tools/user_word_integrity",
+    "filesCount" : 6,
+    "linesOfCode" : 710,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 6,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 710,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "tools/report_generator",
+    "filesCount" : 4,
+    "linesOfCode" : 5079,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.ipynb",
+      "value" : 1,
+      "description" : [ ]
+    }, {
+      "name" : "  *.py",
+      "value" : 3,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.ipynb",
+      "value" : 4327,
+      "description" : [ ]
+    }, {
+      "name" : "  *.py",
+      "value" : 752,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "tools/stiri-simple",
+    "filesCount" : 2,
+    "linesOfCode" : 291,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 2,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.py",
+      "value" : 291,
+      "description" : [ ]
+    } ]
+  }, {
+    "name" : "tools/sql",
+    "filesCount" : 11,
+    "linesOfCode" : 93,
+    "numberOfRegexLineMatches" : 0,
+    "fileCountPerExtension" : [ {
+      "name" : "  *.sql",
+      "value" : 11,
+      "description" : [ ]
+    } ],
+    "linesOfCodePerExtension" : [ {
+      "name" : "  *.sql",
+      "value" : 93,
       "description" : [ ]
     } ]
   }, {
@@ -123,12 +363,30 @@
     "name" : "primary",
     "scope" : "main",
     "filters" : [ ],
-    "componentsFolderDepth" : 1,
+    "componentsFolderDepth" : 2,
     "minComponentsCount" : 0,
     "components" : [ {
       "name" : "stanza_service",
       "sourceFileFilters" : [ {
         "pathPattern" : "./stanza_service/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "zeeguu/core",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./zeeguu/core/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "zeeguu/config",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./zeeguu/config/.*",
         "contentPattern" : "",
         "exception" : false,
         "note" : ""
@@ -141,12 +399,218 @@
         "contentPattern" : "",
         "exception" : false,
         "note" : ""
+      }, {
+        "pathPattern" : "./zeeguu/core/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./zeeguu/config/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./zeeguu/operations/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./zeeguu/api/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./zeeguu/cl/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./zeeguu/logging/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "zeeguu/operations",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./zeeguu/operations/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "zeeguu/api",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./zeeguu/api/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "zeeguu/cl",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./zeeguu/cl/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "zeeguu/logging",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./zeeguu/logging/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "tools/one_time",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./tools/one_time/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
       } ],
       "files" : [ ]
     }, {
       "name" : "tools",
       "sourceFileFilters" : [ {
         "pathPattern" : "./tools/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/one_time/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/migrations/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/crawler/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/old/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/audio-engleza/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/ml/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/user_word_integrity/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/report_generator/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/stiri-simple/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/sql/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "tools/migrations",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./tools/migrations/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "tools/crawler",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./tools/crawler/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "tools/old",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./tools/old/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "tools/audio-engleza",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./tools/audio-engleza/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "tools/ml",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./tools/ml/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "tools/user_word_integrity",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./tools/user_word_integrity/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "tools/report_generator",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./tools/report_generator/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "tools/stiri-simple",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./tools/stiri-simple/.*",
+        "contentPattern" : "",
+        "exception" : false,
+        "note" : ""
+      } ],
+      "files" : [ ]
+    }, {
+      "name" : "tools/sql",
+      "sourceFileFilters" : [ {
+        "pathPattern" : "./tools/sql/.*",
         "contentPattern" : "",
         "exception" : false,
         "note" : ""
@@ -165,12 +629,92 @@
         "exception" : true,
         "note" : ""
       }, {
+        "pathPattern" : "./zeeguu/core/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./zeeguu/config/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
         "pathPattern" : "./zeeguu/.*",
         "contentPattern" : "",
         "exception" : true,
         "note" : ""
       }, {
+        "pathPattern" : "./zeeguu/operations/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./zeeguu/api/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./zeeguu/cl/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./zeeguu/logging/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/one_time/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
         "pathPattern" : "./tools/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/migrations/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/crawler/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/old/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/audio-engleza/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/ml/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/user_word_integrity/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/report_generator/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/stiri-simple/.*",
+        "contentPattern" : "",
+        "exception" : true,
+        "note" : ""
+      }, {
+        "pathPattern" : "./tools/sql/.*",
         "contentPattern" : "",
         "exception" : true,
         "note" : ""
@@ -204,12 +748,76 @@
     "value" : 3,
     "description" : [ ]
   }, {
+    "name" : "zeeguu/core",
+    "value" : 263,
+    "description" : [ ]
+  }, {
+    "name" : "zeeguu/config",
+    "value" : 2,
+    "description" : [ ]
+  }, {
     "name" : "zeeguu",
-    "value" : 351,
+    "value" : 1,
+    "description" : [ ]
+  }, {
+    "name" : "zeeguu/operations",
+    "value" : 11,
+    "description" : [ ]
+  }, {
+    "name" : "zeeguu/api",
+    "value" : 72,
+    "description" : [ ]
+  }, {
+    "name" : "zeeguu/cl",
+    "value" : 1,
+    "description" : [ ]
+  }, {
+    "name" : "zeeguu/logging",
+    "value" : 1,
+    "description" : [ ]
+  }, {
+    "name" : "tools/one_time",
+    "value" : 6,
     "description" : [ ]
   }, {
     "name" : "tools",
-    "value" : 285,
+    "value" : 81,
+    "description" : [ ]
+  }, {
+    "name" : "tools/migrations",
+    "value" : 133,
+    "description" : [ ]
+  }, {
+    "name" : "tools/crawler",
+    "value" : 7,
+    "description" : [ ]
+  }, {
+    "name" : "tools/old",
+    "value" : 27,
+    "description" : [ ]
+  }, {
+    "name" : "tools/audio-engleza",
+    "value" : 4,
+    "description" : [ ]
+  }, {
+    "name" : "tools/ml",
+    "value" : 4,
+    "description" : [ ]
+  }, {
+    "name" : "tools/user_word_integrity",
+    "value" : 6,
+    "description" : [ ]
+  }, {
+    "name" : "tools/report_generator",
+    "value" : 4,
+    "description" : [ ]
+  }, {
+    "name" : "tools/stiri-simple",
+    "value" : 2,
+    "description" : [ ]
+  }, {
+    "name" : "tools/sql",
+    "value" : 11,
     "description" : [ ]
   }, {
     "name" : "ROOT",
@@ -221,12 +829,76 @@
     "value" : 362,
     "description" : [ ]
   }, {
+    "name" : "zeeguu/core",
+    "value" : 23538,
+    "description" : [ ]
+  }, {
+    "name" : "zeeguu/config",
+    "value" : 51,
+    "description" : [ ]
+  }, {
     "name" : "zeeguu",
-    "value" : 38002,
+    "value" : 1,
+    "description" : [ ]
+  }, {
+    "name" : "zeeguu/operations",
+    "value" : 5694,
+    "description" : [ ]
+  }, {
+    "name" : "zeeguu/api",
+    "value" : 8693,
+    "description" : [ ]
+  }, {
+    "name" : "zeeguu/cl",
+    "value" : 3,
+    "description" : [ ]
+  }, {
+    "name" : "zeeguu/logging",
+    "value" : 22,
+    "description" : [ ]
+  }, {
+    "name" : "tools/one_time",
+    "value" : 234,
     "description" : [ ]
   }, {
     "name" : "tools",
-    "value" : 19746,
+    "value" : 7854,
+    "description" : [ ]
+  }, {
+    "name" : "tools/migrations",
+    "value" : 3089,
+    "description" : [ ]
+  }, {
+    "name" : "tools/crawler",
+    "value" : 644,
+    "description" : [ ]
+  }, {
+    "name" : "tools/old",
+    "value" : 933,
+    "description" : [ ]
+  }, {
+    "name" : "tools/audio-engleza",
+    "value" : 435,
+    "description" : [ ]
+  }, {
+    "name" : "tools/ml",
+    "value" : 384,
+    "description" : [ ]
+  }, {
+    "name" : "tools/user_word_integrity",
+    "value" : 710,
+    "description" : [ ]
+  }, {
+    "name" : "tools/report_generator",
+    "value" : 5079,
+    "description" : [ ]
+  }, {
+    "name" : "tools/stiri-simple",
+    "value" : 291,
+    "description" : [ ]
+  }, {
+    "name" : "tools/sql",
+    "value" : 93,
     "description" : [ ]
   }, {
     "name" : "ROOT",

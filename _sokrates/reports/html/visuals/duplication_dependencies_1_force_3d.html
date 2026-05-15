@@ -12,20 +12,67 @@
 <script>
     const gData = {
   "nodes" : [ {
-    "id" : "zeeguu",
+    "id" : "zeeguu/operations",
+    "size" : 2
+  }, {
+    "id" : "zeeguu/core",
+    "size" : 1
+  }, {
+    "id" : "tools/report_generator",
+    "size" : 1
+  }, {
+    "id" : "tools/old",
     "size" : 1
   }, {
     "id" : "tools",
+    "size" : 2
+  }, {
+    "id" : "zeeguu/api",
+    "size" : 2
+  }, {
+    "id" : "tools/crawler",
     "size" : 1
   } ],
   "links" : [ {
-    "source" : "tools",
-    "target" : "zeeguu",
-    "count" : 11082
+    "source" : "tools/report_generator",
+    "target" : "zeeguu/operations",
+    "count" : 10116
   }, {
-    "source" : "zeeguu",
+    "source" : "zeeguu/operations",
+    "target" : "tools/report_generator",
+    "count" : 10116
+  }, {
+    "source" : "tools/crawler",
+    "target" : "zeeguu/operations",
+    "count" : 889
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "tools/crawler",
+    "count" : 889
+  }, {
+    "source" : "tools/old",
     "target" : "tools",
-    "count" : 11082
+    "count" : 150
+  }, {
+    "source" : "tools",
+    "target" : "tools/old",
+    "count" : 150
+  }, {
+    "source" : "zeeguu/api",
+    "target" : "zeeguu/core",
+    "count" : 62
+  }, {
+    "source" : "zeeguu/core",
+    "target" : "zeeguu/api",
+    "count" : 62
+  }, {
+    "source" : "tools",
+    "target" : "zeeguu/api",
+    "count" : 51
+  }, {
+    "source" : "zeeguu/api",
+    "target" : "tools",
+    "count" : 51
   } ]
 }
 

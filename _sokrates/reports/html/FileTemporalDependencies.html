@@ -978,40 +978,64 @@ Download:
 <div style="margin: 10px;">
 <div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Dependencies between components in same commits (primary)</span>  <div class='subSectionSubtitle'>The number on the lines shows the number of shared commits.</div></div><div class='sectionBody'>
 <div style="width: 100%; overflow: auto; font-weight: normal;">
-<svg width="105pt" height="130pt"
- viewBox="0.00 0.00 105.00 130.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 126.25)">
+<svg width="200pt" height="217pt"
+ viewBox="0.00 0.00 200.00 217.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 212.5)">
 <title>G</title>
-<polygon fill="white" stroke="none" points="-4,4 -4,-126.25 101,-126.25 101,4 -4,4"/>
-<!-- zeeguu -->
+<polygon fill="white" stroke="none" points="-4,4 -4,-212.5 196.25,-212.5 196.25,4 -4,4"/>
+<!-- zeeguu/core -->
 <g id="node1" class="node">
-<title>zeeguu</title>
-<polygon fill="#00b2ee" stroke="white" points="59.5,-122.25 0,-122.25 0,-86.25 59.5,-86.25 59.5,-122.25"/>
-<text xml:space="preserve" text-anchor="middle" x="29.75" y="-99.58" font-family="Tahoma" font-size="14.00">zeeguu</text>
+<title>zeeguu/core</title>
+<polygon fill="#00b2ee" stroke="white" points="144.25,-208.5 52.5,-208.5 52.5,-172.5 144.25,-172.5 144.25,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="98.38" y="-185.82" font-family="Tahoma" font-size="14.00">zeeguu/core</text>
 </g>
-<!-- zeeguu&#45;&#45;zeeguu -->
-<g id="edge1" class="edge">
-<title>zeeguu&#45;&#45;zeeguu</title>
-<path fill="none" stroke="#a0a0a0" stroke-width="10" d="M59.59,-112.34C69.54,-112.34 77.5,-109.64 77.5,-104.25 77.5,-98.86 69.54,-96.16 59.59,-96.16"/>
-<text xml:space="preserve" text-anchor="middle" x="87.25" y="-99.97" font-family="Arial" font-size="12.00"> 57 </text>
-</g>
-<!-- tools -->
-<g id="node2" class="node">
-<title>tools</title>
-<polygon fill="#00b2ee" stroke="white" points="56.75,-36 2.75,-36 2.75,0 56.75,0 56.75,-36"/>
-<text xml:space="preserve" text-anchor="middle" x="29.75" y="-13.32" font-family="Tahoma" font-size="14.00">tools</text>
-</g>
-<!-- zeeguu&#45;&#45;tools -->
+<!-- zeeguu/core&#45;&#45;zeeguu/core -->
 <g id="edge2" class="edge">
-<title>zeeguu&#45;&#45;tools</title>
-<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M29.75,-85.79C29.75,-71.33 29.75,-50.89 29.75,-36.43"/>
-<text xml:space="preserve" text-anchor="middle" x="39.5" y="-56.85" font-family="Arial" font-size="12.00"> 32 </text>
+<title>zeeguu/core&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#a0a0a0" stroke-width="9" stroke-opacity="0.929412" d="M144.6,-198.37C154.81,-197.63 162.25,-195.01 162.25,-190.5 162.25,-185.99 154.81,-183.37 144.6,-182.63"/>
+<text xml:space="preserve" text-anchor="middle" x="172" y="-186.22" font-family="Arial" font-size="12.00"> 38 </text>
 </g>
-<!-- tools&#45;&#45;tools -->
+<!-- zeeguu/api -->
+<g id="node2" class="node">
+<title>zeeguu/api</title>
+<polygon fill="#00b2ee" stroke="white" points="82.75,-122.25 0,-122.25 0,-86.25 82.75,-86.25 82.75,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="41.38" y="-99.58" font-family="Tahoma" font-size="14.00">zeeguu/api</text>
+</g>
+<!-- zeeguu/core&#45;&#45;zeeguu/api -->
+<g id="edge1" class="edge">
+<title>zeeguu/core&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#00688b" stroke-width="10" d="M86.56,-172.04C76.78,-157.58 62.95,-137.14 53.17,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="83.04" y="-143.1" font-family="Arial" font-size="12.00"> 39 </text>
+</g>
+<!-- tools/migrations -->
+<g id="node3" class="node">
+<title>tools/migrations</title>
+<polygon fill="#00b2ee" stroke="white" points="154.75,-36 42,-36 42,0 154.75,0 154.75,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="98.38" y="-13.32" font-family="Tahoma" font-size="14.00">tools/migrations</text>
+</g>
+<!-- zeeguu/core&#45;&#45;tools/migrations -->
 <g id="edge3" class="edge">
-<title>tools&#45;&#45;tools</title>
-<path fill="none" stroke="#a0a0a0" stroke-width="2" stroke-opacity="0.439216" d="M56.99,-26.08C66.77,-26.25 74.75,-23.56 74.75,-18 74.75,-12.44 66.77,-9.75 56.99,-9.92"/>
-<text xml:space="preserve" text-anchor="middle" x="84.5" y="-13.72" font-family="Arial" font-size="12.00"> 14 </text>
+<title>zeeguu/core&#45;&#45;tools/migrations</title>
+<path fill="none" stroke="#00688b" stroke-width="8" stroke-opacity="0.858824" d="M108.86,-172.25C116.22,-159.09 125.44,-140.21 129.38,-122.25 132.8,-106.62 132.8,-101.88 129.38,-86.25 125.44,-68.29 116.22,-49.41 108.86,-36.25"/>
+<text xml:space="preserve" text-anchor="middle" x="141.7" y="-99.97" font-family="Arial" font-size="12.00"> 32 </text>
+</g>
+<!-- zeeguu/api&#45;&#45;zeeguu/api -->
+<g id="edge5" class="edge">
+<title>zeeguu/api&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#a0a0a0" stroke-width="5" stroke-opacity="0.647059" d="M82.99,-112.21C93.17,-111.62 100.75,-108.97 100.75,-104.25 100.75,-99.53 93.17,-96.88 82.99,-96.29"/>
+<text xml:space="preserve" text-anchor="middle" x="110.5" y="-99.97" font-family="Arial" font-size="12.00"> 21 </text>
+</g>
+<!-- zeeguu/api&#45;&#45;tools/migrations -->
+<g id="edge4" class="edge">
+<title>zeeguu/api&#45;&#45;tools/migrations</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M53.19,-85.79C62.97,-71.33 76.8,-50.89 86.58,-36.43"/>
+<text xml:space="preserve" text-anchor="middle" x="83.04" y="-56.85" font-family="Arial" font-size="12.00"> 22 </text>
+</g>
+<!-- tools/migrations&#45;&#45;tools/migrations -->
+<g id="edge6" class="edge">
+<title>tools/migrations&#45;&#45;tools/migrations</title>
+<path fill="none" stroke="#a0a0a0" stroke-width="3" stroke-opacity="0.509804" d="M155.12,-25.64C165.48,-24.67 172.75,-22.13 172.75,-18 172.75,-13.87 165.48,-11.33 155.12,-10.36"/>
+<text xml:space="preserve" text-anchor="middle" x="182.5" y="-13.72" font-family="Arial" font-size="12.00"> 14 </text>
 </g>
 </g>
 </svg>
@@ -1868,58 +1892,166 @@ Download:
 <div style="margin: 10px;">
 <div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Dependencies between components in same commits (primary)</span>  <div class='subSectionSubtitle'>The number on the lines shows the number of shared commits.</div></div><div class='sectionBody'>
 <div style="width: 100%; overflow: auto; font-weight: normal;">
-<svg width="159pt" height="217pt"
- viewBox="0.00 0.00 159.00 217.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 212.5)">
+<svg width="404pt" height="475pt"
+ viewBox="0.00 0.00 404.00 475.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 471.25)">
 <title>G</title>
-<polygon fill="white" stroke="none" points="-4,4 -4,-212.5 155,-212.5 155,4 -4,4"/>
-<!-- zeeguu -->
+<polygon fill="white" stroke="none" points="-4,4 -4,-471.25 400.43,-471.25 400.43,4 -4,4"/>
+<!-- zeeguu/core -->
 <g id="node1" class="node">
-<title>zeeguu</title>
-<polygon fill="#00b2ee" stroke="white" points="106.75,-208.5 47.25,-208.5 47.25,-172.5 106.75,-172.5 106.75,-208.5"/>
-<text xml:space="preserve" text-anchor="middle" x="77" y="-185.82" font-family="Tahoma" font-size="14.00">zeeguu</text>
+<title>zeeguu/core</title>
+<polygon fill="#00b2ee" stroke="white" points="235.55,-381 143.8,-381 143.8,-345 235.55,-345 235.55,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="189.68" y="-358.32" font-family="Tahoma" font-size="14.00">zeeguu/core</text>
 </g>
-<!-- zeeguu&#45;&#45;zeeguu -->
+<!-- zeeguu/core&#45;&#45;zeeguu/core -->
+<g id="edge2" class="edge">
+<title>zeeguu/core&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#a0a0a0" stroke-width="9" stroke-opacity="0.929412" d="M235.9,-370.87C246.11,-370.13 253.55,-367.51 253.55,-363 253.55,-358.49 246.11,-355.87 235.9,-355.13"/>
+<text xml:space="preserve" text-anchor="middle" x="266.68" y="-358.73" font-family="Arial" font-size="12.00"> 139 </text>
+</g>
+<!-- zeeguu/api -->
+<g id="node2" class="node">
+<title>zeeguu/api</title>
+<polygon fill="#00b2ee" stroke="white" points="231.05,-294.75 148.3,-294.75 148.3,-258.75 231.05,-258.75 231.05,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="189.68" y="-272.07" font-family="Tahoma" font-size="14.00">zeeguu/api</text>
+</g>
+<!-- zeeguu/core&#45;&#45;zeeguu/api -->
 <g id="edge1" class="edge">
-<title>zeeguu&#45;&#45;zeeguu</title>
-<path fill="none" stroke="#a0a0a0" stroke-width="10" d="M106.84,-198.59C116.79,-198.59 124.75,-195.89 124.75,-190.5 124.75,-185.11 116.79,-182.41 106.84,-182.41"/>
-<text xml:space="preserve" text-anchor="middle" x="137.88" y="-186.22" font-family="Arial" font-size="12.00"> 215 </text>
+<title>zeeguu/core&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#00688b" stroke-width="10" d="M189.68,-344.54C189.68,-330.08 189.68,-309.64 189.68,-295.18"/>
+<text xml:space="preserve" text-anchor="middle" x="202.8" y="-315.6" font-family="Arial" font-size="12.00"> 154 </text>
+</g>
+<!-- tools/migrations -->
+<g id="node3" class="node">
+<title>tools/migrations</title>
+<polygon fill="#00b2ee" stroke="white" points="144.05,-208.5 31.3,-208.5 31.3,-172.5 144.05,-172.5 144.05,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="87.68" y="-185.82" font-family="Tahoma" font-size="14.00">tools/migrations</text>
+</g>
+<!-- zeeguu/core&#45;&#45;tools/migrations -->
+<g id="edge3" class="edge">
+<title>zeeguu/core&#45;&#45;tools/migrations</title>
+<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M166.42,-344.6C151.32,-332.2 132.27,-314.32 120.18,-294.75 103.19,-267.25 94.36,-230.1 90.39,-208.67"/>
+<text xml:space="preserve" text-anchor="middle" x="129.93" y="-272.48" font-family="Arial" font-size="12.00"> 88 </text>
+</g>
+<!-- zeeguu/api&#45;&#45;zeeguu/api -->
+<g id="edge4" class="edge">
+<title>zeeguu/api&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#a0a0a0" stroke-width="5" stroke-opacity="0.647059" d="M231.29,-284.71C241.48,-284.12 249.05,-281.47 249.05,-276.75 249.05,-272.03 241.48,-269.38 231.29,-268.79"/>
+<text xml:space="preserve" text-anchor="middle" x="258.8" y="-272.48" font-family="Arial" font-size="12.00"> 87 </text>
+</g>
+<!-- zeeguu/api&#45;&#45;tools/migrations -->
+<g id="edge5" class="edge">
+<title>zeeguu/api&#45;&#45;tools/migrations</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M168.54,-258.29C151.04,-243.83 126.28,-223.39 108.78,-208.93"/>
+<text xml:space="preserve" text-anchor="middle" x="154.53" y="-229.35" font-family="Arial" font-size="12.00"> 68 </text>
 </g>
 <!-- tools -->
-<g id="node2" class="node">
+<g id="node4" class="node">
 <title>tools</title>
-<polygon fill="#00b2ee" stroke="white" points="54,-122.25 0,-122.25 0,-86.25 54,-86.25 54,-122.25"/>
-<text xml:space="preserve" text-anchor="middle" x="27" y="-99.58" font-family="Tahoma" font-size="14.00">tools</text>
+<polygon fill="#00b2ee" stroke="white" points="199.68,-122.25 145.68,-122.25 145.68,-86.25 199.68,-86.25 199.68,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="172.68" y="-99.58" font-family="Tahoma" font-size="14.00">tools</text>
 </g>
-<!-- zeeguu&#45;&#45;tools -->
-<g id="edge2" class="edge">
-<title>zeeguu&#45;&#45;tools</title>
-<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M66.64,-172.04C58.06,-157.58 45.92,-137.14 37.35,-122.68"/>
-<text xml:space="preserve" text-anchor="middle" x="64.74" y="-143.1" font-family="Arial" font-size="12.00"> 93 </text>
+<!-- zeeguu/api&#45;&#45;tools -->
+<g id="edge8" class="edge">
+<title>zeeguu/api&#45;&#45;tools</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M191.31,-258.49C192.93,-237.91 194.63,-202.54 190.68,-172.5 188.41,-155.24 183,-136.12 178.69,-122.69"/>
+<text xml:space="preserve" text-anchor="middle" x="199.41" y="-186.22" font-family="Arial" font-size="12.00"> 6 </text>
 </g>
 <!-- ROOT -->
-<g id="node3" class="node">
+<g id="node5" class="node">
 <title>ROOT</title>
-<polygon fill="#00b2ee" stroke="white" points="105,-36 51,-36 51,0 105,0 105,-36"/>
-<text xml:space="preserve" text-anchor="middle" x="78" y="-13.32" font-family="Tahoma" font-size="14.00">ROOT</text>
+<polygon fill="#00b2ee" stroke="white" points="285.68,-36 231.68,-36 231.68,0 285.68,0 285.68,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="258.68" y="-13.32" font-family="Tahoma" font-size="14.00">ROOT</text>
 </g>
-<!-- zeeguu&#45;&#45;ROOT -->
-<g id="edge4" class="edge">
-<title>zeeguu&#45;&#45;ROOT</title>
-<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M85.01,-172.25C90.74,-158.92 97.96,-139.84 101,-122.25 103.73,-106.48 103.62,-102.03 101,-86.25 98.09,-68.72 91.17,-49.63 85.68,-36.29"/>
-<text xml:space="preserve" text-anchor="middle" x="109.38" y="-99.97" font-family="Arial" font-size="12.00"> 3 </text>
+<!-- zeeguu/api&#45;&#45;ROOT -->
+<g id="edge9" class="edge">
+<title>zeeguu/api&#45;&#45;ROOT</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M198.78,-258.58C201.54,-252.99 204.43,-246.69 206.68,-240.75 234.47,-167.34 250.42,-74.45 256.19,-36.43"/>
+<text xml:space="preserve" text-anchor="middle" x="242.28" y="-143.1" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- tools/migrations&#45;&#45;tools/migrations -->
+<g id="edge6" class="edge">
+<title>tools/migrations&#45;&#45;tools/migrations</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.368627" d="M144.43,-198.14C154.79,-197.17 162.05,-194.63 162.05,-190.5 162.05,-186.37 154.79,-183.83 144.43,-182.86"/>
+<text xml:space="preserve" text-anchor="middle" x="171.8" y="-186.22" font-family="Arial" font-size="12.00"> 25 </text>
+</g>
+<!-- tools/migrations&#45;&#45;tools -->
+<g id="edge16" class="edge">
+<title>tools/migrations&#45;&#45;tools</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M105.29,-172.04C119.88,-157.58 140.51,-137.14 155.09,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="141.64" y="-143.1" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- tools/migrations&#45;&#45;ROOT -->
+<g id="edge13" class="edge">
+<title>tools/migrations&#45;&#45;ROOT</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M89.72,-172.14C93.17,-149.83 102.06,-111.04 123.93,-86.25 152.72,-53.6 201.06,-34.97 231.34,-25.94"/>
+<text xml:space="preserve" text-anchor="middle" x="130.3" y="-99.97" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- tools&#45;&#45;zeeguu/core -->
+<g id="edge7" class="edge">
+<title>tools&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M200.07,-106.25C224.31,-108.76 258.43,-116.6 275.68,-140.25 320.31,-201.46 292.13,-265.52 277.68,-294.75 266.85,-316.64 245.11,-333.36 225.95,-344.66"/>
+<text xml:space="preserve" text-anchor="middle" x="305.49" y="-229.35" font-family="Arial" font-size="12.00"> 7 </text>
 </g>
 <!-- tools&#45;&#45;tools -->
-<g id="edge3" class="edge">
+<g id="edge17" class="edge">
 <title>tools&#45;&#45;tools</title>
-<path fill="none" stroke="#a0a0a0" stroke-opacity="0.368627" d="M54.24,-112.33C64.02,-112.5 72,-109.81 72,-104.25 72,-98.69 64.02,-96 54.24,-96.17"/>
-<text xml:space="preserve" text-anchor="middle" x="81.75" y="-99.97" font-family="Arial" font-size="12.00"> 26 </text>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M199.92,-112.33C209.7,-112.5 217.68,-109.81 217.68,-104.25 217.68,-98.69 209.7,-96 199.92,-96.17"/>
+<text xml:space="preserve" text-anchor="middle" x="224.05" y="-99.97" font-family="Arial" font-size="12.00"> 2 </text>
 </g>
 <!-- tools&#45;&#45;ROOT -->
-<g id="edge5" class="edge">
+<g id="edge19" class="edge">
 <title>tools&#45;&#45;ROOT</title>
-<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M37.57,-85.79C46.32,-71.33 58.7,-50.89 67.45,-36.43"/>
-<text xml:space="preserve" text-anchor="middle" x="61.93" y="-56.85" font-family="Arial" font-size="12.00"> 3 </text>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M190.5,-85.79C205.26,-71.33 226.13,-50.89 240.88,-36.43"/>
+<text xml:space="preserve" text-anchor="middle" x="227.2" y="-56.85" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- ROOT&#45;&#45;zeeguu/core -->
+<g id="edge12" class="edge">
+<title>ROOT&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M285.72,-31.98C310.27,-45.86 342.68,-70.41 342.68,-103.25 342.68,-277.75 342.68,-277.75 342.68,-277.75 342.68,-327.03 281.03,-347.69 236,-356.21"/>
+<text xml:space="preserve" text-anchor="middle" x="349.05" y="-186.22" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- zeeguu/operations -->
+<g id="node6" class="node">
+<title>zeeguu/operations</title>
+<polygon fill="#00b2ee" stroke="white" points="164.55,-467.25 36.8,-467.25 36.8,-431.25 164.55,-431.25 164.55,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="100.68" y="-444.57" font-family="Tahoma" font-size="14.00">zeeguu/operations</text>
+</g>
+<!-- zeeguu/operations&#45;&#45;zeeguu/core -->
+<g id="edge10" class="edge">
+<title>zeeguu/operations&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M119.12,-430.79C134.39,-416.33 155.99,-395.89 171.26,-381.43"/>
+<text xml:space="preserve" text-anchor="middle" x="156.88" y="-401.85" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- zeeguu/operations&#45;&#45;zeeguu/api -->
+<g id="edge11" class="edge">
+<title>zeeguu/operations&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M101.22,-430.76C102.55,-409.35 107.03,-372.52 121.93,-345 132.65,-325.18 151.1,-307.44 166.04,-295.16"/>
+<text xml:space="preserve" text-anchor="middle" x="128.3" y="-358.73" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- zeeguu/operations&#45;&#45;tools/migrations -->
+<g id="edge15" class="edge">
+<title>zeeguu/operations&#45;&#45;tools/migrations</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M99.65,-430.8C99.33,-425.2 98.98,-418.96 98.68,-413.25 94.61,-337.04 90.25,-246.06 88.49,-208.75"/>
+<text xml:space="preserve" text-anchor="middle" x="100.59" y="-315.6" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- zeeguu/operations&#45;&#45;tools -->
+<g id="edge18" class="edge">
+<title>zeeguu/operations&#45;&#45;tools</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M58.13,-430.82C32.07,-417.02 3.68,-394.89 3.68,-364 3.68,-364 3.68,-364 3.68,-189.5 3.68,-159.48 -32.7,-205.03 140.68,-122.25 142.27,-121.49 143.89,-120.69 145.52,-119.88"/>
+<text xml:space="preserve" text-anchor="middle" x="10.05" y="-272.48" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- zeeguu/operations&#45;&#45;ROOT -->
+<g id="edge14" class="edge">
+<title>zeeguu/operations&#45;&#45;ROOT</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M164.89,-442.09C248.39,-432.28 383.68,-409.37 383.68,-364 383.68,-364 383.68,-364 383.68,-103.25 383.68,-56.54 322.9,-34.01 286.11,-24.65"/>
+<text xml:space="preserve" text-anchor="middle" x="390.05" y="-229.35" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- zeeguu/operations&#45;&#45;zeeguu/operations -->
+<g id="edge20" class="edge">
+<title>zeeguu/operations&#45;&#45;zeeguu/operations</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M164.87,-456.73C175.35,-455.66 182.55,-453.17 182.55,-449.25 182.55,-445.33 175.35,-442.84 164.87,-441.77"/>
+<text xml:space="preserve" text-anchor="middle" x="188.93" y="-444.98" font-family="Arial" font-size="12.00"> 1 </text>
 </g>
 </g>
 </svg>
@@ -2794,76 +2926,292 @@ Download:
 <div style="margin: 10px;">
 <div class='subSection'><div class='subSectionHeader'>  <span class='subSectionTitle'>Dependencies between components in same commits (primary)</span>  <div class='subSectionSubtitle'>The number on the lines shows the number of shared commits.</div></div><div class='sectionBody'>
 <div style="width: 100%; overflow: auto; font-weight: normal;">
-<svg width="280pt" height="217pt"
- viewBox="0.00 0.00 280.00 217.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 212.5)">
+<svg width="793pt" height="648pt"
+ viewBox="0.00 0.00 793.00 648.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 643.75)">
 <title>G</title>
-<polygon fill="white" stroke="none" points="-4,4 -4,-212.5 276.29,-212.5 276.29,4 -4,4"/>
-<!-- zeeguu -->
+<polygon fill="white" stroke="none" points="-4,4 -4,-643.75 789.38,-643.75 789.38,4 -4,4"/>
+<!-- zeeguu/core -->
 <g id="node1" class="node">
-<title>zeeguu</title>
-<polygon fill="#00b2ee" stroke="white" points="191.75,-208.5 132.25,-208.5 132.25,-172.5 191.75,-172.5 191.75,-208.5"/>
-<text xml:space="preserve" text-anchor="middle" x="162" y="-185.82" font-family="Tahoma" font-size="14.00">zeeguu</text>
+<title>zeeguu/core</title>
+<polygon fill="#00b2ee" stroke="white" points="364.88,-553.5 273.12,-553.5 273.12,-517.5 364.88,-517.5 364.88,-553.5"/>
+<text xml:space="preserve" text-anchor="middle" x="319" y="-530.83" font-family="Tahoma" font-size="14.00">zeeguu/core</text>
 </g>
-<!-- zeeguu&#45;&#45;zeeguu -->
+<!-- zeeguu/core&#45;&#45;zeeguu/core -->
 <g id="edge1" class="edge">
-<title>zeeguu&#45;&#45;zeeguu</title>
-<path fill="none" stroke="#a0a0a0" stroke-width="10" d="M191.84,-198.59C201.79,-198.59 209.75,-195.89 209.75,-190.5 209.75,-185.11 201.79,-182.41 191.84,-182.41"/>
-<text xml:space="preserve" text-anchor="middle" x="222.88" y="-186.22" font-family="Arial" font-size="12.00"> 352 </text>
+<title>zeeguu/core&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#a0a0a0" stroke-width="10" d="M365.22,-543.37C375.44,-542.63 382.88,-540.01 382.88,-535.5 382.88,-530.99 375.44,-528.37 365.22,-527.63"/>
+<text xml:space="preserve" text-anchor="middle" x="396" y="-531.23" font-family="Arial" font-size="12.00"> 242 </text>
 </g>
-<!-- tools -->
-<g id="node2" class="node">
-<title>tools</title>
-<polygon fill="#00b2ee" stroke="white" points="54,-122.25 0,-122.25 0,-86.25 54,-86.25 54,-122.25"/>
-<text xml:space="preserve" text-anchor="middle" x="27" y="-99.58" font-family="Tahoma" font-size="14.00">tools</text>
+<!-- tools/migrations -->
+<g id="node3" class="node">
+<title>tools/migrations</title>
+<polygon fill="#00b2ee" stroke="white" points="554.38,-467.25 441.62,-467.25 441.62,-431.25 554.38,-431.25 554.38,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="498" y="-444.57" font-family="Tahoma" font-size="14.00">tools/migrations</text>
 </g>
-<!-- zeeguu&#45;&#45;tools -->
-<g id="edge2" class="edge">
-<title>zeeguu&#45;&#45;tools</title>
-<path fill="none" stroke="#00688b" stroke-width="5" stroke-opacity="0.647059" d="M134.03,-172.04C110.7,-157.49 77.66,-136.86 54.47,-122.4"/>
-<text xml:space="preserve" text-anchor="middle" x="115.71" y="-143.1" font-family="Arial" font-size="12.00"> 184 </text>
-</g>
-<!-- stanza_service -->
-<g id="node4" class="node">
-<title>stanza_service</title>
-<polygon fill="#00b2ee" stroke="white" points="214.62,-122.25 109.38,-122.25 109.38,-86.25 214.62,-86.25 214.62,-122.25"/>
-<text xml:space="preserve" text-anchor="middle" x="162" y="-99.58" font-family="Tahoma" font-size="14.00">stanza_service</text>
-</g>
-<!-- zeeguu&#45;&#45;stanza_service -->
-<g id="edge6" class="edge">
-<title>zeeguu&#45;&#45;stanza_service</title>
-<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M162,-172.04C162,-157.58 162,-137.14 162,-122.68"/>
-<text xml:space="preserve" text-anchor="middle" x="168.38" y="-143.1" font-family="Arial" font-size="12.00"> 3 </text>
-</g>
-<!-- tools&#45;&#45;tools -->
+<!-- zeeguu/core&#45;&#45;tools/migrations -->
 <g id="edge3" class="edge">
-<title>tools&#45;&#45;tools</title>
-<path fill="none" stroke="#a0a0a0" stroke-opacity="0.368627" d="M54.24,-112.33C64.02,-112.5 72,-109.81 72,-104.25 72,-98.69 64.02,-96 54.24,-96.17"/>
-<text xml:space="preserve" text-anchor="middle" x="81.75" y="-99.97" font-family="Arial" font-size="12.00"> 49 </text>
+<title>zeeguu/core&#45;&#45;tools/migrations</title>
+<path fill="none" stroke="#00688b" stroke-width="6" stroke-opacity="0.717647" d="M365.29,-523C385.14,-517.22 408.25,-509.33 428,-499.5 445.56,-490.76 463.62,-477.94 477,-467.57"/>
+<text xml:space="preserve" text-anchor="middle" x="465.45" y="-488.1" font-family="Arial" font-size="12.00"> 149 </text>
 </g>
 <!-- ROOT -->
-<g id="node3" class="node">
+<g id="node6" class="node">
 <title>ROOT</title>
-<polygon fill="#00b2ee" stroke="white" points="181,-36 127,-36 127,0 181,0 181,-36"/>
-<text xml:space="preserve" text-anchor="middle" x="154" y="-13.32" font-family="Tahoma" font-size="14.00">ROOT</text>
+<polygon fill="#00b2ee" stroke="white" points="529,-122.25 475,-122.25 475,-86.25 529,-86.25 529,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="502" y="-99.58" font-family="Tahoma" font-size="14.00">ROOT</text>
+</g>
+<!-- zeeguu/core&#45;&#45;ROOT -->
+<g id="edge15" class="edge">
+<title>zeeguu/core&#45;&#45;ROOT</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M365.2,-531.22C449.8,-523.93 621,-502.71 621,-450.25 621,-450.25 621,-450.25 621,-275.75 621,-209.51 559.86,-150.63 525.23,-122.59"/>
+<text xml:space="preserve" text-anchor="middle" x="627.38" y="-315.6" font-family="Arial" font-size="12.00"> 5 </text>
+</g>
+<!-- stanza_service -->
+<g id="node8" class="node">
+<title>stanza_service</title>
+<polygon fill="#00b2ee" stroke="white" points="754.62,-467.25 649.38,-467.25 649.38,-431.25 754.62,-431.25 754.62,-467.25"/>
+<text xml:space="preserve" text-anchor="middle" x="702" y="-444.57" font-family="Tahoma" font-size="14.00">stanza_service</text>
+</g>
+<!-- zeeguu/core&#45;&#45;stanza_service -->
+<g id="edge19" class="edge">
+<title>zeeguu/core&#45;&#45;stanza_service</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M365.32,-532.32C440.86,-528.26 586.99,-518.24 635,-499.5 653.42,-492.31 671.32,-478.71 683.97,-467.62"/>
+<text xml:space="preserve" text-anchor="middle" x="667.31" y="-488.1" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- zeeguu/api -->
+<g id="node2" class="node">
+<title>zeeguu/api</title>
+<polygon fill="#00b2ee" stroke="white" points="238.38,-36 155.62,-36 155.62,0 238.38,0 238.38,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="197" y="-13.32" font-family="Tahoma" font-size="14.00">zeeguu/api</text>
+</g>
+<!-- zeeguu/api&#45;&#45;zeeguu/core -->
+<g id="edge2" class="edge">
+<title>zeeguu/api&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-width="9" stroke-opacity="0.929412" d="M155.34,-24.22C110.64,-32.42 46,-52.97 46,-103.25 46,-234.62 46,-234.62 46,-234.62 46,-358.86 109.17,-383.58 201,-467.25 223.92,-488.13 254.43,-505.31 278.68,-517.07"/>
+<text xml:space="preserve" text-anchor="middle" x="65.06" y="-272.48" font-family="Arial" font-size="12.00"> 227 </text>
+</g>
+<!-- zeeguu/api&#45;&#45;zeeguu/api -->
+<g id="edge4" class="edge">
+<title>zeeguu/api&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#a0a0a0" stroke-width="4" stroke-opacity="0.576471" d="M238.62,-25.96C248.8,-25.37 256.38,-22.72 256.38,-18 256.38,-13.28 248.8,-10.63 238.62,-10.04"/>
+<text xml:space="preserve" text-anchor="middle" x="269.12" y="-13.72" font-family="Arial" font-size="12.00"> 114 </text>
+</g>
+<!-- zeeguu/api&#45;&#45;tools/migrations -->
+<g id="edge5" class="edge">
+<title>zeeguu/api&#45;&#45;tools/migrations</title>
+<path fill="none" stroke="#00688b" stroke-width="4" stroke-opacity="0.576471" d="M238.59,-20.07C322.43,-23.29 506.46,-36.05 538,-86.25 615.36,-209.35 586.22,-279.6 529,-413.25 526.25,-419.67 521.85,-425.72 517.22,-430.94"/>
+<text xml:space="preserve" text-anchor="middle" x="597.7" y="-229.35" font-family="Arial" font-size="12.00"> 113 </text>
+</g>
+<!-- tools/migrations&#45;&#45;tools/migrations -->
+<g id="edge6" class="edge">
+<title>tools/migrations&#45;&#45;tools/migrations</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.368627" d="M554.75,-456.89C565.11,-455.92 572.38,-453.38 572.38,-449.25 572.38,-445.12 565.11,-442.58 554.75,-441.61"/>
+<text xml:space="preserve" text-anchor="middle" x="582.12" y="-444.98" font-family="Arial" font-size="12.00"> 33 </text>
+</g>
+<!-- tools -->
+<g id="node4" class="node">
+<title>tools</title>
+<polygon fill="#00b2ee" stroke="white" points="346,-381 292,-381 292,-345 346,-345 346,-381"/>
+<text xml:space="preserve" text-anchor="middle" x="319" y="-358.32" font-family="Tahoma" font-size="14.00">tools</text>
+</g>
+<!-- tools/migrations&#45;&#45;tools -->
+<g id="edge10" class="edge">
+<title>tools/migrations&#45;&#45;tools</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M460.91,-430.79C426.81,-414.74 377.04,-391.32 346.4,-376.9"/>
+<text xml:space="preserve" text-anchor="middle" x="428.97" y="-401.85" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- tools/migrations&#45;&#45;ROOT -->
+<g id="edge18" class="edge">
+<title>tools/migrations&#45;&#45;ROOT</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M508.28,-431.02C511.02,-425.53 513.61,-419.31 515,-413.25 516.42,-407.08 515.01,-405.33 515,-399 514.78,-284 533.13,-253.65 514,-140.25 513,-134.3 511.11,-128 509.13,-122.41"/>
+<text xml:space="preserve" text-anchor="middle" x="528.51" y="-272.48" font-family="Arial" font-size="12.00"> 4 </text>
+</g>
+<!-- tools&#45;&#45;zeeguu/core -->
+<g id="edge7" class="edge">
+<title>tools&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.368627" d="M319,-381.33C319,-414.05 319,-484.53 319,-517.21"/>
+<text xml:space="preserve" text-anchor="middle" x="328.75" y="-444.98" font-family="Arial" font-size="12.00"> 30 </text>
+</g>
+<!-- tools&#45;&#45;zeeguu/api -->
+<g id="edge8" class="edge">
+<title>tools&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M309.99,-344.76C290.11,-306.03 242.18,-208.75 216,-122.25 207.08,-92.77 201.66,-57.21 199,-36.45"/>
+<text xml:space="preserve" text-anchor="middle" x="256.41" y="-186.22" font-family="Arial" font-size="12.00"> 16 </text>
+</g>
+<!-- tools&#45;&#45;tools -->
+<g id="edge12" class="edge">
+<title>tools&#45;&#45;tools</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M346.24,-371.08C356.02,-371.25 364,-368.56 364,-363 364,-357.44 356.02,-354.75 346.24,-354.92"/>
+<text xml:space="preserve" text-anchor="middle" x="370.38" y="-358.73" font-family="Arial" font-size="12.00"> 8 </text>
 </g>
 <!-- tools&#45;&#45;ROOT -->
-<g id="edge5" class="edge">
+<g id="edge29" class="edge">
 <title>tools&#45;&#45;ROOT</title>
-<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M53.31,-85.79C75.11,-71.33 105.93,-50.89 127.72,-36.43"/>
-<text xml:space="preserve" text-anchor="middle" x="104.48" y="-56.85" font-family="Arial" font-size="12.00"> 4 </text>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M346.44,-344.69C383.8,-319.55 449.8,-269.24 483,-208.5 498.04,-180.99 501.44,-143.84 502.06,-122.42"/>
+<text xml:space="preserve" text-anchor="middle" x="477.2" y="-229.35" font-family="Arial" font-size="12.00"> 1 </text>
 </g>
-<!-- ROOT&#45;&#45;zeeguu -->
-<g id="edge4" class="edge">
-<title>ROOT&#45;&#45;zeeguu</title>
-<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M181.3,-28.78C205.31,-39.01 238.76,-57.63 254,-86.25 261.52,-100.37 261.24,-107.98 254,-122.25 241.1,-147.65 213.61,-165.76 192.01,-176.73"/>
-<text xml:space="preserve" text-anchor="middle" x="265.91" y="-99.97" font-family="Arial" font-size="12.00"> 5 </text>
+<!-- tools/crawler -->
+<g id="node7" class="node">
+<title>tools/crawler</title>
+<polygon fill="#00b2ee" stroke="white" points="222.38,-294.75 127.62,-294.75 127.62,-258.75 222.38,-258.75 222.38,-294.75"/>
+<text xml:space="preserve" text-anchor="middle" x="175" y="-272.07" font-family="Tahoma" font-size="14.00">tools/crawler</text>
+</g>
+<!-- tools&#45;&#45;tools/crawler -->
+<g id="edge28" class="edge">
+<title>tools&#45;&#45;tools/crawler</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M291.7,-347.72C280.07,-341.51 266.41,-334.05 254.25,-327 236.6,-316.76 217.12,-304.66 201.9,-295.03"/>
+<text xml:space="preserve" text-anchor="middle" x="260.62" y="-315.6" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- zeeguu/operations -->
+<g id="node5" class="node">
+<title>zeeguu/operations</title>
+<polygon fill="#00b2ee" stroke="white" points="442.88,-208.5 315.12,-208.5 315.12,-172.5 442.88,-172.5 442.88,-208.5"/>
+<text xml:space="preserve" text-anchor="middle" x="379" y="-185.82" font-family="Tahoma" font-size="14.00">zeeguu/operations</text>
+</g>
+<!-- zeeguu/operations&#45;&#45;zeeguu/core -->
+<g id="edge9" class="edge">
+<title>zeeguu/operations&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M382.42,-208.98C388.41,-242.68 398.98,-318.8 386,-381 375.07,-433.37 345.24,-489.76 329.32,-517.33"/>
+<text xml:space="preserve" text-anchor="middle" x="400.63" y="-358.73" font-family="Arial" font-size="12.00"> 10 </text>
+</g>
+<!-- zeeguu/operations&#45;&#45;zeeguu/api -->
+<g id="edge13" class="edge">
+<title>zeeguu/operations&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M386.75,-172.37C395.43,-150.32 406.09,-111.8 388,-86.25 354.28,-38.62 283.98,-24.49 238.72,-20.43"/>
+<text xml:space="preserve" text-anchor="middle" x="404.25" y="-99.97" font-family="Arial" font-size="12.00"> 7 </text>
+</g>
+<!-- zeeguu/operations&#45;&#45;tools/migrations -->
+<g id="edge21" class="edge">
+<title>zeeguu/operations&#45;&#45;tools/migrations</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M433.82,-208.91C441.88,-213.52 449.35,-219.3 455,-226.5 503.78,-288.66 502.41,-390.35 499.62,-430.83"/>
+<text xml:space="preserve" text-anchor="middle" x="501.19" y="-315.6" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- zeeguu/operations&#45;&#45;tools -->
+<g id="edge17" class="edge">
+<title>zeeguu/operations&#45;&#45;tools</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M373.48,-208.71C365.13,-234.55 348.58,-284.82 333,-327 330.87,-332.77 328.41,-339.02 326.16,-344.62"/>
+<text xml:space="preserve" text-anchor="middle" x="363.12" y="-272.48" font-family="Arial" font-size="12.00"> 5 </text>
+</g>
+<!-- zeeguu/operations&#45;&#45;zeeguu/operations -->
+<g id="edge11" class="edge">
+<title>zeeguu/operations&#45;&#45;zeeguu/operations</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M443.19,-197.98C453.67,-196.91 460.88,-194.42 460.88,-190.5 460.88,-186.58 453.67,-184.09 443.19,-183.02"/>
+<text xml:space="preserve" text-anchor="middle" x="467.25" y="-186.22" font-family="Arial" font-size="12.00"> 8 </text>
+</g>
+<!-- zeeguu/operations&#45;&#45;ROOT -->
+<g id="edge20" class="edge">
+<title>zeeguu/operations&#45;&#45;ROOT</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M404.49,-172.04C425.6,-157.58 455.45,-137.14 476.55,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="454.24" y="-143.1" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- tools/report_generator -->
+<g id="node9" class="node">
+<title>tools/report_generator</title>
+<polygon fill="#00b2ee" stroke="white" points="379,-122.25 225,-122.25 225,-86.25 379,-86.25 379,-122.25"/>
+<text xml:space="preserve" text-anchor="middle" x="302" y="-99.58" font-family="Tahoma" font-size="14.00">tools/report_generator</text>
+</g>
+<!-- zeeguu/operations&#45;&#45;tools/report_generator -->
+<g id="edge25" class="edge">
+<title>zeeguu/operations&#45;&#45;tools/report_generator</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M363.05,-172.04C349.83,-157.58 331.14,-137.14 317.93,-122.68"/>
+<text xml:space="preserve" text-anchor="middle" x="351.49" y="-143.1" font-family="Arial" font-size="12.00"> 2 </text>
+</g>
+<!-- ROOT&#45;&#45;zeeguu/api -->
+<g id="edge14" class="edge">
+<title>ROOT&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M481.69,-85.91C467.76,-74.98 448.37,-61.55 429,-54 365.62,-29.3 286.2,-21.93 238.64,-19.79"/>
+<text xml:space="preserve" text-anchor="middle" x="461.14" y="-56.85" font-family="Arial" font-size="12.00"> 5 </text>
+</g>
+<!-- tools/crawler&#45;&#45;zeeguu/core -->
+<g id="edge16" class="edge">
+<title>tools/crawler&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M184.63,-294.92C210.81,-341.6 283.1,-470.48 309.33,-517.26"/>
+<text xml:space="preserve" text-anchor="middle" x="256.7" y="-401.85" font-family="Arial" font-size="12.00"> 5 </text>
+</g>
+<!-- tools/crawler&#45;&#45;zeeguu/api -->
+<g id="edge32" class="edge">
+<title>tools/crawler&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M173.01,-258.39C169.24,-220.49 163.07,-127.83 183,-54 184.6,-48.06 186.92,-41.76 189.2,-36.17"/>
+<text xml:space="preserve" text-anchor="middle" x="176.44" y="-143.1" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- tools/crawler&#45;&#45;zeeguu/operations -->
+<g id="edge23" class="edge">
+<title>tools/crawler&#45;&#45;zeeguu/operations</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M222.77,-267.2C248.47,-261.59 280.27,-252.99 307,-240.75 325.31,-232.36 344.03,-219.4 357.79,-208.87"/>
+<text xml:space="preserve" text-anchor="middle" x="338.48" y="-229.35" font-family="Arial" font-size="12.00"> 3 </text>
+</g>
+<!-- tools/crawler&#45;&#45;tools/crawler -->
+<g id="edge22" class="edge">
+<title>tools/crawler&#45;&#45;tools/crawler</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M222.6,-284.6C232.9,-283.83 240.38,-281.21 240.38,-276.75 240.38,-272.29 232.9,-269.67 222.6,-268.9"/>
+<text xml:space="preserve" text-anchor="middle" x="246.75" y="-272.48" font-family="Arial" font-size="12.00"> 3 </text>
 </g>
 <!-- stanza_service&#45;&#45;stanza_service -->
-<g id="edge7" class="edge">
+<g id="edge24" class="edge">
 <title>stanza_service&#45;&#45;stanza_service</title>
-<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M214.98,-111.98C225.3,-111.08 232.62,-108.5 232.62,-104.25 232.62,-100 225.3,-97.42 214.98,-96.52"/>
-<text xml:space="preserve" text-anchor="middle" x="239" y="-99.97" font-family="Arial" font-size="12.00"> 2 </text>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M754.98,-456.98C765.3,-456.08 772.62,-453.5 772.62,-449.25 772.62,-445 765.3,-442.42 754.98,-441.52"/>
+<text xml:space="preserve" text-anchor="middle" x="779" y="-444.98" font-family="Arial" font-size="12.00"> 2 </text>
+</g>
+<!-- tools/report_generator&#45;&#45;zeeguu/core -->
+<g id="edge30" class="edge">
+<title>tools/report_generator&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M260.58,-122.72C198.37,-151.87 90.93,-215.17 119,-294.75 154.16,-394.43 251.8,-481.36 296.33,-517.13"/>
+<text xml:space="preserve" text-anchor="middle" x="138.56" y="-315.6" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- tools/report_generator&#45;&#45;tools -->
+<g id="edge26" class="edge">
+<title>tools/report_generator&#45;&#45;tools</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M298.15,-122.41C292.9,-148.18 284.75,-198.37 290.25,-240.75 291.31,-248.96 293.01,-250.72 295,-258.75 302.49,-288.94 310.55,-324.26 315.16,-344.79"/>
+<text xml:space="preserve" text-anchor="middle" x="296.62" y="-229.35" font-family="Arial" font-size="12.00"> 2 </text>
+</g>
+<!-- zeeguu/logging -->
+<g id="node10" class="node">
+<title>zeeguu/logging</title>
+<polygon fill="#00b2ee" stroke="white" points="121.12,-639.75 12.88,-639.75 12.88,-603.75 121.12,-603.75 121.12,-639.75"/>
+<text xml:space="preserve" text-anchor="middle" x="67" y="-617.08" font-family="Tahoma" font-size="14.00">zeeguu/logging</text>
+</g>
+<!-- zeeguu/logging&#45;&#45;zeeguu/core -->
+<g id="edge27" class="edge">
+<title>zeeguu/logging&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M119.21,-603.29C164.48,-588.16 229.37,-566.47 272.78,-551.95"/>
+<text xml:space="preserve" text-anchor="middle" x="214.46" y="-574.35" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- zeeguu/logging&#45;&#45;zeeguu/api -->
+<g id="edge36" class="edge">
+<title>zeeguu/logging&#45;&#45;zeeguu/api</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M41.67,-603.49C22.7,-588.32 0,-564.35 0,-536.5 0,-536.5 0,-536.5 0,-103.25 0,-36.29 97.39,-21.84 155.22,-19.16"/>
+<text xml:space="preserve" text-anchor="middle" x="6.38" y="-315.6" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- zeeguu/logging&#45;&#45;tools -->
+<g id="edge35" class="edge">
+<title>zeeguu/logging&#45;&#45;tools</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M66.84,-603.62C67.43,-576.1 72.1,-521.46 98.25,-485.25 146.76,-418.07 244.41,-383.91 291.87,-370.7"/>
+<text xml:space="preserve" text-anchor="middle" x="104.62" y="-488.1" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- zeeguu/logging&#45;&#45;tools/crawler -->
+<g id="edge31" class="edge">
+<title>zeeguu/logging&#45;&#45;tools/crawler</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M65.12,-603.36C63.36,-582.65 61.81,-547.16 68,-517.5 86.47,-428.93 140.63,-333.57 164.03,-295.2"/>
+<text xml:space="preserve" text-anchor="middle" x="100.75" y="-444.98" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- tools/one_time -->
+<g id="node11" class="node">
+<title>tools/one_time</title>
+<polygon fill="#00b2ee" stroke="white" points="372.38,-639.75 265.62,-639.75 265.62,-603.75 372.38,-603.75 372.38,-639.75"/>
+<text xml:space="preserve" text-anchor="middle" x="319" y="-617.08" font-family="Tahoma" font-size="14.00">tools/one_time</text>
+</g>
+<!-- tools/one_time&#45;&#45;zeeguu/core -->
+<g id="edge33" class="edge">
+<title>tools/one_time&#45;&#45;zeeguu/core</title>
+<path fill="none" stroke="#00688b" stroke-opacity="0.298039" d="M319,-603.29C319,-588.83 319,-568.39 319,-553.93"/>
+<text xml:space="preserve" text-anchor="middle" x="325.38" y="-574.35" font-family="Arial" font-size="12.00"> 1 </text>
+</g>
+<!-- tools/one_time&#45;&#45;tools/one_time -->
+<g id="edge34" class="edge">
+<title>tools/one_time&#45;&#45;tools/one_time</title>
+<path fill="none" stroke="#a0a0a0" stroke-opacity="0.298039" d="M372.85,-629.45C383.11,-628.53 390.38,-625.96 390.38,-621.75 390.38,-617.54 383.11,-614.97 372.85,-614.05"/>
+<text xml:space="preserve" text-anchor="middle" x="396.75" y="-617.48" font-family="Arial" font-size="12.00"> 1 </text>
 </g>
 </g>
 </svg>

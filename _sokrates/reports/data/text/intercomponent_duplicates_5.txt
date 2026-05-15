@@ -1,0 +1,16 @@
+8 duplicated lines in:
+  - tools/prefetch_example_sentences_for_users.py (184:191, 2%)
+  - zeeguu/api/endpoints/generated_examples.py (234:241, 1%)
+
+7 duplicated lines in:
+  - tools/fix_underscore_examples.py (143:149, 4%)
+  - zeeguu/api/endpoints/generated_examples.py (203:212, 1%)
+
+7 duplicated lines in:
+  - tools/prefetch_example_sentences_for_users.py (158:164, 2%)
+  - zeeguu/api/endpoints/generated_examples.py (208:214, 1%)
+
+6 duplicated lines in:
+  - tools/delete_bookmarks_word_not_in_context.py (151:158, 4%)
+  - zeeguu/api/endpoints/bookmarks_and_words.py (230:237, 1%)
+

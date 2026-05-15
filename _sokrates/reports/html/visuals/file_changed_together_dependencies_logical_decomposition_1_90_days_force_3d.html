@@ -12,55 +12,184 @@
 <script>
     const gData = {
   "nodes" : [ {
-    "id" : "zeeguu",
-    "size" : 4
+    "id" : "zeeguu/operations",
+    "size" : 7
   }, {
     "id" : "ROOT",
-    "size" : 2
+    "size" : 5
+  }, {
+    "id" : "zeeguu/core",
+    "size" : 7
   }, {
     "id" : "tools",
-    "size" : 4
+    "size" : 7
+  }, {
+    "id" : "zeeguu/api",
+    "size" : 7
+  }, {
+    "id" : "tools/migrations",
+    "size" : 7
   } ],
   "links" : [ {
-    "source" : "zeeguu",
-    "target" : "zeeguu",
-    "count" : 215
+    "source" : "zeeguu/core",
+    "target" : "zeeguu/api",
+    "count" : 154
   }, {
-    "source" : "zeeguu",
-    "target" : "zeeguu",
-    "count" : 215
+    "source" : "zeeguu/api",
+    "target" : "zeeguu/core",
+    "count" : 154
   }, {
-    "source" : "zeeguu",
-    "target" : "tools",
-    "count" : 93
+    "source" : "zeeguu/core",
+    "target" : "zeeguu/core",
+    "count" : 139
+  }, {
+    "source" : "zeeguu/core",
+    "target" : "zeeguu/core",
+    "count" : 139
+  }, {
+    "source" : "zeeguu/core",
+    "target" : "tools/migrations",
+    "count" : 88
+  }, {
+    "source" : "tools/migrations",
+    "target" : "zeeguu/core",
+    "count" : 88
+  }, {
+    "source" : "zeeguu/api",
+    "target" : "zeeguu/api",
+    "count" : 87
+  }, {
+    "source" : "zeeguu/api",
+    "target" : "zeeguu/api",
+    "count" : 87
+  }, {
+    "source" : "zeeguu/api",
+    "target" : "tools/migrations",
+    "count" : 68
+  }, {
+    "source" : "tools/migrations",
+    "target" : "zeeguu/api",
+    "count" : 68
+  }, {
+    "source" : "tools/migrations",
+    "target" : "tools/migrations",
+    "count" : 25
+  }, {
+    "source" : "tools/migrations",
+    "target" : "tools/migrations",
+    "count" : 25
   }, {
     "source" : "tools",
-    "target" : "zeeguu",
-    "count" : 93
+    "target" : "zeeguu/core",
+    "count" : 7
+  }, {
+    "source" : "zeeguu/core",
+    "target" : "tools",
+    "count" : 7
+  }, {
+    "source" : "zeeguu/api",
+    "target" : "tools",
+    "count" : 6
   }, {
     "source" : "tools",
-    "target" : "tools",
-    "count" : 26
+    "target" : "zeeguu/api",
+    "count" : 6
   }, {
-    "source" : "tools",
-    "target" : "tools",
-    "count" : 26
-  }, {
-    "source" : "zeeguu",
+    "source" : "zeeguu/api",
     "target" : "ROOT",
     "count" : 3
   }, {
     "source" : "ROOT",
-    "target" : "zeeguu",
+    "target" : "zeeguu/api",
     "count" : 3
   }, {
-    "source" : "tools",
+    "source" : "zeeguu/operations",
+    "target" : "zeeguu/core",
+    "count" : 3
+  }, {
+    "source" : "zeeguu/core",
+    "target" : "zeeguu/operations",
+    "count" : 3
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "zeeguu/api",
+    "count" : 3
+  }, {
+    "source" : "zeeguu/api",
+    "target" : "zeeguu/operations",
+    "count" : 3
+  }, {
+    "source" : "ROOT",
+    "target" : "zeeguu/core",
+    "count" : 3
+  }, {
+    "source" : "zeeguu/core",
+    "target" : "ROOT",
+    "count" : 3
+  }, {
+    "source" : "tools/migrations",
     "target" : "ROOT",
     "count" : 3
   }, {
     "source" : "ROOT",
+    "target" : "tools/migrations",
+    "count" : 3
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "ROOT",
+    "count" : 3
+  }, {
+    "source" : "ROOT",
+    "target" : "zeeguu/operations",
+    "count" : 3
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "tools/migrations",
+    "count" : 3
+  }, {
+    "source" : "tools/migrations",
+    "target" : "zeeguu/operations",
+    "count" : 3
+  }, {
+    "source" : "tools/migrations",
     "target" : "tools",
     "count" : 3
+  }, {
+    "source" : "tools",
+    "target" : "tools/migrations",
+    "count" : 3
+  }, {
+    "source" : "tools",
+    "target" : "tools",
+    "count" : 2
+  }, {
+    "source" : "tools",
+    "target" : "tools",
+    "count" : 2
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "tools",
+    "count" : 1
+  }, {
+    "source" : "tools",
+    "target" : "zeeguu/operations",
+    "count" : 1
+  }, {
+    "source" : "tools",
+    "target" : "ROOT",
+    "count" : 1
+  }, {
+    "source" : "ROOT",
+    "target" : "tools",
+    "count" : 1
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "zeeguu/operations",
+    "count" : 1
+  }, {
+    "source" : "zeeguu/operations",
+    "target" : "zeeguu/operations",
+    "count" : 1
   } ]
 }
 
